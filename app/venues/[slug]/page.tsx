@@ -43,15 +43,15 @@ export default async function VenueDetailPage({
 
   if (!venue) {
     return (
-      <div className="min-h-screen bg-[#f1e9dc] text-slate-900">
+      <div className="min-h-screen bg-[#ece0cf] text-slate-900">
         <HomeHeader language={language} labels={dictionary.header} />
         <main className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6 md:py-12">
-          <section className="rounded-3xl border border-[#d8cab6] bg-[#fbf7ef] p-6 shadow-sm md:p-8">
+          <section className="rounded-3xl border border-[#d1c2ab] bg-[#fffaf3] p-6 shadow-sm md:p-8">
             <Link
               href={backHref}
               className="text-sm font-medium text-amber-700 transition-colors hover:text-amber-800"
             >
-              ← Back to {backLabel}
+              ← {backLabel}
             </Link>
             <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
               {dictionary.venuePage.notFoundTitle}
@@ -77,11 +77,11 @@ export default async function VenueDetailPage({
   const priceLevel = venue.priceLevel ?? dictionary.venuePage.fallbackPriceLevel;
 
   return (
-    <div className="min-h-screen bg-[#f1e9dc] text-slate-900">
+    <div className="min-h-screen bg-[#ece0cf] text-slate-900">
       <HomeHeader language={language} labels={dictionary.header} />
 
       <main className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6 md:py-12">
-        <section className="relative overflow-hidden rounded-3xl border border-[#d8cab6] bg-gradient-to-br from-[#fbf7ef] via-[#f6ecdf] to-[#f1e3cf] p-6 shadow-sm md:p-8">
+        <section className="relative overflow-hidden rounded-3xl border border-[#d1c2ab] bg-gradient-to-br from-[#fffaf3] via-[#f6ecdf] to-[#f1e3cf] p-6 shadow-sm md:p-8">
           <div className="pointer-events-none absolute -right-14 -top-12 h-44 w-44 rounded-full bg-amber-200/35 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -left-12 h-40 w-40 rounded-full bg-orange-200/25 blur-3xl" />
 
@@ -91,7 +91,7 @@ export default async function VenueDetailPage({
                 href={backHref}
                 className="text-sm font-medium text-amber-700 transition-colors hover:text-amber-800"
               >
-                ← Back to {backLabel}
+                ← {backLabel}
               </Link>
 
               <p className="mt-4 inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-amber-700">
@@ -111,18 +111,18 @@ export default async function VenueDetailPage({
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#d8cab6] bg-[#fbf8f2]/90 p-4">
-              <div className="h-28 rounded-xl border border-[#dccfbe] bg-gradient-to-br from-[#f6e8d3] via-[#f3dfc3] to-[#ecd4b3]" />
+            <div className="rounded-2xl border border-[#d1c2ab] bg-[#fffaf3]/90 p-4">
+              <div className="h-28 rounded-xl border border-[#d7c9b6] bg-gradient-to-br from-[#f6e8d3] via-[#f3dfc3] to-[#ecd4b3]" />
               <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-amber-800/80">
-                Casablanca pick
+                {dictionary.venuePage.panelEyebrow}
               </p>
-              <p className="mt-1 text-sm text-slate-700">Curated place profile</p>
+              <p className="mt-1 text-sm text-slate-700">{dictionary.venuePage.panelSubtitle}</p>
             </div>
           </div>
         </section>
 
         <section className="mt-8 grid gap-4 md:gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-3xl border border-[#d8cab6] bg-[#fbf7ef] p-6 shadow-sm md:p-8">
+          <div className="rounded-3xl border border-[#d1c2ab] bg-[#fffaf3] p-6 shadow-sm md:p-8">
             <h2 className="text-xl font-semibold tracking-tight text-slate-900">
               {dictionary.venuePage.overview}
             </h2>

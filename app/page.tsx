@@ -25,7 +25,7 @@ export default async function Home() {
           <div className="mb-6 flex items-end justify-between gap-4 md:mb-7">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700/80">
-                Browse by mood
+                {dictionary.home.categoriesEyebrow}
               </p>
               <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
                 {dictionary.home.categoriesTitle}
@@ -40,7 +40,7 @@ export default async function Home() {
               <Link
                 key={category.slug}
                 href={`/categories/${category.slug}`}
-                className="group relative overflow-hidden rounded-2xl border border-[#d9cebe] bg-[#fbf8f2] p-4 transition-all hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_12px_30px_-18px_rgba(120,80,20,0.45)] sm:p-5"
+                className="group relative overflow-hidden rounded-2xl border border-[#d1c2ab] bg-[#fffaf3] p-4 shadow-[0_8px_22px_-18px_rgba(105,74,26,0.42)] transition-all hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-[0_18px_38px_-20px_rgba(120,80,20,0.5)] sm:p-5"
               >
                 <div className="pointer-events-none absolute -right-6 -top-8 h-24 w-24 rounded-full bg-amber-100/50 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="flex h-full flex-col">
@@ -69,7 +69,7 @@ export default async function Home() {
           <div className="mb-6 flex items-center justify-between md:mb-7">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700/80">
-                Curated places
+                {dictionary.home.featuredEyebrow}
               </p>
               <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
                 {dictionary.home.featuredTitle}

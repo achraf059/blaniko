@@ -53,7 +53,7 @@ export function HomeHeader({ language, labels }: HomeHeaderProps) {
           </li>
         </ul>
 
-        <div className="flex gap-3 items-center">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher
             language={language}
             labelEn={labels.languageEn}
