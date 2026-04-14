@@ -56,10 +56,8 @@ export function HomeHeader({ language, labels }: HomeHeaderProps) {
         <div className="flex items-center gap-3">
           <LanguageSwitcher
             language={language}
-            labels={{
-              en: labels.languageEn,
-              fr: labels.languageFr,
-            }}
+            labelEn={labels.languageEn}
+            labelFr={labels.languageFr}
           />
 
           <Link
