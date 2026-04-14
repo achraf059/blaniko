@@ -27,11 +27,11 @@ export function LanguageSwitcher({
   };
 
   return (
-    <div className="inline-flex rounded-full border border-[#d9cebe] bg-[#fbf8f2] p-1">
+    <div className="inline-flex rounded-full border border-[#d1c2ab] bg-[#fffaf3] p-1">
       <button
         type="button"
         onClick={() => setLanguage("en")}
-        className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+        className={`rounded-full px-2 py-1 text-[11px] font-semibold transition-colors sm:px-2.5 sm:text-xs ${
           language === "en"
             ? "bg-amber-100 text-amber-800"
             : "text-slate-600 hover:text-slate-800"
@@ -42,7 +42,7 @@ export function LanguageSwitcher({
       <button
         type="button"
         onClick={() => setLanguage("fr")}
-        className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+        className={`rounded-full px-2 py-1 text-[11px] font-semibold transition-colors sm:px-2.5 sm:text-xs ${
           language === "fr"
             ? "bg-amber-100 text-amber-800"
             : "text-slate-600 hover:text-slate-800"

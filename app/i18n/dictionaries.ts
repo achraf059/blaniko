@@ -19,9 +19,11 @@ export type Dictionary = {
     popularAreas: string;
   };
   home: {
+    categoriesEyebrow: string;
     categoriesTitle: string;
     categoriesSubtitle: string;
     categoriesAction: string;
+    featuredEyebrow: string;
     featuredTitle: string;
     featuredSubtitle: string;
     footerText: string;
@@ -29,6 +31,7 @@ export type Dictionary = {
   categoryDescriptions: Record<string, string>;
   categoryPage: {
     backHome: string;
+    eyebrow: string;
     notFoundTitle: string;
     notFoundDescription: string;
     results: string;
@@ -41,6 +44,8 @@ export type Dictionary = {
   venuePage: {
     backToHome: string;
     backToCategory: string;
+    panelEyebrow: string;
+    panelSubtitle: string;
     notFoundTitle: string;
     notFoundDescription: string;
     overview: string;
@@ -75,9 +80,11 @@ const en: Dictionary = {
     popularAreas: "Popular areas: Maarif, Ain Diab, Gauthier, Old Medina",
   },
   home: {
+    categoriesEyebrow: "Browse by mood",
     categoriesTitle: "Explore categories",
     categoriesSubtitle: "Start with a vibe, then discover places across Casablanca.",
     categoriesAction: "Explore category",
+    featuredEyebrow: "Curated places",
     featuredTitle: "Featured venues",
     featuredSubtitle: "Handpicked spots to start exploring Casablanca.",
     footerText: "Discover what to do in Casablanca.",
@@ -95,6 +102,7 @@ const en: Dictionary = {
   },
   categoryPage: {
     backHome: "Back to homepage",
+    eyebrow: "Casablanca category",
     notFoundTitle: "Category not found",
     notFoundDescription:
       "Sorry, we could not find this category yet. Try another one from the homepage.",
@@ -108,6 +116,8 @@ const en: Dictionary = {
   venuePage: {
     backToHome: "Back to homepage",
     backToCategory: "Back to category",
+    panelEyebrow: "Casablanca pick",
+    panelSubtitle: "Curated place profile",
     notFoundTitle: "Venue not found",
     notFoundDescription:
       "Sorry, we could not find this venue yet. Please go back and try a different one.",
@@ -144,10 +154,12 @@ const fr: Dictionary = {
     popularAreas: "Quartiers populaires : Maarif, Ain Diab, Gauthier, Ancienne Médina",
   },
   home: {
+    categoriesEyebrow: "Explorer par ambiance",
     categoriesTitle: "Explorer les catégories",
     categoriesSubtitle:
       "Commencez par une ambiance, puis découvrez des adresses à Casablanca.",
     categoriesAction: "Explorer la catégorie",
+    featuredEyebrow: "Adresses sélectionnées",
     featuredTitle: "Lieux en vedette",
     featuredSubtitle:
       "Une sélection d'adresses pour commencer à explorer Casablanca.",
@@ -166,6 +178,7 @@ const fr: Dictionary = {
   },
   categoryPage: {
     backHome: "Retour à l'accueil",
+    eyebrow: "Catégorie à Casablanca",
     notFoundTitle: "Catégorie introuvable",
     notFoundDescription:
       "Désolé, cette catégorie n'est pas encore disponible. Essayez une autre catégorie depuis l'accueil.",
@@ -179,6 +192,8 @@ const fr: Dictionary = {
   venuePage: {
     backToHome: "Retour à l'accueil",
     backToCategory: "Retour à la catégorie",
+    panelEyebrow: "Sélection Casablanca",
+    panelSubtitle: "Profil du lieu",
     notFoundTitle: "Lieu introuvable",
     notFoundDescription:
       "Désolé, ce lieu n'est pas encore disponible. Revenez en arrière et essayez-en un autre.",
