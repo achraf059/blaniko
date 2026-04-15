@@ -2,53 +2,32 @@ import { Link, useParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
 import { categories, venues } from "../data/mockData";
+import { useI18n } from "../i18n/I18nProvider";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
   const { slug } = useParams();
+  const { dictionary } = useI18n();
 
   const category = categories.find((item) => item.slug === slug);
-
-  const labels = {
-    header: {
-      home: "Home",
-      categories: "Categories",
-      venues: "Venues",
-      about: "About Us",
-      exploreNow: "Explore now",
-    },
-    categoryPage: {
-      backHome: "Back to homepage",
-      eyebrow: "Casablanca category",
-      notFoundTitle: "Category not found",
-      notFoundDescription:
-        "Sorry, we could not find this category yet. Try another one from the homepage.",
-      result: "result",
-      results: "results",
-    },
-    venueCard: {
-      viewDetails: "View details",
-      featured: "Featured",
-    },
-  };
 
   if (!category) {
     return (
       <div className="bl-category-page">
-        <HomeHeader labels={labels.header} />
+        <HomeHeader labels={dictionary.header} />
 
         <main className="bl-category-main">
           <section className="bl-category-not-found">
             <Link to="/" className="bl-category-back-link">
-              ← {labels.categoryPage.backHome}
+              ← {dictionary.categoryPage.backHome}
             </Link>
 
             <h1 className="bl-category-not-found-title">
-              {labels.categoryPage.notFoundTitle}
+              {dictionary.categoryPage.notFoundTitle}
             </h1>
 
             <p className="bl-category-not-found-description">
-              {labels.categoryPage.notFoundDescription}
+              {dictionary.categoryPage.notFoundDescription}
             </p>
           </section>
         </main>
@@ -60,7 +39,7 @@ export default function CategoryPage() {
 
   return (
     <div className="bl-category-page">
-      <HomeHeader labels={labels.header} />
+      <HomeHeader labels={dictionary.header} />
 
       <main className="bl-category-main">
         <section className="bl-category-hero">
@@ -69,21 +48,23 @@ export default function CategoryPage() {
 
           <div className="bl-category-hero-content">
             <Link to="/" className="bl-category-back-link">
-              ← {labels.categoryPage.backHome}
+              ← {dictionary.categoryPage.backHome}
             </Link>
 
-            <p className="bl-category-eyebrow">{labels.categoryPage.eyebrow}</p>
+            <p className="bl-category-eyebrow">{dictionary.categoryPage.eyebrow}</p>
 
             <h1 className="bl-category-title">{category.name}</h1>
 
-            <p className="bl-category-description">{category.description}</p>
+            <p className="bl-category-description">
+              {dictionary.categoryDescriptions[category.slug] ?? category.description}
+            </p>
 
             <div className="bl-category-result-pill">
               <span className="bl-category-result-count">{categoryVenues.length}</span>
               <span>
                 {categoryVenues.length === 1
-                  ? labels.categoryPage.result
-                  : labels.categoryPage.results}
+                  ? dictionary.categoryPage.result
+                  : dictionary.categoryPage.results}
               </span>
             </div>
           </div>
@@ -99,7 +80,7 @@ export default function CategoryPage() {
                 area={venue.area}
                 description={venue.description}
                 href={`/venues/${venue.slug}?from=category&category=${slug}`}
-                labels={labels.venueCard}
+                labels={dictionary.venueCard}
               />
             ))}
           </div>

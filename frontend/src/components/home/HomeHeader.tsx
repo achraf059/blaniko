@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 
 type HomeHeaderProps = {
   labels: {
@@ -7,6 +8,8 @@ type HomeHeaderProps = {
     venues: string;
     about: string;
     exploreNow: string;
+    languageEn: string;
+    languageFr: string;
   };
 };
 
@@ -26,14 +29,14 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
             </Link>
           </li>
           <li>
-            <a href="#categories" className="bl-home-nav-link">
+            <Link to="/#categories" className="bl-home-nav-link">
               {labels.categories}
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#venues" className="bl-home-nav-link">
+            <Link to="/#venues" className="bl-home-nav-link">
               {labels.venues}
-            </a>
+            </Link>
           </li>
           <li>
             <Link to="/" className="bl-home-nav-link">
@@ -42,9 +45,13 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
           </li>
         </ul>
 
-        <a href="#venues" className="bl-home-explore-btn">
-          {labels.exploreNow}
-        </a>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+          <LanguageSwitcher labelEn={labels.languageEn} labelFr={labels.languageFr} />
+
+          <Link to="/#venues" className="bl-home-explore-btn">
+            {labels.exploreNow}
+          </Link>
+        </div>
       </nav>
     </header>
   );
