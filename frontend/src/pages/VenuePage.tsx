@@ -1,22 +1,147 @@
-import { useParams } from "react-router";
+import { Link, useParams, useSearchParams } from "react-router";
+import { HomeHeader } from "../components/home/HomeHeader";
 import { venues } from "../data/mockData";
+import "./VenuePage.css";
 
 export default function VenuePage() {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const labels = {
+    header: {
+      home: "Home",
+      categories: "Categories",
+      venues: "Venues",
+      about: "About Us",
+      exploreNow: "Explore now",
+    },
+    venuePage: {
+      backToHome: "Back to homepage",
+      backToCategory: "Back to category",
+      panelEyebrow: "Casablanca pick",
+      panelSubtitle: "Curated place profile",
+      notFoundTitle: "Venue not found",
+      notFoundDescription:
+        "Sorry, we could not find this venue yet. Please go back and try a different one.",
+      overview: "Overview",
+      area: "Area",
+      vibe: "Vibe",
+      audience: "Audience",
+      priceLevel: "Price level",
+      fallbackOverview:
+        "{name} is a promising {category} option in {area}. This mock overview helps the MVP stay complete while we continue enriching venue details from real field research in Casablanca.",
+      fallbackVibe: "Casual",
+      fallbackAudience: "General",
+      fallbackPriceLevel: "$$",
+    },
+  };
+
+  const from = searchParams.get("from");
+  const categoryFromQuery = searchParams.get("category");
+
+  const isValidSlug =
+    typeof categoryFromQuery === "string" && /^[a-z0-9-]+$/.test(categoryFromQuery);
+
+  const backHref =
+    from === "category" && isValidSlug ? `/categories/${categoryFromQuery}` : "/";
+  const backLabel =
+    from === "category" && isValidSlug
+      ? labels.venuePage.backToCategory
+      : labels.venuePage.backToHome;
 
   const venue = venues.find((item) => item.slug === slug);
 
   if (!venue) {
-    return <h1>Venue not found</h1>;
+    return (
+      <div className="bl-venue-page">
+        <HomeHeader labels={labels.header} />
+
+        <main className="bl-venue-main">
+          <section className="bl-venue-not-found">
+            <Link to={backHref} className="bl-venue-back-link">
+              ← {backLabel}
+            </Link>
+
+            <h1 className="bl-venue-not-found-title">{labels.venuePage.notFoundTitle}</h1>
+
+            <p className="bl-venue-not-found-description">
+              {labels.venuePage.notFoundDescription}
+            </p>
+          </section>
+        </main>
+      </div>
+    );
   }
 
+  const shortDescription = venue.shortDescription ?? venue.description;
+  const overview =
+    venue.overview ??
+    labels.venuePage.fallbackOverview
+      .replace("{name}", venue.name)
+      .replace("{category}", venue.category.toLowerCase())
+      .replace("{area}", venue.area);
+  const vibe = venue.vibe ?? labels.venuePage.fallbackVibe;
+  const audience = venue.audience ?? labels.venuePage.fallbackAudience;
+  const priceLevel = venue.priceLevel ?? labels.venuePage.fallbackPriceLevel;
+
   return (
-    <main>
-      <h1>{venue.name}</h1>
-      <p>Category: {venue.category}</p>
-      <p>Area: {venue.area}</p>
-      <p>{venue.shortDescription}</p>
-      <p>{venue.overview}</p>
-    </main>
+    <div className="bl-venue-page">
+      <HomeHeader labels={labels.header} />
+
+      <main className="bl-venue-main">
+        <section className="bl-venue-hero">
+          <div className="bl-venue-hero-glow-right" />
+          <div className="bl-venue-hero-glow-left" />
+
+          <div className="bl-venue-hero-grid">
+            <div>
+              <Link to={backHref} className="bl-venue-back-link">
+                ← {backLabel}
+              </Link>
+
+              <p className="bl-venue-category-pill">{venue.category}</p>
+
+              <h1 className="bl-venue-title">{venue.name}</h1>
+
+              <p className="bl-venue-area-line">
+                {labels.venuePage.area}: <span>{venue.area}</span>
+              </p>
+
+              <p className="bl-venue-short-description">{shortDescription}</p>
+            </div>
+
+            <div className="bl-venue-side-panel">
+              <div className="bl-venue-side-panel-image" />
+              <p className="bl-venue-side-panel-eyebrow">{labels.venuePage.panelEyebrow}</p>
+              <p className="bl-venue-side-panel-subtitle">{labels.venuePage.panelSubtitle}</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="bl-venue-content-grid">
+          <div className="bl-venue-overview-card">
+            <h2 className="bl-venue-overview-title">{labels.venuePage.overview}</h2>
+            <p className="bl-venue-overview-text">{overview}</p>
+          </div>
+
+          <div className="bl-venue-meta-grid">
+            <div className="bl-venue-meta-card">
+              <p className="bl-venue-meta-label">{labels.venuePage.vibe}</p>
+              <p className="bl-venue-meta-value">{vibe}</p>
+            </div>
+
+            <div className="bl-venue-meta-card">
+              <p className="bl-venue-meta-label">{labels.venuePage.audience}</p>
+              <p className="bl-venue-meta-value">{audience}</p>
+            </div>
+
+            <div className="bl-venue-meta-card">
+              <p className="bl-venue-meta-label">{labels.venuePage.priceLevel}</p>
+              <p className="bl-venue-meta-value">{priceLevel}</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
