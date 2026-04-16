@@ -24,16 +24,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
 
-      - name: Run lint
+      - name: Install frontend dependencies
+        run: npm --prefix frontend ci
+
+      - name: Run root lint
         run: npm run lint
 
-      - name: Run type check
+      - name: Run root type check
         run: npx tsc --noEmit
 
-      - name: Run production build
+      - name: Run root production build
         run: npm run build
+
+      - name: Run frontend lint
+        run: npm --prefix frontend run lint
+
+      - name: Run frontend production build
+        run: npm --prefix frontend run build
