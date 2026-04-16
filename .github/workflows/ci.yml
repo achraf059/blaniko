@@ -34,8 +34,8 @@ jobs:
       - name: Run root lint
         run: npm run lint
 
-      - name: Run root type check
-        run: npx tsc --noEmit
+      - name: Run frontend type check
+        run: npm --prefix frontend exec -- tsc -b frontend/tsconfig.json
 
       - name: Run root production build
         run: npm run build
