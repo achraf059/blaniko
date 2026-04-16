@@ -3,7 +3,7 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { HomeHero } from "../components/home/HomeHero";
 import { VenueCard } from "../components/home/VenueCard";
 import { categories, featuredVenueSlugs, venues } from "../data/mockData";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 
 export default function HomePage() {

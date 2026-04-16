@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { venues } from "../data/mockData";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "./VenuePage.css";
 
 export default function VenuePage() {

@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
 import { categories, venues } from "../data/mockData";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
