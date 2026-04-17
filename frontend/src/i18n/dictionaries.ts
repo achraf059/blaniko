@@ -14,9 +14,23 @@ export type Dictionary = {
     badge: string;
     title: string;
     subtitle: string;
-    discoverVenues: string;
-    browseCategories: string;
-    popularAreas: string;
+    searchPlaceholder: string;
+    searchAction: string;
+    quickFiltersLabel: string;
+    budgetLabel: string;
+    budgetAll: string;
+    budgetLow: string;
+    budgetMid: string;
+    budgetHigh: string;
+    recommendationsCta: string;
+    helperText: string;
+    panelEyebrow: string;
+    panelStatOneLabel: string;
+    panelStatOneValue: string;
+    panelStatTwoLabel: string;
+    panelStatTwoValue: string;
+    panelStatThreeLabel: string;
+    panelStatThreeValue: string;
   };
   home: {
     categoriesEyebrow: string;
@@ -58,6 +72,36 @@ export type Dictionary = {
     fallbackAudience: string;
     fallbackPriceLevel: string;
   };
+  searchPage: {
+    eyebrow: string;
+    titleDefault: string;
+    titleForQuery: string;
+    subtitle: string;
+    quickFiltersLabel: string;
+    budgetLabel: string;
+    budgetAll: string;
+    budgetLow: string;
+    budgetMid: string;
+    budgetHigh: string;
+    summaryQuery: string;
+    summaryCategory: string;
+    summaryBudget: string;
+    clearFilters: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    resultsLabel: string;
+    searchPlaceholder: string;
+    searchAction: string;
+  };
+  recommendationsPage: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    query: string;
+    category: string;
+    budget: string;
+    backHome: string;
+  };
 };
 
 const en: Dictionary = {
@@ -75,9 +119,23 @@ const en: Dictionary = {
     title: "Discover the best things to do in Casablanca.",
     subtitle:
       "Find cafes, restaurants, sports spots, and unique city experiences in one simple place. Blaniko helps you explore Casablanca like a local.",
-    discoverVenues: "Discover venues",
-    browseCategories: "Browse categories",
-    popularAreas: "Popular areas: Maarif, Ain Diab, Gauthier, Old Medina",
+    searchPlaceholder: "Search places, categories, or areas",
+    searchAction: "Search",
+    quickFiltersLabel: "Quick category filters",
+    budgetLabel: "Budget",
+    budgetAll: "All",
+    budgetLow: "$",
+    budgetMid: "$$",
+    budgetHigh: "$$$",
+    recommendationsCta: "Get personalized recommendations",
+    helperText: "Try a mood, area, or category to start your city discovery flow.",
+    panelEyebrow: "City pulse",
+    panelStatOneLabel: "Trending now",
+    panelStatOneValue: "Rooftop cafes · Sunset plans",
+    panelStatTwoLabel: "Fast discovery",
+    panelStatTwoValue: "Search + filters in one place",
+    panelStatThreeLabel: "Neighborhood mix",
+    panelStatThreeValue: "Maarif · Ain Diab · Gauthier",
   },
   home: {
     categoriesEyebrow: "Browse by mood",
@@ -132,6 +190,37 @@ const en: Dictionary = {
     fallbackAudience: "General",
     fallbackPriceLevel: "$$",
   },
+  searchPage: {
+    eyebrow: "Discovery results",
+    titleDefault: "Explore matching venues",
+    titleForQuery: 'Results for "{query}"',
+    subtitle: "Refine your search with category and budget filters.",
+    quickFiltersLabel: "Quick category filters",
+    budgetLabel: "Budget",
+    budgetAll: "All",
+    budgetLow: "$",
+    budgetMid: "$$",
+    budgetHigh: "$$$",
+    summaryQuery: "Query",
+    summaryCategory: "Category",
+    summaryBudget: "Budget",
+    clearFilters: "Clear filters",
+    emptyTitle: "No places found",
+    emptyDescription:
+      "Try another keyword, category, or budget to discover more venues.",
+    resultsLabel: "results",
+    searchPlaceholder: "Search places, categories, or areas",
+    searchAction: "Search",
+  },
+  recommendationsPage: {
+    eyebrow: "Personal recommendations",
+    title: "Recommendation flow coming next",
+    subtitle: "Your preferences are captured and this page is ready for the next phase.",
+    query: "Query",
+    category: "Category",
+    budget: "Budget",
+    backHome: "Back to homepage",
+  },
 };
 
 const fr: Dictionary = {
@@ -149,9 +238,23 @@ const fr: Dictionary = {
     title: "Découvrez les meilleures choses à faire à Casablanca.",
     subtitle:
       "Trouvez des cafés, restaurants, activités sportives et expériences locales au même endroit. Blaniko vous aide à explorer Casablanca comme un habitant.",
-    discoverVenues: "Découvrir les lieux",
-    browseCategories: "Parcourir les catégories",
-    popularAreas: "Quartiers populaires : Maarif, Ain Diab, Gauthier, Ancienne Médina",
+    searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
+    searchAction: "Rechercher",
+    quickFiltersLabel: "Filtres rapides",
+    budgetLabel: "Budget",
+    budgetAll: "Tous",
+    budgetLow: "$",
+    budgetMid: "$$",
+    budgetHigh: "$$$",
+    recommendationsCta: "Obtenir des recommandations personnalisées",
+    helperText: "Essayez une ambiance, un quartier ou une catégorie pour commencer.",
+    panelEyebrow: "Tendance locale",
+    panelStatOneLabel: "En ce moment",
+    panelStatOneValue: "Rooftops · Sorties sunset",
+    panelStatTwoLabel: "Découverte rapide",
+    panelStatTwoValue: "Recherche + filtres au même endroit",
+    panelStatThreeLabel: "Quartiers clés",
+    panelStatThreeValue: "Maarif · Ain Diab · Gauthier",
   },
   home: {
     categoriesEyebrow: "Explorer par ambiance",
@@ -207,6 +310,38 @@ const fr: Dictionary = {
     fallbackVibe: "Décontracté",
     fallbackAudience: "Tout public",
     fallbackPriceLevel: "$$",
+  },
+  searchPage: {
+    eyebrow: "Résultats découverte",
+    titleDefault: "Explorer les lieux correspondants",
+    titleForQuery: 'Résultats pour "{query}"',
+    subtitle: "Affinez avec les filtres catégorie et budget.",
+    quickFiltersLabel: "Filtres rapides",
+    budgetLabel: "Budget",
+    budgetAll: "Tous",
+    budgetLow: "$",
+    budgetMid: "$$",
+    budgetHigh: "$$$",
+    summaryQuery: "Recherche",
+    summaryCategory: "Catégorie",
+    summaryBudget: "Budget",
+    clearFilters: "Effacer les filtres",
+    emptyTitle: "Aucun lieu trouvé",
+    emptyDescription:
+      "Essayez un autre mot-clé, une catégorie ou un budget pour découvrir plus d'adresses.",
+    resultsLabel: "résultats",
+    searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
+    searchAction: "Rechercher",
+  },
+  recommendationsPage: {
+    eyebrow: "Recommandations personnalisées",
+    title: "Flux de recommandations bientôt disponible",
+    subtitle:
+      "Vos préférences sont bien capturées et cette page est prête pour la prochaine phase.",
+    query: "Recherche",
+    category: "Catégorie",
+    budget: "Budget",
+    backHome: "Retour à l'accueil",
   },
 };
 

@@ -1,0 +1,84 @@
+.bl-reco-page {
+  min-height: 100vh;
+  background: #ece0cf;
+  color: #0f172a;
+}
+
+.bl-reco-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-reco-card {
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  padding: 1.5rem;
+}
+
+.bl-reco-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(180, 83, 9, 0.8);
+}
+
+.bl-reco-title {
+  margin: 0.75rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 600;
+}
+
+.bl-reco-subtitle {
+  margin: 0.5rem 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.bl-reco-params {
+  margin-top: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid #dccfbe;
+  background: #fffaf3;
+  padding: 1rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.bl-reco-params p {
+  margin: 0;
+}
+
+.bl-reco-params p + p {
+  margin-top: 0.4rem;
+}
+
+.bl-reco-params span {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.bl-reco-back-link {
+  margin-top: 1rem;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #b45309;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .bl-reco-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bl-reco-card {
+    padding: 2rem;
+  }
+}

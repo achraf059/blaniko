@@ -1,17 +1,62 @@
+import { BudgetSelector } from "../discovery/BudgetSelector";
+import { FilterChips } from "../discovery/FilterChips";
+import { SearchBar } from "../discovery/SearchBar";
+
 type HomeHeroProps = {
   texts: {
     badge: string;
     title: string;
     subtitle: string;
-    discoverVenues: string;
-    browseCategories: string;
-    popularAreas: string;
+    searchPlaceholder: string;
+    searchAction: string;
+    quickFiltersLabel: string;
+    budgetLabel: string;
+    budgetAll: string;
+    budgetLow: string;
+    budgetMid: string;
+    budgetHigh: string;
+    recommendationsCta: string;
+    helperText: string;
+    panelEyebrow: string;
+    panelStatOneLabel: string;
+    panelStatOneValue: string;
+    panelStatTwoLabel: string;
+    panelStatTwoValue: string;
+    panelStatThreeLabel: string;
+    panelStatThreeValue: string;
   };
+  searchValue: string;
+  onSearchValueChange: (value: string) => void;
+  onSearchSubmit: () => void;
+  quickFilters: Array<{ value: string; label: string }>;
+  selectedFilter?: string;
+  onFilterSelect: (value: string) => void;
+  budgetValue: string;
+  onBudgetChange: (value: string) => void;
+  onRecommendationsClick: () => void;
 };
 
-export function HomeHero({ texts }: HomeHeroProps) {
+export function HomeHero({
+  texts,
+  searchValue,
+  onSearchValueChange,
+  onSearchSubmit,
+  quickFilters,
+  selectedFilter,
+  onFilterSelect,
+  budgetValue,
+  onBudgetChange,
+  onRecommendationsClick,
+}: HomeHeroProps) {
+  const budgetOptions = [
+    { value: "all", label: texts.budgetAll },
+    { value: "$", label: texts.budgetLow },
+    { value: "$$", label: texts.budgetMid },
+    { value: "$$$", label: texts.budgetHigh },
+  ];
+
   return (
-    <section className="bl-home-hero">
+    <section className="bl-home-hero bl-home-hero-upgraded">
       <div className="bl-home-hero-glow-top" />
       <div className="bl-home-hero-glow-bottom" />
 
@@ -23,16 +68,45 @@ export function HomeHero({ texts }: HomeHeroProps) {
 
           <p className="bl-home-hero-subtitle">{texts.subtitle}</p>
 
-          <div className="bl-home-hero-actions">
-            <a href="#venues" className="bl-home-btn-primary">
-              {texts.discoverVenues}
-            </a>
-            <a href="#categories" className="bl-home-btn-secondary">
-              {texts.browseCategories}
-            </a>
+          <div className="bl-discovery-stack">
+            <SearchBar
+              value={searchValue}
+              onChange={onSearchValueChange}
+              onSubmit={onSearchSubmit}
+              placeholder={texts.searchPlaceholder}
+              submitLabel={texts.searchAction}
+            />
+
+            <div>
+              <p className="bl-discovery-label">{texts.quickFiltersLabel}</p>
+              <FilterChips
+                options={quickFilters}
+                selectedValue={selectedFilter}
+                onSelect={onFilterSelect}
+              />
+            </div>
+
+            <div className="bl-discovery-bottom-row">
+              <div>
+                <p className="bl-discovery-label">{texts.budgetLabel}</p>
+                <BudgetSelector
+                  options={budgetOptions}
+                  selectedValue={budgetValue}
+                  onSelect={onBudgetChange}
+                />
+              </div>
+
+              <button
+                type="button"
+                className="bl-home-btn-primary bl-discovery-reco-btn"
+                onClick={onRecommendationsClick}
+              >
+                {texts.recommendationsCta}
+              </button>
+            </div>
           </div>
 
-          <p className="bl-home-hero-areas">{texts.popularAreas}</p>
+          <p className="bl-home-hero-areas">{texts.helperText}</p>
         </div>
 
         <div className="bl-home-hero-panel-wrap">
@@ -46,16 +120,20 @@ export function HomeHero({ texts }: HomeHeroProps) {
               </div>
             </div>
 
+            <p className="bl-home-hero-panel-eyebrow">{texts.panelEyebrow}</p>
+
             <div className="bl-home-hero-panel-cards">
               <div className="bl-home-hero-mini-card">
-                <p className="bl-home-hero-mini-title">Curated city moments</p>
-                <p className="bl-home-hero-mini-subtitle">Coffee, walks, social plans</p>
+                <p className="bl-home-hero-mini-title">{texts.panelStatOneLabel}</p>
+                <p className="bl-home-hero-mini-subtitle">{texts.panelStatOneValue}</p>
               </div>
               <div className="bl-home-hero-mini-card">
-                <p className="bl-home-hero-mini-title">Lifestyle discovery</p>
-                <p className="bl-home-hero-mini-subtitle">
-                  Places people actually browse
-                </p>
+                <p className="bl-home-hero-mini-title">{texts.panelStatTwoLabel}</p>
+                <p className="bl-home-hero-mini-subtitle">{texts.panelStatTwoValue}</p>
+              </div>
+              <div className="bl-home-hero-mini-card">
+                <p className="bl-home-hero-mini-title">{texts.panelStatThreeLabel}</p>
+                <p className="bl-home-hero-mini-subtitle">{texts.panelStatThreeValue}</p>
               </div>
             </div>
           </div>
