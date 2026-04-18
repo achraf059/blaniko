@@ -6,6 +6,7 @@ import { SearchBar } from "../components/discovery/SearchBar";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
 import { categories, venues } from "../data/mockData";
+import { useFavorites } from "../hooks/useFavorites";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./SearchPage.css";
@@ -13,6 +14,7 @@ import "./SearchPage.css";
 export default function SearchPage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
 
   const queryFromUrl = searchParams.get("q") ?? "";
@@ -193,11 +195,14 @@ export default function SearchPage() {
               {filteredVenues.map((venue) => (
                 <VenueCard
                   key={venue.slug}
+                  slug={venue.slug}
                   category={venue.category}
                   name={venue.name}
                   area={venue.area}
                   description={venue.description}
                   href={`/venues/${venue.slug}?from=search`}
+                  isFavorite={isFavorite(venue.slug)}
+                  onToggleFavorite={toggleFavorite}
                   labels={dictionary.venueCard}
                 />
               ))}

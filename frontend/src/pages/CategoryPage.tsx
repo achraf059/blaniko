@@ -75,6 +75,7 @@ export default function CategoryPage() {
             {categoryVenues.map((venue) => (
               <VenueCard
                 key={venue.slug}
+                slug={venue.slug}
                 category={venue.category}
                 name={venue.name}
                 area={venue.area}

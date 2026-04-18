@@ -5,6 +5,7 @@ export type Dictionary = {
     home: string;
     categories: string;
     venues: string;
+    favorites: string;
     about: string;
     exploreNow: string;
     languageEn: string;
@@ -54,10 +55,13 @@ export type Dictionary = {
   venueCard: {
     featured: string;
     viewDetails: string;
+    saveFavorite: string;
+    removeFavorite: string;
   };
   venuePage: {
     backToHome: string;
     backToCategory: string;
+    backToFavorites: string;
     panelEyebrow: string;
     panelSubtitle: string;
     notFoundTitle: string;
@@ -71,6 +75,8 @@ export type Dictionary = {
     fallbackVibe: string;
     fallbackAudience: string;
     fallbackPriceLevel: string;
+    saveFavorite: string;
+    removeFavorite: string;
   };
   searchPage: {
     eyebrow: string;
@@ -102,6 +108,16 @@ export type Dictionary = {
     budget: string;
     backHome: string;
   };
+  favoritesPage: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    savedLabel: string;
+    clearAll: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    browseHome: string;
+  };
 };
 
 const en: Dictionary = {
@@ -109,6 +125,7 @@ const en: Dictionary = {
     home: "Home",
     categories: "Categories",
     venues: "Venues",
+    favorites: "Favorites",
     about: "About Us",
     exploreNow: "Explore now",
     languageEn: "EN",
@@ -170,10 +187,13 @@ const en: Dictionary = {
   venueCard: {
     featured: "Featured",
     viewDetails: "View details",
+    saveFavorite: "Save",
+    removeFavorite: "Saved",
   },
   venuePage: {
     backToHome: "Back to homepage",
     backToCategory: "Back to category",
+    backToFavorites: "Back to favorites",
     panelEyebrow: "Casablanca pick",
     panelSubtitle: "Curated place profile",
     notFoundTitle: "Venue not found",
@@ -189,6 +209,8 @@ const en: Dictionary = {
     fallbackVibe: "Casual",
     fallbackAudience: "General",
     fallbackPriceLevel: "$$",
+    saveFavorite: "Save to favorites",
+    removeFavorite: "Remove from favorites",
   },
   searchPage: {
     eyebrow: "Discovery results",
@@ -221,6 +243,16 @@ const en: Dictionary = {
     budget: "Budget",
     backHome: "Back to homepage",
   },
+  favoritesPage: {
+    eyebrow: "Saved places",
+    title: "Your favorite venues",
+    subtitle: "Keep your preferred Casablanca spots in one place.",
+    savedLabel: "saved",
+    clearAll: "Clear all",
+    emptyTitle: "No favorites yet",
+    emptyDescription: "Save places from homepage, search, or recommendations.",
+    browseHome: "Browse venues",
+  },
 };
 
 const fr: Dictionary = {
@@ -228,6 +260,7 @@ const fr: Dictionary = {
     home: "Accueil",
     categories: "Catégories",
     venues: "Lieux",
+    favorites: "Favoris",
     about: "À propos",
     exploreNow: "Explorer",
     languageEn: "EN",
@@ -291,10 +324,13 @@ const fr: Dictionary = {
   venueCard: {
     featured: "À la une",
     viewDetails: "Voir les détails",
+    saveFavorite: "Enregistrer",
+    removeFavorite: "Enregistré",
   },
   venuePage: {
     backToHome: "Retour à l'accueil",
     backToCategory: "Retour à la catégorie",
+    backToFavorites: "Retour aux favoris",
     panelEyebrow: "Sélection Casablanca",
     panelSubtitle: "Profil du lieu",
     notFoundTitle: "Lieu introuvable",
@@ -310,6 +346,8 @@ const fr: Dictionary = {
     fallbackVibe: "Décontracté",
     fallbackAudience: "Tout public",
     fallbackPriceLevel: "$$",
+    saveFavorite: "Ajouter aux favoris",
+    removeFavorite: "Retirer des favoris",
   },
   searchPage: {
     eyebrow: "Résultats découverte",
@@ -342,6 +380,17 @@ const fr: Dictionary = {
     category: "Catégorie",
     budget: "Budget",
     backHome: "Retour à l'accueil",
+  },
+  favoritesPage: {
+    eyebrow: "Lieux enregistrés",
+    title: "Vos lieux favoris",
+    subtitle: "Gardez vos adresses préférées de Casablanca au même endroit.",
+    savedLabel: "enregistrés",
+    clearAll: "Tout effacer",
+    emptyTitle: "Aucun favori pour le moment",
+    emptyDescription:
+      "Enregistrez des lieux depuis l'accueil, la recherche ou les recommandations.",
+    browseHome: "Parcourir les lieux",
   },
 };
 

@@ -15,6 +15,7 @@ import {
   persistRecommendationState,
   type QuizAnswers,
 } from "../hooks/recommendationState";
+import { useFavorites } from "../hooks/useFavorites";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./RecommendationsPage.css";
@@ -86,6 +87,7 @@ const QUESTIONS: QuizQuestion[] = [
 export default function RecommendationsPage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
   const [shareFeedback, setShareFeedback] = useState<"idle" | "copied" | "failed">("idle");
 
@@ -360,6 +362,7 @@ export default function RecommendationsPage() {
                 {topMatches.map(({ venue }) => (
                   <VenueCard
                     key={venue.slug}
+                    slug={venue.slug}
                     category={venue.category}
                     name={venue.name}
                     area={venue.area}
@@ -367,6 +370,8 @@ export default function RecommendationsPage() {
                     href={`/venues/${venue.slug}?from=recommendations`}
                     labels={dictionary.venueCard}
                     isFeatured
+                    isFavorite={isFavorite(venue.slug)}
+                    onToggleFavorite={toggleFavorite}
                   />
                 ))}
               </div>
@@ -379,12 +384,15 @@ export default function RecommendationsPage() {
                   {alternatives.map(({ venue }) => (
                     <VenueCard
                       key={venue.slug}
+                      slug={venue.slug}
                       category={venue.category}
                       name={venue.name}
                       area={venue.area}
                       description={venue.description}
                       href={`/venues/${venue.slug}?from=recommendations`}
                       labels={dictionary.venueCard}
+                      isFavorite={isFavorite(venue.slug)}
+                      onToggleFavorite={toggleFavorite}
                     />
                   ))}
                 </div>

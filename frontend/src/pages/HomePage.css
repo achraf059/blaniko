@@ -663,6 +663,34 @@
   color: #334155;
 }
 
+.bl-home-venue-favorite {
+  margin: 0.8rem 1rem 0;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  color: #475569;
+  padding: 0.38rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.bl-home-venue-favorite:hover {
+  border-color: #f2b564;
+  color: #7c4b1e;
+}
+
+.bl-home-venue-favorite.is-active {
+  border-color: #d97706;
+  background: #fbe8ca;
+  color: #7c2d12;
+}
+
 .bl-home-venue-body {
   display: flex;
   height: 100%;
