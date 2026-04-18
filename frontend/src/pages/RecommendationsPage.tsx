@@ -1,22 +1,23 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
 import { ProgressBar } from "../components/recommendations/ProgressBar";
 import { QuizStep } from "../components/recommendations/QuizStep";
 import { ResultsHeader } from "../components/recommendations/ResultsHeader";
-import { categories, venues } from "../data/mockData";
+import { venues } from "../data/mockData";
+import {
+  buildAllowedAnswerValues,
+  buildRecommendationSearchParams,
+  clearRecommendationStateStorage,
+  createDefaultQuizAnswers,
+  hydrateRecommendationState,
+  persistRecommendationState,
+  type QuizAnswers,
+} from "../hooks/recommendationState";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./RecommendationsPage.css";
-
-type QuizAnswers = {
-  companion: string;
-  category: string;
-  budget: string;
-  area: string;
-  vibe: string;
-};
 
 type QuizQuestion = {
   id: keyof QuizAnswers;
@@ -25,91 +26,116 @@ type QuizQuestion = {
   description?: string;
 };
 
+const QUESTIONS: QuizQuestion[] = [
+  {
+    id: "companion",
+    title: "Who are you with?",
+    options: [
+      { value: "alone", label: "Alone" },
+      { value: "friends", label: "Friends" },
+      { value: "family", label: "Family" },
+      { value: "partner", label: "Partner" },
+    ],
+  },
+  {
+    id: "category",
+    title: "What are you looking for?",
+    options: [
+      { value: "cafes", label: "Cafes" },
+      { value: "restaurants", label: "Restaurants" },
+      { value: "activities", label: "Activities" },
+      { value: "sports", label: "Sports" },
+      { value: "gaming", label: "Gaming" },
+      { value: "outdoor", label: "Outdoor" },
+    ],
+  },
+  {
+    id: "budget",
+    title: "What is your budget?",
+    options: [
+      { value: "all", label: "All" },
+      { value: "$", label: "$" },
+      { value: "$$", label: "$$" },
+      { value: "$$$", label: "$$$" },
+    ],
+  },
+  {
+    id: "area",
+    title: "Preferred area?",
+    options: [
+      { value: "any", label: "Any" },
+      { value: "maarif", label: "Maarif" },
+      { value: "ain diab", label: "Ain Diab" },
+      { value: "gauthier", label: "Gauthier" },
+      { value: "old medina", label: "Old Medina" },
+    ],
+  },
+  {
+    id: "vibe",
+    title: "What vibe do you want?",
+    options: [
+      { value: "chill", label: "Chill" },
+      { value: "social", label: "Social" },
+      { value: "active", label: "Active" },
+      { value: "romantic", label: "Romantic" },
+      { value: "family-friendly", label: "Family-friendly" },
+    ],
+  },
+];
+
 export default function RecommendationsPage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [shareFeedback, setShareFeedback] = useState<"idle" | "copied" | "failed">("idle");
 
-  const categoryFromUrl = searchParams.get("category");
-  const budgetFromUrl = searchParams.get("budget");
+  const questions = QUESTIONS;
 
-  const validCategory = categories.some((category) => category.slug === categoryFromUrl)
-    ? (categoryFromUrl ?? "")
-    : "";
+  const allowedAnswerValues = useMemo(
+    () =>
+      buildAllowedAnswerValues(
+        questions.map((question) => ({
+          id: question.id,
+          options: question.options.map((option) => ({ value: option.value })),
+        }))
+      ),
+    [questions]
+  );
 
-  const validBudget = ["all", "$", "$$", "$$$"].includes(budgetFromUrl ?? "")
-    ? (budgetFromUrl as string)
-    : "all";
+  const initialRecommendationState = useMemo(
+    () =>
+      hydrateRecommendationState({
+        searchParams,
+        questionOrder: questions.map((question) => question.id),
+        totalSteps: questions.length,
+        allowedValues: allowedAnswerValues,
+      }),
+    [allowedAnswerValues, questions, searchParams]
+  );
 
-  const [stepIndex, setStepIndex] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const [answers, setAnswers] = useState<QuizAnswers>({
-    companion: "",
-    category: validCategory,
-    budget: validBudget,
-    area: "",
-    vibe: "",
-  });
-
-  const questions: QuizQuestion[] = [
-    {
-      id: "companion",
-      title: "Who are you with?",
-      options: [
-        { value: "alone", label: "Alone" },
-        { value: "friends", label: "Friends" },
-        { value: "family", label: "Family" },
-        { value: "partner", label: "Partner" },
-      ],
-    },
-    {
-      id: "category",
-      title: "What are you looking for?",
-      options: [
-        { value: "cafes", label: "Cafes" },
-        { value: "restaurants", label: "Restaurants" },
-        { value: "activities", label: "Activities" },
-        { value: "sports", label: "Sports" },
-        { value: "gaming", label: "Gaming" },
-        { value: "outdoor", label: "Outdoor" },
-      ],
-    },
-    {
-      id: "budget",
-      title: "What is your budget?",
-      options: [
-        { value: "all", label: "All" },
-        { value: "$", label: "$" },
-        { value: "$$", label: "$$" },
-        { value: "$$$", label: "$$$" },
-      ],
-    },
-    {
-      id: "area",
-      title: "Preferred area?",
-      options: [
-        { value: "any", label: "Any" },
-        { value: "maarif", label: "Maarif" },
-        { value: "ain diab", label: "Ain Diab" },
-        { value: "gauthier", label: "Gauthier" },
-        { value: "old medina", label: "Old Medina" },
-      ],
-    },
-    {
-      id: "vibe",
-      title: "What vibe do you want?",
-      options: [
-        { value: "chill", label: "Chill" },
-        { value: "social", label: "Social" },
-        { value: "active", label: "Active" },
-        { value: "romantic", label: "Romantic" },
-        { value: "family-friendly", label: "Family-friendly" },
-      ],
-    },
-  ];
+  const [stepIndex, setStepIndex] = useState(initialRecommendationState.stepIndex);
+  const [isComplete, setIsComplete] = useState(initialRecommendationState.isComplete);
+  const [answers, setAnswers] = useState<QuizAnswers>(initialRecommendationState.answers);
 
   const currentQuestion = questions[stepIndex];
   const currentValue = answers[currentQuestion.id];
+
+  useEffect(() => {
+    const nextSearchParams = buildRecommendationSearchParams({
+      currentSearchParams: searchParams,
+      answers,
+      stepIndex,
+      isComplete,
+    });
+
+    if (nextSearchParams.toString() !== searchParams.toString()) {
+      setSearchParams(nextSearchParams, { replace: true });
+    }
+  }, [answers, isComplete, searchParams, setSearchParams, stepIndex]);
+
+  useEffect(() => {
+    persistRecommendationState({ answers, stepIndex, isComplete });
+  }, [answers, isComplete, stepIndex]);
 
   const getLabel = (id: keyof QuizAnswers, value: string) =>
     questions
@@ -216,15 +242,21 @@ export default function RecommendationsPage() {
   };
 
   const retakeQuiz = () => {
-    setAnswers({
-      companion: "",
-      category: validCategory,
-      budget: validBudget,
-      area: "",
-      vibe: "",
-    });
+    setAnswers(createDefaultQuizAnswers());
     setStepIndex(0);
     setIsComplete(false);
+    clearRecommendationStateStorage();
+
+    const nextSearchParams = buildRecommendationSearchParams({
+      currentSearchParams: searchParams,
+      answers: createDefaultQuizAnswers(),
+      stepIndex: 0,
+      isComplete: false,
+    });
+
+    if (nextSearchParams.toString() !== searchParams.toString()) {
+      setSearchParams(nextSearchParams, { replace: true });
+    }
   };
 
   const browseAllResults = () => {
@@ -240,6 +272,38 @@ export default function RecommendationsPage() {
 
     const suffix = params.toString();
     navigate(suffix ? `/search?${suffix}` : "/search");
+  };
+
+  const copyResultsLink = async () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const link = window.location.href;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(link);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = link;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      setShareFeedback("copied");
+    } catch {
+      setShareFeedback("failed");
+    }
+
+    window.setTimeout(() => {
+      setShareFeedback("idle");
+    }, 2200);
   };
 
   return (
@@ -333,12 +397,27 @@ export default function RecommendationsPage() {
               </button>
               <button
                 type="button"
+                className="bl-reco-action-secondary"
+                onClick={copyResultsLink}
+              >
+                Copy results link
+              </button>
+              <button
+                type="button"
                 className="bl-reco-action-primary"
                 onClick={browseAllResults}
               >
                 Browse all results
               </button>
             </div>
+
+            {shareFeedback !== "idle" ? (
+              <p className="bl-reco-share-feedback" role="status" aria-live="polite">
+                {shareFeedback === "copied"
+                  ? "Share link copied to your clipboard."
+                  : "Could not copy automatically. Please copy the URL from your browser."}
+              </p>
+            ) : null}
           </>
         )}
       </main>
