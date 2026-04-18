@@ -1,0 +1,249 @@
+.bl-admin-page {
+  min-height: 100vh;
+  background: #ece0cf;
+  color: #0f172a;
+}
+
+.bl-admin-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-admin-hero {
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  padding: 1.4rem;
+}
+
+.bl-admin-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(180, 83, 9, 0.82);
+}
+
+.bl-admin-title {
+  margin: 0.7rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.bl-admin-subtitle,
+.bl-admin-helper {
+  margin: 0.55rem 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.bl-admin-layout {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.bl-admin-list-card,
+.bl-admin-form-card {
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: #fffaf3;
+  padding: 1rem;
+}
+
+.bl-admin-list-head,
+.bl-admin-form-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.bl-admin-list-head h2,
+.bl-admin-form-head h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.bl-admin-form-badge {
+  border-radius: 9999px;
+  border: 1px solid #dccfbe;
+  background: #fff8ee;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #7c4b1e;
+}
+
+.bl-admin-filters {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bl-admin-input,
+.bl-admin-select,
+.bl-admin-textarea {
+  width: 100%;
+  border: 1px solid #d8cab6;
+  border-radius: 0.8rem;
+  background: #fff8ee;
+  color: #1f2937;
+  padding: 0.56rem 0.75rem;
+  font-size: 0.84rem;
+  box-sizing: border-box;
+}
+
+.bl-admin-textarea {
+  resize: vertical;
+  min-height: 4.8rem;
+}
+
+.bl-admin-list-grid {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+  max-height: 31rem;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.bl-admin-list-item {
+  border: 1px solid #dccfbe;
+  border-radius: 0.95rem;
+  background: #fff8ee;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.bl-admin-list-item.is-active {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+}
+
+.bl-admin-list-name {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.bl-admin-list-meta,
+.bl-admin-list-ready {
+  margin: 0.3rem 0 0;
+  font-size: 0.76rem;
+  color: #64748b;
+}
+
+.bl-admin-list-footer {
+  margin-top: 0.85rem;
+}
+
+.bl-admin-form-grid {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.bl-admin-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.bl-admin-field span {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7c4b1e;
+}
+
+.bl-admin-field small {
+  font-size: 0.72rem;
+  color: #b91c1c;
+}
+
+.bl-admin-field-full {
+  grid-column: 1 / -1;
+}
+
+.bl-admin-feedback {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #7c4b1e;
+}
+
+.bl-admin-primary-btn,
+.bl-admin-secondary-btn,
+.bl-admin-delete-btn {
+  border-radius: 9999px;
+  padding: 0.42rem 0.82rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bl-admin-primary-btn {
+  border: none;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #fff;
+}
+
+.bl-admin-secondary-btn {
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  color: #334155;
+}
+
+.bl-admin-delete-btn {
+  border: 1px solid #ef4444;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.bl-admin-form-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+@media (min-width: 640px) {
+  .bl-admin-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bl-admin-hero,
+  .bl-admin-list-card,
+  .bl-admin-form-card {
+    padding: 1.4rem;
+  }
+
+  .bl-admin-filters {
+    grid-template-columns: minmax(0, 1fr) 13rem;
+  }
+
+  .bl-admin-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .bl-admin-layout {
+    grid-template-columns: 0.95fr 1.05fr;
+    align-items: start;
+  }
+}

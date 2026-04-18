@@ -8,6 +8,7 @@ type HomeHeaderProps = {
     venues: string;
     favorites: string;
     map: string;
+    admin: string;
     about: string;
     exploreNow: string;
     languageEn: string;
@@ -51,6 +52,11 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
             </Link>
           </li>
           <li>
+            <Link to="/admin" className="bl-home-nav-link">
+              {labels.admin}
+            </Link>
+          </li>
+          <li>
             <Link to="/" className="bl-home-nav-link">
               {labels.about}
             </Link>
@@ -64,6 +70,10 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
 
           <Link to="/map" className="bl-home-nav-link">
             {labels.map}
+          </Link>
+
+          <Link to="/admin" className="bl-home-nav-link">
+            {labels.admin}
           </Link>
 
           <LanguageSwitcher labelEn={labels.languageEn} labelFr={labels.languageFr} />
