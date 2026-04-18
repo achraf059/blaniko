@@ -276,6 +276,21 @@ export default function RecommendationsPage() {
     navigate(suffix ? `/search?${suffix}` : "/search");
   };
 
+  const browseMapResults = () => {
+    const params = new URLSearchParams();
+
+    if (answers.category) {
+      params.set("category", answers.category);
+    }
+
+    if (answers.budget && answers.budget !== "all") {
+      params.set("budget", answers.budget);
+    }
+
+    const suffix = params.toString();
+    navigate(suffix ? `/map?${suffix}` : "/map");
+  };
+
   const copyResultsLink = async () => {
     if (typeof window === "undefined") {
       return;
@@ -409,6 +424,13 @@ export default function RecommendationsPage() {
                 onClick={copyResultsLink}
               >
                 Copy results link
+              </button>
+              <button
+                type="button"
+                className="bl-reco-action-secondary"
+                onClick={browseMapResults}
+              >
+                {dictionary.header.map}
               </button>
               <button
                 type="button"

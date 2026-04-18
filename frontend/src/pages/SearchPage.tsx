@@ -75,6 +75,25 @@ export default function SearchPage() {
     return suffix ? `/search?${suffix}` : "/search";
   };
 
+  const buildMapUrl = () => {
+    const params = new URLSearchParams();
+
+    if (query.trim()) {
+      params.set("q", query.trim());
+    }
+
+    if (selectedCategory) {
+      params.set("category", selectedCategory);
+    }
+
+    if (selectedBudget !== "all") {
+      params.set("budget", selectedBudget);
+    }
+
+    const suffix = params.toString();
+    return suffix ? `/map?${suffix}` : "/map";
+  };
+
   const filteredVenues = useMemo(() => {
     return venues.filter((venue) => {
       if (query.trim()) {
@@ -169,6 +188,14 @@ export default function SearchPage() {
 
               <button type="button" className="bl-search-clear-btn" onClick={clearFilters}>
                 {dictionary.searchPage.clearFilters}
+              </button>
+
+              <button
+                type="button"
+                className="bl-search-clear-btn"
+                onClick={() => navigate(buildMapUrl())}
+              >
+                {dictionary.header.map}
               </button>
             </div>
           </div>

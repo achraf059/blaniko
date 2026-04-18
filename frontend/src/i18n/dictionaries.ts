@@ -6,6 +6,7 @@ export type Dictionary = {
     categories: string;
     venues: string;
     favorites: string;
+    map: string;
     about: string;
     exploreNow: string;
     languageEn: string;
@@ -62,6 +63,7 @@ export type Dictionary = {
     backToHome: string;
     backToCategory: string;
     backToFavorites: string;
+    backToMap: string;
     panelEyebrow: string;
     panelSubtitle: string;
     notFoundTitle: string;
@@ -118,6 +120,27 @@ export type Dictionary = {
     emptyDescription: string;
     browseHome: string;
   };
+  mapPage: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    helperText: string;
+    quickFiltersLabel: string;
+    budgetLabel: string;
+    budgetAll: string;
+    budgetLow: string;
+    budgetMid: string;
+    budgetHigh: string;
+    searchPlaceholder: string;
+    searchAction: string;
+    listTitle: string;
+    mapTitle: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    showOnMap: string;
+    selectedLabel: string;
+    viewDetails: string;
+  };
 };
 
 const en: Dictionary = {
@@ -126,6 +149,7 @@ const en: Dictionary = {
     categories: "Categories",
     venues: "Venues",
     favorites: "Favorites",
+    map: "Map",
     about: "About Us",
     exploreNow: "Explore now",
     languageEn: "EN",
@@ -194,6 +218,7 @@ const en: Dictionary = {
     backToHome: "Back to homepage",
     backToCategory: "Back to category",
     backToFavorites: "Back to favorites",
+    backToMap: "Back to map",
     panelEyebrow: "Casablanca pick",
     panelSubtitle: "Curated place profile",
     notFoundTitle: "Venue not found",
@@ -253,6 +278,27 @@ const en: Dictionary = {
     emptyDescription: "Save places from homepage, search, or recommendations.",
     browseHome: "Browse venues",
   },
+  mapPage: {
+    eyebrow: "Geographic discovery",
+    title: "Explore venues on the map",
+    subtitle: "Browse Casablanca places by area and switch quickly between map and list.",
+    helperText: "Tip: click any marker to preview details and open the venue page.",
+    quickFiltersLabel: "Quick category filters",
+    budgetLabel: "Budget",
+    budgetAll: "All",
+    budgetLow: "$",
+    budgetMid: "$$",
+    budgetHigh: "$$$",
+    searchPlaceholder: "Search places, categories, or areas",
+    searchAction: "Search",
+    listTitle: "Venues",
+    mapTitle: "Casablanca map",
+    emptyTitle: "No map matches",
+    emptyDescription: "Try another keyword, category, or budget.",
+    showOnMap: "Show on map",
+    selectedLabel: "Selected",
+    viewDetails: "View details",
+  },
 };
 
 const fr: Dictionary = {
@@ -261,6 +307,7 @@ const fr: Dictionary = {
     categories: "Catégories",
     venues: "Lieux",
     favorites: "Favoris",
+    map: "Carte",
     about: "À propos",
     exploreNow: "Explorer",
     languageEn: "EN",
@@ -331,6 +378,7 @@ const fr: Dictionary = {
     backToHome: "Retour à l'accueil",
     backToCategory: "Retour à la catégorie",
     backToFavorites: "Retour aux favoris",
+    backToMap: "Retour à la carte",
     panelEyebrow: "Sélection Casablanca",
     panelSubtitle: "Profil du lieu",
     notFoundTitle: "Lieu introuvable",
@@ -391,6 +439,29 @@ const fr: Dictionary = {
     emptyDescription:
       "Enregistrez des lieux depuis l'accueil, la recherche ou les recommandations.",
     browseHome: "Parcourir les lieux",
+  },
+  mapPage: {
+    eyebrow: "Découverte géographique",
+    title: "Explorez les lieux sur la carte",
+    subtitle:
+      "Parcourez les adresses de Casablanca par quartier et passez rapidement entre carte et liste.",
+    helperText:
+      "Astuce : cliquez sur un marqueur pour voir un aperçu et ouvrir la fiche du lieu.",
+    quickFiltersLabel: "Filtres rapides",
+    budgetLabel: "Budget",
+    budgetAll: "Tous",
+    budgetLow: "$",
+    budgetMid: "$$",
+    budgetHigh: "$$$",
+    searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
+    searchAction: "Rechercher",
+    listTitle: "Lieux",
+    mapTitle: "Carte de Casablanca",
+    emptyTitle: "Aucun résultat sur la carte",
+    emptyDescription: "Essayez un autre mot-clé, une catégorie ou un budget.",
+    showOnMap: "Voir sur la carte",
+    selectedLabel: "Sélectionné",
+    viewDetails: "Voir les détails",
   },
 };
 

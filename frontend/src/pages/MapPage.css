@@ -1,0 +1,359 @@
+.bl-map-page {
+  min-height: 100vh;
+  background: #ece0cf;
+  color: #0f172a;
+}
+
+.bl-map-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-map-hero {
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  padding: 1.4rem;
+}
+
+.bl-map-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(180, 83, 9, 0.82);
+}
+
+.bl-map-title {
+  margin: 0.7rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.bl-map-subtitle,
+.bl-map-helper {
+  margin: 0.55rem 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.bl-map-controls {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.bl-map-layout {
+  margin-top: 1.3rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.bl-map-panel,
+.bl-map-list-panel {
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: #fffaf3;
+  padding: 1rem;
+}
+
+.bl-map-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.bl-map-panel-head h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.bl-map-panel-head p {
+  margin: 0;
+  border-radius: 9999px;
+  border: 1px solid #dccfbe;
+  background: #fffaf3;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #7c4b1e;
+}
+
+.bl-map-canvas {
+  position: relative;
+  margin-top: 0.75rem;
+  height: 22rem;
+  border-radius: 1rem;
+  border: 1px solid #d7c9b6;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(252, 211, 77, 0.35), transparent 35%),
+    radial-gradient(circle at 80% 83%, rgba(251, 146, 60, 0.28), transparent 32%),
+    linear-gradient(145deg, #f8ebd8 0%, #f4e1c5 54%, #efd2ac 100%);
+  overflow: hidden;
+}
+
+.bl-map-watermark {
+  position: absolute;
+  right: 0.85rem;
+  top: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(122, 75, 30, 0.5);
+}
+
+.bl-map-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 9999px;
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.bl-map-marker:hover {
+  border-color: #f2b564;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.bl-map-marker-dot {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 9999px;
+  background: #b45309;
+}
+
+.bl-map-marker.is-active {
+  border-color: #d97706;
+  background: #fbe8ca;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
+}
+
+.bl-map-empty {
+  margin-top: 0.75rem;
+  border: 1px solid #dccfbe;
+  border-radius: 1rem;
+  background: #fff8ee;
+  padding: 1rem;
+}
+
+.bl-map-empty h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.bl-map-empty p {
+  margin: 0.5rem 0 0;
+  color: #475569;
+}
+
+.bl-map-preview {
+  margin-top: 0.9rem;
+  border: 1px solid #dccfbe;
+  border-radius: 1rem;
+  background: #fff8ee;
+  padding: 0.95rem;
+}
+
+.bl-map-preview-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.bl-map-preview-category {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b45309;
+}
+
+.bl-map-preview-favorite {
+  border-radius: 9999px;
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  color: #475569;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bl-map-preview-favorite.is-active {
+  border-color: #d97706;
+  background: #fbe8ca;
+  color: #7c2d12;
+}
+
+.bl-map-preview-name {
+  margin: 0.55rem 0 0;
+  font-size: 1.05rem;
+}
+
+.bl-map-preview-area,
+.bl-map-preview-description {
+  margin: 0.55rem 0 0;
+  font-size: 0.86rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.bl-map-preview-link {
+  margin-top: 0.75rem;
+  display: inline-flex;
+  color: #b45309;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.bl-map-preview-link:hover {
+  color: #92400e;
+}
+
+.bl-map-list {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+  max-height: 42rem;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.bl-map-list-item {
+  border: 1px solid #dccfbe;
+  border-radius: 1rem;
+  background: #fff8ee;
+  padding: 0.9rem;
+}
+
+.bl-map-list-item.is-active {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.14);
+}
+
+.bl-map-list-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.bl-map-list-item-category {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b45309;
+}
+
+.bl-map-list-item-selected {
+  border-radius: 9999px;
+  border: 1px solid #d97706;
+  background: #fbe8ca;
+  color: #7c2d12;
+  padding: 0.12rem 0.52rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.bl-map-list-item-title {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+}
+
+.bl-map-list-item-area,
+.bl-map-list-item-description {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.bl-map-list-item-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bl-map-list-focus-btn,
+.bl-map-list-favorite-btn {
+  border-radius: 9999px;
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  color: #334155;
+  padding: 0.35rem 0.72rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bl-map-list-favorite-btn.is-active {
+  border-color: #d97706;
+  background: #fbe8ca;
+  color: #7c2d12;
+}
+
+.bl-map-list-link {
+  display: inline-flex;
+  align-items: center;
+  color: #b45309;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0;
+}
+
+.bl-map-list-link:hover {
+  color: #92400e;
+}
+
+@media (min-width: 640px) {
+  .bl-map-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bl-map-hero,
+  .bl-map-panel,
+  .bl-map-list-panel {
+    padding: 1.4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bl-map-layout {
+    grid-template-columns: 1.08fr 0.92fr;
+    align-items: start;
+  }
+
+  .bl-map-panel,
+  .bl-map-list-panel {
+    position: sticky;
+    top: 5.2rem;
+  }
+
+  .bl-map-list-panel {
+    max-height: calc(100vh - 7rem);
+  }
+}
