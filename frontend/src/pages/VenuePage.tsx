@@ -22,12 +22,16 @@ export default function VenuePage() {
       ? `/categories/${categoryFromQuery}`
       : from === "favorites"
         ? "/favorites"
+        : from === "map"
+          ? "/map"
         : "/";
   const backLabel =
     from === "category" && isValidSlug
       ? dictionary.venuePage.backToCategory
       : from === "favorites"
         ? dictionary.venuePage.backToFavorites
+        : from === "map"
+          ? dictionary.venuePage.backToMap
         : dictionary.venuePage.backToHome;
 
   const venue = venues.find((item) => item.slug === slug);

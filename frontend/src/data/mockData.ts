@@ -10,6 +10,10 @@ export type Venue = {
   category: string;
   categorySlug: string;
   area: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
   description: string;
   shortDescription?: string;
   overview?: string;
@@ -73,6 +77,7 @@ export const venues: Venue[] = [
     category: "Cafes",
     categorySlug: "cafes",
     area: "Maarif, Casablanca",
+    coordinates: { lat: 33.5763, lng: -7.6333 },
     description:
       "Rooftop coffee spot with sunset views and a calm city atmosphere.",
     shortDescription:
@@ -89,6 +94,7 @@ export const venues: Venue[] = [
     category: "Cafes",
     categorySlug: "cafes",
     area: "Gauthier, Casablanca",
+    coordinates: { lat: 33.5894, lng: -7.6212 },
     description:
       "Specialty coffee address with a quiet space for work and meetings.",
     shortDescription:
@@ -105,6 +111,7 @@ export const venues: Venue[] = [
     category: "Restaurants",
     categorySlug: "restaurants",
     area: "Racine, Casablanca",
+    coordinates: { lat: 33.5921, lng: -7.6265 },
     description:
       "Modern Moroccan restaurant with seasonal dishes and warm service.",
     shortDescription:
@@ -121,6 +128,7 @@ export const venues: Venue[] = [
     category: "Sports",
     categorySlug: "sports",
     area: "Ain Diab, Casablanca",
+    coordinates: { lat: 33.6038, lng: -7.6839 },
     description:
       "Well-maintained padel club with coaching and social match slots.",
     shortDescription:
@@ -137,6 +145,7 @@ export const venues: Venue[] = [
     category: "Sports",
     categorySlug: "sports",
     area: "Bourgogne, Casablanca",
+    coordinates: { lat: 33.5869, lng: -7.6514 },
     description:
       "Fitness studio with group classes, strength sessions, and flexible passes.",
     shortDescription:
@@ -153,6 +162,7 @@ export const venues: Venue[] = [
     category: "Activities",
     categorySlug: "activities",
     area: "Old Medina, Casablanca",
+    coordinates: { lat: 33.5994, lng: -7.6177 },
     description:
       "Guided tasting walk through local food spots in the Old Medina.",
     shortDescription:
@@ -169,6 +179,7 @@ export const venues: Venue[] = [
     category: "Gaming",
     categorySlug: "gaming",
     area: "Gauthier, Casablanca",
+    coordinates: { lat: 33.5886, lng: -7.6202 },
     description:
       "Gaming lounge with console stations, mini tournaments, and social play.",
     shortDescription:
@@ -185,6 +196,7 @@ export const venues: Venue[] = [
     category: "Outdoor",
     categorySlug: "outdoor",
     area: "Marina, Casablanca",
+    coordinates: { lat: 33.6112, lng: -7.6102 },
     description:
       "Waterfront walking route with sea views, especially popular at sunset.",
     shortDescription:
@@ -201,6 +213,7 @@ export const venues: Venue[] = [
     category: "Outdoor",
     categorySlug: "outdoor",
     area: "Ain Diab, Casablanca",
+    coordinates: { lat: 33.6001, lng: -7.6792 },
     description:
       "Easy cycling route along the coast with sea views and open space.",
     shortDescription:
@@ -217,6 +230,7 @@ export const venues: Venue[] = [
     category: "Family",
     categorySlug: "family",
     area: "Anfa, Casablanca",
+    coordinates: { lat: 33.586, lng: -7.6491 },
     description:
       "Family-friendly play area with secure zones and parent seating.",
     shortDescription:
@@ -233,6 +247,7 @@ export const venues: Venue[] = [
     category: "Family",
     categorySlug: "family",
     area: "Anfa, Casablanca",
+    coordinates: { lat: 33.5848, lng: -7.6459 },
     description:
       "Weekend creative workshops for kids with parent-friendly seating.",
     shortDescription:
@@ -249,6 +264,7 @@ export const venues: Venue[] = [
     category: "Couples",
     categorySlug: "couples",
     area: "Racine, Casablanca",
+    coordinates: { lat: 33.5906, lng: -7.6292 },
     description:
       "Cozy dinner address with soft lighting and a date-night atmosphere.",
     shortDescription:
@@ -265,6 +281,7 @@ export const venues: Venue[] = [
     category: "Friends",
     categorySlug: "friends",
     area: "Maarif, Casablanca",
+    coordinates: { lat: 33.5757, lng: -7.6348 },
     description:
       "Group-friendly hangout with games, music, and shared tables.",
     shortDescription:
