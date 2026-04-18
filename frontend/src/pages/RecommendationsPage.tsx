@@ -5,7 +5,6 @@ import { VenueCard } from "../components/home/VenueCard";
 import { ProgressBar } from "../components/recommendations/ProgressBar";
 import { QuizStep } from "../components/recommendations/QuizStep";
 import { ResultsHeader } from "../components/recommendations/ResultsHeader";
-import { venues } from "../data/mockData";
 import {
   buildAllowedAnswerValues,
   buildRecommendationSearchParams,
@@ -16,6 +15,7 @@ import {
   type QuizAnswers,
 } from "../hooks/recommendationState";
 import { useFavorites } from "../hooks/useFavorites";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./RecommendationsPage.css";
@@ -87,6 +87,7 @@ const QUESTIONS: QuizQuestion[] = [
 export default function RecommendationsPage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
+  const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
   const [shareFeedback, setShareFeedback] = useState<"idle" | "copied" | "failed">("idle");
@@ -204,7 +205,7 @@ export default function RecommendationsPage() {
         return { venue, score };
       })
       .sort((first, second) => second.score - first.score);
-  }, [answers]);
+  }, [answers, venues]);
 
   const topMatches = scoredResults.slice(0, 3);
   const alternatives = scoredResults.slice(3, 8);

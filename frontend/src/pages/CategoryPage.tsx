@@ -1,13 +1,15 @@
 import { Link, useParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
-import { categories, venues } from "../data/mockData";
+import { categories } from "../data/mockData";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
   const { slug } = useParams();
   const { dictionary } = useI18n();
+  const { venues } = useVenues();
 
   const category = categories.find((item) => item.slug === slug);
 

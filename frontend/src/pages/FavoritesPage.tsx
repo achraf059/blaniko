@@ -1,14 +1,15 @@
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
-import { venues } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./FavoritesPage.css";
 
 export default function FavoritesPage() {
   const { dictionary } = useI18n();
+  const { venues } = useVenues();
   const { favoriteSlugs, favoritesCount, isFavorite, toggleFavorite, clearFavorites } =
     useFavorites();
 

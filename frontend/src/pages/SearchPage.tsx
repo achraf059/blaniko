@@ -5,8 +5,9 @@ import { FilterChips } from "../components/discovery/FilterChips";
 import { SearchBar } from "../components/discovery/SearchBar";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
-import { categories, venues } from "../data/mockData";
+import { categories } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./SearchPage.css";
@@ -14,6 +15,7 @@ import "./SearchPage.css";
 export default function SearchPage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
+  const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
 
@@ -116,7 +118,7 @@ export default function SearchPage() {
 
       return true;
     });
-  }, [query, selectedBudget, selectedCategory]);
+  }, [query, selectedBudget, selectedCategory, venues]);
 
   const selectedCategoryName = categories.find(
     (category) => category.slug === selectedCategory

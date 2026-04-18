@@ -103,8 +103,7 @@ function readStoredVenues(): Venue[] {
 
   try {
     const parsed = JSON.parse(raw) as unknown;
-    const sanitized = sanitizeVenueList(parsed);
-    return sanitized.length > 0 ? sanitized : baseVenues;
+    return sanitizeVenueList(parsed);
   } catch {
     return baseVenues;
   }
@@ -139,8 +138,7 @@ export function useAdminVenues() {
 
       try {
         const parsed = JSON.parse(event.newValue) as unknown;
-        const sanitized = sanitizeVenueList(parsed);
-        setManagedVenues(sanitized.length > 0 ? sanitized : baseVenues);
+        setManagedVenues(sanitizeVenueList(parsed));
       } catch {
         setManagedVenues(baseVenues);
       }
@@ -148,8 +146,7 @@ export function useAdminVenues() {
 
     const handleAdminVenuesUpdated = (event: Event) => {
       const customEvent = event as CustomEvent<AdminVenuesEventDetail>;
-      const sanitized = sanitizeVenueList(customEvent.detail?.venues ?? []);
-      setManagedVenues(sanitized.length > 0 ? sanitized : baseVenues);
+      setManagedVenues(sanitizeVenueList(customEvent.detail?.venues ?? []));
     };
 
     window.addEventListener("storage", handleStorage);
@@ -180,8 +177,8 @@ export function useAdminVenues() {
   const removeVenue = useCallback((slug: string) => {
     setManagedVenues((previous) => {
       const next = previous.filter((venue) => venue.slug !== slug);
-      writeStoredVenues(next.length > 0 ? next : baseVenues);
-      return next.length > 0 ? next : baseVenues;
+      writeStoredVenues(next);
+      return next;
     });
   }, []);
 

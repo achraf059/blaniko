@@ -4,13 +4,14 @@ import { BudgetSelector } from "../components/discovery/BudgetSelector";
 import { FilterChips } from "../components/discovery/FilterChips";
 import { SearchBar } from "../components/discovery/SearchBar";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { categories, venues } from "../data/mockData";
+import { categories, type Venue } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 import "./MapPage.css";
 
-type MappedVenue = (typeof venues)[number] & {
+type MappedVenue = Venue & {
   coordinates: {
     lat: number;
     lng: number;
@@ -19,7 +20,7 @@ type MappedVenue = (typeof venues)[number] & {
 
 const MAP_PADDING_PERCENT = 7;
 
-function toMappedVenues(input: typeof venues): MappedVenue[] {
+function toMappedVenues(input: Venue[]): MappedVenue[] {
   return input.filter(
     (venue): venue is MappedVenue =>
       typeof venue.coordinates?.lat === "number" && typeof venue.coordinates?.lng === "number"
@@ -30,6 +31,7 @@ export default function MapPage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const queryFromUrl = searchParams.get("q") ?? "";
@@ -109,7 +111,7 @@ export default function MapPage() {
 
       return true;
     });
-  }, [query, selectedBudget, selectedCategory]);
+  }, [query, selectedBudget, selectedCategory, venues]);
 
   const mapVenues = useMemo(() => toMappedVenues(filteredVenues), [filteredVenues]);
 

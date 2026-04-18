@@ -4,7 +4,8 @@ import { useNavigate } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { HomeHero } from "../components/home/HomeHero";
 import { VenueCard } from "../components/home/VenueCard";
-import { categories, featuredVenueSlugs, venues } from "../data/mockData";
+import { categories, featuredVenueSlugs } from "../data/mockData";
+import { useVenues } from "../hooks/useVenues";
 import { useFavorites } from "../hooks/useFavorites";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
@@ -12,6 +13,7 @@ import "./HomePage.css";
 export default function HomePage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
+  const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);

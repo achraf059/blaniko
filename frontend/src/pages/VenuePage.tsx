@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { venues } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./VenuePage.css";
 
@@ -10,6 +10,7 @@ export default function VenuePage() {
   const [searchParams] = useSearchParams();
   const { dictionary } = useI18n();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { getVenueBySlug } = useVenues();
 
   const from = searchParams.get("from");
   const categoryFromQuery = searchParams.get("category");
@@ -34,7 +35,7 @@ export default function VenuePage() {
           ? dictionary.venuePage.backToMap
         : dictionary.venuePage.backToHome;
 
-  const venue = venues.find((item) => item.slug === slug);
+  const venue = slug ? getVenueBySlug(slug) : undefined;
 
   if (!venue) {
     return (
