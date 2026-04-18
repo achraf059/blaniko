@@ -1,6 +1,7 @@
 import { Link, useParams, useSearchParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { venues } from "../data/mockData";
+import { useFavorites } from "../hooks/useFavorites";
 import { useI18n } from "../i18n/useI18n";
 import "./VenuePage.css";
 
@@ -8,6 +9,7 @@ export default function VenuePage() {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
   const { dictionary } = useI18n();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const from = searchParams.get("from");
   const categoryFromQuery = searchParams.get("category");
@@ -16,11 +18,17 @@ export default function VenuePage() {
     typeof categoryFromQuery === "string" && /^[a-z0-9-]+$/.test(categoryFromQuery);
 
   const backHref =
-    from === "category" && isValidSlug ? `/categories/${categoryFromQuery}` : "/";
+    from === "category" && isValidSlug
+      ? `/categories/${categoryFromQuery}`
+      : from === "favorites"
+        ? "/favorites"
+        : "/";
   const backLabel =
     from === "category" && isValidSlug
       ? dictionary.venuePage.backToCategory
-      : dictionary.venuePage.backToHome;
+      : from === "favorites"
+        ? dictionary.venuePage.backToFavorites
+        : dictionary.venuePage.backToHome;
 
   const venue = venues.find((item) => item.slug === slug);
 
@@ -56,6 +64,7 @@ export default function VenuePage() {
   const vibe = venue.vibe ?? dictionary.venuePage.fallbackVibe;
   const audience = venue.audience ?? dictionary.venuePage.fallbackAudience;
   const priceLevel = venue.priceLevel ?? dictionary.venuePage.fallbackPriceLevel;
+  const isVenueFavorite = isFavorite(venue.slug);
 
   return (
     <div className="bl-venue-page">
@@ -81,6 +90,20 @@ export default function VenuePage() {
               </p>
 
               <p className="bl-venue-short-description">{shortDescription}</p>
+
+              <button
+                type="button"
+                className={`bl-venue-favorite-btn${isVenueFavorite ? " is-active" : ""}`}
+                onClick={() => toggleFavorite(venue.slug)}
+                aria-pressed={isVenueFavorite}
+              >
+                <span aria-hidden="true">{isVenueFavorite ? "♥" : "♡"}</span>
+                <span>
+                  {isVenueFavorite
+                    ? dictionary.venuePage.removeFavorite
+                    : dictionary.venuePage.saveFavorite}
+                </span>
+              </button>
             </div>
 
             <div className="bl-venue-side-panel">

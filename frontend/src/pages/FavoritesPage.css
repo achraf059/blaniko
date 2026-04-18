@@ -1,0 +1,137 @@
+.bl-favorites-page {
+  min-height: 100vh;
+  background: #ece0cf;
+  color: #0f172a;
+}
+
+.bl-favorites-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-favorites-hero {
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  padding: 1.4rem;
+}
+
+.bl-favorites-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(180, 83, 9, 0.82);
+}
+
+.bl-favorites-title {
+  margin: 0.7rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.bl-favorites-subtitle {
+  margin: 0.55rem 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.bl-favorites-meta-row {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.bl-favorites-count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.bl-favorites-count span {
+  font-weight: 700;
+  color: #7c2d12;
+}
+
+.bl-favorites-clear-btn {
+  border-radius: 9999px;
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  color: #334155;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.bl-favorites-clear-btn:hover {
+  border-color: #f2b564;
+  color: #7c4b1e;
+}
+
+.bl-favorites-results {
+  margin-top: 1.4rem;
+}
+
+.bl-favorites-empty {
+  margin-top: 1.4rem;
+  border: 1px solid #d1c2ab;
+  border-radius: 1.5rem;
+  background: #fffaf3;
+  padding: 1.4rem;
+}
+
+.bl-favorites-empty-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.bl-favorites-empty-description {
+  margin: 0.6rem 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.bl-favorites-back-link {
+  margin-top: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: #b45309;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.bl-favorites-back-link:hover {
+  color: #92400e;
+}
+
+@media (min-width: 640px) {
+  .bl-favorites-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bl-favorites-hero,
+  .bl-favorites-empty {
+    padding: 1.8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .bl-favorites-main {
+    padding-top: 3rem;
+  }
+}

@@ -128,6 +128,33 @@
   color: #334155;
 }
 
+.bl-venue-favorite-btn {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  border: 1px solid #d8cab6;
+  background: #fffaf2;
+  color: #475569;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.bl-venue-favorite-btn:hover {
+  border-color: #f2b564;
+  color: #7c4b1e;
+}
+
+.bl-venue-favorite-btn.is-active {
+  border-color: #d97706;
+  background: #fbe8ca;
+  color: #7c2d12;
+}
+
 .bl-venue-side-panel {
   border: 1px solid #d1c2ab;
   border-radius: 1rem;

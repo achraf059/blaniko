@@ -5,12 +5,14 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { HomeHero } from "../components/home/HomeHero";
 import { VenueCard } from "../components/home/VenueCard";
 import { categories, featuredVenueSlugs, venues } from "../data/mockData";
+import { useFavorites } from "../hooks/useFavorites";
 import { useI18n } from "../i18n/useI18n";
 import "./HomePage.css";
 
 export default function HomePage() {
   const { dictionary } = useI18n();
   const navigate = useNavigate();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
   const [selectedBudget, setSelectedBudget] = useState("all");
@@ -144,12 +146,15 @@ export default function HomePage() {
             {featuredVenues.map((venue) => (
               <VenueCard
                 key={venue.slug}
+                slug={venue.slug}
                 category={venue.category}
                 name={venue.name}
                 area={venue.area}
                 description={venue.description}
                 href={`/venues/${venue.slug}?from=home`}
                 isFeatured
+                isFavorite={isFavorite(venue.slug)}
+                onToggleFavorite={toggleFavorite}
                 labels={dictionary.venueCard}
               />
             ))}
