@@ -7,6 +7,7 @@ export type Dictionary = {
     venues: string;
     favorites: string;
     map: string;
+    admin: string;
     about: string;
     exploreNow: string;
     languageEn: string;
@@ -141,6 +142,38 @@ export type Dictionary = {
     selectedLabel: string;
     viewDetails: string;
   };
+  adminPage: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    helper: string;
+    listTitle: string;
+    createAction: string;
+    editAction: string;
+    resetAction: string;
+    searchPlaceholder: string;
+    categoryAll: string;
+    coordsReady: string;
+    coordsMissing: string;
+    formCreateTitle: string;
+    formEditTitle: string;
+    fieldName: string;
+    fieldCategory: string;
+    fieldArea: string;
+    fieldBudget: string;
+    fieldShortDescription: string;
+    fieldOverview: string;
+    fieldVibe: string;
+    fieldAudience: string;
+    fieldLatitude: string;
+    fieldLongitude: string;
+    saveAction: string;
+    cancelAction: string;
+    deleteAction: string;
+    deleteConfirm: string;
+    savedFeedback: string;
+    deletedFeedback: string;
+  };
 };
 
 const en: Dictionary = {
@@ -150,6 +183,7 @@ const en: Dictionary = {
     venues: "Venues",
     favorites: "Favorites",
     map: "Map",
+    admin: "Admin",
     about: "About Us",
     exploreNow: "Explore now",
     languageEn: "EN",
@@ -299,6 +333,39 @@ const en: Dictionary = {
     selectedLabel: "Selected",
     viewDetails: "View details",
   },
+  adminPage: {
+    eyebrow: "Venue management",
+    title: "Admin venue dashboard",
+    subtitle: "Create and edit local venue data for the MVP.",
+    helper:
+      "Changes are stored locally in your browser for now. This structure is ready for backend migration later.",
+    listTitle: "Venue list",
+    createAction: "Create new venue",
+    editAction: "Edit",
+    resetAction: "Reset to mock defaults",
+    searchPlaceholder: "Search venues by name, category, or area",
+    categoryAll: "All categories",
+    coordsReady: "Map coordinates ready",
+    coordsMissing: "Coordinates missing",
+    formCreateTitle: "Create venue",
+    formEditTitle: "Edit venue",
+    fieldName: "Name",
+    fieldCategory: "Category",
+    fieldArea: "Area",
+    fieldBudget: "Budget",
+    fieldShortDescription: "Short description",
+    fieldOverview: "Overview",
+    fieldVibe: "Vibe",
+    fieldAudience: "Audience",
+    fieldLatitude: "Latitude",
+    fieldLongitude: "Longitude",
+    saveAction: "Save venue",
+    cancelAction: "Cancel",
+    deleteAction: "Delete venue",
+    deleteConfirm: "Delete this venue from local admin data?",
+    savedFeedback: "Venue saved locally.",
+    deletedFeedback: "Venue deleted locally.",
+  },
 };
 
 const fr: Dictionary = {
@@ -308,6 +375,7 @@ const fr: Dictionary = {
     venues: "Lieux",
     favorites: "Favoris",
     map: "Carte",
+    admin: "Admin",
     about: "À propos",
     exploreNow: "Explorer",
     languageEn: "EN",
@@ -462,6 +530,39 @@ const fr: Dictionary = {
     showOnMap: "Voir sur la carte",
     selectedLabel: "Sélectionné",
     viewDetails: "Voir les détails",
+  },
+  adminPage: {
+    eyebrow: "Gestion des lieux",
+    title: "Tableau de bord admin des lieux",
+    subtitle: "Créez et modifiez les données locales des lieux pour le MVP.",
+    helper:
+      "Les changements sont stockés localement dans le navigateur pour l'instant. Cette structure est prête pour une migration backend plus tard.",
+    listTitle: "Liste des lieux",
+    createAction: "Créer un nouveau lieu",
+    editAction: "Modifier",
+    resetAction: "Réinitialiser les données mock",
+    searchPlaceholder: "Rechercher par nom, catégorie ou quartier",
+    categoryAll: "Toutes les catégories",
+    coordsReady: "Coordonnées carte prêtes",
+    coordsMissing: "Coordonnées manquantes",
+    formCreateTitle: "Créer un lieu",
+    formEditTitle: "Modifier un lieu",
+    fieldName: "Nom",
+    fieldCategory: "Catégorie",
+    fieldArea: "Quartier",
+    fieldBudget: "Budget",
+    fieldShortDescription: "Description courte",
+    fieldOverview: "Aperçu",
+    fieldVibe: "Ambiance",
+    fieldAudience: "Public",
+    fieldLatitude: "Latitude",
+    fieldLongitude: "Longitude",
+    saveAction: "Enregistrer le lieu",
+    cancelAction: "Annuler",
+    deleteAction: "Supprimer le lieu",
+    deleteConfirm: "Supprimer ce lieu des données admin locales ?",
+    savedFeedback: "Lieu enregistré localement.",
+    deletedFeedback: "Lieu supprimé localement.",
   },
 };
 
