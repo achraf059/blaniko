@@ -126,6 +126,12 @@
   gap: 0.6rem;
 }
 
+.bl-reco-share-feedback {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+  color: #7c4b1e;
+}
+
 .bl-reco-action-primary,
 .bl-reco-action-secondary {
   display: inline-flex;
@@ -212,6 +218,10 @@
   .bl-reco-results-actions {
     grid-template-columns: repeat(2, minmax(0, auto));
     justify-content: end;
+  }
+
+  .bl-reco-results-actions {
+    grid-template-columns: repeat(3, minmax(0, auto));
   }
 
   .bl-reco-option-grid {
