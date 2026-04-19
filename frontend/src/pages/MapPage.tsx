@@ -8,6 +8,24 @@ import { categories, type Venue } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import {
+  discoveryMoodLabel,
+  explainVenueMatch,
+  isDiscoveryMood,
+} from "../utils/discoveryInsights";
+import {
+  energyOptions,
+  filterVenuesBySmartDiscovery,
+  getAreaLabel,
+  getAreaOptions,
+  getBestForLabel,
+  getBestForOptions,
+  getOptionLabel,
+  socialLevelOptions,
+  spaceTypeOptions,
+  timeOfDayOptions,
+} from "../utils/discoveryFilters";
+import { getBestForBadges, getVenuePersonalitySignals } from "../utils/venuePersonality";
 import "./HomePage.css";
 import "./MapPage.css";
 
@@ -19,6 +37,14 @@ type MappedVenue = Venue & {
 };
 
 const MAP_PADDING_PERCENT = 7;
+
+const moodOptions = [
+  { value: "chill", label: discoveryMoodLabel.chill },
+  { value: "social", label: discoveryMoodLabel.social },
+  { value: "active", label: discoveryMoodLabel.active },
+  { value: "romantic", label: discoveryMoodLabel.romantic },
+  { value: "family-friendly", label: discoveryMoodLabel["family-friendly"] },
+];
 
 function toMappedVenues(input: Venue[]): MappedVenue[] {
   return input.filter(
@@ -36,14 +62,29 @@ export default function MapPage() {
 
   const queryFromUrl = searchParams.get("q") ?? "";
   const categoryFromUrl = searchParams.get("category") ?? "";
+  const moodFromUrlRaw = searchParams.get("mood") ?? "";
   const budgetFromUrlRaw = searchParams.get("budget") ?? "all";
+  const areaFromUrl = searchParams.get("area") ?? "";
+  const bestForFromUrl = searchParams.get("bestFor") ?? "";
+  const timeOfDayFromUrl = searchParams.get("time") ?? "";
+  const energyFromUrl = searchParams.get("energy") ?? "";
+  const spaceFromUrl = searchParams.get("space") ?? "";
+  const socialFromUrl = searchParams.get("social") ?? "";
 
   const allowedBudgets = new Set(["all", "$", "$$", "$$$"]);
   const budgetFromUrl = allowedBudgets.has(budgetFromUrlRaw) ? budgetFromUrlRaw : "all";
+  const moodFromUrl = isDiscoveryMood(moodFromUrlRaw) ? moodFromUrlRaw : "";
 
   const [query, setQuery] = useState(queryFromUrl);
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
+  const [selectedMood, setSelectedMood] = useState(moodFromUrl);
   const [selectedBudget, setSelectedBudget] = useState(budgetFromUrl);
+  const [selectedArea, setSelectedArea] = useState(areaFromUrl);
+  const [selectedBestFor, setSelectedBestFor] = useState(bestForFromUrl);
+  const [selectedTimeOfDay, setSelectedTimeOfDay] = useState(timeOfDayFromUrl);
+  const [selectedEnergyLevel, setSelectedEnergyLevel] = useState(energyFromUrl);
+  const [selectedSpaceType, setSelectedSpaceType] = useState(spaceFromUrl);
+  const [selectedSocialLevel, setSelectedSocialLevel] = useState(socialFromUrl);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
   const listRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -67,11 +108,32 @@ export default function MapPage() {
     { value: "$$$", label: dictionary.mapPage.budgetHigh },
   ];
 
-  const buildUrl = (overrides?: { query?: string; category?: string; budget?: string }) => {
+  const areaOptions = useMemo(() => getAreaOptions(venues), [venues]);
+  const bestForOptions = useMemo(() => getBestForOptions(venues), [venues]);
+
+  const buildUrl = (overrides?: {
+    query?: string;
+    category?: string;
+    mood?: string;
+    budget?: string;
+    area?: string;
+    bestFor?: string;
+    timeOfDay?: string;
+    energyLevel?: string;
+    spaceType?: string;
+    socialLevel?: string;
+  }) => {
     const params = new URLSearchParams();
     const nextQuery = overrides?.query ?? query;
     const nextCategory = overrides?.category ?? selectedCategory;
+    const nextMood = overrides?.mood ?? selectedMood;
     const nextBudget = overrides?.budget ?? selectedBudget;
+    const nextArea = overrides?.area ?? selectedArea;
+    const nextBestFor = overrides?.bestFor ?? selectedBestFor;
+    const nextTimeOfDay = overrides?.timeOfDay ?? selectedTimeOfDay;
+    const nextEnergy = overrides?.energyLevel ?? selectedEnergyLevel;
+    const nextSpaceType = overrides?.spaceType ?? selectedSpaceType;
+    const nextSocialLevel = overrides?.socialLevel ?? selectedSocialLevel;
 
     if (nextQuery.trim()) {
       params.set("q", nextQuery.trim());
@@ -81,37 +143,162 @@ export default function MapPage() {
       params.set("category", nextCategory);
     }
 
+    if (nextMood) {
+      params.set("mood", nextMood);
+    }
+
     if (nextBudget !== "all") {
       params.set("budget", nextBudget);
+    }
+
+    if (nextArea) {
+      params.set("area", nextArea);
+    }
+
+    if (nextBestFor) {
+      params.set("bestFor", nextBestFor);
+    }
+
+    if (nextTimeOfDay) {
+      params.set("time", nextTimeOfDay);
+    }
+
+    if (nextEnergy) {
+      params.set("energy", nextEnergy);
+    }
+
+    if (nextSpaceType) {
+      params.set("space", nextSpaceType);
+    }
+
+    if (nextSocialLevel) {
+      params.set("social", nextSocialLevel);
     }
 
     const suffix = params.toString();
     return suffix ? `/map?${suffix}` : "/map";
   };
 
-  const filteredVenues = useMemo(() => {
-    return venues.filter((venue) => {
-      if (query.trim()) {
-        const haystack = [venue.name, venue.category, venue.area, venue.description]
-          .join(" ")
-          .toLowerCase();
+  const selectedMoodValue = isDiscoveryMood(selectedMood) ? selectedMood : undefined;
+  const selectedMoodName = selectedMoodValue ? discoveryMoodLabel[selectedMoodValue] : undefined;
+  const selectedAreaName = selectedArea ? getAreaLabel(selectedArea, areaOptions) : undefined;
+  const selectedBestForName = selectedBestFor ? getBestForLabel(selectedBestFor) : undefined;
+  const selectedTimeOfDayName = selectedTimeOfDay
+    ? getOptionLabel(selectedTimeOfDay, timeOfDayOptions)
+    : undefined;
+  const selectedEnergyName = selectedEnergyLevel
+    ? getOptionLabel(selectedEnergyLevel, energyOptions)
+    : undefined;
+  const selectedSpaceName = selectedSpaceType
+    ? getOptionLabel(selectedSpaceType, spaceTypeOptions)
+    : undefined;
+  const selectedSocialName = selectedSocialLevel
+    ? getOptionLabel(selectedSocialLevel, socialLevelOptions)
+    : undefined;
 
-        if (!haystack.includes(query.trim().toLowerCase())) {
-          return false;
-        }
-      }
+  const activeFilterLabels = [
+    selectedMoodName ? `Mood: ${selectedMoodName}` : "",
+    selectedAreaName ? `Area: ${selectedAreaName}` : "",
+    selectedBestForName ? `Best for: ${selectedBestForName}` : "",
+    selectedTimeOfDayName ? `Time: ${selectedTimeOfDayName}` : "",
+    selectedEnergyName ? `Energy: ${selectedEnergyName}` : "",
+    selectedSpaceName ? `Space: ${selectedSpaceName}` : "",
+    selectedSocialName ? `Vibe: ${selectedSocialName}` : "",
+    selectedBudget !== "all" ? `Budget: ${selectedBudget}` : "",
+  ].filter(Boolean);
 
-      if (selectedCategory && venue.categorySlug !== selectedCategory) {
-        return false;
-      }
+  const mapIntentSummary = useMemo(() => {
+    const subject = selectedCategory
+      ? categories.find((category) => category.slug === selectedCategory)?.name.toLowerCase() ?? "venues"
+      : "venues";
+    const chunks = [selectedMoodName ? `${selectedMoodName.toLowerCase()} ${subject}` : subject];
 
-      if (selectedBudget !== "all" && venue.priceLevel !== selectedBudget) {
-        return false;
-      }
+    if (selectedAreaName) {
+      chunks.push(`in ${selectedAreaName}`);
+    }
 
-      return true;
-    });
-  }, [query, selectedBudget, selectedCategory, venues]);
+    if (selectedBestForName) {
+      chunks.push(`for ${selectedBestForName.toLowerCase()}`);
+    }
+
+    return chunks.join(" ");
+  }, [selectedAreaName, selectedBestForName, selectedCategory, selectedMoodName]);
+
+  const buildVenueHref = (slug: string) => {
+    const params = new URLSearchParams();
+    params.set("from", "map");
+
+    if (selectedCategory) {
+      params.set("category", selectedCategory);
+    }
+
+    if (selectedMood) {
+      params.set("mood", selectedMood);
+    }
+
+    if (selectedBudget) {
+      params.set("budget", selectedBudget);
+    }
+
+    if (selectedArea) {
+      params.set("area", selectedArea);
+    }
+
+    if (selectedBestFor) {
+      params.set("bestFor", selectedBestFor);
+    }
+
+    if (selectedTimeOfDay) {
+      params.set("time", selectedTimeOfDay);
+    }
+
+    if (selectedEnergyLevel) {
+      params.set("energy", selectedEnergyLevel);
+    }
+
+    if (selectedSpaceType) {
+      params.set("space", selectedSpaceType);
+    }
+
+    if (selectedSocialLevel) {
+      params.set("social", selectedSocialLevel);
+    }
+
+    if (query.trim()) {
+      params.set("q", query.trim());
+    }
+
+    return `/venues/${slug}?${params.toString()}`;
+  };
+
+  const filteredVenues = useMemo(
+    () =>
+      filterVenuesBySmartDiscovery(venues, {
+        query,
+        category: selectedCategory,
+        mood: selectedMood,
+        budget: selectedBudget,
+        area: selectedArea,
+        bestFor: selectedBestFor,
+        timeOfDay: selectedTimeOfDay,
+        energyLevel: selectedEnergyLevel,
+        spaceType: selectedSpaceType,
+        socialLevel: selectedSocialLevel,
+      }),
+    [
+      query,
+      selectedCategory,
+      selectedMood,
+      selectedBudget,
+      selectedArea,
+      selectedBestFor,
+      selectedTimeOfDay,
+      selectedEnergyLevel,
+      selectedSpaceType,
+      selectedSocialLevel,
+      venues,
+    ]
+  );
 
   const mapVenues = useMemo(() => toMappedVenues(filteredVenues), [filteredVenues]);
 
@@ -168,9 +355,65 @@ export default function MapPage() {
     navigate(buildUrl({ category: nextCategory }));
   };
 
+  const handleMoodSelect = (mood: string) => {
+    const nextMood = selectedMood === mood ? "" : mood;
+    setSelectedMood(nextMood);
+    navigate(buildUrl({ mood: nextMood }));
+  };
+
   const handleBudgetSelect = (value: string) => {
     setSelectedBudget(value);
     navigate(buildUrl({ budget: value }));
+  };
+
+  const handleAreaSelect = (value: string) => {
+    const nextArea = selectedArea === value ? "" : value;
+    setSelectedArea(nextArea);
+    navigate(buildUrl({ area: nextArea }));
+  };
+
+  const handleBestForSelect = (value: string) => {
+    const nextBestFor = selectedBestFor === value ? "" : value;
+    setSelectedBestFor(nextBestFor);
+    navigate(buildUrl({ bestFor: nextBestFor }));
+  };
+
+  const handleTimeOfDaySelect = (value: string) => {
+    const nextTime = selectedTimeOfDay === value ? "" : value;
+    setSelectedTimeOfDay(nextTime);
+    navigate(buildUrl({ timeOfDay: nextTime }));
+  };
+
+  const handleEnergySelect = (value: string) => {
+    const nextEnergy = selectedEnergyLevel === value ? "" : value;
+    setSelectedEnergyLevel(nextEnergy);
+    navigate(buildUrl({ energyLevel: nextEnergy }));
+  };
+
+  const handleSpaceSelect = (value: string) => {
+    const nextSpace = selectedSpaceType === value ? "" : value;
+    setSelectedSpaceType(nextSpace);
+    navigate(buildUrl({ spaceType: nextSpace }));
+  };
+
+  const handleSocialSelect = (value: string) => {
+    const nextSocial = selectedSocialLevel === value ? "" : value;
+    setSelectedSocialLevel(nextSocial);
+    navigate(buildUrl({ socialLevel: nextSocial }));
+  };
+
+  const clearFilters = () => {
+    setQuery("");
+    setSelectedCategory("");
+    setSelectedMood("");
+    setSelectedBudget("all");
+    setSelectedArea("");
+    setSelectedBestFor("");
+    setSelectedTimeOfDay("");
+    setSelectedEnergyLevel("");
+    setSelectedSpaceType("");
+    setSelectedSocialLevel("");
+    navigate("/map");
   };
 
   const handleSelectVenue = (slug: string, shouldFocusList = false) => {
@@ -193,6 +436,24 @@ export default function MapPage() {
           <p className="bl-map-subtitle">{dictionary.mapPage.subtitle}</p>
           <p className="bl-map-helper">{dictionary.mapPage.helperText}</p>
 
+          {selectedMoodName ? (
+            <p className="bl-map-mood-summary">
+              Map view is filtered for the <strong>{selectedMoodName}</strong> mood.
+            </p>
+          ) : null}
+
+          <p className="bl-map-intent-summary">
+            Viewing <strong>{mapIntentSummary}</strong>
+          </p>
+
+          {activeFilterLabels.length > 0 ? (
+            <div className="bl-map-active-filters">
+              {activeFilterLabels.map((label) => (
+                <span key={label}>{label}</span>
+              ))}
+            </div>
+          ) : null}
+
           <div className="bl-map-controls">
             <SearchBar
               value={query}
@@ -212,6 +473,77 @@ export default function MapPage() {
             </div>
 
             <div>
+              <p className="bl-discovery-label">Mood</p>
+              <FilterChips
+                options={moodOptions}
+                selectedValue={selectedMood || undefined}
+                onSelect={handleMoodSelect}
+              />
+            </div>
+
+            <details className="bl-map-advanced-filters">
+              <summary>More filters</summary>
+
+              {areaOptions.length > 0 ? (
+                <div>
+                  <p className="bl-discovery-label">Area</p>
+                  <FilterChips
+                    options={areaOptions}
+                    selectedValue={selectedArea || undefined}
+                    onSelect={handleAreaSelect}
+                  />
+                </div>
+              ) : null}
+
+              {bestForOptions.length > 0 ? (
+                <div>
+                  <p className="bl-discovery-label">Best for</p>
+                  <FilterChips
+                    options={bestForOptions}
+                    selectedValue={selectedBestFor || undefined}
+                    onSelect={handleBestForSelect}
+                  />
+                </div>
+              ) : null}
+
+              <div>
+                <p className="bl-discovery-label">Best time</p>
+                <FilterChips
+                  options={timeOfDayOptions}
+                  selectedValue={selectedTimeOfDay || undefined}
+                  onSelect={handleTimeOfDaySelect}
+                />
+              </div>
+
+              <div>
+                <p className="bl-discovery-label">Energy</p>
+                <FilterChips
+                  options={energyOptions}
+                  selectedValue={selectedEnergyLevel || undefined}
+                  onSelect={handleEnergySelect}
+                />
+              </div>
+
+              <div>
+                <p className="bl-discovery-label">Space</p>
+                <FilterChips
+                  options={spaceTypeOptions}
+                  selectedValue={selectedSpaceType || undefined}
+                  onSelect={handleSpaceSelect}
+                />
+              </div>
+
+              <div>
+                <p className="bl-discovery-label">Social vibe</p>
+                <FilterChips
+                  options={socialLevelOptions}
+                  selectedValue={selectedSocialLevel || undefined}
+                  onSelect={handleSocialSelect}
+                />
+              </div>
+            </details>
+
+            <div>
               <p className="bl-discovery-label">{dictionary.mapPage.budgetLabel}</p>
               <BudgetSelector
                 options={budgetOptions}
@@ -219,6 +551,10 @@ export default function MapPage() {
                 onSelect={handleBudgetSelect}
               />
             </div>
+
+            <button type="button" className="bl-map-clear-btn" onClick={clearFilters}>
+              Clear all filters
+            </button>
           </div>
         </section>
 
@@ -252,12 +588,24 @@ export default function MapPage() {
             ) : (
               <div className="bl-map-empty">
                 <h3>{dictionary.mapPage.emptyTitle}</h3>
-                <p>{dictionary.mapPage.emptyDescription}</p>
+                <p>
+                  No exact map matches for your current filters. Try a broader area, fewer
+                  personality filters, or reset all filters.
+                </p>
+                <button type="button" className="bl-map-clear-btn" onClick={clearFilters}>
+                  Reset filters
+                </button>
               </div>
             )}
 
             {selectedVenue ? (
               <article className="bl-map-preview">
+                {(() => {
+                  const badges = getBestForBadges(selectedVenue, 3);
+                  const signals = getVenuePersonalitySignals(selectedVenue);
+
+                  return (
+                    <>
                 <div className="bl-map-preview-top">
                   <p className="bl-map-preview-category">{selectedVenue.category}</p>
                   <button
@@ -280,12 +628,38 @@ export default function MapPage() {
                   {selectedVenue.shortDescription ?? selectedVenue.description}
                 </p>
 
+                {badges.length > 0 ? (
+                  <div className="bl-map-badges-list">
+                    {badges.map((badge, index) => (
+                      <span key={`${selectedVenue.slug}-preview-${badge}-${index}`}>{badge}</span>
+                    ))}
+                  </div>
+                ) : null}
+
+                {signals.length > 0 ? <p className="bl-map-signals-line">{signals.join(" • ")}</p> : null}
+
+                <div className="bl-map-why-list">
+                  {explainVenueMatch(selectedVenue, {
+                    query,
+                    category: selectedCategory || undefined,
+                    budget: selectedBudget,
+                    mood: selectedMoodValue,
+                  }).map((chip) => (
+                    <span key={chip} className="bl-map-why-chip">
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+
                 <Link
-                  to={`/venues/${selectedVenue.slug}?from=map`}
+                  to={buildVenueHref(selectedVenue.slug)}
                   className="bl-map-preview-link"
                 >
                   {dictionary.mapPage.viewDetails} →
                 </Link>
+                    </>
+                  );
+                })()}
               </article>
             ) : null}
           </div>
@@ -299,6 +673,7 @@ export default function MapPage() {
             <div className="bl-map-list">
               {mapVenues.map((venue) => {
                 const isActive = activeSlug === venue.slug;
+                const badges = getBestForBadges(venue, 2);
                 return (
                   <div
                     key={venue.slug}
@@ -322,6 +697,27 @@ export default function MapPage() {
                       {venue.shortDescription ?? venue.description}
                     </p>
 
+                    {badges.length > 0 ? (
+                      <div className="bl-map-badges-list">
+                        {badges.map((badge, index) => (
+                          <span key={`${venue.slug}-list-${badge}-${index}`}>{badge}</span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <div className="bl-map-why-list">
+                      {explainVenueMatch(venue, {
+                        query,
+                        category: selectedCategory || undefined,
+                        budget: selectedBudget,
+                        mood: selectedMoodValue,
+                      }).map((chip) => (
+                        <span key={chip} className="bl-map-why-chip">
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+
                     <div className="bl-map-list-item-actions">
                       <button
                         type="button"
@@ -344,7 +740,10 @@ export default function MapPage() {
                           : dictionary.venueCard.saveFavorite}
                       </button>
 
-                      <Link to={`/venues/${venue.slug}?from=map`} className="bl-map-list-link">
+                      <Link
+                        to={buildVenueHref(venue.slug)}
+                        className="bl-map-list-link"
+                      >
                         {dictionary.mapPage.viewDetails}
                       </Link>
                     </div>

@@ -82,6 +82,13 @@ export default function CategoryPage() {
                 name={venue.name}
                 area={venue.area}
                 description={venue.description}
+                 personality={{
+                   bestForTags: venue.bestForTags,
+                   timeOfDay: venue.timeOfDay,
+                   energyLevel: venue.energyLevel,
+                   socialLevel: venue.socialLevel,
+                   spaceType: venue.spaceType,
+                 }}
                 href={`/venues/${venue.slug}?from=category&category=${slug}`}
                 labels={dictionary.venueCard}
               />

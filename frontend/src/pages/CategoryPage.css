@@ -1,7 +1,7 @@
 .bl-category-page {
   min-height: 100vh;
-  background: #ece0cf;
-  color: #0f172a;
+  background: transparent;
+  color: var(--color-text);
   text-align: left;
 }
 
@@ -14,11 +14,11 @@
 }
 
 .bl-category-not-found {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: #fffaf3;
+  background: var(--color-card);
   padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .bl-category-not-found-title {
@@ -26,24 +26,24 @@
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-category-not-found-description {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-category-hero {
   position: relative;
   overflow: hidden;
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  background: var(--gradient-hero);
   padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-section);
 }
 
 .bl-category-hero-glow-right,
@@ -59,7 +59,7 @@
   top: -3.5rem;
   width: 11rem;
   height: 11rem;
-  background: rgba(252, 211, 77, 0.35);
+  background: rgba(184, 168, 232, 0.35);
 }
 
 .bl-category-hero-glow-left {
@@ -67,7 +67,7 @@
   bottom: -5rem;
   width: 9rem;
   height: 9rem;
-  background: rgba(251, 146, 60, 0.25);
+  background: rgba(159, 141, 232, 0.26);
 }
 
 .bl-category-hero-content {
@@ -77,12 +77,12 @@
 .bl-category-back-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #b45309;
+  color: var(--color-primary-dark);
   text-decoration: none;
 }
 
 .bl-category-back-link:hover {
-  color: #92400e;
+  color: var(--color-text);
 }
 
 .bl-category-eyebrow {
@@ -91,7 +91,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(180, 83, 9, 0.8);
+  color: var(--color-primary-dark);
 }
 
 .bl-category-title {
@@ -99,7 +99,7 @@
   font-size: clamp(1.9rem, 4vw, 2.25rem);
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-category-description {
@@ -107,7 +107,7 @@
   max-width: 42rem;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-category-result-pill {
@@ -116,16 +116,16 @@
   align-items: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  border: 1px solid #d1c2ab;
-  background: rgba(255, 250, 243, 0.9);
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 88%, white 12%);
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-category-result-count {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-category-venues-section {
@@ -142,9 +142,15 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid #d8cab6;
-  background: rgba(248, 241, 230, 0.9);
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background-alt) 74%, var(--color-surface-elevated) 26%);
   backdrop-filter: blur(8px);
+}
+
+.bl-home-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .bl-home-nav {
@@ -163,7 +169,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #0f172a;
+  color: var(--color-text);
   text-decoration: none;
 }
 
@@ -172,7 +178,7 @@
   width: 0.625rem;
   height: 0.625rem;
   border-radius: 9999px;
-  background: rgba(245, 158, 11, 0.8);
+  background: var(--color-primary);
 }
 
 .bl-home-brand-text {
@@ -193,30 +199,30 @@
 .bl-home-nav-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #475569;
+  color: var(--color-muted);
   text-decoration: none;
   transition: color 160ms ease;
 }
 
 .bl-home-nav-link:hover {
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-home-explore-btn {
   display: none;
   border-radius: 9999px;
-  border: 1px solid #d8cab6;
-  background: #fffaf2;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
   padding: 0.5rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   text-decoration: none;
   transition: background-color 160ms ease;
 }
 
 .bl-home-explore-btn:hover {
-  background: #f2e7d5;
+  background: var(--color-surface);
 }
 
 /* Reused VenueCard styles */
@@ -226,22 +232,22 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: 1rem;
-  border: 1px solid #d1c2ab;
-  background: #fffaf3;
-  box-shadow: 0 8px 22px -18px rgba(105, 74, 26, 0.42);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .bl-home-venue-card:hover {
   transform: translateY(-2px);
-  border-color: #fcd34d;
-  box-shadow: 0 18px 38px -20px rgba(120, 80, 20, 0.5);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .bl-home-venue-top {
   position: relative;
-  border-bottom: 1px solid #e1d3c1;
-  background: linear-gradient(135deg, #f5e4cd 0%, #efd9bc 52%, #e6c8a0 100%);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--gradient-warm);
   padding: 1rem;
 }
 
@@ -252,7 +258,7 @@
   right: 0;
   bottom: 0;
   height: 2.5rem;
-  background: linear-gradient(to top, rgba(222, 187, 148, 0.3), transparent);
+  background: linear-gradient(to top, rgba(155, 135, 232, 0.24), transparent);
 }
 
 .bl-home-venue-top-content {
@@ -268,14 +274,14 @@
   margin: 0;
   display: inline-flex;
   border-radius: 9999px;
-  border: 1px solid #fde68a;
-  background: rgba(255, 251, 235, 0.9);
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-primary-soft) 65%, white 35%);
   padding: 0.25rem 0.625rem;
   font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #b45309;
+  color: var(--color-primary-dark);
 }
 
 .bl-home-venue-featured {
@@ -283,7 +289,7 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(146, 64, 14, 0.8);
+  color: var(--color-primary-dark);
 }
 
 .bl-home-venue-area-preview {
@@ -292,12 +298,12 @@
   margin-top: 0.75rem;
   display: inline-flex;
   border-radius: 9999px;
-  border: 1px solid #dccfbe;
-  background: rgba(255, 249, 241, 0.9);
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 84%, white 16%);
   padding: 0.25rem 0.625rem;
   font-size: 0.6875rem;
   font-weight: 500;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-home-venue-body {
@@ -312,7 +318,7 @@
   font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-home-venue-area {
@@ -321,7 +327,7 @@
   align-items: center;
   gap: 0.375rem;
   font-size: 0.875rem;
-  color: #475569;
+  color: var(--color-muted);
 }
 
 .bl-home-venue-description {
@@ -329,7 +335,7 @@
   flex: 1;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-home-venue-link {
@@ -339,12 +345,12 @@
   gap: 0.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #b45309;
+  color: var(--color-primary-dark);
   text-decoration: none;
 }
 
 .bl-home-venue-link:hover {
-  color: #92400e;
+  color: var(--color-text);
 }
 
 @media (min-width: 640px) {

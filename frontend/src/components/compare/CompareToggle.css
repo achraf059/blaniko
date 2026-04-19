@@ -1,0 +1,42 @@
+.bl-compare-toggle {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.bl-compare-toggle-btn {
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 0.34rem 0.68rem;
+  cursor: pointer;
+}
+
+.bl-compare-toggle-btn.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.bl-compare-toggle-link {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.bl-compare-toggle-feedback {
+  margin: 0;
+  font-size: 0.73rem;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.bl-compare-toggle.is-compact {
+  margin-top: 0.42rem;
+}

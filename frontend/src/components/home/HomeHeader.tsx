@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useCompare } from "../../hooks/useCompare";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 
 type HomeHeaderProps = {
@@ -17,6 +18,8 @@ type HomeHeaderProps = {
 };
 
 export function HomeHeader({ labels }: HomeHeaderProps) {
+  const { compareCount } = useCompare();
+
   return (
     <header className="bl-home-header">
       <nav className="bl-home-nav">
@@ -42,8 +45,8 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
             </Link>
           </li>
           <li>
-            <Link to="/favorites" className="bl-home-nav-link">
-              {labels.favorites}
+            <Link to="/guides" className="bl-home-nav-link">
+              Guides
             </Link>
           </li>
           <li>
@@ -52,30 +55,23 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
             </Link>
           </li>
           <li>
-            <Link to="/admin" className="bl-home-nav-link">
-              {labels.admin}
+            <Link to="/favorites" className="bl-home-nav-link">
+              {labels.favorites}
             </Link>
           </li>
           <li>
-            <Link to="/" className="bl-home-nav-link">
-              {labels.about}
+            <Link to="/compare" className="bl-home-nav-link">
+              Compare ({compareCount})
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin" className="bl-home-nav-link bl-home-nav-link-admin">
+              {labels.admin}
             </Link>
           </li>
         </ul>
 
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-          <Link to="/favorites" className="bl-home-nav-link">
-            {labels.favorites}
-          </Link>
-
-          <Link to="/map" className="bl-home-nav-link">
-            {labels.map}
-          </Link>
-
-          <Link to="/admin" className="bl-home-nav-link">
-            {labels.admin}
-          </Link>
-
+        <div className="bl-home-header-actions">
           <LanguageSwitcher labelEn={labels.languageEn} labelFr={labels.languageFr} />
 
           <Link to="/#venues" className="bl-home-explore-btn">

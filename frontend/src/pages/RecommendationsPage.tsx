@@ -17,6 +17,12 @@ import {
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import {
+  discoveryMoodLabel,
+  explainVenueMatch,
+  isDiscoveryCompanion,
+  isDiscoveryMood,
+} from "../utils/discoveryInsights";
 import "./HomePage.css";
 import "./RecommendationsPage.css";
 
@@ -209,6 +215,10 @@ export default function RecommendationsPage() {
 
   const topMatches = scoredResults.slice(0, 3);
   const alternatives = scoredResults.slice(3, 8);
+  const selectedMood = isDiscoveryMood(answers.vibe) ? answers.vibe : undefined;
+  const selectedCompanion = isDiscoveryCompanion(answers.companion)
+    ? answers.companion
+    : undefined;
 
   const summary = [
     getLabel("companion", answers.companion),
@@ -218,7 +228,34 @@ export default function RecommendationsPage() {
     getLabel("vibe", answers.vibe),
   ]
     .filter(Boolean)
-    .join(" + ");
+    .join(" • ");
+
+  const buildVenueHref = (slug: string) => {
+    const params = new URLSearchParams();
+    params.set("from", "recommendations");
+
+    if (answers.companion) {
+      params.set("with", answers.companion);
+    }
+
+    if (answers.category) {
+      params.set("category", answers.category);
+    }
+
+    if (answers.budget) {
+      params.set("budget", answers.budget);
+    }
+
+    if (answers.area) {
+      params.set("area", answers.area);
+    }
+
+    if (answers.vibe) {
+      params.set("mood", answers.vibe);
+    }
+
+    return `/venues/${slug}?${params.toString()}`;
+  };
 
   const applyAnswer = (value: string) => {
     setAnswers((previous) => ({ ...previous, [currentQuestion.id]: value }));
@@ -269,6 +306,10 @@ export default function RecommendationsPage() {
       params.set("category", answers.category);
     }
 
+    if (answers.vibe) {
+      params.set("mood", answers.vibe);
+    }
+
     if (answers.budget && answers.budget !== "all") {
       params.set("budget", answers.budget);
     }
@@ -282,6 +323,10 @@ export default function RecommendationsPage() {
 
     if (answers.category) {
       params.set("category", answers.category);
+    }
+
+    if (answers.vibe) {
+      params.set("mood", answers.vibe);
     }
 
     if (answers.budget && answers.budget !== "all") {
@@ -366,14 +411,20 @@ export default function RecommendationsPage() {
         ) : (
           <>
             <ResultsHeader
-              headline="Your best matches in Casablanca"
-              summary={`Best matches for ${summary || "your current preferences"}`}
+              headline="Your most compatible picks"
+              summary={`Built for ${summary || "your current preferences"}`}
               topCount={topMatches.length}
               alternativesCount={alternatives.length}
             />
 
+            {selectedMood ? (
+              <p className="bl-reco-mood-summary">
+                Discovery mode: <strong>{discoveryMoodLabel[selectedMood]}</strong> mood.
+              </p>
+            ) : null}
+
             <section className="bl-reco-results-section">
-              <h2 className="bl-reco-section-title">Top recommendations</h2>
+              <h2 className="bl-reco-section-title">Top matches</h2>
               <div className="bl-home-venues-grid">
                 {topMatches.map(({ venue }) => (
                   <VenueCard
@@ -383,11 +434,27 @@ export default function RecommendationsPage() {
                     name={venue.name}
                     area={venue.area}
                     description={venue.description}
-                    href={`/venues/${venue.slug}?from=recommendations`}
+                    personality={{
+                      bestForTags: venue.bestForTags,
+                      timeOfDay: venue.timeOfDay,
+                      energyLevel: venue.energyLevel,
+                      socialLevel: venue.socialLevel,
+                      spaceType: venue.spaceType,
+                    }}
+                    whyChips={explainVenueMatch(venue, {
+                      category: answers.category || undefined,
+                      budget: answers.budget,
+                      area: answers.area || undefined,
+                      mood: selectedMood,
+                      companion: selectedCompanion,
+                    })}
+                    href={buildVenueHref(venue.slug)}
                     labels={dictionary.venueCard}
                     isFeatured
                     isFavorite={isFavorite(venue.slug)}
                     onToggleFavorite={toggleFavorite}
+                    showCollectionPicker
+                    showCompareToggle
                   />
                 ))}
               </div>
@@ -395,7 +462,7 @@ export default function RecommendationsPage() {
 
             {alternatives.length > 0 ? (
               <section className="bl-reco-results-section">
-                <h2 className="bl-reco-section-title">Alternative picks</h2>
+                <h2 className="bl-reco-section-title">Also worth considering</h2>
                 <div className="bl-home-venues-grid">
                   {alternatives.map(({ venue }) => (
                     <VenueCard
@@ -405,10 +472,26 @@ export default function RecommendationsPage() {
                       name={venue.name}
                       area={venue.area}
                       description={venue.description}
-                      href={`/venues/${venue.slug}?from=recommendations`}
+                      personality={{
+                        bestForTags: venue.bestForTags,
+                        timeOfDay: venue.timeOfDay,
+                        energyLevel: venue.energyLevel,
+                        socialLevel: venue.socialLevel,
+                        spaceType: venue.spaceType,
+                      }}
+                      whyChips={explainVenueMatch(venue, {
+                        category: answers.category || undefined,
+                        budget: answers.budget,
+                        area: answers.area || undefined,
+                        mood: selectedMood,
+                        companion: selectedCompanion,
+                      })}
+                      href={buildVenueHref(venue.slug)}
                       labels={dictionary.venueCard}
                       isFavorite={isFavorite(venue.slug)}
                       onToggleFavorite={toggleFavorite}
+                      showCollectionPicker
+                      showCompareToggle
                     />
                   ))}
                 </div>
@@ -417,7 +500,7 @@ export default function RecommendationsPage() {
 
             <div className="bl-reco-results-actions">
               <button type="button" className="bl-reco-action-secondary" onClick={retakeQuiz}>
-                Retake quiz
+                Retake discovery
               </button>
               <button
                 type="button"
@@ -438,7 +521,14 @@ export default function RecommendationsPage() {
                 className="bl-reco-action-primary"
                 onClick={browseAllResults}
               >
-                Browse all results
+                Open full results
+              </button>
+              <button
+                type="button"
+                className="bl-reco-action-primary"
+                onClick={() => navigate("/plan")}
+              >
+                Plan my outing
               </button>
             </div>
 

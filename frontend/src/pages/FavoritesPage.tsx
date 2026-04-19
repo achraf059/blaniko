@@ -32,6 +32,10 @@ export default function FavoritesPage() {
               <span>{favoritesCount}</span> {dictionary.favoritesPage.savedLabel}
             </p>
 
+            <Link to="/collections" className="bl-favorites-back-link">
+              Open collections
+            </Link>
+
             {favoritesCount > 0 ? (
               <button
                 type="button"
@@ -55,10 +59,19 @@ export default function FavoritesPage() {
                   name={venue.name}
                   area={venue.area}
                   description={venue.description}
+                    personality={{
+                      bestForTags: venue.bestForTags,
+                      timeOfDay: venue.timeOfDay,
+                      energyLevel: venue.energyLevel,
+                      socialLevel: venue.socialLevel,
+                      spaceType: venue.spaceType,
+                    }}
                   href={`/venues/${venue.slug}?from=favorites`}
                   labels={dictionary.venueCard}
                   isFavorite={isFavorite(venue.slug)}
                   onToggleFavorite={toggleFavorite}
+                  showCollectionPicker
+                  showCompareToggle
                 />
               ))}
             </div>

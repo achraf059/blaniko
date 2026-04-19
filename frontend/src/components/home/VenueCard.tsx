@@ -1,4 +1,8 @@
 import { Link } from "react-router";
+import { CollectionPicker } from "../collections/CollectionPicker";
+import { CompareToggle } from "../compare/CompareToggle";
+import { type Venue } from "../../data/mockData";
+import { getBestForBadges, getVenuePersonalitySignals } from "../../utils/venuePersonality";
 
 type VenueCardProps = {
   slug: string;
@@ -6,10 +10,17 @@ type VenueCardProps = {
   name: string;
   area: string;
   description: string;
+  personality?: Pick<
+    Venue,
+    "bestForTags" | "timeOfDay" | "energyLevel" | "socialLevel" | "spaceType"
+  >;
+  whyChips?: string[];
   href?: string;
   isFeatured?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: (slug: string) => void;
+  showCollectionPicker?: boolean;
+  showCompareToggle?: boolean;
   labels?: {
     featured: string;
     viewDetails: string;
@@ -24,10 +35,14 @@ export function VenueCard({
   name,
   area,
   description,
+  personality,
+  whyChips,
   href = "#",
   isFeatured = false,
   isFavorite = false,
   onToggleFavorite,
+  showCollectionPicker = false,
+  showCompareToggle = false,
   labels,
 }: VenueCardProps) {
   const featuredLabel = labels?.featured ?? "Featured";
@@ -35,6 +50,8 @@ export function VenueCard({
   const saveFavoriteLabel = labels?.saveFavorite ?? "Save";
   const removeFavoriteLabel = labels?.removeFavorite ?? "Saved";
   const areaPreview = area.split(",")[0]?.trim() ?? area;
+  const bestForBadges = getBestForBadges({ description, ...personality });
+  const personalitySignals = getVenuePersonalitySignals({ description, ...personality }).slice(0, 3);
 
   return (
     <article className="bl-home-venue-card">
@@ -61,6 +78,10 @@ export function VenueCard({
         </button>
       ) : null}
 
+      {showCollectionPicker ? <CollectionPicker venueSlug={slug} compact /> : null}
+
+      {showCompareToggle ? <CompareToggle venueSlug={slug} compact /> : null}
+
       <div className="bl-home-venue-body">
         <h3 className="bl-home-venue-name">{name}</h3>
 
@@ -70,6 +91,33 @@ export function VenueCard({
         </p>
 
         <p className="bl-home-venue-description">{description}</p>
+
+        {bestForBadges.length > 0 ? (
+          <div className="bl-home-venue-bestfor-list">
+            {bestForBadges.map((badge, index) => (
+              <span key={`${slug}-${badge}-${index}`} className="bl-home-venue-bestfor-chip">
+                {badge}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        {personalitySignals.length > 0 ? (
+          <p className="bl-home-venue-signals">{personalitySignals.join(" • ")}</p>
+        ) : null}
+
+        {whyChips && whyChips.length > 0 ? (
+          <div className="bl-home-venue-why">
+            <p className="bl-home-venue-why-title">Why this place?</p>
+            <div className="bl-home-venue-why-list">
+              {whyChips.map((chip) => (
+                <span key={chip} className="bl-home-venue-why-chip">
+                  {chip}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         <Link to={href} className="bl-home-venue-link">
           {viewDetailsLabel}

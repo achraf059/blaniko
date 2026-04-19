@@ -1,7 +1,7 @@
 .bl-favorites-page {
   min-height: 100vh;
-  background: #ece0cf;
-  color: #0f172a;
+  background: transparent;
+  color: var(--color-text);
 }
 
 .bl-favorites-main {
@@ -13,10 +13,11 @@
 }
 
 .bl-favorites-hero {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  background: var(--gradient-hero);
   padding: 1.4rem;
+  box-shadow: var(--shadow-section);
 }
 
 .bl-favorites-eyebrow {
@@ -25,7 +26,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(180, 83, 9, 0.82);
+  color: var(--color-primary-dark);
 }
 
 .bl-favorites-title {
@@ -37,7 +38,7 @@
 
 .bl-favorites-subtitle {
   margin: 0.55rem 0 0;
-  color: #475569;
+  color: var(--color-muted);
   line-height: 1.6;
 }
 
@@ -53,19 +54,19 @@
 .bl-favorites-count {
   margin: 0;
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--color-muted);
 }
 
 .bl-favorites-count span {
   font-weight: 700;
-  color: #7c2d12;
+  color: var(--color-primary-dark);
 }
 
 .bl-favorites-clear-btn {
   border-radius: 9999px;
-  border: 1px solid #d8cab6;
-  background: #fffaf2;
-  color: #334155;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
   padding: 0.45rem 0.85rem;
   font-size: 0.78rem;
   font-weight: 700;
@@ -74,8 +75,8 @@
 }
 
 .bl-favorites-clear-btn:hover {
-  border-color: #f2b564;
-  color: #7c4b1e;
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
 .bl-favorites-results {
@@ -84,10 +85,11 @@
 
 .bl-favorites-empty {
   margin-top: 1.4rem;
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: #fffaf3;
+  background: color-mix(in srgb, var(--color-card) 86%, var(--color-surface-elevated) 14%);
   padding: 1.4rem;
+  box-shadow: var(--shadow-card);
 }
 
 .bl-favorites-empty-title {
@@ -99,7 +101,7 @@
 
 .bl-favorites-empty-description {
   margin: 0.6rem 0 0;
-  color: #475569;
+  color: var(--color-muted);
   line-height: 1.6;
 }
 
@@ -108,14 +110,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
-  color: #b45309;
+  color: var(--color-primary-dark);
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
 }
 
 .bl-favorites-back-link:hover {
-  color: #92400e;
+  color: var(--color-text);
 }
 
 @media (min-width: 640px) {

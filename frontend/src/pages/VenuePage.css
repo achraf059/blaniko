@@ -1,7 +1,7 @@
 .bl-venue-page {
   min-height: 100vh;
-  background: #ece0cf;
-  color: #0f172a;
+  background: transparent;
+  color: var(--color-text);
   text-align: left;
 }
 
@@ -14,11 +14,11 @@
 }
 
 .bl-venue-not-found {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: #fffaf3;
+  background: var(--color-card);
   padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .bl-venue-not-found-title {
@@ -26,35 +26,35 @@
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-venue-not-found-description {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-venue-back-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #b45309;
+  color: var(--color-primary-dark);
   text-decoration: none;
 }
 
 .bl-venue-back-link:hover {
-  color: #92400e;
+  color: var(--color-text);
 }
 
 .bl-venue-hero {
   position: relative;
   overflow: hidden;
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  background: var(--gradient-hero);
   padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-section);
 }
 
 .bl-venue-hero-glow-right,
@@ -70,7 +70,7 @@
   top: -3rem;
   width: 11rem;
   height: 11rem;
-  background: rgba(252, 211, 77, 0.35);
+  background: rgba(184, 168, 232, 0.35);
 }
 
 .bl-venue-hero-glow-left {
@@ -78,7 +78,7 @@
   bottom: -5rem;
   width: 10rem;
   height: 10rem;
-  background: rgba(251, 146, 60, 0.25);
+  background: rgba(159, 141, 232, 0.26);
 }
 
 .bl-venue-hero-grid {
@@ -91,14 +91,14 @@
   margin: 1rem 0 0;
   display: inline-flex;
   border-radius: 9999px;
-  border: 1px solid #fde68a;
-  background: #fffbeb;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-primary-soft) 66%, white 34%);
   padding: 0.25rem 0.625rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #b45309;
+  color: var(--color-primary-dark);
 }
 
 .bl-venue-title {
@@ -107,13 +107,13 @@
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-venue-area-line {
   margin: 0.75rem 0 0;
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-venue-area-line span {
@@ -125,7 +125,37 @@
   max-width: 48rem;
   font-size: 0.875rem;
   line-height: 1.75;
-  color: #334155;
+  color: var(--color-muted);
+}
+
+.bl-venue-why-card {
+  margin-top: 0.9rem;
+}
+
+.bl-venue-why-title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-dark);
+}
+
+.bl-venue-why-list {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.bl-venue-why-chip {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-primary-soft) 42%, white 58%);
+  padding: 0.2rem 0.52rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
 }
 
 .bl-venue-favorite-btn {
@@ -134,9 +164,9 @@
   align-items: center;
   gap: 0.4rem;
   border-radius: 9999px;
-  border: 1px solid #d8cab6;
-  background: #fffaf2;
-  color: #475569;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-muted);
   padding: 0.45rem 0.85rem;
   font-size: 0.8rem;
   font-weight: 600;
@@ -145,28 +175,28 @@
 }
 
 .bl-venue-favorite-btn:hover {
-  border-color: #f2b564;
-  color: #7c4b1e;
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
 .bl-venue-favorite-btn.is-active {
-  border-color: #d97706;
-  background: #fbe8ca;
-  color: #7c2d12;
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }
 
 .bl-venue-side-panel {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1rem;
-  background: rgba(255, 250, 243, 0.9);
+  background: color-mix(in srgb, var(--color-surface-elevated) 68%, var(--color-surface) 32%);
   padding: 1rem;
 }
 
 .bl-venue-side-panel-image {
   height: 7rem;
   border-radius: 0.75rem;
-  border: 1px solid #d7c9b6;
-  background: linear-gradient(135deg, #f6e8d3 0%, #f3dfc3 52%, #ecd4b3 100%);
+  border: 1px solid var(--color-border);
+  background: var(--gradient-warm);
 }
 
 .bl-venue-side-panel-eyebrow {
@@ -175,13 +205,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(146, 64, 14, 0.8);
+  color: var(--color-primary-dark);
 }
 
 .bl-venue-side-panel-subtitle {
   margin: 0.25rem 0 0;
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .bl-venue-content-grid {
@@ -191,11 +221,11 @@
 }
 
 .bl-venue-overview-card {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: #fffaf3;
+  background: var(--color-card);
   padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .bl-venue-overview-title {
@@ -203,7 +233,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .bl-venue-overview-text {
@@ -211,7 +241,21 @@
   max-width: 64rem;
   font-size: 0.875rem;
   line-height: 1.75;
-  color: #334155;
+  color: var(--color-muted);
+}
+
+.bl-venue-personality-card {
+  background: color-mix(in srgb, var(--color-card) 88%, var(--color-surface-elevated) 12%);
+}
+
+.bl-venue-personality-summary {
+  margin-top: 0.75rem;
+}
+
+.bl-venue-personality-atmosphere {
+  margin: 0.45rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
 }
 
 .bl-venue-meta-grid {
@@ -220,9 +264,9 @@
 }
 
 .bl-venue-meta-card {
-  border: 1px solid #d9cebe;
+  border: 1px solid var(--color-border);
   border-radius: 1rem;
-  background: #f8f2e8;
+  background: var(--color-surface);
   padding: 1rem;
 }
 
@@ -232,14 +276,89 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .bl-venue-meta-value {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--color-text);
+}
+
+.bl-venue-similar-section {
+  margin-top: 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+  background: color-mix(in srgb, var(--color-surface-elevated) 72%, var(--color-surface) 28%);
+  padding: 1.35rem;
+  box-shadow: var(--shadow-card);
+}
+
+.bl-venue-similar-head p {
+  margin: 0.45rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.bl-venue-similar-grid {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.bl-venue-similar-card {
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-card);
+  padding: 0.95rem;
+}
+
+.bl-venue-similar-category {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+}
+
+.bl-venue-similar-name {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+}
+
+.bl-venue-similar-area,
+.bl-venue-similar-description {
+  margin: 0.45rem 0 0;
+  font-size: 0.84rem;
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+.bl-venue-similar-reasons {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.bl-venue-similar-reasons span {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-primary-soft) 42%, white 58%);
+  padding: 0.18rem 0.5rem;
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.bl-venue-similar-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 /* Reused HomeHeader styles */
@@ -247,9 +366,17 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid #d8cab6;
-  background: rgba(248, 241, 230, 0.9);
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background-alt) 74%, var(--color-surface-elevated) 26%);
   backdrop-filter: blur(8px);
+}
+
+.bl-home-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .bl-home-nav {
@@ -259,7 +386,8 @@
   width: 100%;
   max-width: 72rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 0.95rem;
   padding: 0 1.25rem;
   box-sizing: border-box;
 }
@@ -268,7 +396,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #0f172a;
+  color: var(--color-text);
   text-decoration: none;
 }
 
@@ -277,7 +405,7 @@
   width: 0.625rem;
   height: 0.625rem;
   border-radius: 9999px;
-  background: rgba(245, 158, 11, 0.8);
+  background: var(--color-primary);
 }
 
 .bl-home-brand-text {
@@ -289,39 +417,47 @@
 .bl-home-nav-links {
   display: none;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1.1rem;
   padding: 0;
   margin: 0;
   list-style: none;
+  margin-left: 1.2rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .bl-home-nav-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #475569;
+  color: var(--color-muted);
   text-decoration: none;
   transition: color 160ms ease;
+  white-space: nowrap;
 }
 
 .bl-home-nav-link:hover {
-  color: #0f172a;
+  color: var(--color-text);
+}
+
+.bl-home-nav-link-admin {
+  opacity: 0.85;
 }
 
 .bl-home-explore-btn {
   display: none;
   border-radius: 9999px;
-  border: 1px solid #d8cab6;
-  background: #fffaf2;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
   padding: 0.5rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   text-decoration: none;
   transition: background-color 160ms ease;
 }
 
 .bl-home-explore-btn:hover {
-  background: #f2e7d5;
+  background: var(--color-surface);
 }
 
 @media (min-width: 640px) {
@@ -348,6 +484,7 @@
 
   .bl-home-nav-links {
     display: flex;
+    gap: 1.2rem;
   }
 
   .bl-venue-short-description,
@@ -367,5 +504,9 @@
   .bl-venue-content-grid {
     grid-template-columns: 1.2fr 0.8fr;
     gap: 1.25rem;
+  }
+
+  .bl-venue-similar-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
