@@ -8,7 +8,10 @@ type CollectionPickerProps = {
   compact?: boolean;
 };
 
-export function CollectionPicker({ venueSlug, compact = false }: CollectionPickerProps) {
+export function CollectionPicker({
+  venueSlug,
+  compact = false,
+}: CollectionPickerProps) {
   const {
     collections,
     createCollection,
@@ -20,7 +23,9 @@ export function CollectionPicker({ venueSlug, compact = false }: CollectionPicke
   const [feedback, setFeedback] = useState<string>("");
 
   const count = useMemo(() => {
-    return collections.filter((collection) => collection.venueSlugs.includes(venueSlug)).length;
+    return collections.filter((collection) =>
+      collection.venueSlugs.includes(venueSlug),
+    ).length;
   }, [collections, venueSlug]);
 
   const handleCreate = (event: FormEvent<HTMLFormElement>) => {
@@ -40,7 +45,11 @@ export function CollectionPicker({ venueSlug, compact = false }: CollectionPicke
     <details className={`bl-collection-picker${compact ? " is-compact" : ""}`}>
       <summary className="bl-collection-picker-summary">
         <span aria-hidden="true">🗂</span>
-        <span>{count > 0 ? `In ${count} list${count > 1 ? "s" : ""}` : "Add to list"}</span>
+        <span>
+          {count > 0
+            ? `In ${count} list${count > 1 ? "s" : ""}`
+            : "Add to list"}
+        </span>
       </summary>
 
       <div className="bl-collection-picker-panel">
@@ -50,7 +59,10 @@ export function CollectionPicker({ venueSlug, compact = false }: CollectionPicke
               const isSelected = isVenueInCollection(collection.id, venueSlug);
 
               return (
-                <label key={collection.id} className="bl-collection-picker-item">
+                <label
+                  key={collection.id}
+                  className="bl-collection-picker-item"
+                >
                   <input
                     type="checkbox"
                     checked={isSelected}
@@ -69,7 +81,9 @@ export function CollectionPicker({ venueSlug, compact = false }: CollectionPicke
             })}
           </div>
         ) : (
-          <p className="bl-collection-picker-empty">No lists yet. Create your first one.</p>
+          <p className="bl-collection-picker-empty">
+            No lists yet. Create your first one.
+          </p>
         )}
 
         <form className="bl-collection-picker-create" onSubmit={handleCreate}>
@@ -82,7 +96,9 @@ export function CollectionPicker({ venueSlug, compact = false }: CollectionPicke
           <button type="submit">Create + add</button>
         </form>
 
-        {feedback ? <p className="bl-collection-picker-feedback">{feedback}</p> : null}
+        {feedback ? (
+          <p className="bl-collection-picker-feedback">{feedback}</p>
+        ) : null}
       </div>
     </details>
   );

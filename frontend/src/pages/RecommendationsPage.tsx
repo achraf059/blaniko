@@ -96,7 +96,9 @@ export default function RecommendationsPage() {
   const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [shareFeedback, setShareFeedback] = useState<"idle" | "copied" | "failed">("idle");
+  const [shareFeedback, setShareFeedback] = useState<
+    "idle" | "copied" | "failed"
+  >("idle");
 
   const questions = QUESTIONS;
 
@@ -106,9 +108,9 @@ export default function RecommendationsPage() {
         questions.map((question) => ({
           id: question.id,
           options: question.options.map((option) => ({ value: option.value })),
-        }))
+        })),
       ),
-    [questions]
+    [questions],
   );
 
   const initialRecommendationState = useMemo(
@@ -119,12 +121,18 @@ export default function RecommendationsPage() {
         totalSteps: questions.length,
         allowedValues: allowedAnswerValues,
       }),
-    [allowedAnswerValues, questions, searchParams]
+    [allowedAnswerValues, questions, searchParams],
   );
 
-  const [stepIndex, setStepIndex] = useState(initialRecommendationState.stepIndex);
-  const [isComplete, setIsComplete] = useState(initialRecommendationState.isComplete);
-  const [answers, setAnswers] = useState<QuizAnswers>(initialRecommendationState.answers);
+  const [stepIndex, setStepIndex] = useState(
+    initialRecommendationState.stepIndex,
+  );
+  const [isComplete, setIsComplete] = useState(
+    initialRecommendationState.isComplete,
+  );
+  const [answers, setAnswers] = useState<QuizAnswers>(
+    initialRecommendationState.answers,
+  );
 
   const currentQuestion = questions[stepIndex];
   const currentValue = answers[currentQuestion.id];
@@ -154,7 +162,13 @@ export default function RecommendationsPage() {
   const scoredResults = useMemo(() => {
     const companionKeywords: Record<string, string[]> = {
       alone: ["solo", "freelancer", "remote", "professional", "general"],
-      friends: ["friends", "groups", "students", "young professionals", "gamers"],
+      friends: [
+        "friends",
+        "groups",
+        "students",
+        "young professionals",
+        "gamers",
+      ],
       family: ["family", "parents", "children", "kid"],
       partner: ["couples", "romantic", "intimate", "date"],
     };
@@ -191,17 +205,18 @@ export default function RecommendationsPage() {
         const audienceText = (venue.audience ?? "").toLowerCase();
         if (answers.companion) {
           const match = companionKeywords[answers.companion]?.some((keyword) =>
-            audienceText.includes(keyword)
+            audienceText.includes(keyword),
           );
           if (match) {
             score += 2;
           }
         }
 
-        const vibeText = `${venue.vibe ?? ""} ${venue.description}`.toLowerCase();
+        const vibeText =
+          `${venue.vibe ?? ""} ${venue.description}`.toLowerCase();
         if (answers.vibe) {
           const match = vibeKeywords[answers.vibe]?.some((keyword) =>
-            vibeText.includes(keyword)
+            vibeText.includes(keyword),
           );
           if (match) {
             score += 2;
@@ -376,11 +391,20 @@ export default function RecommendationsPage() {
       <main className="bl-reco-main">
         {!isComplete ? (
           <section className="bl-reco-card">
-            <p className="bl-reco-eyebrow">{dictionary.recommendationsPage.eyebrow}</p>
-            <h1 className="bl-reco-title">{dictionary.recommendationsPage.title}</h1>
-            <p className="bl-reco-subtitle">{dictionary.recommendationsPage.subtitle}</p>
+            <p className="bl-reco-eyebrow">
+              {dictionary.recommendationsPage.eyebrow}
+            </p>
+            <h1 className="bl-reco-title">
+              {dictionary.recommendationsPage.title}
+            </h1>
+            <p className="bl-reco-subtitle">
+              {dictionary.recommendationsPage.subtitle}
+            </p>
 
-            <ProgressBar currentStep={stepIndex + 1} totalSteps={questions.length} />
+            <ProgressBar
+              currentStep={stepIndex + 1}
+              totalSteps={questions.length}
+            />
 
             <QuizStep
               title={currentQuestion.title}
@@ -404,7 +428,9 @@ export default function RecommendationsPage() {
                 onClick={nextStep}
                 disabled={!currentValue}
               >
-                {stepIndex === questions.length - 1 ? "See recommendations" : "Next"}
+                {stepIndex === questions.length - 1
+                  ? "See recommendations"
+                  : "Next"}
               </button>
             </div>
           </section>
@@ -419,7 +445,8 @@ export default function RecommendationsPage() {
 
             {selectedMood ? (
               <p className="bl-reco-mood-summary">
-                Discovery mode: <strong>{discoveryMoodLabel[selectedMood]}</strong> mood.
+                Discovery mode:{" "}
+                <strong>{discoveryMoodLabel[selectedMood]}</strong> mood.
               </p>
             ) : null}
 
@@ -462,7 +489,9 @@ export default function RecommendationsPage() {
 
             {alternatives.length > 0 ? (
               <section className="bl-reco-results-section">
-                <h2 className="bl-reco-section-title">Also worth considering</h2>
+                <h2 className="bl-reco-section-title">
+                  Also worth considering
+                </h2>
                 <div className="bl-home-venues-grid">
                   {alternatives.map(({ venue }) => (
                     <VenueCard
@@ -499,7 +528,11 @@ export default function RecommendationsPage() {
             ) : null}
 
             <div className="bl-reco-results-actions">
-              <button type="button" className="bl-reco-action-secondary" onClick={retakeQuiz}>
+              <button
+                type="button"
+                className="bl-reco-action-secondary"
+                onClick={retakeQuiz}
+              >
                 Retake discovery
               </button>
               <button
@@ -533,7 +566,11 @@ export default function RecommendationsPage() {
             </div>
 
             {shareFeedback !== "idle" ? (
-              <p className="bl-reco-share-feedback" role="status" aria-live="polite">
+              <p
+                className="bl-reco-share-feedback"
+                role="status"
+                aria-live="polite"
+              >
                 {shareFeedback === "copied"
                   ? "Share link copied to your clipboard."
                   : "Could not copy automatically. Please copy the URL from your browser."}

@@ -10,7 +10,11 @@ export function LanguageSwitcher({ labelEn, labelFr }: LanguageSwitcherProps) {
   const { language, setLanguage } = useI18n();
 
   return (
-    <div role="group" aria-label="Language selector" className="bl-language-switcher">
+    <div
+      role="group"
+      aria-label="Language selector"
+      className="bl-language-switcher"
+    >
       <button
         type="button"
         onClick={() => setLanguage("en")}

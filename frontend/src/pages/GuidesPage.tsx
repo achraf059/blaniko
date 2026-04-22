@@ -22,14 +22,17 @@ export default function GuidesPage() {
           <p className="bl-guides-eyebrow">Blaniko picks</p>
           <h1 className="bl-guides-title">Curated city guides</h1>
           <p className="bl-guides-subtitle">
-            Local-first collections built to help you choose faster: date plans, budget picks,
-            coworking cafés, sunset routes, and social nights.
+            Local-first collections built to help you choose faster: date plans,
+            budget picks, coworking cafés, sunset routes, and social nights.
           </p>
         </section>
 
         <section className="bl-guides-grid">
           {editorialCollections.map((collection) => {
-            const matchedVenues = resolveEditorialCollectionVenues(collection, venues);
+            const matchedVenues = resolveEditorialCollectionVenues(
+              collection,
+              venues,
+            );
 
             return (
               <article key={collection.id} className="bl-guides-card">
@@ -39,7 +42,9 @@ export default function GuidesPage() {
                 </div>
 
                 <p className="bl-guides-card-subtitle">{collection.subtitle}</p>
-                <p className="bl-guides-card-description">{collection.description}</p>
+                <p className="bl-guides-card-description">
+                  {collection.description}
+                </p>
 
                 {collection.explanationChips?.length ? (
                   <div className="bl-guides-card-chips">

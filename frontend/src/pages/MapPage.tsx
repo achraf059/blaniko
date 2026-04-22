@@ -25,7 +25,10 @@ import {
   spaceTypeOptions,
   timeOfDayOptions,
 } from "../utils/discoveryFilters";
-import { getBestForBadges, getVenuePersonalitySignals } from "../utils/venuePersonality";
+import {
+  getBestForBadges,
+  getVenuePersonalitySignals,
+} from "../utils/venuePersonality";
 import "./HomePage.css";
 import "./MapPage.css";
 
@@ -49,7 +52,8 @@ const moodOptions = [
 function toMappedVenues(input: Venue[]): MappedVenue[] {
   return input.filter(
     (venue): venue is MappedVenue =>
-      typeof venue.coordinates?.lat === "number" && typeof venue.coordinates?.lng === "number"
+      typeof venue.coordinates?.lat === "number" &&
+      typeof venue.coordinates?.lng === "number",
   );
 }
 
@@ -72,7 +76,9 @@ export default function MapPage() {
   const socialFromUrl = searchParams.get("social") ?? "";
 
   const allowedBudgets = new Set(["all", "$", "$$", "$$$"]);
-  const budgetFromUrl = allowedBudgets.has(budgetFromUrlRaw) ? budgetFromUrlRaw : "all";
+  const budgetFromUrl = allowedBudgets.has(budgetFromUrlRaw)
+    ? budgetFromUrlRaw
+    : "all";
   const moodFromUrl = isDiscoveryMood(moodFromUrlRaw) ? moodFromUrlRaw : "";
 
   const [query, setQuery] = useState(queryFromUrl);
@@ -93,12 +99,17 @@ export default function MapPage() {
     () =>
       categories
         .filter((category) =>
-          ["cafes", "restaurants", "activities", "sports", "gaming", "outdoor"].includes(
-            category.slug
-          )
+          [
+            "cafes",
+            "restaurants",
+            "activities",
+            "sports",
+            "gaming",
+            "outdoor",
+          ].includes(category.slug),
         )
         .map((category) => ({ value: category.slug, label: category.name })),
-    []
+    [],
   );
 
   const budgetOptions = [
@@ -179,10 +190,18 @@ export default function MapPage() {
     return suffix ? `/map?${suffix}` : "/map";
   };
 
-  const selectedMoodValue = isDiscoveryMood(selectedMood) ? selectedMood : undefined;
-  const selectedMoodName = selectedMoodValue ? discoveryMoodLabel[selectedMoodValue] : undefined;
-  const selectedAreaName = selectedArea ? getAreaLabel(selectedArea, areaOptions) : undefined;
-  const selectedBestForName = selectedBestFor ? getBestForLabel(selectedBestFor) : undefined;
+  const selectedMoodValue = isDiscoveryMood(selectedMood)
+    ? selectedMood
+    : undefined;
+  const selectedMoodName = selectedMoodValue
+    ? discoveryMoodLabel[selectedMoodValue]
+    : undefined;
+  const selectedAreaName = selectedArea
+    ? getAreaLabel(selectedArea, areaOptions)
+    : undefined;
+  const selectedBestForName = selectedBestFor
+    ? getBestForLabel(selectedBestFor)
+    : undefined;
   const selectedTimeOfDayName = selectedTimeOfDay
     ? getOptionLabel(selectedTimeOfDay, timeOfDayOptions)
     : undefined;
@@ -209,9 +228,15 @@ export default function MapPage() {
 
   const mapIntentSummary = useMemo(() => {
     const subject = selectedCategory
-      ? categories.find((category) => category.slug === selectedCategory)?.name.toLowerCase() ?? "venues"
+      ? (categories
+          .find((category) => category.slug === selectedCategory)
+          ?.name.toLowerCase() ?? "venues")
       : "venues";
-    const chunks = [selectedMoodName ? `${selectedMoodName.toLowerCase()} ${subject}` : subject];
+    const chunks = [
+      selectedMoodName
+        ? `${selectedMoodName.toLowerCase()} ${subject}`
+        : subject,
+    ];
 
     if (selectedAreaName) {
       chunks.push(`in ${selectedAreaName}`);
@@ -222,7 +247,12 @@ export default function MapPage() {
     }
 
     return chunks.join(" ");
-  }, [selectedAreaName, selectedBestForName, selectedCategory, selectedMoodName]);
+  }, [
+    selectedAreaName,
+    selectedBestForName,
+    selectedCategory,
+    selectedMoodName,
+  ]);
 
   const buildVenueHref = (slug: string) => {
     const params = new URLSearchParams();
@@ -297,17 +327,21 @@ export default function MapPage() {
       selectedSpaceType,
       selectedSocialLevel,
       venues,
-    ]
+    ],
   );
 
-  const mapVenues = useMemo(() => toMappedVenues(filteredVenues), [filteredVenues]);
+  const mapVenues = useMemo(
+    () => toMappedVenues(filteredVenues),
+    [filteredVenues],
+  );
 
   const activeSlug =
     selectedSlug && mapVenues.some((venue) => venue.slug === selectedSlug)
       ? selectedSlug
-      : mapVenues[0]?.slug ?? null;
+      : (mapVenues[0]?.slug ?? null);
 
-  const selectedVenue = mapVenues.find((venue) => venue.slug === activeSlug) ?? null;
+  const selectedVenue =
+    mapVenues.find((venue) => venue.slug === activeSlug) ?? null;
 
   const coordinatesBounds = useMemo(() => {
     if (mapVenues.length === 0) {
@@ -330,8 +364,14 @@ export default function MapPage() {
       return { left: "50%", top: "50%" };
     }
 
-    const latRange = Math.max(coordinatesBounds.maxLat - coordinatesBounds.minLat, 0.0001);
-    const lngRange = Math.max(coordinatesBounds.maxLng - coordinatesBounds.minLng, 0.0001);
+    const latRange = Math.max(
+      coordinatesBounds.maxLat - coordinatesBounds.minLat,
+      0.0001,
+    );
+    const lngRange = Math.max(
+      coordinatesBounds.maxLng - coordinatesBounds.minLng,
+      0.0001,
+    );
 
     const x = (venue.coordinates.lng - coordinatesBounds.minLng) / lngRange;
     const y = (coordinatesBounds.maxLat - venue.coordinates.lat) / latRange;
@@ -438,7 +478,8 @@ export default function MapPage() {
 
           {selectedMoodName ? (
             <p className="bl-map-mood-summary">
-              Map view is filtered for the <strong>{selectedMoodName}</strong> mood.
+              Map view is filtered for the <strong>{selectedMoodName}</strong>{" "}
+              mood.
             </p>
           ) : null}
 
@@ -464,7 +505,9 @@ export default function MapPage() {
             />
 
             <div>
-              <p className="bl-discovery-label">{dictionary.mapPage.quickFiltersLabel}</p>
+              <p className="bl-discovery-label">
+                {dictionary.mapPage.quickFiltersLabel}
+              </p>
               <FilterChips
                 options={quickFilters}
                 selectedValue={selectedCategory || undefined}
@@ -544,7 +587,9 @@ export default function MapPage() {
             </details>
 
             <div>
-              <p className="bl-discovery-label">{dictionary.mapPage.budgetLabel}</p>
+              <p className="bl-discovery-label">
+                {dictionary.mapPage.budgetLabel}
+              </p>
               <BudgetSelector
                 options={budgetOptions}
                 selectedValue={selectedBudget}
@@ -552,7 +597,11 @@ export default function MapPage() {
               />
             </div>
 
-            <button type="button" className="bl-map-clear-btn" onClick={clearFilters}>
+            <button
+              type="button"
+              className="bl-map-clear-btn"
+              onClick={clearFilters}
+            >
               Clear all filters
             </button>
           </div>
@@ -566,7 +615,11 @@ export default function MapPage() {
             </div>
 
             {mapVenues.length > 0 ? (
-              <div className="bl-map-canvas" role="application" aria-label={dictionary.mapPage.mapTitle}>
+              <div
+                className="bl-map-canvas"
+                role="application"
+                aria-label={dictionary.mapPage.mapTitle}
+              >
                 <div className="bl-map-watermark">Casablanca</div>
 
                 {mapVenues.map((venue) => {
@@ -589,10 +642,14 @@ export default function MapPage() {
               <div className="bl-map-empty">
                 <h3>{dictionary.mapPage.emptyTitle}</h3>
                 <p>
-                  No exact map matches for your current filters. Try a broader area, fewer
-                  personality filters, or reset all filters.
+                  No exact map matches for your current filters. Try a broader
+                  area, fewer personality filters, or reset all filters.
                 </p>
-                <button type="button" className="bl-map-clear-btn" onClick={clearFilters}>
+                <button
+                  type="button"
+                  className="bl-map-clear-btn"
+                  onClick={clearFilters}
+                >
                   Reset filters
                 </button>
               </div>
@@ -606,57 +663,72 @@ export default function MapPage() {
 
                   return (
                     <>
-                <div className="bl-map-preview-top">
-                  <p className="bl-map-preview-category">{selectedVenue.category}</p>
-                  <button
-                    type="button"
-                    className={`bl-map-preview-favorite${
-                      isFavorite(selectedVenue.slug) ? " is-active" : ""
-                    }`}
-                    onClick={() => toggleFavorite(selectedVenue.slug)}
-                    aria-pressed={isFavorite(selectedVenue.slug)}
-                  >
-                    {isFavorite(selectedVenue.slug)
-                      ? dictionary.venueCard.removeFavorite
-                      : dictionary.venueCard.saveFavorite}
-                  </button>
-                </div>
+                      <div className="bl-map-preview-top">
+                        <p className="bl-map-preview-category">
+                          {selectedVenue.category}
+                        </p>
+                        <button
+                          type="button"
+                          className={`bl-map-preview-favorite${
+                            isFavorite(selectedVenue.slug) ? " is-active" : ""
+                          }`}
+                          onClick={() => toggleFavorite(selectedVenue.slug)}
+                          aria-pressed={isFavorite(selectedVenue.slug)}
+                        >
+                          {isFavorite(selectedVenue.slug)
+                            ? dictionary.venueCard.removeFavorite
+                            : dictionary.venueCard.saveFavorite}
+                        </button>
+                      </div>
 
-                <h3 className="bl-map-preview-name">{selectedVenue.name}</h3>
-                <p className="bl-map-preview-area">📍 {selectedVenue.area}</p>
-                <p className="bl-map-preview-description">
-                  {selectedVenue.shortDescription ?? selectedVenue.description}
-                </p>
+                      <h3 className="bl-map-preview-name">
+                        {selectedVenue.name}
+                      </h3>
+                      <p className="bl-map-preview-area">
+                        📍 {selectedVenue.area}
+                      </p>
+                      <p className="bl-map-preview-description">
+                        {selectedVenue.shortDescription ??
+                          selectedVenue.description}
+                      </p>
 
-                {badges.length > 0 ? (
-                  <div className="bl-map-badges-list">
-                    {badges.map((badge, index) => (
-                      <span key={`${selectedVenue.slug}-preview-${badge}-${index}`}>{badge}</span>
-                    ))}
-                  </div>
-                ) : null}
+                      {badges.length > 0 ? (
+                        <div className="bl-map-badges-list">
+                          {badges.map((badge, index) => (
+                            <span
+                              key={`${selectedVenue.slug}-preview-${badge}-${index}`}
+                            >
+                              {badge}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
 
-                {signals.length > 0 ? <p className="bl-map-signals-line">{signals.join(" • ")}</p> : null}
+                      {signals.length > 0 ? (
+                        <p className="bl-map-signals-line">
+                          {signals.join(" • ")}
+                        </p>
+                      ) : null}
 
-                <div className="bl-map-why-list">
-                  {explainVenueMatch(selectedVenue, {
-                    query,
-                    category: selectedCategory || undefined,
-                    budget: selectedBudget,
-                    mood: selectedMoodValue,
-                  }).map((chip) => (
-                    <span key={chip} className="bl-map-why-chip">
-                      {chip}
-                    </span>
-                  ))}
-                </div>
+                      <div className="bl-map-why-list">
+                        {explainVenueMatch(selectedVenue, {
+                          query,
+                          category: selectedCategory || undefined,
+                          budget: selectedBudget,
+                          mood: selectedMoodValue,
+                        }).map((chip) => (
+                          <span key={chip} className="bl-map-why-chip">
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
 
-                <Link
-                  to={buildVenueHref(selectedVenue.slug)}
-                  className="bl-map-preview-link"
-                >
-                  {dictionary.mapPage.viewDetails} →
-                </Link>
+                      <Link
+                        to={buildVenueHref(selectedVenue.slug)}
+                        className="bl-map-preview-link"
+                      >
+                        {dictionary.mapPage.viewDetails} →
+                      </Link>
                     </>
                   );
                 })()}
@@ -683,7 +755,9 @@ export default function MapPage() {
                     className={`bl-map-list-item${isActive ? " is-active" : ""}`}
                   >
                     <div className="bl-map-list-item-top">
-                      <p className="bl-map-list-item-category">{venue.category}</p>
+                      <p className="bl-map-list-item-category">
+                        {venue.category}
+                      </p>
                       {isActive ? (
                         <span className="bl-map-list-item-selected">
                           {dictionary.mapPage.selectedLabel}
@@ -700,7 +774,9 @@ export default function MapPage() {
                     {badges.length > 0 ? (
                       <div className="bl-map-badges-list">
                         {badges.map((badge, index) => (
-                          <span key={`${venue.slug}-list-${badge}-${index}`}>{badge}</span>
+                          <span key={`${venue.slug}-list-${badge}-${index}`}>
+                            {badge}
+                          </span>
                         ))}
                       </div>
                     ) : null}

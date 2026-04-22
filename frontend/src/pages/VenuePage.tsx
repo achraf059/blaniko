@@ -35,14 +35,19 @@ export default function VenuePage() {
   const moodParam = searchParams.get("mood") ?? "";
   const withParam = searchParams.get("with") ?? "";
   const moodFromSearch = isDiscoveryMood(moodParam) ? moodParam : undefined;
-  const companionFromSearch = isDiscoveryCompanion(withParam) ? withParam : undefined;
+  const companionFromSearch = isDiscoveryCompanion(withParam)
+    ? withParam
+    : undefined;
 
   const isValidSlug =
-    typeof categoryFromQuery === "string" && /^[a-z0-9-]+$/.test(categoryFromQuery);
+    typeof categoryFromQuery === "string" &&
+    /^[a-z0-9-]+$/.test(categoryFromQuery);
   const isValidAreaSlug =
-    typeof areaSlugFromQuery === "string" && /^[a-z0-9-]+$/.test(areaSlugFromQuery);
+    typeof areaSlugFromQuery === "string" &&
+    /^[a-z0-9-]+$/.test(areaSlugFromQuery);
   const isValidSourceVenueSlug =
-    typeof sourceVenueFromQuery === "string" && /^[a-z0-9-]+$/.test(sourceVenueFromQuery);
+    typeof sourceVenueFromQuery === "string" &&
+    /^[a-z0-9-]+$/.test(sourceVenueFromQuery);
 
   const contextParams = new URLSearchParams(searchParams);
   contextParams.delete("from");
@@ -55,54 +60,54 @@ export default function VenuePage() {
       ? `/categories/${categoryFromQuery}`
       : from === "area" && isValidAreaSlug
         ? `/areas/${areaSlugFromQuery}`
-      : from === "favorites"
-        ? "/favorites"
-        : from === "collections"
-          ? "/collections"
-        : from === "compare"
-          ? "/compare"
-        : from === "guides"
-          ? "/guides"
-        : from === "venue" && isValidSourceVenueSlug
-          ? `/venues/${sourceVenueFromQuery}?from=venue`
-        : from === "map"
-          ? withContext("/map")
-          : from === "search"
-            ? withContext("/search")
-            : from === "recommendations"
-              ? withContext("/recommendations")
-        : from === "plan"
-          ? withContext("/plan")
-        : "/";
+        : from === "favorites"
+          ? "/favorites"
+          : from === "collections"
+            ? "/collections"
+            : from === "compare"
+              ? "/compare"
+              : from === "guides"
+                ? "/guides"
+                : from === "venue" && isValidSourceVenueSlug
+                  ? `/venues/${sourceVenueFromQuery}?from=venue`
+                  : from === "map"
+                    ? withContext("/map")
+                    : from === "search"
+                      ? withContext("/search")
+                      : from === "recommendations"
+                        ? withContext("/recommendations")
+                        : from === "plan"
+                          ? withContext("/plan")
+                          : "/";
   const backLabel =
     from === "category" && isValidSlug
       ? dictionary.venuePage.backToCategory
       : from === "area" && isValidAreaSlug
         ? "Back to neighborhood"
-      : from === "favorites"
-        ? dictionary.venuePage.backToFavorites
-        : from === "collections"
-          ? "Back to collections"
-        : from === "compare"
-          ? "Back to compare"
-        : from === "guides"
-          ? "Back to guides"
-        : from === "venue" && isValidSourceVenueSlug
-          ? "Back to previous venue"
-        : from === "map"
-          ? dictionary.venuePage.backToMap
-          : from === "search"
-            ? "Back to search results"
-            : from === "recommendations"
-              ? "Back to recommendations"
-          : from === "plan"
-            ? "Back to planner"
-        : dictionary.venuePage.backToHome;
+        : from === "favorites"
+          ? dictionary.venuePage.backToFavorites
+          : from === "collections"
+            ? "Back to collections"
+            : from === "compare"
+              ? "Back to compare"
+              : from === "guides"
+                ? "Back to guides"
+                : from === "venue" && isValidSourceVenueSlug
+                  ? "Back to previous venue"
+                  : from === "map"
+                    ? dictionary.venuePage.backToMap
+                    : from === "search"
+                      ? "Back to search results"
+                      : from === "recommendations"
+                        ? "Back to recommendations"
+                        : from === "plan"
+                          ? "Back to planner"
+                          : dictionary.venuePage.backToHome;
 
   const venue = slug ? getVenueBySlug(slug) : undefined;
   const similarVenues = useMemo(
     () => (venue ? rankVenueAlternatives(venue, venues, 4) : []),
-    [venue, venues]
+    [venue, venues],
   );
 
   useEffect(() => {
@@ -129,7 +134,9 @@ export default function VenuePage() {
               ← {backLabel}
             </Link>
 
-            <h1 className="bl-venue-not-found-title">{dictionary.venuePage.notFoundTitle}</h1>
+            <h1 className="bl-venue-not-found-title">
+              {dictionary.venuePage.notFoundTitle}
+            </h1>
 
             <p className="bl-venue-not-found-description">
               {dictionary.venuePage.notFoundDescription}
@@ -149,7 +156,8 @@ export default function VenuePage() {
       .replace("{area}", venue.area);
   const vibe = venue.vibe ?? dictionary.venuePage.fallbackVibe;
   const audience = venue.audience ?? dictionary.venuePage.fallbackAudience;
-  const priceLevel = venue.priceLevel ?? dictionary.venuePage.fallbackPriceLevel;
+  const priceLevel =
+    venue.priceLevel ?? dictionary.venuePage.fallbackPriceLevel;
   const isVenueFavorite = isFavorite(venue.slug);
   const whyThisPlace = explainVenueMatch(
     venue,
@@ -161,7 +169,7 @@ export default function VenuePage() {
       companion: companionFromSearch,
       area: areaFromSearch,
     },
-    4
+    4,
   );
   const personality = getVenuePersonalitySection(venue);
 
@@ -206,7 +214,10 @@ export default function VenuePage() {
                   <p className="bl-venue-why-title">Best for</p>
                   <div className="bl-venue-why-list">
                     {personality.bestFor.map((tag, index) => (
-                      <span key={`${venue.slug}-best-for-${tag}-${index}`} className="bl-venue-why-chip">
+                      <span
+                        key={`${venue.slug}-best-for-${tag}-${index}`}
+                        className="bl-venue-why-chip"
+                      >
                         {tag}
                       </span>
                     ))}
@@ -240,15 +251,21 @@ export default function VenuePage() {
 
             <div className="bl-venue-side-panel">
               <div className="bl-venue-side-panel-image" />
-              <p className="bl-venue-side-panel-eyebrow">{dictionary.venuePage.panelEyebrow}</p>
-              <p className="bl-venue-side-panel-subtitle">{dictionary.venuePage.panelSubtitle}</p>
+              <p className="bl-venue-side-panel-eyebrow">
+                {dictionary.venuePage.panelEyebrow}
+              </p>
+              <p className="bl-venue-side-panel-subtitle">
+                {dictionary.venuePage.panelSubtitle}
+              </p>
             </div>
           </div>
         </section>
 
         <section className="bl-venue-content-grid">
           <div className="bl-venue-overview-card">
-            <h2 className="bl-venue-overview-title">{dictionary.venuePage.overview}</h2>
+            <h2 className="bl-venue-overview-title">
+              {dictionary.venuePage.overview}
+            </h2>
             <p className="bl-venue-overview-text">{overview}</p>
           </div>
 
@@ -263,7 +280,10 @@ export default function VenuePage() {
                 <p className="bl-venue-why-title">Best time to go</p>
                 <div className="bl-venue-why-list">
                   {personality.bestTimeToGo.map((time, index) => (
-                    <span key={`${venue.slug}-time-${time}-${index}`} className="bl-venue-why-chip">
+                    <span
+                      key={`${venue.slug}-time-${time}-${index}`}
+                      className="bl-venue-why-chip"
+                    >
                       {time}
                     </span>
                   ))}
@@ -274,7 +294,9 @@ export default function VenuePage() {
             {personality.atmosphere ? (
               <div className="bl-venue-why-card">
                 <p className="bl-venue-why-title">Atmosphere</p>
-                <p className="bl-venue-personality-atmosphere">{personality.atmosphere}</p>
+                <p className="bl-venue-personality-atmosphere">
+                  {personality.atmosphere}
+                </p>
               </div>
             ) : null}
           </div>
@@ -286,12 +308,16 @@ export default function VenuePage() {
             </div>
 
             <div className="bl-venue-meta-card">
-              <p className="bl-venue-meta-label">{dictionary.venuePage.audience}</p>
+              <p className="bl-venue-meta-label">
+                {dictionary.venuePage.audience}
+              </p>
               <p className="bl-venue-meta-value">{audience}</p>
             </div>
 
             <div className="bl-venue-meta-card">
-              <p className="bl-venue-meta-label">{dictionary.venuePage.priceLevel}</p>
+              <p className="bl-venue-meta-label">
+                {dictionary.venuePage.priceLevel}
+              </p>
               <p className="bl-venue-meta-value">{priceLevel}</p>
             </div>
           </div>
@@ -301,13 +327,20 @@ export default function VenuePage() {
           <section className="bl-venue-similar-section">
             <div className="bl-venue-similar-head">
               <h2 className="bl-venue-overview-title">Similar places nearby</h2>
-              <p>Alternatives based on area, category, vibe, and personality fit.</p>
+              <p>
+                Alternatives based on area, category, vibe, and personality fit.
+              </p>
             </div>
 
             <div className="bl-venue-similar-grid">
               {similarVenues.map(({ venue: alternative, reasons }) => (
-                <article key={alternative.slug} className="bl-venue-similar-card">
-                  <p className="bl-venue-similar-category">{alternative.category}</p>
+                <article
+                  key={alternative.slug}
+                  className="bl-venue-similar-card"
+                >
+                  <p className="bl-venue-similar-category">
+                    {alternative.category}
+                  </p>
                   <h3 className="bl-venue-similar-name">{alternative.name}</h3>
                   <p className="bl-venue-similar-area">📍 {alternative.area}</p>
                   <p className="bl-venue-similar-description">
@@ -317,7 +350,9 @@ export default function VenuePage() {
                   {reasons.length > 0 ? (
                     <div className="bl-venue-similar-reasons">
                       {reasons.slice(0, 3).map((reason) => (
-                        <span key={`${alternative.slug}-${reason}`}>{reason}</span>
+                        <span key={`${alternative.slug}-${reason}`}>
+                          {reason}
+                        </span>
                       ))}
                     </div>
                   ) : null}

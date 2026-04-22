@@ -47,7 +47,8 @@ export default function AreaPage() {
 
             <h1 className="bl-area-not-found-title">Area not found</h1>
             <p className="bl-area-not-found-description">
-              This neighborhood is not curated yet. Explore one of our main Casablanca areas.
+              This neighborhood is not curated yet. Explore one of our main
+              Casablanca areas.
             </p>
 
             <div className="bl-area-not-found-links">
@@ -63,7 +64,9 @@ export default function AreaPage() {
     );
   }
 
-  const areaVenues = venues.filter((venue) => venueMatchesArea(venue, area.slug));
+  const areaVenues = venues.filter((venue) =>
+    venueMatchesArea(venue, area.slug),
+  );
 
   return (
     <div className="bl-area-page">
@@ -101,13 +104,22 @@ export default function AreaPage() {
             <p className="bl-area-curated-hint">{area.curatedHint}</p>
 
             <div className="bl-area-actions">
-              <Link to={`/search?q=${encodeURIComponent(area.name)}`} className="bl-area-action-link">
+              <Link
+                to={`/search?q=${encodeURIComponent(area.name)}`}
+                className="bl-area-action-link"
+              >
                 Browse all places in {area.name}
               </Link>
-              <Link to={`/map?q=${encodeURIComponent(area.name)}`} className="bl-area-action-link">
+              <Link
+                to={`/map?q=${encodeURIComponent(area.name)}`}
+                className="bl-area-action-link"
+              >
                 View this area on map
               </Link>
-              <Link to={`/plan?area=${encodeURIComponent(area.slug)}`} className="bl-area-action-link">
+              <Link
+                to={`/plan?area=${encodeURIComponent(area.slug)}`}
+                className="bl-area-action-link"
+              >
                 Plan an outing in {area.name}
               </Link>
             </div>
@@ -117,7 +129,9 @@ export default function AreaPage() {
         <section className="bl-area-venues-section">
           <div className="bl-area-results-pill">
             <span className="bl-area-results-count">{areaVenues.length}</span>
-            <span>{areaVenues.length === 1 ? "curated venue" : "curated venues"}</span>
+            <span>
+              {areaVenues.length === 1 ? "curated venue" : "curated venues"}
+            </span>
           </div>
 
           {areaVenues.length > 0 ? (
@@ -130,13 +144,13 @@ export default function AreaPage() {
                   name={venue.name}
                   area={venue.area}
                   description={venue.description}
-                    personality={{
-                      bestForTags: venue.bestForTags,
-                      timeOfDay: venue.timeOfDay,
-                      energyLevel: venue.energyLevel,
-                      socialLevel: venue.socialLevel,
-                      spaceType: venue.spaceType,
-                    }}
+                  personality={{
+                    bestForTags: venue.bestForTags,
+                    timeOfDay: venue.timeOfDay,
+                    energyLevel: venue.energyLevel,
+                    socialLevel: venue.socialLevel,
+                    spaceType: venue.spaceType,
+                  }}
                   whyChips={explainVenueMatch(venue, { area: area.slug })}
                   href={`/venues/${venue.slug}?from=area&area=${area.slug}`}
                   isFavorite={isFavorite(venue.slug)}
@@ -148,7 +162,10 @@ export default function AreaPage() {
           ) : (
             <div className="bl-area-empty">
               <h3>We are still curating this area.</h3>
-              <p>Try another neighborhood or use search to discover more Casablanca places.</p>
+              <p>
+                Try another neighborhood or use search to discover more
+                Casablanca places.
+              </p>
             </div>
           )}
         </section>

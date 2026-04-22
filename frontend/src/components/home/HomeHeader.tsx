@@ -30,21 +30,6 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
 
         <ul className="bl-home-nav-links">
           <li>
-            <Link to="/" className="bl-home-nav-link">
-              {labels.home}
-            </Link>
-          </li>
-          <li>
-            <Link to="/#categories" className="bl-home-nav-link">
-              {labels.categories}
-            </Link>
-          </li>
-          <li>
-            <Link to="/#venues" className="bl-home-nav-link">
-              {labels.venues}
-            </Link>
-          </li>
-          <li>
             <Link to="/guides" className="bl-home-nav-link">
               Guides
             </Link>
@@ -65,16 +50,46 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
             </Link>
           </li>
           <li>
-            <Link to="/admin" className="bl-home-nav-link bl-home-nav-link-admin">
+            <Link
+              to="/admin"
+              className="bl-home-nav-link bl-home-nav-link-admin"
+            >
               {labels.admin}
             </Link>
           </li>
         </ul>
 
         <div className="bl-home-header-actions">
-          <LanguageSwitcher labelEn={labels.languageEn} labelFr={labels.languageFr} />
+          <details className="bl-home-mobile-menu">
+            <summary className="bl-home-mobile-menu-summary">Menu</summary>
+            <div className="bl-home-mobile-menu-panel">
+              <Link to="/guides" className="bl-home-mobile-menu-link">
+                Guides
+              </Link>
+              <Link to="/map" className="bl-home-mobile-menu-link">
+                {labels.map}
+              </Link>
+              <Link to="/favorites" className="bl-home-mobile-menu-link">
+                {labels.favorites}
+              </Link>
+              <Link to="/compare" className="bl-home-mobile-menu-link">
+                Compare ({compareCount})
+              </Link>
+              <Link
+                to="/admin"
+                className="bl-home-mobile-menu-link bl-home-mobile-menu-link-admin"
+              >
+                {labels.admin}
+              </Link>
+            </div>
+          </details>
 
-          <Link to="/#venues" className="bl-home-explore-btn">
+          <LanguageSwitcher
+            labelEn={labels.languageEn}
+            labelFr={labels.languageFr}
+          />
+
+          <Link to="/search" className="bl-home-explore-btn">
             {labels.exploreNow}
           </Link>
         </div>

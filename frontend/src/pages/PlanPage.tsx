@@ -16,7 +16,10 @@ import {
   type DiscoveryMood,
   venueMatchesMood,
 } from "../utils/discoveryInsights";
-import { getBestForBadges, getVenuePersonalitySignals } from "../utils/venuePersonality";
+import {
+  getBestForBadges,
+  getVenuePersonalitySignals,
+} from "../utils/venuePersonality";
 import "./HomePage.css";
 import "./PlanPage.css";
 
@@ -44,8 +47,25 @@ type SavedOuting = {
   budget: string;
   withWho: string;
   mood: string;
+  lockedRoles?: StopRoleKey[];
   stops: SavedOutingStop[];
   createdAt: string;
+};
+
+type StopRoleKey = "start" | "main" | "end";
+
+const stopRoleOrder: StopRoleKey[] = ["start", "main", "end"];
+
+const stopRoleLabel: Record<StopRoleKey, string> = {
+  start: "Start / warm-up",
+  main: "Main stop",
+  end: "Optional follow-up",
+};
+
+const stopRoleStage: Record<StopRoleKey, string> = {
+  start: "Start",
+  main: "Main",
+  end: "Follow-up",
 };
 
 const SAVED_OUTINGS_KEY = "blaniko_saved_outings_v1";
@@ -138,7 +158,12 @@ const planStyleOptions: PlanStyleConfig[] = [
     label: "Date night",
     subtitle: "Soft pace, romantic vibe, intimate stops.",
     vibeLine: "Intentional romance",
-    defaults: { withWho: "partner", mood: "romantic", budget: "$$$", area: "racine" },
+    defaults: {
+      withWho: "partner",
+      mood: "romantic",
+      budget: "$$$",
+      area: "racine",
+    },
     roleCategories: {
       start: ["cafes", "outdoor", "couples"],
       main: ["couples", "restaurants"],
@@ -155,14 +180,20 @@ const planStyleOptions: PlanStyleConfig[] = [
     weighting: { mood: 1.5, budget: 1.2, area: 1 },
     explanationChips: ["Romantic pacing", "Intimate-friendly picks"],
     summaryTone: { pace: "relaxed evening", moment: "cozy" },
-    resultSubtitle: "Sequenced for chemistry: gentle opener, romantic highlight, easy finish.",
+    resultSubtitle:
+      "Sequenced for chemistry: gentle opener, romantic highlight, easy finish.",
   },
   {
     id: "friends-hangout",
     label: "Friends hangout",
     subtitle: "Social energy with easy group flow.",
     vibeLine: "Group energy",
-    defaults: { withWho: "friends", mood: "social", budget: "$$", area: "maarif" },
+    defaults: {
+      withWho: "friends",
+      mood: "social",
+      budget: "$$",
+      area: "maarif",
+    },
     roleCategories: {
       start: ["cafes", "friends"],
       main: ["gaming", "sports", "activities", "friends"],
@@ -179,7 +210,8 @@ const planStyleOptions: PlanStyleConfig[] = [
     weighting: { mood: 1.3, budget: 1.15, area: 1 },
     explanationChips: ["Group-friendly categories", "Easy social transitions"],
     summaryTone: { pace: "social city run", moment: "lively" },
-    resultSubtitle: "Built for groups: quick start, high-energy main stop, then a no-stress wrap-up.",
+    resultSubtitle:
+      "Built for groups: quick start, high-energy main stop, then a no-stress wrap-up.",
   },
   {
     id: "chill-solo-reset",
@@ -203,7 +235,8 @@ const planStyleOptions: PlanStyleConfig[] = [
     weighting: { mood: 1.4, budget: 1.1, area: 0.95 },
     explanationChips: ["Quiet-first spots", "Low-pressure flow"],
     summaryTone: { pace: "quiet reset", moment: "calm" },
-    resultSubtitle: "A minimal plan: quiet opener, focused center, and a soft close.",
+    resultSubtitle:
+      "A minimal plan: quiet opener, focused center, and a soft close.",
   },
   {
     id: "under-100-mad",
@@ -227,14 +260,20 @@ const planStyleOptions: PlanStyleConfig[] = [
     budgetStrict: true,
     explanationChips: ["Price-sensitive picks", "Repeatable low-cost route"],
     summaryTone: { pace: "budget-friendly afternoon", moment: "practical" },
-    resultSubtitle: "Value-first sequencing with simple, repeatable city stops.",
+    resultSubtitle:
+      "Value-first sequencing with simple, repeatable city stops.",
   },
   {
     id: "productive-afternoon",
     label: "Productive afternoon",
     subtitle: "Focus-friendly stops and practical transitions.",
     vibeLine: "Focus arc",
-    defaults: { withWho: "alone", mood: "chill", budget: "$$", area: "gauthier" },
+    defaults: {
+      withWho: "alone",
+      mood: "chill",
+      budget: "$$",
+      area: "gauthier",
+    },
     roleCategories: {
       start: ["cafes"],
       main: ["cafes", "activities"],
@@ -246,20 +285,32 @@ const planStyleOptions: PlanStyleConfig[] = [
       end: "Decompress",
     },
     categoryBoosts: ["cafes"],
-    keywordBoosts: ["freelancer", "remote", "professionals", "quiet", "focused"],
+    keywordBoosts: [
+      "freelancer",
+      "remote",
+      "professionals",
+      "quiet",
+      "focused",
+    ],
     preferredPriceLevels: ["$$"],
     preferredAreas: ["gauthier", "maarif"],
     weighting: { mood: 1.25, budget: 1.2, area: 1.25 },
     explanationChips: ["Work-friendly sequencing", "Practical area priority"],
     summaryTone: { pace: "focused city session", moment: "productive" },
-    resultSubtitle: "A work-ready sequence with a clean focus arc and a light close.",
+    resultSubtitle:
+      "A work-ready sequence with a clean focus arc and a light close.",
   },
   {
     id: "sunset-plan",
     label: "Sunset plan",
     subtitle: "Golden-hour route with coastal energy.",
     vibeLine: "Golden-hour flow",
-    defaults: { withWho: "partner", mood: "romantic", budget: "$$", area: "ain diab" },
+    defaults: {
+      withWho: "partner",
+      mood: "romantic",
+      budget: "$$",
+      area: "ain diab",
+    },
     roleCategories: {
       start: ["outdoor", "cafes"],
       main: ["outdoor", "couples", "activities"],
@@ -277,14 +328,20 @@ const planStyleOptions: PlanStyleConfig[] = [
     weighting: { mood: 1.3, budget: 1.05, area: 1.4 },
     explanationChips: ["Sunset-friendly areas", "Scenic sequence"],
     summaryTone: { pace: "sunset route", moment: "scenic" },
-    resultSubtitle: "Timed for golden hour: coastal opener, view-heavy middle, smooth evening end.",
+    resultSubtitle:
+      "Timed for golden hour: coastal opener, view-heavy middle, smooth evening end.",
   },
   {
     id: "family-afternoon",
     label: "Family afternoon",
     subtitle: "Kid-friendly rhythm with easy logistics.",
     vibeLine: "Family comfort",
-    defaults: { withWho: "family", mood: "family-friendly", budget: "$$", area: "anfa" },
+    defaults: {
+      withWho: "family",
+      mood: "family-friendly",
+      budget: "$$",
+      area: "anfa",
+    },
     roleCategories: {
       start: ["cafes", "family"],
       main: ["family", "activities", "outdoor"],
@@ -301,7 +358,8 @@ const planStyleOptions: PlanStyleConfig[] = [
     weighting: { mood: 1.35, budget: 1.15, area: 1.05 },
     explanationChips: ["Kid-friendly bias", "Low-friction transitions"],
     summaryTone: { pace: "family-friendly afternoon", moment: "comfortable" },
-    resultSubtitle: "Structured for families: low-friction start, kid-friendly core, calm finish.",
+    resultSubtitle:
+      "Structured for families: low-friction start, kid-friendly core, calm finish.",
   },
 ];
 
@@ -394,7 +452,7 @@ function rankVenue(
     budget: string;
     area: string;
     style?: PlanStyleConfig;
-  }
+  },
 ): number {
   let score = 0;
   const styleWeighting = options.style?.weighting;
@@ -406,11 +464,18 @@ function rankVenue(
     score += 1;
   } else if (venue.priceLevel === options.budget) {
     score += 3 * budgetWeight;
-  } else if (options.style?.budgetStrict && options.budget === "$" && venue.priceLevel !== "$") {
+  } else if (
+    options.style?.budgetStrict &&
+    options.budget === "$" &&
+    venue.priceLevel !== "$"
+  ) {
     score -= 4;
   }
 
-  if (options.area !== "any" && venue.area.toLowerCase().includes(options.area)) {
+  if (
+    options.area !== "any" &&
+    venue.area.toLowerCase().includes(options.area)
+  ) {
     score += 3 * areaWeight;
   }
 
@@ -420,7 +485,8 @@ function rankVenue(
 
   if (options.companion) {
     const keywords = companionKeywordMap[options.companion];
-    const audienceText = `${venue.audience ?? ""} ${venue.description}`.toLowerCase();
+    const audienceText =
+      `${venue.audience ?? ""} ${venue.description}`.toLowerCase();
 
     if (keywords.some((keyword) => audienceText.includes(keyword))) {
       score += 2;
@@ -439,15 +505,20 @@ function rankVenue(
 
     if (
       style.preferredAreas?.some((preferredArea) =>
-        venue.area.toLowerCase().includes(preferredArea.toLowerCase())
+        venue.area.toLowerCase().includes(preferredArea.toLowerCase()),
       )
     ) {
       score += 2;
     }
 
     if (style.keywordBoosts?.length) {
-      const text = `${venue.audience ?? ""} ${venue.vibe ?? ""} ${venue.description}`.toLowerCase();
-      if (style.keywordBoosts.some((keyword) => text.includes(keyword.toLowerCase()))) {
+      const text =
+        `${venue.audience ?? ""} ${venue.vibe ?? ""} ${venue.description}`.toLowerCase();
+      if (
+        style.keywordBoosts.some((keyword) =>
+          text.includes(keyword.toLowerCase()),
+        )
+      ) {
         score += 2;
       }
     }
@@ -457,23 +528,34 @@ function rankVenue(
 }
 
 function stableHash(input: string): number {
-  return [...input].reduce((accumulator, char) => accumulator + char.charCodeAt(0), 0);
+  return [...input].reduce(
+    (accumulator, char) => accumulator + char.charCodeAt(0),
+    0,
+  );
 }
 
 function parseCompanion(value: string | null): string {
-  return companionOptions.some((option) => option.value === value) ? (value as string) : "friends";
+  return companionOptions.some((option) => option.value === value)
+    ? (value as string)
+    : "friends";
 }
 
 function parseMood(value: string | null): string {
-  return moodOptions.some((option) => option.value === value) ? (value as string) : "social";
+  return moodOptions.some((option) => option.value === value)
+    ? (value as string)
+    : "social";
 }
 
 function parseBudget(value: string | null): string {
-  return budgetOptions.some((option) => option.value === value) ? (value as string) : "$$";
+  return budgetOptions.some((option) => option.value === value)
+    ? (value as string)
+    : "$$";
 }
 
 function parseArea(value: string | null): string {
-  return areaOptions.some((option) => option.value === value) ? (value as string) : "any";
+  return areaOptions.some((option) => option.value === value)
+    ? (value as string)
+    : "any";
 }
 
 function parsePlanStyle(value: string | null): PlanStyleId {
@@ -491,6 +573,28 @@ function parseSeed(value: string | null): number {
   return Math.floor(parsed);
 }
 
+function parseLockedRoles(value: string | null): StopRoleKey[] {
+  if (!value) {
+    return [];
+  }
+
+  const output: StopRoleKey[] = [];
+
+  value
+    .split(",")
+    .map((item) => item.trim())
+    .forEach((item) => {
+      if (
+        (item === "start" || item === "main" || item === "end") &&
+        !output.includes(item)
+      ) {
+        output.push(item);
+      }
+    });
+
+  return output;
+}
+
 function buildPlanUrl(options: {
   withWho: string;
   mood: string;
@@ -499,6 +603,7 @@ function buildPlanUrl(options: {
   style: string;
   seed: number;
   stopSlugs: string[];
+  lockedRoles?: StopRoleKey[];
 }): string {
   const params = new URLSearchParams();
   params.set("with", options.withWho);
@@ -512,11 +617,17 @@ function buildPlanUrl(options: {
     params.set("stops", options.stopSlugs.join(","));
   }
 
+  if (options.lockedRoles && options.lockedRoles.length > 0) {
+    params.set("locks", options.lockedRoles.join(","));
+  }
+
   return `/plan?${params.toString()}`;
 }
 
 function getPlanStyleById(id: PlanStyleId): PlanStyleConfig {
-  return planStyleOptions.find((style) => style.id === id) ?? planStyleOptions[0];
+  return (
+    planStyleOptions.find((style) => style.id === id) ?? planStyleOptions[0]
+  );
 }
 
 function buildOutingNarrative(options: {
@@ -550,8 +661,6 @@ function buildOutingNarrative(options: {
   return `A ${options.style.summaryTone.pace} in ${options.areaLabel} for ${options.companionLabel.toLowerCase()} with a ${options.style.summaryTone.moment} single-stop option (${budgetText}).`;
 }
 
-type StopRoleKey = "start" | "main" | "end";
-
 function rankVenueForRole(
   venue: Venue,
   role: StopRoleKey,
@@ -561,7 +670,7 @@ function rankVenueForRole(
     style: PlanStyleConfig;
     mood?: DiscoveryMood;
     budget: string;
-  }
+  },
 ): number {
   let score = baseScore;
 
@@ -577,15 +686,26 @@ function rankVenueForRole(
     score += 1.5;
   }
 
-  if (role === "end" && ["restaurants", "outdoor", "cafes"].includes(venue.categorySlug)) {
+  if (
+    role === "end" &&
+    ["restaurants", "outdoor", "cafes"].includes(venue.categorySlug)
+  ) {
     score += 1.5;
   }
 
-  if (role === "main" && options.mood && venueMatchesMood(venue, options.mood)) {
+  if (
+    role === "main" &&
+    options.mood &&
+    venueMatchesMood(venue, options.mood)
+  ) {
     score += 2;
   }
 
-  if (options.style.budgetStrict && options.budget === "$" && venue.priceLevel !== "$") {
+  if (
+    options.style.budgetStrict &&
+    options.budget === "$" &&
+    venue.priceLevel !== "$"
+  ) {
     score -= role === "main" ? 5 : 3;
   }
 
@@ -616,8 +736,12 @@ export default function PlanPage() {
   const planStyle = parsePlanStyle(searchParams.get("style"));
   const selectedPlanStyle = getPlanStyleById(planStyle);
   const refreshSeed = parseSeed(searchParams.get("seed"));
-  const [shareFeedback, setShareFeedback] = useState<"idle" | "copied" | "failed">("idle");
+  const parsedLockedRoles = parseLockedRoles(searchParams.get("locks"));
+  const [shareFeedback, setShareFeedback] = useState<
+    "idle" | "copied" | "failed"
+  >("idle");
   const [saveFeedback, setSaveFeedback] = useState<"idle" | "saved">("idle");
+  const [refineFeedback, setRefineFeedback] = useState<string>("");
   const [savedOutings, setSavedOutings] = useState<SavedOuting[]>(() => {
     if (typeof window === "undefined") {
       return [];
@@ -645,87 +769,111 @@ export default function PlanPage() {
       return;
     }
 
-    window.localStorage.setItem(SAVED_OUTINGS_KEY, JSON.stringify(savedOutings));
+    window.localStorage.setItem(
+      SAVED_OUTINGS_KEY,
+      JSON.stringify(savedOutings),
+    );
   }, [savedOutings]);
 
   const selectedMood = isDiscoveryMood(mood) ? mood : undefined;
-  const selectedCompanion = companionOptions.some((option) => option.value === companion)
+  const selectedCompanion = companionOptions.some(
+    (option) => option.value === companion,
+  )
     ? (companion as DiscoveryCompanion)
     : undefined;
-  const selectedMoodName = selectedMood ? discoveryMoodLabel[selectedMood] : undefined;
+  const selectedMoodName = selectedMood
+    ? discoveryMoodLabel[selectedMood]
+    : undefined;
   const selectedCompanionName = selectedCompanion
     ? discoveryCompanionLabel[selectedCompanion]
     : "Friends";
 
-  const updatePlannerParams = (overrides: {
-    withWho?: string;
-    mood?: string;
-    budget?: string;
-    area?: string;
-    style?: string;
-    seed?: number;
-    stopSlugs?: string[];
-  }) => {
-    const withWhoValue = overrides.withWho ?? companion;
-    const moodValue = overrides.mood ?? mood;
-    const budgetValue = overrides.budget ?? budget;
-    const areaValue = overrides.area ?? area;
-    const styleValue = overrides.style ?? planStyle;
-    const seedValue = overrides.seed ?? refreshSeed;
+  const rolePreferences =
+    selectedPlanStyle.roleCategories ??
+    createRoleCategoryPreferences(selectedMood);
+  const roleHints =
+    selectedPlanStyle.roleHints ?? createRoleHints(selectedMood);
 
-    const nextParams = new URLSearchParams();
-    nextParams.set("with", withWhoValue);
-    nextParams.set("mood", moodValue);
-    nextParams.set("budget", budgetValue);
-    nextParams.set("area", areaValue);
-    nextParams.set("style", styleValue);
-    nextParams.set("seed", String(seedValue));
+  const scoreVenuesWithSeed = (seed: number) =>
+    venues
+      .map((venue) => ({
+        venue,
+        score: rankVenue(venue, {
+          companion: selectedCompanion,
+          mood: selectedMood,
+          budget,
+          area,
+          style: selectedPlanStyle,
+        }),
+      }))
+      .sort((first, second) => {
+        if (second.score !== first.score) {
+          return second.score - first.score;
+        }
 
-    if (overrides.stopSlugs && overrides.stopSlugs.length > 0) {
-      nextParams.set("stops", overrides.stopSlugs.join(","));
-    }
+        return (
+          ((stableHash(second.venue.slug) + seed) % 11) -
+          ((stableHash(first.venue.slug) + seed) % 11)
+        );
+      });
 
-    setSearchParams(nextParams, { replace: true });
-  };
+  const scoredVenues = scoreVenuesWithSeed(refreshSeed);
 
-  const scoredVenues = venues
-    .map((venue) => ({
-      venue,
-      score: rankVenue(venue, {
-        companion: selectedCompanion,
-        mood: selectedMood,
-        budget,
-        area,
-        style: selectedPlanStyle,
-      }),
-    }))
-    .sort((first, second) => {
-      if (second.score !== first.score) {
-        return second.score - first.score;
+  const buildRefinedStops = (options: {
+    rankedVenues: Array<{ venue: Venue; score: number }>;
+    baseStops: OutingStop[];
+    locked: StopRoleKey[];
+    replaceRole?: StopRoleKey;
+  }): OutingStop[] => {
+    const usedSlugs = new Set<string>();
+    const usedCategories = new Set<string>();
+    const output: Array<OutingStop | undefined> = new Array(
+      options.baseStops.length,
+    ).fill(undefined);
+    const lockedSet = new Set(options.locked);
+
+    options.baseStops.forEach((stop, index) => {
+      const roleKey = stopRoleOrder[Math.min(index, stopRoleOrder.length - 1)];
+      const keepExisting =
+        lockedSet.has(roleKey) ||
+        (options.replaceRole !== undefined && options.replaceRole !== roleKey);
+
+      if (!keepExisting) {
+        return;
       }
 
-      return (
-        ((stableHash(second.venue.slug) + refreshSeed) % 11) -
-        ((stableHash(first.venue.slug) + refreshSeed) % 11)
-      );
+      output[index] = stop;
+      usedSlugs.add(stop.venue.slug);
+      usedCategories.add(stop.venue.categorySlug);
     });
 
-  const planStops: OutingStop[] = (() => {
-    const rolePreferences = selectedPlanStyle.roleCategories ?? createRoleCategoryPreferences(selectedMood);
-    const roleHints = selectedPlanStyle.roleHints ?? createRoleHints(selectedMood);
-    const used = new Set<string>();
-    const usedCategories = new Set<string>();
+    options.baseStops.forEach((existingStop, index) => {
+      if (output[index]) {
+        return;
+      }
 
-    const pickVenue = (role: StopRoleKey, preferredCategories: string[]) => {
-      const ranked = scoredVenues
-        .filter(({ venue }) => !used.has(venue.slug))
+      const roleKey = stopRoleOrder[Math.min(index, stopRoleOrder.length - 1)];
+      const preferredCategories = rolePreferences[roleKey];
+      const avoidSlug =
+        options.replaceRole === roleKey ? existingStop.venue.slug : undefined;
+
+      const rankedCandidates = options.rankedVenues
+        .filter(
+          ({ venue }) => !usedSlugs.has(venue.slug) && venue.slug !== avoidSlug,
+        )
         .map(({ venue, score }) => ({
           venue,
-          roleScore: rankVenueForRole(venue, role, preferredCategories, score, {
-            style: selectedPlanStyle,
-            mood: selectedMood,
-            budget,
-          }),
+          roleScore: rankVenueForRole(
+            venue,
+            roleKey,
+            preferredCategories,
+            score,
+            {
+              style: selectedPlanStyle,
+              mood: selectedMood,
+              budget,
+            },
+          ),
           hasCategoryDuplication: usedCategories.has(venue.categorySlug),
         }))
         .sort((first, second) => {
@@ -740,72 +888,223 @@ export default function PlanPage() {
           return 0;
         });
 
-      const best = ranked[0];
-      if (!best) {
-        return undefined;
+      const picked = rankedCandidates[0]?.venue;
+
+      if (!picked) {
+        output[index] = existingStop;
+        usedSlugs.add(existingStop.venue.slug);
+        usedCategories.add(existingStop.venue.categorySlug);
+        return;
       }
 
-      used.add(best.venue.slug);
-      usedCategories.add(best.venue.categorySlug);
-      return best.venue;
-    };
+      output[index] = {
+        role: stopRoleLabel[roleKey],
+        roleHint: roleHints[roleKey],
+        venue: picked,
+      };
+      usedSlugs.add(picked.slug);
+      usedCategories.add(picked.categorySlug);
+    });
 
-    const start = pickVenue("start", rolePreferences.start);
-    const main = pickVenue("main", rolePreferences.main);
-    const end = pickVenue("end", rolePreferences.end);
+    return output.filter((stop): stop is OutingStop => Boolean(stop));
+  };
 
-    const output: OutingStop[] = [];
+  const updatePlannerParams = (overrides: {
+    withWho?: string;
+    mood?: string;
+    budget?: string;
+    area?: string;
+    style?: string;
+    seed?: number;
+    stopSlugs?: string[];
+    lockedRoles?: StopRoleKey[];
+  }) => {
+    const withWhoValue = overrides.withWho ?? companion;
+    const moodValue = overrides.mood ?? mood;
+    const budgetValue = overrides.budget ?? budget;
+    const areaValue = overrides.area ?? area;
+    const styleValue = overrides.style ?? planStyle;
+    const seedValue = overrides.seed ?? refreshSeed;
+    const lockedRolesValue = overrides.lockedRoles ?? parsedLockedRoles;
 
-    if (start) {
-      output.push({ role: "Start / warm-up", roleHint: roleHints.start, venue: start });
+    const nextParams = new URLSearchParams();
+    nextParams.set("with", withWhoValue);
+    nextParams.set("mood", moodValue);
+    nextParams.set("budget", budgetValue);
+    nextParams.set("area", areaValue);
+    nextParams.set("style", styleValue);
+    nextParams.set("seed", String(seedValue));
+
+    if (overrides.stopSlugs && overrides.stopSlugs.length > 0) {
+      nextParams.set("stops", overrides.stopSlugs.join(","));
     }
 
-    if (main) {
-      output.push({ role: "Main stop", roleHint: roleHints.main, venue: main });
+    if (lockedRolesValue.length > 0) {
+      nextParams.set("locks", lockedRolesValue.join(","));
     }
 
-    if (end) {
-      output.push({ role: "Optional follow-up", roleHint: roleHints.end, venue: end });
+    setSearchParams(nextParams, { replace: true });
+  };
+
+  const roleHintsForPlan = roleHints;
+  const used = new Set<string>();
+  const usedCategories = new Set<string>();
+
+  const pickVenue = (role: StopRoleKey, preferredCategories: string[]) => {
+    const ranked = scoredVenues
+      .filter(({ venue }) => !used.has(venue.slug))
+      .map(({ venue, score }) => ({
+        venue,
+        roleScore: rankVenueForRole(venue, role, preferredCategories, score, {
+          style: selectedPlanStyle,
+          mood: selectedMood,
+          budget,
+        }),
+        hasCategoryDuplication: usedCategories.has(venue.categorySlug),
+      }))
+      .sort((first, second) => {
+        if (second.roleScore !== first.roleScore) {
+          return second.roleScore - first.roleScore;
+        }
+
+        if (first.hasCategoryDuplication !== second.hasCategoryDuplication) {
+          return first.hasCategoryDuplication ? 1 : -1;
+        }
+
+        return 0;
+      });
+
+    const best = ranked[0];
+    if (!best) {
+      return undefined;
     }
 
-    return output;
-  })();
+    used.add(best.venue.slug);
+    usedCategories.add(best.venue.categorySlug);
+    return best.venue;
+  };
+
+  const start = pickVenue("start", rolePreferences.start);
+  const main = pickVenue("main", rolePreferences.main);
+  const end = pickVenue("end", rolePreferences.end);
+
+  const planStops: OutingStop[] = [];
+
+  if (start) {
+    planStops.push({
+      role: stopRoleLabel.start,
+      roleHint: roleHintsForPlan.start,
+      venue: start,
+    });
+  }
+
+  if (main) {
+    planStops.push({
+      role: stopRoleLabel.main,
+      roleHint: roleHintsForPlan.main,
+      venue: main,
+    });
+  }
+
+  if (end) {
+    planStops.push({
+      role: stopRoleLabel.end,
+      roleHint: roleHintsForPlan.end,
+      venue: end,
+    });
+  }
 
   const sharedStopSlugs = (searchParams.get("stops") ?? "")
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean);
 
-  const sharedPlanStops: OutingStop[] = (() => {
-    if (sharedStopSlugs.length === 0) {
-      return [];
+  const roleHintsForShared = roleHints;
+  const roleOrder = [
+    { role: stopRoleLabel.start, hint: roleHintsForShared.start },
+    { role: stopRoleLabel.main, hint: roleHintsForShared.main },
+    { role: stopRoleLabel.end, hint: roleHintsForShared.end },
+  ];
+
+  const sharedPlanStops: OutingStop[] = sharedStopSlugs
+    .map((slug, index) => {
+      const venue = venues.find((item) => item.slug === slug);
+      if (!venue) {
+        return undefined;
+      }
+
+      const fallback = roleOrder[Math.min(index, roleOrder.length - 1)];
+      return {
+        role: fallback.role,
+        roleHint: fallback.hint,
+        venue,
+      };
+    })
+    .filter((value): value is OutingStop => value !== undefined);
+
+  const effectivePlanStops =
+    sharedPlanStops.length > 0 ? sharedPlanStops : planStops;
+  const lockedRoles = parsedLockedRoles;
+
+  const applyRefinedPlan = (next: {
+    stops: OutingStop[];
+    locks: StopRoleKey[];
+    seed?: number;
+  }) => {
+    const nextSeed = next.seed ?? refreshSeed;
+    updatePlannerParams({
+      seed: nextSeed,
+      stopSlugs: next.stops.map((stop) => stop.venue.slug),
+      lockedRoles: next.locks,
+    });
+  };
+
+  const handleToggleStopLock = (roleKey: StopRoleKey) => {
+    const nextLocks = lockedRoles.includes(roleKey)
+      ? lockedRoles.filter((role) => role !== roleKey)
+      : [...lockedRoles, roleKey];
+
+    setRefineFeedback("");
+    applyRefinedPlan({ stops: effectivePlanStops, locks: nextLocks });
+  };
+
+  const handleReplaceStop = (roleKey: StopRoleKey) => {
+    const nextStops = buildRefinedStops({
+      rankedVenues: scoredVenues,
+      baseStops: effectivePlanStops,
+      locked: lockedRoles,
+      replaceRole: roleKey,
+    });
+
+    const stopIndex = stopRoleOrder.indexOf(roleKey);
+    const previousSlug = effectivePlanStops[stopIndex]?.venue.slug;
+    const nextSlug = nextStops[stopIndex]?.venue.slug;
+
+    if (!nextSlug || previousSlug === nextSlug) {
+      setRefineFeedback("No better replacement found for this stop right now.");
+      return;
     }
 
-    const roleHints = selectedPlanStyle.roleHints ?? createRoleHints(selectedMood);
-    const roleOrder = [
-      { role: "Start / warm-up", hint: roleHints.start },
-      { role: "Main stop", hint: roleHints.main },
-      { role: "Optional follow-up", hint: roleHints.end },
-    ];
+    setRefineFeedback(`${stopRoleStage[roleKey]} stop updated.`);
+    applyRefinedPlan({ stops: nextStops, locks: lockedRoles });
+  };
 
-    return sharedStopSlugs
-      .map((slug, index) => {
-        const venue = venues.find((item) => item.slug === slug);
-        if (!venue) {
-          return undefined;
-        }
+  const handleRegenerateOuting = () => {
+    const nextSeed = refreshSeed + 1;
+    const nextRankedVenues = scoreVenuesWithSeed(nextSeed);
+    const nextStops = buildRefinedStops({
+      rankedVenues: nextRankedVenues,
+      baseStops: effectivePlanStops,
+      locked: lockedRoles,
+    });
 
-        const fallback = roleOrder[Math.min(index, roleOrder.length - 1)];
-        return {
-          role: fallback.role,
-          roleHint: fallback.hint,
-          venue,
-        };
-        })
-        .filter((value): value is OutingStop => value !== undefined);
-      })();
-
-  const effectivePlanStops = sharedPlanStops.length > 0 ? sharedPlanStops : planStops;
+    setRefineFeedback(
+      lockedRoles.length > 0
+        ? "Outing refreshed while keeping your locked stops."
+        : "Outing refreshed with a new sequence.",
+    );
+    applyRefinedPlan({ stops: nextStops, locks: lockedRoles, seed: nextSeed });
+  };
 
   const planSummaryMeta = [
     selectedCompanionName,
@@ -816,7 +1115,8 @@ export default function PlanPage() {
     .filter(Boolean)
     .join(" • ");
 
-  const selectedAreaLabel = areaOptions.find((option) => option.value === area)?.label ?? "Casablanca";
+  const selectedAreaLabel =
+    areaOptions.find((option) => option.value === area)?.label ?? "Casablanca";
   const planSummary = buildOutingNarrative({
     style: selectedPlanStyle,
     areaLabel: selectedAreaLabel,
@@ -830,7 +1130,9 @@ export default function PlanPage() {
       return;
     }
 
-    const stopSignature = effectivePlanStops.map((stop) => stop.venue.slug).join("-");
+    const stopSignature = effectivePlanStops
+      .map((stop) => stop.venue.slug)
+      .join("-");
 
     trackActivity({
       id: `${planStyle}:${area}:${mood}:${companion}:${budget}:${stopSignature}`,
@@ -864,8 +1166,12 @@ export default function PlanPage() {
     if (effectivePlanStops.length > 0) {
       nextParams.set(
         "stops",
-        effectivePlanStops.map((stop) => stop.venue.slug).join(",")
+        effectivePlanStops.map((stop) => stop.venue.slug).join(","),
       );
+    }
+
+    if (lockedRoles.length > 0) {
+      nextParams.set("locks", lockedRoles.join(","));
     }
 
     if (nextParams.toString() !== searchParams.toString()) {
@@ -876,6 +1182,7 @@ export default function PlanPage() {
     budget,
     companion,
     effectivePlanStops,
+    lockedRoles,
     mood,
     planStyle,
     refreshSeed,
@@ -895,6 +1202,7 @@ export default function PlanPage() {
               style: planStyle,
               seed: refreshSeed,
               stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
+              lockedRoles,
             })}`
           : buildPlanUrl({
               withWho: companion,
@@ -904,6 +1212,7 @@ export default function PlanPage() {
               style: planStyle,
               seed: refreshSeed,
               stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
+              lockedRoles,
             });
 
       await navigator.clipboard.writeText(url);
@@ -921,7 +1230,9 @@ export default function PlanPage() {
     }
 
     const now = new Date().toISOString();
-    const stopSignature = effectivePlanStops.map((stop) => stop.venue.slug).join("-");
+    const stopSignature = effectivePlanStops
+      .map((stop) => stop.venue.slug)
+      .join("-");
     const saved: SavedOuting = {
       id: `${now}-${stopSignature}`,
       title: `${selectedPlanStyle.label} • ${selectedAreaLabel}`,
@@ -931,6 +1242,7 @@ export default function PlanPage() {
       budget,
       withWho: companion,
       mood,
+      lockedRoles,
       stops: effectivePlanStops.map((stop) => ({
         role: stop.role,
         roleHint: stop.roleHint,
@@ -948,7 +1260,9 @@ export default function PlanPage() {
   };
 
   const handleDeleteSavedOuting = (id: string) => {
-    setSavedOutings((previous) => previous.filter((outing) => outing.id !== id));
+    setSavedOutings((previous) =>
+      previous.filter((outing) => outing.id !== id),
+    );
   };
 
   const buildVenueHref = (slug: string) => {
@@ -971,14 +1285,17 @@ export default function PlanPage() {
           <p className="bl-plan-eyebrow">Plan My Outing</p>
           <h1 className="bl-plan-title">Craft your signature city outing</h1>
           <p className="bl-plan-subtitle">
-            Pick a plan style first, then fine-tune mood, budget, and area. We generate a curated
-            outing flow from the existing Casablanca venue data.
+            Pick a plan style first, then fine-tune mood, budget, and area. We
+            generate a curated outing flow from the existing Casablanca venue
+            data.
           </p>
           <p className="bl-plan-current-summary">Current plan: {planSummary}</p>
 
           <div className="bl-plan-style-head">
             <p className="bl-discovery-label">Plan style</p>
-            <p className="bl-plan-style-subtitle">{selectedPlanStyle.subtitle}</p>
+            <p className="bl-plan-style-subtitle">
+              {selectedPlanStyle.subtitle}
+            </p>
           </div>
 
           <div className="bl-plan-style-grid">
@@ -996,6 +1313,7 @@ export default function PlanPage() {
                     area: style.defaults.area,
                     seed: 0,
                     stopSlugs: [],
+                    lockedRoles: [],
                   })
                 }
               >
@@ -1013,7 +1331,12 @@ export default function PlanPage() {
                 options={companionOptions}
                 selectedValue={companion}
                 onSelect={(value) =>
-                  updatePlannerParams({ withWho: value, seed: 0, stopSlugs: [] })
+                  updatePlannerParams({
+                    withWho: value,
+                    seed: 0,
+                    stopSlugs: [],
+                    lockedRoles: [],
+                  })
                 }
               />
             </div>
@@ -1023,7 +1346,14 @@ export default function PlanPage() {
               <FilterChips
                 options={moodOptions}
                 selectedValue={mood}
-                onSelect={(value) => updatePlannerParams({ mood: value, seed: 0, stopSlugs: [] })}
+                onSelect={(value) =>
+                  updatePlannerParams({
+                    mood: value,
+                    seed: 0,
+                    stopSlugs: [],
+                    lockedRoles: [],
+                  })
+                }
               />
             </div>
 
@@ -1033,7 +1363,12 @@ export default function PlanPage() {
                 options={budgetOptions}
                 selectedValue={budget}
                 onSelect={(value) =>
-                  updatePlannerParams({ budget: value, seed: 0, stopSlugs: [] })
+                  updatePlannerParams({
+                    budget: value,
+                    seed: 0,
+                    stopSlugs: [],
+                    lockedRoles: [],
+                  })
                 }
               />
             </div>
@@ -1043,7 +1378,14 @@ export default function PlanPage() {
               <FilterChips
                 options={areaOptions}
                 selectedValue={area}
-                onSelect={(value) => updatePlannerParams({ area: value, seed: 0, stopSlugs: [] })}
+                onSelect={(value) =>
+                  updatePlannerParams({
+                    area: value,
+                    seed: 0,
+                    stopSlugs: [],
+                    lockedRoles: [],
+                  })
+                }
               />
             </div>
 
@@ -1060,6 +1402,7 @@ export default function PlanPage() {
                     style: defaultPlanStyleId,
                     seed: 0,
                     stopSlugs: [],
+                    lockedRoles: [],
                   });
                 }}
               >
@@ -1069,7 +1412,7 @@ export default function PlanPage() {
               <button
                 type="button"
                 className="bl-plan-primary-btn"
-                onClick={() => updatePlannerParams({ seed: refreshSeed + 1, stopSlugs: [] })}
+                onClick={handleRegenerateOuting}
               >
                 Refresh suggestions
               </button>
@@ -1082,18 +1425,29 @@ export default function PlanPage() {
                 Copy outing link
               </button>
 
-              <button type="button" className="bl-plan-primary-btn" onClick={handleSaveOuting}>
+              <button
+                type="button"
+                className="bl-plan-primary-btn"
+                onClick={handleSaveOuting}
+              >
                 Save outing
               </button>
             </div>
 
             {shareFeedback !== "idle" ? (
               <p className="bl-plan-feedback">
-                {shareFeedback === "copied" ? "Outing link copied." : "Could not copy link."}
+                {shareFeedback === "copied"
+                  ? "Outing link copied."
+                  : "Could not copy link."}
               </p>
             ) : null}
 
-            {saveFeedback === "saved" ? <p className="bl-plan-feedback">Outing saved.</p> : null}
+            {saveFeedback === "saved" ? (
+              <p className="bl-plan-feedback">Outing saved.</p>
+            ) : null}
+            {refineFeedback ? (
+              <p className="bl-plan-feedback">{refineFeedback}</p>
+            ) : null}
           </div>
         </section>
 
@@ -1103,11 +1457,16 @@ export default function PlanPage() {
             <p>{effectivePlanStops.length} stops</p>
           </div>
 
-          <p className="bl-plan-results-subtitle">{selectedPlanStyle.resultSubtitle}</p>
+          <p className="bl-plan-results-subtitle">
+            {selectedPlanStyle.resultSubtitle}
+          </p>
           {selectedPlanStyle.explanationChips?.length ? (
             <div className="bl-plan-results-chip-list">
               {selectedPlanStyle.explanationChips.map((chip) => (
-                <span key={`${selectedPlanStyle.id}-${chip}`} className="bl-plan-results-chip">
+                <span
+                  key={`${selectedPlanStyle.id}-${chip}`}
+                  className="bl-plan-results-chip"
+                >
                   {chip}
                 </span>
               ))}
@@ -1117,79 +1476,125 @@ export default function PlanPage() {
 
           {effectivePlanStops.length > 0 ? (
             <div className="bl-plan-grid">
-              {effectivePlanStops.map((stop, index) => (
-              <article key={`${stop.role}-${stop.venue.slug}`} className="bl-plan-card">
-                <p className="bl-plan-stop-index">Stop {index + 1}</p>
-                <p className="bl-plan-stop-stage">{index === 0 ? "Start" : index === 1 ? "Main" : "Follow-up"}</p>
-                <p className="bl-plan-stop-role">{stop.role}</p>
-                <p className="bl-plan-stop-hint">{stop.roleHint}</p>
-                <p className="bl-plan-stop-category">{stop.venue.category}</p>
-                <h3 className="bl-plan-stop-name">{stop.venue.name}</h3>
-                <p className="bl-plan-stop-area">📍 {stop.venue.area}</p>
-                <p className="bl-plan-stop-description">
-                  {stop.venue.shortDescription ?? stop.venue.description}
-                </p>
+              {effectivePlanStops.map((stop, index) => {
+                const roleKey =
+                  stopRoleOrder[Math.min(index, stopRoleOrder.length - 1)];
+                const isLocked = lockedRoles.includes(roleKey);
 
-                {getBestForBadges(stop.venue, 2).length > 0 ? (
-                  <div className="bl-plan-stop-badges">
-                    {getBestForBadges(stop.venue, 2).map((badge, badgeIndex) => (
-                      <span key={`${stop.venue.slug}-plan-badge-${badge}-${badgeIndex}`}>{badge}</span>
-                    ))}
-                  </div>
-                ) : null}
-
-                {getVenuePersonalitySignals(stop.venue).length > 0 ? (
-                  <p className="bl-plan-stop-signals">
-                    {getVenuePersonalitySignals(stop.venue).slice(0, 2).join(" • ")}
-                  </p>
-                ) : null}
-
-                <div className="bl-plan-why-list">
-                  {[
-                    `${index === 0 ? "Start" : index === 1 ? "Main" : "Follow-up"} pick`,
-                    selectedPlanStyle.label,
-                    ...explainVenueMatch(stop.venue, {
-                      budget,
-                      area,
-                      mood: selectedMood,
-                      companion: selectedCompanion,
-                    }),
-                  ]
-                    .slice(0, 5)
-                    .map((chip, chipIndex) => (
-                      <span key={`${stop.venue.slug}-${chip}-${chipIndex}`} className="bl-plan-why-chip">
-                        {chip}
-                      </span>
-                    ))}
-                </div>
-
-                <div className="bl-plan-stop-actions">
-                  <button
-                    type="button"
-                    className={`bl-plan-favorite-btn${
-                      isFavorite(stop.venue.slug) ? " is-active" : ""
-                    }`}
-                    onClick={() => toggleFavorite(stop.venue.slug)}
+                return (
+                  <article
+                    key={`${stop.role}-${stop.venue.slug}`}
+                    className="bl-plan-card"
                   >
-                    {isFavorite(stop.venue.slug)
-                      ? dictionary.venueCard.removeFavorite
-                      : dictionary.venueCard.saveFavorite}
-                  </button>
+                    <p className="bl-plan-stop-index">Stop {index + 1}</p>
+                    <p className="bl-plan-stop-stage">
+                      {stopRoleStage[roleKey]}
+                    </p>
+                    <p className="bl-plan-stop-role">{stop.role}</p>
+                    <p className="bl-plan-stop-hint">{stop.roleHint}</p>
+                    <p className="bl-plan-stop-lock-state">
+                      {isLocked ? "Locked" : "Unlocked"}
+                    </p>
+                    <p className="bl-plan-stop-category">
+                      {stop.venue.category}
+                    </p>
+                    <h3 className="bl-plan-stop-name">{stop.venue.name}</h3>
+                    <p className="bl-plan-stop-area">📍 {stop.venue.area}</p>
+                    <p className="bl-plan-stop-description">
+                      {stop.venue.shortDescription ?? stop.venue.description}
+                    </p>
 
-                  <Link
-                    to={buildVenueHref(stop.venue.slug)}
-                    className="bl-plan-details-link"
-                  >
-                    {dictionary.venueCard.viewDetails}
-                  </Link>
-                </div>
-              </article>
-              ))}
+                    {getBestForBadges(stop.venue, 2).length > 0 ? (
+                      <div className="bl-plan-stop-badges">
+                        {getBestForBadges(stop.venue, 2).map(
+                          (badge, badgeIndex) => (
+                            <span
+                              key={`${stop.venue.slug}-plan-badge-${badge}-${badgeIndex}`}
+                            >
+                              {badge}
+                            </span>
+                          ),
+                        )}
+                      </div>
+                    ) : null}
+
+                    {getVenuePersonalitySignals(stop.venue).length > 0 ? (
+                      <p className="bl-plan-stop-signals">
+                        {getVenuePersonalitySignals(stop.venue)
+                          .slice(0, 2)
+                          .join(" • ")}
+                      </p>
+                    ) : null}
+
+                    <div className="bl-plan-why-list">
+                      {[
+                        `${stopRoleStage[roleKey]} pick`,
+                        selectedPlanStyle.label,
+                        ...explainVenueMatch(stop.venue, {
+                          budget,
+                          area,
+                          mood: selectedMood,
+                          companion: selectedCompanion,
+                        }),
+                      ]
+                        .slice(0, 5)
+                        .map((chip, chipIndex) => (
+                          <span
+                            key={`${stop.venue.slug}-${chip}-${chipIndex}`}
+                            className="bl-plan-why-chip"
+                          >
+                            {chip}
+                          </span>
+                        ))}
+                    </div>
+
+                    <div className="bl-plan-stop-actions">
+                      <button
+                        type="button"
+                        className="bl-plan-stop-utility-btn"
+                        onClick={() => handleReplaceStop(roleKey)}
+                      >
+                        Replace this stop
+                      </button>
+
+                      <button
+                        type="button"
+                        className={`bl-plan-stop-utility-btn${isLocked ? " is-active" : ""}`}
+                        onClick={() => handleToggleStopLock(roleKey)}
+                      >
+                        {isLocked ? "Unlock" : "Lock"}
+                      </button>
+
+                      <button
+                        type="button"
+                        className={`bl-plan-favorite-btn${
+                          isFavorite(stop.venue.slug) ? " is-active" : ""
+                        }`}
+                        onClick={() => toggleFavorite(stop.venue.slug)}
+                      >
+                        {isFavorite(stop.venue.slug)
+                          ? dictionary.venueCard.removeFavorite
+                          : dictionary.venueCard.saveFavorite}
+                      </button>
+
+                      <Link
+                        to={buildVenueHref(stop.venue.slug)}
+                        className="bl-plan-details-link"
+                      >
+                        {dictionary.venueCard.viewDetails}
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <div className="bl-plan-empty">
               <h3>Not enough venues for this exact combination yet.</h3>
-              <p>Try a broader area or budget to unlock more complete outing routes.</p>
+              <p>
+                Try a broader area or budget to unlock more complete outing
+                routes.
+              </p>
             </div>
           )}
         </section>
@@ -1211,7 +1616,9 @@ export default function PlanPage() {
                 <article key={outing.id} className="bl-plan-saved-card">
                   <p className="bl-plan-saved-title">{outing.title}</p>
                   <p className="bl-plan-saved-meta">{outing.summary}</p>
-                  <p className="bl-plan-saved-date">{formatSavedDate(outing.createdAt)}</p>
+                  <p className="bl-plan-saved-date">
+                    {formatSavedDate(outing.createdAt)}
+                  </p>
 
                   <div className="bl-plan-saved-stops">
                     {outing.stops.map((stop) => (
@@ -1231,6 +1638,7 @@ export default function PlanPage() {
                         style: outing.planStyle ?? defaultPlanStyleId,
                         seed: 0,
                         stopSlugs: outing.stops.map((stop) => stop.slug),
+                        lockedRoles: outing.lockedRoles,
                       })}
                       className="bl-plan-details-link"
                     >

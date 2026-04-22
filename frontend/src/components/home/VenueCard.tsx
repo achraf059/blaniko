@@ -2,7 +2,10 @@ import { Link } from "react-router";
 import { CollectionPicker } from "../collections/CollectionPicker";
 import { CompareToggle } from "../compare/CompareToggle";
 import { type Venue } from "../../data/mockData";
-import { getBestForBadges, getVenuePersonalitySignals } from "../../utils/venuePersonality";
+import {
+  getBestForBadges,
+  getVenuePersonalitySignals,
+} from "../../utils/venuePersonality";
 
 type VenueCardProps = {
   slug: string;
@@ -51,14 +54,19 @@ export function VenueCard({
   const removeFavoriteLabel = labels?.removeFavorite ?? "Saved";
   const areaPreview = area.split(",")[0]?.trim() ?? area;
   const bestForBadges = getBestForBadges({ description, ...personality });
-  const personalitySignals = getVenuePersonalitySignals({ description, ...personality }).slice(0, 3);
+  const personalitySignals = getVenuePersonalitySignals({
+    description,
+    ...personality,
+  }).slice(0, 3);
 
   return (
     <article className="bl-home-venue-card">
       <div className="bl-home-venue-top">
         <div className="bl-home-venue-top-content">
           <p className="bl-home-venue-category">{category}</p>
-          {isFeatured ? <span className="bl-home-venue-featured">{featuredLabel}</span> : null}
+          {isFeatured ? (
+            <span className="bl-home-venue-featured">{featuredLabel}</span>
+          ) : null}
         </div>
 
         <div className="bl-home-venue-area-preview">{areaPreview}</div>
@@ -78,7 +86,9 @@ export function VenueCard({
         </button>
       ) : null}
 
-      {showCollectionPicker ? <CollectionPicker venueSlug={slug} compact /> : null}
+      {showCollectionPicker ? (
+        <CollectionPicker venueSlug={slug} compact />
+      ) : null}
 
       {showCompareToggle ? <CompareToggle venueSlug={slug} compact /> : null}
 
@@ -95,7 +105,10 @@ export function VenueCard({
         {bestForBadges.length > 0 ? (
           <div className="bl-home-venue-bestfor-list">
             {bestForBadges.map((badge, index) => (
-              <span key={`${slug}-${badge}-${index}`} className="bl-home-venue-bestfor-chip">
+              <span
+                key={`${slug}-${badge}-${index}`}
+                className="bl-home-venue-bestfor-chip"
+              >
                 {badge}
               </span>
             ))}
@@ -103,7 +116,9 @@ export function VenueCard({
         ) : null}
 
         {personalitySignals.length > 0 ? (
-          <p className="bl-home-venue-signals">{personalitySignals.join(" • ")}</p>
+          <p className="bl-home-venue-signals">
+            {personalitySignals.join(" • ")}
+          </p>
         ) : null}
 
         {whyChips && whyChips.length > 0 ? (

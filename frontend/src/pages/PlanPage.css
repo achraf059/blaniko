@@ -249,6 +249,20 @@
   color: var(--color-muted);
 }
 
+.bl-plan-stop-lock-state {
+  margin: 0.35rem 0 0;
+  display: inline-flex;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-primary-soft) 36%, white 64%);
+  color: var(--color-primary-dark);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.14rem 0.42rem;
+}
+
 .bl-plan-stop-category {
   margin: 0.42rem 0 0;
   font-size: 0.74rem;
@@ -314,6 +328,22 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+}
+
+.bl-plan-stop-utility-btn {
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-primary-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.32rem 0.64rem;
+  cursor: pointer;
+}
+
+.bl-plan-stop-utility-btn.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
 }
 
 .bl-plan-favorite-btn {

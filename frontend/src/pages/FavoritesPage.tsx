@@ -10,8 +10,13 @@ import "./FavoritesPage.css";
 export default function FavoritesPage() {
   const { dictionary } = useI18n();
   const { venues } = useVenues();
-  const { favoriteSlugs, favoritesCount, isFavorite, toggleFavorite, clearFavorites } =
-    useFavorites();
+  const {
+    favoriteSlugs,
+    favoritesCount,
+    isFavorite,
+    toggleFavorite,
+    clearFavorites,
+  } = useFavorites();
 
   const favoriteVenues = favoriteSlugs
     .map((slug) => venues.find((venue) => venue.slug === slug))
@@ -23,13 +28,20 @@ export default function FavoritesPage() {
 
       <main className="bl-favorites-main">
         <section className="bl-favorites-hero">
-          <p className="bl-favorites-eyebrow">{dictionary.favoritesPage.eyebrow}</p>
-          <h1 className="bl-favorites-title">{dictionary.favoritesPage.title}</h1>
-          <p className="bl-favorites-subtitle">{dictionary.favoritesPage.subtitle}</p>
+          <p className="bl-favorites-eyebrow">
+            {dictionary.favoritesPage.eyebrow}
+          </p>
+          <h1 className="bl-favorites-title">
+            {dictionary.favoritesPage.title}
+          </h1>
+          <p className="bl-favorites-subtitle">
+            {dictionary.favoritesPage.subtitle}
+          </p>
 
           <div className="bl-favorites-meta-row">
             <p className="bl-favorites-count">
-              <span>{favoritesCount}</span> {dictionary.favoritesPage.savedLabel}
+              <span>{favoritesCount}</span>{" "}
+              {dictionary.favoritesPage.savedLabel}
             </p>
 
             <Link to="/collections" className="bl-favorites-back-link">
@@ -59,13 +71,13 @@ export default function FavoritesPage() {
                   name={venue.name}
                   area={venue.area}
                   description={venue.description}
-                    personality={{
-                      bestForTags: venue.bestForTags,
-                      timeOfDay: venue.timeOfDay,
-                      energyLevel: venue.energyLevel,
-                      socialLevel: venue.socialLevel,
-                      spaceType: venue.spaceType,
-                    }}
+                  personality={{
+                    bestForTags: venue.bestForTags,
+                    timeOfDay: venue.timeOfDay,
+                    energyLevel: venue.energyLevel,
+                    socialLevel: venue.socialLevel,
+                    spaceType: venue.spaceType,
+                  }}
                   href={`/venues/${venue.slug}?from=favorites`}
                   labels={dictionary.venueCard}
                   isFavorite={isFavorite(venue.slug)}
@@ -78,7 +90,9 @@ export default function FavoritesPage() {
           </section>
         ) : (
           <section className="bl-favorites-empty">
-            <h2 className="bl-favorites-empty-title">{dictionary.favoritesPage.emptyTitle}</h2>
+            <h2 className="bl-favorites-empty-title">
+              {dictionary.favoritesPage.emptyTitle}
+            </h2>
             <p className="bl-favorites-empty-description">
               {dictionary.favoritesPage.emptyDescription}
             </p>

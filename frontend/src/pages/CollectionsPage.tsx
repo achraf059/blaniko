@@ -23,14 +23,19 @@ export default function CollectionsPage() {
   } = useCollections();
 
   const [newCollectionName, setNewCollectionName] = useState("");
-  const [expandedCollectionId, setExpandedCollectionId] = useState<string | null>(null);
-  const [editingCollectionId, setEditingCollectionId] = useState<string | null>(null);
+  const [expandedCollectionId, setExpandedCollectionId] = useState<
+    string | null
+  >(null);
+  const [editingCollectionId, setEditingCollectionId] = useState<string | null>(
+    null,
+  );
   const [editingName, setEditingName] = useState("");
 
   const sortedCollections = useMemo(() => {
     return [...collections].sort(
       (first, second) =>
-        new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime()
+        new Date(second.createdAt).getTime() -
+        new Date(first.createdAt).getTime(),
     );
   }, [collections]);
 
@@ -54,10 +59,14 @@ export default function CollectionsPage() {
           <p className="bl-collections-eyebrow">Collections</p>
           <h1 className="bl-collections-title">Saved lists</h1>
           <p className="bl-collections-subtitle">
-            Organize venues into reusable lists for plans, moods, or neighborhoods.
+            Organize venues into reusable lists for plans, moods, or
+            neighborhoods.
           </p>
 
-          <form className="bl-collections-create" onSubmit={handleCreateCollection}>
+          <form
+            className="bl-collections-create"
+            onSubmit={handleCreateCollection}
+          >
             <input
               value={newCollectionName}
               onChange={(event) => setNewCollectionName(event.target.value)}
@@ -71,7 +80,10 @@ export default function CollectionsPage() {
         {sortedCollections.length === 0 ? (
           <section className="bl-collections-empty">
             <h2>No collections yet.</h2>
-            <p>Start by creating a list, then add venues from search, favorites, or details.</p>
+            <p>
+              Start by creating a list, then add venues from search, favorites,
+              or details.
+            </p>
             <div className="bl-collections-empty-links">
               <Link to="/search">Browse search</Link>
               <Link to="/favorites">Open favorites</Link>
@@ -82,8 +94,12 @@ export default function CollectionsPage() {
             {sortedCollections.map((collection) => {
               const existingVenues = collection.venueSlugs
                 .map((slug) => venuesBySlug[slug])
-                .filter((venue): venue is NonNullable<typeof venue> => Boolean(venue));
-              const missingSlugs = collection.venueSlugs.filter((slug) => !venuesBySlug[slug]);
+                .filter((venue): venue is NonNullable<typeof venue> =>
+                  Boolean(venue),
+                );
+              const missingSlugs = collection.venueSlugs.filter(
+                (slug) => !venuesBySlug[slug],
+              );
               const isExpanded = expandedCollectionId === collection.id;
               const isEditing = editingCollectionId === collection.id;
 
@@ -102,7 +118,9 @@ export default function CollectionsPage() {
                       >
                         <input
                           value={editingName}
-                          onChange={(event) => setEditingName(event.target.value)}
+                          onChange={(event) =>
+                            setEditingName(event.target.value)
+                          }
                           aria-label="Rename collection"
                         />
                         <button type="submit">Save</button>
@@ -111,7 +129,8 @@ export default function CollectionsPage() {
                       <>
                         <h2>{collection.name}</h2>
                         <p>
-                          {collection.venueSlugs.length} saved • {existingVenues.length} available
+                          {collection.venueSlugs.length} saved •{" "}
+                          {existingVenues.length} available
                         </p>
                       </>
                     )}
@@ -139,14 +158,17 @@ export default function CollectionsPage() {
                         </button>
                       )}
 
-                      <button type="button" onClick={() => deleteCollection(collection.id)}>
+                      <button
+                        type="button"
+                        onClick={() => deleteCollection(collection.id)}
+                      >
                         Delete
                       </button>
                       <button
                         type="button"
                         onClick={() =>
                           setExpandedCollectionId((previous) =>
-                            previous === collection.id ? null : collection.id
+                            previous === collection.id ? null : collection.id,
                           )
                         }
                       >
@@ -185,7 +207,12 @@ export default function CollectionsPage() {
                               <button
                                 type="button"
                                 className="bl-collections-remove-venue"
-                                onClick={() => removeVenueFromCollection(collection.id, venue.slug)}
+                                onClick={() =>
+                                  removeVenueFromCollection(
+                                    collection.id,
+                                    venue.slug,
+                                  )
+                                }
                               >
                                 Remove from this list
                               </button>
@@ -193,15 +220,17 @@ export default function CollectionsPage() {
                           ))}
                         </div>
                       ) : (
-                        <p className="bl-collections-empty-note">No available venues in this list yet.</p>
+                        <p className="bl-collections-empty-note">
+                          No available venues in this list yet.
+                        </p>
                       )}
 
                       {missingSlugs.length > 0 ? (
                         <div className="bl-collections-missing">
                           <h3>Unavailable venues</h3>
                           <p>
-                            Some saved venues are no longer available in shared data. You can remove
-                            them safely.
+                            Some saved venues are no longer available in shared
+                            data. You can remove them safely.
                           </p>
                           <ul>
                             {missingSlugs.map((slug) => (
@@ -209,7 +238,12 @@ export default function CollectionsPage() {
                                 <span>{slug}</span>
                                 <button
                                   type="button"
-                                  onClick={() => removeVenueFromCollection(collection.id, slug)}
+                                  onClick={() =>
+                                    removeVenueFromCollection(
+                                      collection.id,
+                                      slug,
+                                    )
+                                  }
                                 >
                                   Remove
                                 </button>

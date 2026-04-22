@@ -53,16 +53,21 @@ export default function CategoryPage() {
               ← {dictionary.categoryPage.backHome}
             </Link>
 
-            <p className="bl-category-eyebrow">{dictionary.categoryPage.eyebrow}</p>
+            <p className="bl-category-eyebrow">
+              {dictionary.categoryPage.eyebrow}
+            </p>
 
             <h1 className="bl-category-title">{category.name}</h1>
 
             <p className="bl-category-description">
-              {dictionary.categoryDescriptions[category.slug] ?? category.description}
+              {dictionary.categoryDescriptions[category.slug] ??
+                category.description}
             </p>
 
             <div className="bl-category-result-pill">
-              <span className="bl-category-result-count">{categoryVenues.length}</span>
+              <span className="bl-category-result-count">
+                {categoryVenues.length}
+              </span>
               <span>
                 {categoryVenues.length === 1
                   ? dictionary.categoryPage.result
@@ -82,13 +87,13 @@ export default function CategoryPage() {
                 name={venue.name}
                 area={venue.area}
                 description={venue.description}
-                 personality={{
-                   bestForTags: venue.bestForTags,
-                   timeOfDay: venue.timeOfDay,
-                   energyLevel: venue.energyLevel,
-                   socialLevel: venue.socialLevel,
-                   spaceType: venue.spaceType,
-                 }}
+                personality={{
+                  bestForTags: venue.bestForTags,
+                  timeOfDay: venue.timeOfDay,
+                  energyLevel: venue.energyLevel,
+                  socialLevel: venue.socialLevel,
+                  spaceType: venue.spaceType,
+                }}
                 href={`/venues/${venue.slug}?from=category&category=${slug}`}
                 labels={dictionary.venueCard}
               />

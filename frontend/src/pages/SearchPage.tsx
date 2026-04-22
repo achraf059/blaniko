@@ -77,12 +77,17 @@ export default function SearchPage() {
     () =>
       categories
         .filter((category) =>
-          ["cafes", "restaurants", "activities", "sports", "gaming", "outdoor"].includes(
-            category.slug
-          )
+          [
+            "cafes",
+            "restaurants",
+            "activities",
+            "sports",
+            "gaming",
+            "outdoor",
+          ].includes(category.slug),
         )
         .map((category) => ({ value: category.slug, label: category.name })),
-    []
+    [],
   );
 
   const budgetOptions = [
@@ -210,7 +215,9 @@ export default function SearchPage() {
     return suffix ? `/map?${suffix}` : "/map";
   };
 
-  const selectedMoodValue = isDiscoveryMood(selectedMood) ? selectedMood : undefined;
+  const selectedMoodValue = isDiscoveryMood(selectedMood)
+    ? selectedMood
+    : undefined;
 
   const filteredVenues = useMemo(
     () =>
@@ -238,15 +245,21 @@ export default function SearchPage() {
       selectedSpaceType,
       selectedSocialLevel,
       venues,
-    ]
+    ],
   );
 
   const selectedCategoryName = categories.find(
-    (category) => category.slug === selectedCategory
+    (category) => category.slug === selectedCategory,
   )?.name;
-  const selectedMoodName = moodOptions.find((mood) => mood.value === selectedMood)?.label;
-  const selectedAreaName = selectedArea ? getAreaLabel(selectedArea, areaOptions) : undefined;
-  const selectedBestForName = selectedBestFor ? getBestForLabel(selectedBestFor) : undefined;
+  const selectedMoodName = moodOptions.find(
+    (mood) => mood.value === selectedMood,
+  )?.label;
+  const selectedAreaName = selectedArea
+    ? getAreaLabel(selectedArea, areaOptions)
+    : undefined;
+  const selectedBestForName = selectedBestFor
+    ? getBestForLabel(selectedBestFor)
+    : undefined;
   const selectedTimeOfDayName = selectedTimeOfDay
     ? getOptionLabel(selectedTimeOfDay, timeOfDayOptions)
     : undefined;
@@ -298,13 +311,20 @@ export default function SearchPage() {
     }
 
     return chunks.join(" ");
-  }, [selectedAreaName, selectedBestForName, selectedBudget, selectedCategoryName, selectedEnergyName, selectedMoodName]);
+  }, [
+    selectedAreaName,
+    selectedBestForName,
+    selectedBudget,
+    selectedCategoryName,
+    selectedEnergyName,
+    selectedMoodName,
+  ]);
 
   const title = query.trim()
     ? dictionary.searchPage.titleForQuery.replace("{query}", query.trim())
     : selectedMoodValue
       ? `${selectedMoodName} mood picks`
-    : dictionary.searchPage.titleDefault;
+      : dictionary.searchPage.titleDefault;
 
   const buildVenueHref = (slug: string) => {
     const params = new URLSearchParams();
@@ -450,7 +470,9 @@ export default function SearchPage() {
             />
 
             <div>
-              <p className="bl-discovery-label">{dictionary.searchPage.quickFiltersLabel}</p>
+              <p className="bl-discovery-label">
+                {dictionary.searchPage.quickFiltersLabel}
+              </p>
               <FilterChips
                 options={quickFilters}
                 selectedValue={selectedCategory || undefined}
@@ -531,7 +553,9 @@ export default function SearchPage() {
 
             <div className="bl-search-budget-row">
               <div>
-                <p className="bl-discovery-label">{dictionary.searchPage.budgetLabel}</p>
+                <p className="bl-discovery-label">
+                  {dictionary.searchPage.budgetLabel}
+                </p>
                 <BudgetSelector
                   options={budgetOptions}
                   selectedValue={selectedBudget}
@@ -539,7 +563,11 @@ export default function SearchPage() {
                 />
               </div>
 
-              <button type="button" className="bl-search-clear-btn" onClick={clearFilters}>
+              <button
+                type="button"
+                className="bl-search-clear-btn"
+                onClick={clearFilters}
+              >
                 {dictionary.searchPage.clearFilters}
               </button>
 
@@ -561,7 +589,8 @@ export default function SearchPage() {
               {dictionary.searchPage.summaryQuery}: <span>{query || "—"}</span>
             </p>
             <p>
-              {dictionary.searchPage.summaryCategory}: <span>{selectedCategoryName || "—"}</span>
+              {dictionary.searchPage.summaryCategory}:{" "}
+              <span>{selectedCategoryName || "—"}</span>
             </p>
             <p>
               Mood: <span>{selectedMoodName || "—"}</span>
@@ -585,7 +614,12 @@ export default function SearchPage() {
               Social vibe: <span>{selectedSocialName || "—"}</span>
             </p>
             <p>
-              {dictionary.searchPage.summaryBudget}: <span>{selectedBudget === "all" ? dictionary.searchPage.budgetAll : selectedBudget}</span>
+              {dictionary.searchPage.summaryBudget}:{" "}
+              <span>
+                {selectedBudget === "all"
+                  ? dictionary.searchPage.budgetAll
+                  : selectedBudget}
+              </span>
             </p>
             <p>
               {filteredVenues.length} {dictionary.searchPage.resultsLabel}
@@ -637,13 +671,19 @@ export default function SearchPage() {
           </section>
         ) : (
           <section className="bl-search-empty">
-            <h2 className="bl-search-empty-title">{dictionary.searchPage.emptyTitle}</h2>
+            <h2 className="bl-search-empty-title">
+              {dictionary.searchPage.emptyTitle}
+            </h2>
             <p className="bl-search-empty-description">
-              No exact match found for your current filters. Try clearing one or two filters, or
-              switch to a broader mood/area.
+              No exact match found for your current filters. Try clearing one or
+              two filters, or switch to a broader mood/area.
             </p>
             <div className="bl-search-empty-actions">
-              <button type="button" className="bl-search-clear-btn" onClick={clearFilters}>
+              <button
+                type="button"
+                className="bl-search-clear-btn"
+                onClick={clearFilters}
+              >
                 Reset all filters
               </button>
               <button

@@ -5,12 +5,17 @@ import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { buildCompareInsights } from "../utils/compareInsights";
 import { explainVenueMatch } from "../utils/discoveryInsights";
-import { getBestForBadges, getVenuePersonalitySection, getVenuePersonalitySignals } from "../utils/venuePersonality";
+import {
+  getBestForBadges,
+  getVenuePersonalitySection,
+  getVenuePersonalitySignals,
+} from "../utils/venuePersonality";
 import "./ComparePage.css";
 
 export default function ComparePage() {
   const { dictionary } = useI18n();
-  const { compareSlugs, compareCount, removeFromCompare, clearCompare } = useCompare();
+  const { compareSlugs, compareCount, removeFromCompare, clearCompare } =
+    useCompare();
   const { venuesBySlug } = useVenues();
 
   const availableVenues = compareSlugs
@@ -30,7 +35,8 @@ export default function ComparePage() {
           <p className="bl-compare-eyebrow">Venue compare</p>
           <h1 className="bl-compare-title">Compare venues side by side</h1>
           <p className="bl-compare-subtitle">
-            Keep up to 3 venues and compare category, area, budget, vibe, and fit before deciding.
+            Keep up to 3 venues and compare category, area, budget, vibe, and
+            fit before deciding.
           </p>
 
           <div className="bl-compare-actions">
@@ -46,7 +52,10 @@ export default function ComparePage() {
         {compareSlugs.length === 0 ? (
           <section className="bl-compare-empty">
             <h2>No venues selected yet.</h2>
-            <p>Add venues from search, favorites, recommendations, collections, or detail pages.</p>
+            <p>
+              Add venues from search, favorites, recommendations, collections,
+              or detail pages.
+            </p>
             <div className="bl-compare-empty-links">
               <Link to="/search">Go to search</Link>
               <Link to="/favorites">Open favorites</Link>
@@ -95,7 +104,10 @@ export default function ComparePage() {
                   <article key={venue.slug} className="bl-compare-card">
                     <div className="bl-compare-card-head">
                       <p className="bl-compare-category">{venue.category}</p>
-                      <button type="button" onClick={() => removeFromCompare(venue.slug)}>
+                      <button
+                        type="button"
+                        onClick={() => removeFromCompare(venue.slug)}
+                      >
                         Remove
                       </button>
                     </div>
@@ -127,7 +139,9 @@ export default function ComparePage() {
                     </div>
 
                     <div className="bl-compare-group">
-                      <p className="bl-compare-group-title">Vibe & personality</p>
+                      <p className="bl-compare-group-title">
+                        Vibe & personality
+                      </p>
                       <div className="bl-compare-meta">
                         <p>
                           <strong>Vibe:</strong> {venue.vibe ?? "—"}
@@ -136,7 +150,8 @@ export default function ComparePage() {
                           <strong>Audience:</strong> {venue.audience ?? "—"}
                         </p>
                         <p>
-                          <strong>Personality:</strong> {personality.whyPeopleChoose}
+                          <strong>Personality:</strong>{" "}
+                          {personality.whyPeopleChoose}
                         </p>
                       </div>
                     </div>
@@ -144,13 +159,17 @@ export default function ComparePage() {
                     {badges.length > 0 ? (
                       <div className="bl-compare-badges">
                         {badges.map((badge, index) => (
-                          <span key={`${venue.slug}-badge-${badge}-${index}`}>{badge}</span>
+                          <span key={`${venue.slug}-badge-${badge}-${index}`}>
+                            {badge}
+                          </span>
                         ))}
                       </div>
                     ) : null}
 
                     {signals.length > 0 ? (
-                      <p className="bl-compare-signals">{signals.join(" • ")}</p>
+                      <p className="bl-compare-signals">
+                        {signals.join(" • ")}
+                      </p>
                     ) : null}
 
                     <p className="bl-compare-description">
@@ -163,7 +182,10 @@ export default function ComparePage() {
                       ))}
                     </div>
 
-                    <Link to={`/venues/${venue.slug}?from=compare`} className="bl-compare-link">
+                    <Link
+                      to={`/venues/${venue.slug}?from=compare`}
+                      className="bl-compare-link"
+                    >
                       {dictionary.venueCard.viewDetails}
                     </Link>
                   </article>

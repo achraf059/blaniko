@@ -191,7 +191,7 @@ const en: Dictionary = {
   },
   hero: {
     badge: "Casablanca Discovery Platform",
-    title: "Discover the best things to do in Casablanca.",
+    title: "Discover Casablanca",
     subtitle:
       "Find cafes, restaurants, sports spots, and unique city experiences in one simple place. Blaniko helps you explore Casablanca like a local.",
     searchPlaceholder: "Search places, categories, or areas",
@@ -383,7 +383,7 @@ const fr: Dictionary = {
   },
   hero: {
     badge: "Plateforme de découverte à Casablanca",
-    title: "Découvrez les meilleures choses à faire à Casablanca.",
+    title: "Découvrez Casablanca",
     subtitle:
       "Trouvez des cafés, restaurants, activités sportives et expériences locales au même endroit. Blaniko vous aide à explorer Casablanca comme un habitant.",
     searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",

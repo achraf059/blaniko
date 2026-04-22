@@ -150,7 +150,9 @@
 .bl-home-header-actions {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.65rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .bl-home-nav {
@@ -160,7 +162,8 @@
   width: 100%;
   max-width: 72rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1.35rem;
   padding: 0 1.25rem;
   box-sizing: border-box;
 }
@@ -190,10 +193,13 @@
 .bl-home-nav-links {
   display: none;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1rem;
   padding: 0;
   margin: 0;
   list-style: none;
+  margin-left: 0.35rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .bl-home-nav-link {
@@ -206,6 +212,62 @@
 
 .bl-home-nav-link:hover {
   color: var(--color-text);
+}
+
+.bl-home-nav-link-admin {
+  opacity: 0.85;
+}
+
+.bl-home-mobile-menu {
+  position: relative;
+}
+
+.bl-home-mobile-menu-summary {
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-card);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.68rem;
+  cursor: pointer;
+}
+
+.bl-home-mobile-menu-summary::-webkit-details-marker {
+  display: none;
+}
+
+.bl-home-mobile-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  min-width: 12rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--color-card) 88%, var(--color-surface-elevated) 12%);
+  box-shadow: var(--shadow-card);
+  padding: 0.5rem;
+  display: grid;
+  gap: 0.25rem;
+  z-index: 30;
+}
+
+.bl-home-mobile-menu-link {
+  border-radius: 0.6rem;
+  padding: 0.42rem 0.5rem;
+  text-decoration: none;
+  font-size: 0.8rem;
+  color: var(--color-text);
+}
+
+.bl-home-mobile-menu-link:hover {
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+}
+
+.bl-home-mobile-menu-link-admin {
+  color: var(--color-muted);
 }
 
 .bl-home-explore-btn {
@@ -376,6 +438,10 @@
 
   .bl-home-nav-links {
     display: flex;
+  }
+
+  .bl-home-mobile-menu {
+    display: none;
   }
 
   .bl-category-description {

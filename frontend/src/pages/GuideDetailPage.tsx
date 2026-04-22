@@ -8,7 +8,10 @@ import {
 import { useVenues } from "../hooks/useVenues";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useI18n } from "../i18n/useI18n";
-import { getBestForBadges, getVenuePersonalitySignals } from "../utils/venuePersonality";
+import {
+  getBestForBadges,
+  getVenuePersonalitySignals,
+} from "../utils/venuePersonality";
 import "./HomePage.css";
 import "./GuidesPage.css";
 
@@ -69,12 +72,20 @@ export default function GuideDetailPage() {
           <p className="bl-guides-eyebrow">Curated by Blaniko</p>
           <h1>{collection.title}</h1>
           <p className="bl-guide-detail-subtitle">{collection.subtitle}</p>
-          <p className="bl-guide-detail-description">{collection.description}</p>
+          <p className="bl-guide-detail-description">
+            {collection.description}
+          </p>
 
           <div className="bl-guide-detail-theme-row">
-            {collection.theme?.mood ? <span>Mood: {collection.theme.mood}</span> : null}
-            {collection.theme?.area ? <span>Area: {collection.theme.area}</span> : null}
-            {collection.theme?.budget ? <span>Budget: {collection.theme.budget}</span> : null}
+            {collection.theme?.mood ? (
+              <span>Mood: {collection.theme.mood}</span>
+            ) : null}
+            {collection.theme?.area ? (
+              <span>Area: {collection.theme.area}</span>
+            ) : null}
+            {collection.theme?.budget ? (
+              <span>Budget: {collection.theme.budget}</span>
+            ) : null}
           </div>
         </section>
 
@@ -105,34 +116,50 @@ export default function GuideDetailPage() {
           ) : (
             <div className="bl-guide-detail-venue-grid">
               {matchedVenues.map((venue) => (
-                <article key={venue.slug} className="bl-guide-detail-venue-card">
+                <article
+                  key={venue.slug}
+                  className="bl-guide-detail-venue-card"
+                >
                   {(() => {
                     const badges = getBestForBadges(venue, 2);
-                    const signals = getVenuePersonalitySignals(venue).slice(0, 2);
+                    const signals = getVenuePersonalitySignals(venue).slice(
+                      0,
+                      2,
+                    );
 
                     return (
                       <>
-                  <p className="bl-guide-detail-venue-category">{venue.category}</p>
-                  <h3>{venue.name}</h3>
-                  <p className="bl-guide-detail-venue-area">📍 {venue.area}</p>
-                  <p className="bl-guide-detail-venue-description">
-                    {venue.shortDescription ?? venue.description}
-                  </p>
+                        <p className="bl-guide-detail-venue-category">
+                          {venue.category}
+                        </p>
+                        <h3>{venue.name}</h3>
+                        <p className="bl-guide-detail-venue-area">
+                          📍 {venue.area}
+                        </p>
+                        <p className="bl-guide-detail-venue-description">
+                          {venue.shortDescription ?? venue.description}
+                        </p>
 
-                  {badges.length > 0 ? (
-                    <div className="bl-guide-detail-venue-badges">
-                      {badges.map((badge, index) => (
-                        <span key={`${venue.slug}-badge-${badge}-${index}`}>{badge}</span>
-                      ))}
-                    </div>
-                  ) : null}
+                        {badges.length > 0 ? (
+                          <div className="bl-guide-detail-venue-badges">
+                            {badges.map((badge, index) => (
+                              <span
+                                key={`${venue.slug}-badge-${badge}-${index}`}
+                              >
+                                {badge}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
 
-                  {signals.length > 0 ? (
-                    <p className="bl-guide-detail-venue-signals">{signals.join(" • ")}</p>
-                  ) : null}
-                  <Link to={`/venues/${venue.slug}?from=guides`}>
-                    {dictionary.venueCard.viewDetails} →
-                  </Link>
+                        {signals.length > 0 ? (
+                          <p className="bl-guide-detail-venue-signals">
+                            {signals.join(" • ")}
+                          </p>
+                        ) : null}
+                        <Link to={`/venues/${venue.slug}?from=guides`}>
+                          {dictionary.venueCard.viewDetails} →
+                        </Link>
                       </>
                     );
                   })()}
@@ -145,7 +172,9 @@ export default function GuideDetailPage() {
         <section className="bl-guide-detail-cta-row">
           <Link to="/map">View on map</Link>
           <Link to="/plan">Plan an outing</Link>
-          {collection.cta ? <Link to={collection.cta.href}>{collection.cta.label}</Link> : null}
+          {collection.cta ? (
+            <Link to={collection.cta.href}>{collection.cta.label}</Link>
+          ) : null}
         </section>
       </main>
     </div>

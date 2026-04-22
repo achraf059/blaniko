@@ -8,7 +8,10 @@ type CompareToggleProps = {
   compact?: boolean;
 };
 
-export function CompareToggle({ venueSlug, compact = false }: CompareToggleProps) {
+export function CompareToggle({
+  venueSlug,
+  compact = false,
+}: CompareToggleProps) {
   const { compareCount, isCompared, toggleCompare } = useCompare();
   const [feedback, setFeedback] = useState("");
 
@@ -28,7 +31,9 @@ export function CompareToggle({ venueSlug, compact = false }: CompareToggleProps
             return;
           }
 
-          setFeedback(result === "added" ? "Added to compare." : "Removed from compare.");
+          setFeedback(
+            result === "added" ? "Added to compare." : "Removed from compare.",
+          );
           window.setTimeout(() => setFeedback(""), 1400);
         }}
         aria-pressed={compared}
@@ -40,7 +45,9 @@ export function CompareToggle({ venueSlug, compact = false }: CompareToggleProps
         Compare ({compareCount})
       </Link>
 
-      {feedback ? <p className="bl-compare-toggle-feedback">{feedback}</p> : null}
+      {feedback ? (
+        <p className="bl-compare-toggle-feedback">{feedback}</p>
+      ) : null}
     </div>
   );
 }
