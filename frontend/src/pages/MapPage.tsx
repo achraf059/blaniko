@@ -4,7 +4,7 @@ import { BudgetSelector } from "../components/discovery/BudgetSelector";
 import { FilterChips } from "../components/discovery/FilterChips";
 import { SearchBar } from "../components/discovery/SearchBar";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { categories, type Venue } from "../data/mockData";
+import { categories, getVenueDisplay, type Venue } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
@@ -154,8 +154,8 @@ export default function MapPage() {
             "outdoor",
           ].includes(category.slug),
         )
-        .map((category) => ({ value: category.slug, label: category.name })),
-    [],
+        .map((category) => ({ value: category.slug, label: dictionary.categoryNames[category.slug] ?? category.name })),
+    [dictionary.categoryNames],
   );
 
   const budgetOptions = [
@@ -293,12 +293,8 @@ export default function MapPage() {
 
   const mapIntentSummary = useMemo(() => {
     const subject = selectedCategory
-      ? (categories
-          .find((category) => category.slug === selectedCategory)
-          ?.name.toLowerCase() ?? (language === "fr" ? "lieux" : "venues"))
-      : language === "fr"
-        ? "lieux"
-        : "venues";
+      ? (dictionary.categoryNames[selectedCategory] ?? categories.find((c) => c.slug === selectedCategory)?.name.toLowerCase() ?? text.planPage.subjectFallback)
+      : text.planPage.subjectFallback;
     const chunks = [
       selectedMoodName
         ? `${selectedMoodName.toLowerCase()} ${subject}`
@@ -326,6 +322,8 @@ export default function MapPage() {
     selectedBestForName,
     selectedCategory,
     selectedMoodName,
+    text,
+    dictionary.categoryNames,
   ]);
 
   const buildVenueHref = (slug: string) => {
@@ -732,12 +730,13 @@ export default function MapPage() {
                 {(() => {
                   const badges = getBestForBadges(selectedVenue, 3, language);
                   const signals = getVenuePersonalitySignals(selectedVenue, language);
+                  const vd = getVenueDisplay(selectedVenue, language);
 
                   return (
                     <>
                       <div className="bl-map-preview-top">
                         <p className="bl-map-preview-category">
-                          {selectedVenue.category}
+                          {dictionary.categoryNames[selectedVenue.categorySlug] ?? selectedVenue.category}
                         </p>
                         <button
                           type="button"
@@ -760,8 +759,7 @@ export default function MapPage() {
                         📍 {selectedVenue.area}
                       </p>
                       <p className="bl-map-preview-description">
-                        {selectedVenue.shortDescription ??
-                          selectedVenue.description}
+                        {vd.shortDescription ?? vd.description}
                       </p>
 
                       {badges.length > 0 ? (
@@ -818,6 +816,7 @@ export default function MapPage() {
               {mapVenues.map((venue) => {
                 const isActive = activeSlug === venue.slug;
                 const badges = getBestForBadges(venue, 2, language);
+                const vd = getVenueDisplay(venue, language);
                 return (
                   <div
                     key={venue.slug}
@@ -828,7 +827,7 @@ export default function MapPage() {
                   >
                     <div className="bl-map-list-item-top">
                       <p className="bl-map-list-item-category">
-                        {venue.category}
+                        {dictionary.categoryNames[venue.categorySlug] ?? venue.category}
                       </p>
                       {isActive ? (
                         <span className="bl-map-list-item-selected">
@@ -840,7 +839,7 @@ export default function MapPage() {
                     <h3 className="bl-map-list-item-title">{venue.name}</h3>
                     <p className="bl-map-list-item-area">📍 {venue.area}</p>
                     <p className="bl-map-list-item-description">
-                      {venue.shortDescription ?? venue.description}
+                      {vd.shortDescription ?? vd.description}
                     </p>
 
                     {badges.length > 0 ? (

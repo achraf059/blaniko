@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { CollectionPicker } from "../collections/CollectionPicker";
 import { CompareToggle } from "../compare/CompareToggle";
 import { type Venue } from "../../data/mockData";
+import type { AppLanguage } from "../../i18n/types";
 import {
   getBestForBadges,
   getVenuePersonalitySignals,
@@ -24,11 +25,13 @@ type VenueCardProps = {
   onToggleFavorite?: (slug: string) => void;
   showCollectionPicker?: boolean;
   showCompareToggle?: boolean;
+  language?: AppLanguage;
   labels?: {
     featured: string;
     viewDetails: string;
     saveFavorite: string;
     removeFavorite: string;
+    whyThisPlace: string;
   };
 };
 
@@ -46,18 +49,20 @@ export function VenueCard({
   onToggleFavorite,
   showCollectionPicker = false,
   showCompareToggle = false,
+  language = "en",
   labels,
 }: VenueCardProps) {
   const featuredLabel = labels?.featured ?? "Featured";
   const viewDetailsLabel = labels?.viewDetails ?? "View details";
   const saveFavoriteLabel = labels?.saveFavorite ?? "Save";
   const removeFavoriteLabel = labels?.removeFavorite ?? "Saved";
+  const whyThisPlaceLabel = labels?.whyThisPlace ?? "Why this place?";
   const areaPreview = area.split(",")[0]?.trim() ?? area;
-  const bestForBadges = getBestForBadges({ description, ...personality });
-  const personalitySignals = getVenuePersonalitySignals({
-    description,
-    ...personality,
-  }).slice(0, 3);
+  const bestForBadges = getBestForBadges({ description, ...personality }, 3, language);
+  const personalitySignals = getVenuePersonalitySignals(
+    { description, ...personality },
+    language,
+  ).slice(0, 3);
 
   return (
     <article className="bl-home-venue-card">
@@ -123,7 +128,7 @@ export function VenueCard({
 
         {whyChips && whyChips.length > 0 ? (
           <div className="bl-home-venue-why">
-            <p className="bl-home-venue-why-title">Why this place?</p>
+            <p className="bl-home-venue-why-title">{whyThisPlaceLabel}</p>
             <div className="bl-home-venue-why-list">
               {whyChips.map((chip) => (
                 <span key={chip} className="bl-home-venue-why-chip">

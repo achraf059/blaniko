@@ -2,15 +2,18 @@ import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import {
   editorialCollections,
+  getCollectionDisplay,
   resolveEditorialCollectionVenues,
 } from "../data/editorialCollections";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import "./HomePage.css";
 import "./GuidesPage.css";
 
 export default function GuidesPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
   const { venues } = useVenues();
 
   return (
@@ -19,16 +22,14 @@ export default function GuidesPage() {
 
       <main className="bl-guides-main">
         <section className="bl-guides-hero">
-          <p className="bl-guides-eyebrow">Blaniko picks</p>
-          <h1 className="bl-guides-title">Curated city guides</h1>
-          <p className="bl-guides-subtitle">
-            Local-first collections built to help you choose faster: date plans,
-            budget picks, coworking cafés, sunset routes, and social nights.
-          </p>
+          <p className="bl-guides-eyebrow">{text.guidesPage.eyebrow}</p>
+          <h1 className="bl-guides-title">{text.guidesPage.title}</h1>
+          <p className="bl-guides-subtitle">{text.guidesPage.subtitle}</p>
         </section>
 
         <section className="bl-guides-grid">
           {editorialCollections.map((collection) => {
+            const display = getCollectionDisplay(collection, language);
             const matchedVenues = resolveEditorialCollectionVenues(
               collection,
               venues,
@@ -37,26 +38,34 @@ export default function GuidesPage() {
             return (
               <article key={collection.id} className="bl-guides-card">
                 <div className="bl-guides-card-head">
-                  <p className="bl-guides-card-kicker">Editorial collection</p>
-                  <h2>{collection.title}</h2>
+                  <p className="bl-guides-card-kicker">
+                    {text.guidesPage.editorialCollection}
+                  </p>
+                  <h2>{display.title}</h2>
                 </div>
 
-                <p className="bl-guides-card-subtitle">{collection.subtitle}</p>
+                <p className="bl-guides-card-subtitle">{display.subtitle}</p>
                 <p className="bl-guides-card-description">
-                  {collection.description}
+                  {display.description}
                 </p>
 
-                {collection.explanationChips?.length ? (
+                {display.explanationChips?.length ? (
                   <div className="bl-guides-card-chips">
-                    {collection.explanationChips.map((chip) => (
+                    {display.explanationChips.map((chip) => (
                       <span key={`${collection.slug}-${chip}`}>{chip}</span>
                     ))}
                   </div>
                 ) : null}
 
                 <div className="bl-guides-card-meta">
-                  <p>{matchedVenues.length} matched venues</p>
-                  <Link to={`/guides/${collection.slug}`}>Open guide →</Link>
+                  <p>
+                    {formatFlowText(text.guidesPage.matchedVenues, {
+                      count: matchedVenues.length,
+                    })}
+                  </p>
+                  <Link to={`/guides/${collection.slug}`}>
+                    {text.guidesPage.openGuide} →
+                  </Link>
                 </div>
               </article>
             );

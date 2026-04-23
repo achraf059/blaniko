@@ -1,5 +1,15 @@
 import type { AppLanguage } from "./types";
 
+type PlanStyleDisplay = {
+  label: string;
+  subtitle: string;
+  vibeLine: string;
+  roleHints: { start: string; main: string; end: string };
+  explanationChips: readonly string[];
+  summaryTone: { pace: string; moment: string };
+  resultSubtitle: string;
+};
+
 const byLanguage = {
   en: {
     common: {
@@ -263,6 +273,106 @@ const byLanguage = {
       startPick: "Start pick",
       mainPick: "Main pick",
       followUpPick: "Follow-up pick",
+      noBetterReplacement: "No better replacement found for this stop right now.",
+      stopUpdated: "{stage} stop updated.",
+      refreshedLocked: "Outing refreshed while keeping your locked stops.",
+      refreshedNew: "Outing refreshed with a new sequence.",
+      moodPrefix: "{mood} mood",
+      budgetAny: "Any budget",
+      areaAny: "Any area",
+      areaPrefix: "Area",
+      chipSuffix: "pick",
+      subjectFallback: "venues",
+      narrative3Stops: "A {pace} in {area} for {companion}, with {start}, {main} and {end} ({budget}).",
+      narrative2Stops: "A {pace} in {area} for {companion}, with {start} and {main} ({budget}).",
+      narrative1Stop: "A {pace} in {area} for {companion} with a {moment} single-stop option ({budget}).",
+      budgetText: {
+        "$": "budget-friendly",
+        "$$$": "premium",
+        all: "flexible-budget",
+        default: "balanced-budget",
+      },
+      moodRoleHints: {
+        active: { start: "Warm-up", main: "Peak movement", end: "Recovery" },
+        romantic: { start: "Slow start", main: "Shared highlight", end: "Soft finish" },
+        "family-friendly": { start: "Easy beginning", main: "Family highlight", end: "Calm wrap-up" },
+        default: { start: "Warm-up", main: "Main moment", end: "Wind-down" },
+      },
+      areaNames: {
+        maarif: "Maarif",
+        gauthier: "Gauthier",
+        "ain diab": "Ain Diab",
+        racine: "Racine",
+        anfa: "Anfa",
+        "old medina": "Old Medina",
+        marina: "Marina",
+        bourgogne: "Bourgogne",
+      },
+      planStyles: {
+        "date-night": {
+          label: "Date night",
+          subtitle: "Soft pace, romantic vibe, intimate stops.",
+          vibeLine: "Intentional romance",
+          roleHints: { start: "Warm connection", main: "Signature shared moment", end: "Soft afterglow" },
+          explanationChips: ["Romantic pacing", "Intimate-friendly picks"],
+          summaryTone: { pace: "relaxed evening", moment: "cozy" },
+          resultSubtitle: "Sequenced for chemistry: gentle opener, romantic highlight, easy finish.",
+        },
+        "friends-hangout": {
+          label: "Friends hangout",
+          subtitle: "Social energy with easy group flow.",
+          vibeLine: "Group energy",
+          roleHints: { start: "Group warm-up", main: "Social peak", end: "Easy follow-up" },
+          explanationChips: ["Group-friendly categories", "Easy social transitions"],
+          summaryTone: { pace: "social city run", moment: "lively" },
+          resultSubtitle: "Built for groups: quick start, high-energy main stop, then a no-stress wrap-up.",
+        },
+        "chill-solo-reset": {
+          label: "Chill solo reset",
+          subtitle: "Quiet, low-pressure flow for one.",
+          vibeLine: "Low-noise reset",
+          roleHints: { start: "Slow start", main: "Reset block", end: "Gentle close" },
+          explanationChips: ["Quiet-first spots", "Low-pressure flow"],
+          summaryTone: { pace: "quiet reset", moment: "calm" },
+          resultSubtitle: "A minimal plan: quiet opener, focused center, and a soft close.",
+        },
+        "under-100-mad": {
+          label: "Under 100 MAD",
+          subtitle: "Budget-first without losing quality.",
+          vibeLine: "Value mode",
+          roleHints: { start: "Low-cost warm-up", main: "Value highlight", end: "Budget-friendly finish" },
+          explanationChips: ["Price-sensitive picks", "Repeatable low-cost route"],
+          summaryTone: { pace: "budget-friendly afternoon", moment: "practical" },
+          resultSubtitle: "Value-first sequencing with simple, repeatable city stops.",
+        },
+        "productive-afternoon": {
+          label: "Productive afternoon",
+          subtitle: "Focus-friendly stops and practical transitions.",
+          vibeLine: "Focus arc",
+          roleHints: { start: "Coffee setup", main: "Deep-work block", end: "Decompress" },
+          explanationChips: ["Work-friendly sequencing", "Practical area priority"],
+          summaryTone: { pace: "focused city session", moment: "productive" },
+          resultSubtitle: "A work-ready sequence with a clean focus arc and a light close.",
+        },
+        "sunset-plan": {
+          label: "Sunset plan",
+          subtitle: "Golden-hour route with coastal energy.",
+          vibeLine: "Golden-hour flow",
+          roleHints: { start: "Golden-hour start", main: "Sunset main stop", end: "Night glide" },
+          explanationChips: ["Sunset-friendly areas", "Scenic sequence"],
+          summaryTone: { pace: "sunset route", moment: "scenic" },
+          resultSubtitle: "Timed for golden hour: coastal opener, view-heavy middle, smooth evening end.",
+        },
+        "family-afternoon": {
+          label: "Family afternoon",
+          subtitle: "Kid-friendly rhythm with easy logistics.",
+          vibeLine: "Family comfort",
+          roleHints: { start: "Easy start", main: "Family highlight", end: "Calm close" },
+          explanationChips: ["Kid-friendly bias", "Low-friction transitions"],
+          summaryTone: { pace: "family-friendly afternoon", moment: "comfortable" },
+          resultSubtitle: "Structured for families: low-friction start, kid-friendly core, calm finish.",
+        },
+      },
     },
   },
   fr: {
@@ -529,12 +639,121 @@ const byLanguage = {
       startPick: "Départ",
       mainPick: "Principal",
       followUpPick: "Suite",
+      noBetterReplacement: "Aucune meilleure alternative trouvée pour cette étape pour le moment.",
+      stopUpdated: "Étape {stage} mise à jour.",
+      refreshedLocked: "Sortie actualisée en gardant vos étapes verrouillées.",
+      refreshedNew: "Sortie actualisée avec une nouvelle séquence.",
+      moodPrefix: "Ambiance {mood}",
+      budgetAny: "Tous budgets",
+      areaAny: "Tous les quartiers",
+      areaPrefix: "Quartier",
+      chipSuffix: "sélection",
+      subjectFallback: "lieux",
+      narrative3Stops: "{pace} à {area} pour {companion}, avec {start}, {main} et {end} ({budget}).",
+      narrative2Stops: "{pace} à {area} pour {companion}, avec {start} et {main} ({budget}).",
+      narrative1Stop: "{pace} à {area} pour {companion} avec une option single-stop {moment} ({budget}).",
+      budgetText: {
+        "$": "accessible",
+        "$$$": "premium",
+        all: "flexible",
+        default: "équilibré",
+      },
+      moodRoleHints: {
+        active: { start: "Échauffement", main: "Pic mouvement", end: "Récupération" },
+        romantic: { start: "Départ lent", main: "Highlight partagé", end: "Final doux" },
+        "family-friendly": { start: "Début easy", main: "Highlight famille", end: "Close calme" },
+        default: { start: "Échauffement", main: "Moment principal", end: "Décompression" },
+      },
+      areaNames: {
+        maarif: "Maarif",
+        gauthier: "Gauthier",
+        "ain diab": "Ain Diab",
+        racine: "Racine",
+        anfa: "Anfa",
+        "old medina": "Ancienne Médina",
+        marina: "Marina",
+       bourgogne: "Bourgogne",
+      },
+      planStyles: {
+        "date-night": {
+          label: "Sortie en duo",
+          subtitle: "Ambiance romantique, étapes intimes.",
+          vibeLine: "Romance intentionnelle",
+          roleHints: { start: "Connexion progressive", main: "Moment partagé signature", end: "Délicat reflux" },
+          explanationChips: ["Enchaînement romantique", "Choix favorables à l'intimité"],
+          summaryTone: { pace: "soirée décontractée", moment: "cosy" },
+          resultSubtitle: "Cheminement pour la chimie : ouverture douce, highlight romantique, finale simple.",
+        },
+        "friends-hangout": {
+          label: "Sortie entre amis",
+          subtitle: "Énergie sociale et flux de groupe simple.",
+          vibeLine: "Énergie de groupe",
+          roleHints: { start: "Échauffement collectif", main: "Pic social", end: "Suite décontractée" },
+          explanationChips: ["Catégories favorables aux groupes", "Transitions sociales simples"],
+          summaryTone: { pace: "parcours citadin entre amis", moment: "vivant" },
+          resultSubtitle: "Conçu pour les groupes : départ rapide, étape principale haute énergie, puis clôture sans stress.",
+        },
+        "chill-solo-reset": {
+          label: "Reset solo",
+          subtitle: "Flux calme, sans pression, pour une personne.",
+          vibeLine: "Reset au calme",
+          roleHints: { start: "Départ lent", main: "Bloc reset", end: "Fermeture douce" },
+          explanationChips: ["Spots privilégiant le calme", "Flux basse pression"],
+          summaryTone: { pace: "reset au calme", moment: "tranquille" },
+          resultSubtitle: "Plan minimal : ouverture silencieuse, centre concentré, et close soft.",
+        },
+        "under-100-mad": {
+          label: "Moins de 100 MAD",
+          subtitle: "Priorité budget sans perdre en qualité.",
+          vibeLine: "Mode valeur",
+          roleHints: { start: "Échauffement à petit budget", main: "Highlight rapport qualité-prix", end: "Finalisation accessible" },
+          explanationChips: ["Choix sensibles au prix", "Itinéraire simple et peu coûteux"],
+          summaryTone: { pace: "après-midi accessible", moment: "pratique" },
+          resultSubtitle: "Séquençage axé sur la valeur avec des étapes citadines simples et répétables.",
+        },
+        "productive-afternoon": {
+          label: "Après-midi productif",
+          subtitle: "Étapes propices à la concentration et transitions pratiques.",
+          vibeLine: "Arc concentration",
+          roleHints: { start: "Mise en place café", main: "Bloc deep-work", end: "Décompression" },
+          explanationChips: ["Séquençage adapté au travail", "Priorité aux quartiers pratiques"],
+          summaryTone: { pace: "session citadine concentrée", moment: "productif" },
+          resultSubtitle: "Une séquence prête pour le travail avec un arc de concentration net et une close légère.",
+        },
+        "sunset-plan": {
+          label: "Plan coucher de soleil",
+          subtitle: "Parcours golden-hour avec énergie côtière.",
+          vibeLine: "Flux golden-hour",
+          roleHints: { start: "Départ golden-hour", main: "Étape principale au coucher", end: "Glisse nocturne" },
+          explanationChips: ["Quartiers favorables au coucher de soleil", "Séquence panoramique"],
+          summaryTone: { pace: "parcours coucher de soleil", moment: "scénique" },
+          resultSubtitle: "Calé pour golden hour : ouverture côtière, milieu avec vues, finale douce en soirée.",
+        },
+        "family-afternoon": {
+          label: "Après-midi en famille",
+          subtitle: "Rythme adapté aux enfants, logistique simple.",
+          vibeLine: "Confort famille",
+          roleHints: { start: "Départ easy", main: "Highlight famille", end: "Close calme" },
+          explanationChips: ["Biais enfants", "Transitions à faible friction"],
+          summaryTone: { pace: "après-midi adapté aux familles", moment: "confortable" },
+          resultSubtitle: "Structuré pour les familles : départ à faible friction, cœur adapté aux enfants, finale calme.",
+        },
+      },
     },
   },
 } as const;
 
 export function getFlowTexts(language: AppLanguage) {
   return byLanguage[language] ?? byLanguage.en;
+}
+
+export function getPlanStyleDisplay(
+  language: AppLanguage,
+  styleId: string,
+): PlanStyleDisplay {
+  const text = getFlowTexts(language);
+  const map = text.planPage.planStyles as Record<string, PlanStyleDisplay>;
+  return map[styleId] ?? map["friends-hangout"];
 }
 
 export function formatFlowText(template: string, params: Record<string, string | number>) {

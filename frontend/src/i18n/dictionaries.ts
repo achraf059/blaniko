@@ -111,6 +111,7 @@ export type Dictionary = {
     compareClear: string;
     compareGo: string;
   };
+  categoryNames: Record<string, string>;
   categoryDescriptions: Record<string, string>;
   categoryPage: {
     backHome: string;
@@ -125,6 +126,7 @@ export type Dictionary = {
     viewDetails: string;
     saveFavorite: string;
     removeFavorite: string;
+    whyThisPlace: string;
   };
   venuePage: {
     backToHome: string;
@@ -146,6 +148,7 @@ export type Dictionary = {
     fallbackPriceLevel: string;
     saveFavorite: string;
     removeFavorite: string;
+    unknownCategory: string;
   };
   searchPage: {
     eyebrow: string;
@@ -239,6 +242,14 @@ export type Dictionary = {
     deleteConfirm: string;
     savedFeedback: string;
     deletedFeedback: string;
+    errNameRequired: string;
+    errCategoryRequired: string;
+    errAreaRequired: string;
+    errBudgetFormat: string;
+    errShortDescriptionRequired: string;
+    errCoordsBothRequired: string;
+    errLatitudeRange: string;
+    errLongitudeRange: string;
   };
 };
 
@@ -361,6 +372,17 @@ const en: Dictionary = {
     compareClear: "Clear",
     compareGo: "Compare",
   },
+  categoryNames: {
+    cafes: "Cafes",
+    restaurants: "Restaurants",
+    activities: "Activities",
+    sports: "Sports",
+    gaming: "Gaming",
+    outdoor: "Outdoor",
+    family: "Family",
+    couples: "Couples",
+    friends: "Friends",
+  },
   categoryDescriptions: {
     cafes: "Coffee spots and chill city corners across Casablanca.",
     restaurants: "Local favorites and modern dining places in the city.",
@@ -386,6 +408,7 @@ const en: Dictionary = {
     viewDetails: "View details",
     saveFavorite: "Save",
     removeFavorite: "Saved",
+    whyThisPlace: "Why this place?",
   },
   venuePage: {
     backToHome: "Back to homepage",
@@ -409,6 +432,7 @@ const en: Dictionary = {
     fallbackPriceLevel: "$$",
     saveFavorite: "Save to favorites",
     removeFavorite: "Remove from favorites",
+    unknownCategory: "Venue",
   },
   searchPage: {
     eyebrow: "Discovery results",
@@ -504,6 +528,14 @@ const en: Dictionary = {
     deleteConfirm: "Delete this venue from local admin data?",
     savedFeedback: "Venue saved locally.",
     deletedFeedback: "Venue deleted locally.",
+    errNameRequired: "Name is required.",
+    errCategoryRequired: "Category is required.",
+    errAreaRequired: "Area is required.",
+    errBudgetFormat: "Budget must be $, $$ or $$$.",
+    errShortDescriptionRequired: "Short description is required.",
+    errCoordsBothRequired: "Both latitude and longitude are required together.",
+    errLatitudeRange: "Latitude must be between -90 and 90.",
+    errLongitudeRange: "Longitude must be between -180 and 180.",
   },
 };
 
@@ -628,6 +660,17 @@ const fr: Dictionary = {
     compareClear: "Effacer",
     compareGo: "Comparer",
   },
+  categoryNames: {
+    cafes: "Cafés",
+    restaurants: "Restaurants",
+    activities: "Activités",
+    sports: "Sports",
+    gaming: "Gaming",
+    outdoor: "Plein air",
+    family: "Famille",
+    couples: "Couples",
+    friends: "Amis",
+  },
   categoryDescriptions: {
     cafes: "Des cafés et coins détente partout à Casablanca.",
     restaurants: "Des adresses locales et des restaurants modernes en ville.",
@@ -653,6 +696,7 @@ const fr: Dictionary = {
     viewDetails: "Voir les détails",
     saveFavorite: "Enregistrer",
     removeFavorite: "Enregistré",
+    whyThisPlace: "Pourquoi cet endroit ?",
   },
   venuePage: {
     backToHome: "Retour à l'accueil",
@@ -676,6 +720,7 @@ const fr: Dictionary = {
     fallbackPriceLevel: "$$",
     saveFavorite: "Ajouter aux favoris",
     removeFavorite: "Retirer des favoris",
+    unknownCategory: "Lieu",
   },
   searchPage: {
     eyebrow: "Résultats découverte",
@@ -775,6 +820,14 @@ const fr: Dictionary = {
     deleteConfirm: "Supprimer ce lieu des données admin locales ?",
     savedFeedback: "Lieu enregistré localement.",
     deletedFeedback: "Lieu supprimé localement.",
+    errNameRequired: "Le nom est requis.",
+    errCategoryRequired: "La catégorie est requise.",
+    errAreaRequired: "Le quartier est requis.",
+    errBudgetFormat: "Le budget doit être $, $$ ou $$$.",
+    errShortDescriptionRequired: "La description courte est requise.",
+    errCoordsBothRequired: "Latitude et longitude sont requises ensemble.",
+    errLatitudeRange: "La latitude doit être entre -90 et 90.",
+    errLongitudeRange: "La longitude doit être entre -180 et 180.",
   },
 };
 

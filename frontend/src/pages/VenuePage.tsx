@@ -3,10 +3,12 @@ import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { CollectionPicker } from "../components/collections/CollectionPicker";
 import { CompareToggle } from "../components/compare/CompareToggle";
 import { HomeHeader } from "../components/home/HomeHeader";
+import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { getFlowTexts } from "../i18n/flowTexts";
 import {
   explainVenueMatch,
   isDiscoveryCompanion,
@@ -20,7 +22,8 @@ export default function VenuePage() {
   const { slug } = useParams();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
   const { venues, getVenueBySlug } = useVenues();
@@ -79,35 +82,37 @@ export default function VenuePage() {
                         : from === "plan"
                           ? withContext("/plan")
                           : "/";
+
   const backLabel =
     from === "category" && isValidSlug
       ? dictionary.venuePage.backToCategory
       : from === "area" && isValidAreaSlug
-        ? "Back to neighborhood"
+        ? text.venuePage.backNeighborhood
         : from === "favorites"
           ? dictionary.venuePage.backToFavorites
           : from === "collections"
-            ? "Back to collections"
+            ? text.venuePage.backCollections
             : from === "compare"
-              ? "Back to compare"
+              ? text.venuePage.backCompare
               : from === "guides"
-                ? "Back to guides"
+                ? text.venuePage.backGuides
                 : from === "venue" && isValidSourceVenueSlug
-                  ? "Back to previous venue"
+                  ? text.venuePage.backPreviousVenue
                   : from === "map"
                     ? dictionary.venuePage.backToMap
                     : from === "search"
-                      ? "Back to search results"
+                      ? text.venuePage.backSearchResults
                       : from === "recommendations"
-                        ? "Back to recommendations"
+                        ? text.venuePage.backRecommendations
                         : from === "plan"
-                          ? "Back to planner"
+                          ? text.venuePage.backPlanner
                           : dictionary.venuePage.backToHome;
 
   const venue = slug ? getVenueBySlug(slug) : undefined;
   const similarVenues = useMemo(
-    () => (venue ? rankVenueAlternatives(venue, venues, 4) : []),
-    [venue, venues],
+    () =>
+      venue ? rankVenueAlternatives(venue, venues, 4, language) : [],
+    [venue, venues, language],
   );
 
   useEffect(() => {
@@ -147,15 +152,18 @@ export default function VenuePage() {
     );
   }
 
-  const shortDescription = venue.shortDescription ?? venue.description;
+  const vd = getVenueDisplay(venue, language);
+  const categoryName =
+    dictionary.categoryNames[venue.categorySlug] ?? dictionary.venuePage.unknownCategory;
+  const shortDescription = vd.shortDescription ?? vd.description;
   const overview =
-    venue.overview ??
+    vd.overview ??
     dictionary.venuePage.fallbackOverview
       .replace("{name}", venue.name)
-      .replace("{category}", venue.category.toLowerCase())
+      .replace("{category}", categoryName.toLowerCase())
       .replace("{area}", venue.area);
-  const vibe = venue.vibe ?? dictionary.venuePage.fallbackVibe;
-  const audience = venue.audience ?? dictionary.venuePage.fallbackAudience;
+  const vibe = vd.vibe ?? dictionary.venuePage.fallbackVibe;
+  const audience = vd.audience ?? dictionary.venuePage.fallbackAudience;
   const priceLevel =
     venue.priceLevel ?? dictionary.venuePage.fallbackPriceLevel;
   const isVenueFavorite = isFavorite(venue.slug);
@@ -170,8 +178,9 @@ export default function VenuePage() {
       area: areaFromSearch,
     },
     4,
+    language,
   );
-  const personality = getVenuePersonalitySection(venue);
+  const personality = getVenuePersonalitySection(vd, language);
 
   return (
     <div className="bl-venue-page">
@@ -188,7 +197,7 @@ export default function VenuePage() {
                 ← {backLabel}
               </Link>
 
-              <p className="bl-venue-category-pill">{venue.category}</p>
+              <p className="bl-venue-category-pill">{categoryName}</p>
 
               <h1 className="bl-venue-title">{venue.name}</h1>
 
@@ -199,7 +208,9 @@ export default function VenuePage() {
               <p className="bl-venue-short-description">{shortDescription}</p>
 
               <div className="bl-venue-why-card">
-                <p className="bl-venue-why-title">Why this place?</p>
+                <p className="bl-venue-why-title">
+                  {text.venuePage.whyThisPlace}
+                </p>
                 <div className="bl-venue-why-list">
                   {whyThisPlace.map((reason) => (
                     <span key={reason} className="bl-venue-why-chip">
@@ -211,7 +222,9 @@ export default function VenuePage() {
 
               {personality.bestFor.length > 0 ? (
                 <div className="bl-venue-why-card">
-                  <p className="bl-venue-why-title">Best for</p>
+                  <p className="bl-venue-why-title">
+                    {text.venuePage.bestFor}
+                  </p>
                   <div className="bl-venue-why-list">
                     {personality.bestFor.map((tag, index) => (
                       <span
@@ -244,7 +257,7 @@ export default function VenuePage() {
 
               <p>
                 <Link to="/collections" className="bl-venue-back-link">
-                  Open collections
+                  {text.common.openCollections}
                 </Link>
               </p>
             </div>
@@ -270,14 +283,18 @@ export default function VenuePage() {
           </div>
 
           <div className="bl-venue-overview-card bl-venue-personality-card">
-            <h2 className="bl-venue-overview-title">Venue personality</h2>
+            <h2 className="bl-venue-overview-title">
+              {text.venuePage.personalityTitle}
+            </h2>
             <p className="bl-venue-overview-text bl-venue-personality-summary">
               {personality.whyPeopleChoose}
             </p>
 
             {personality.bestTimeToGo.length > 0 ? (
               <div className="bl-venue-why-card">
-                <p className="bl-venue-why-title">Best time to go</p>
+                <p className="bl-venue-why-title">
+                  {text.venuePage.bestTimeToGo}
+                </p>
                 <div className="bl-venue-why-list">
                   {personality.bestTimeToGo.map((time, index) => (
                     <span
@@ -293,7 +310,9 @@ export default function VenuePage() {
 
             {personality.atmosphere ? (
               <div className="bl-venue-why-card">
-                <p className="bl-venue-why-title">Atmosphere</p>
+                <p className="bl-venue-why-title">
+                  {text.venuePage.atmosphere}
+                </p>
                 <p className="bl-venue-personality-atmosphere">
                   {personality.atmosphere}
                 </p>
@@ -303,7 +322,9 @@ export default function VenuePage() {
 
           <div className="bl-venue-meta-grid">
             <div className="bl-venue-meta-card">
-              <p className="bl-venue-meta-label">{dictionary.venuePage.vibe}</p>
+              <p className="bl-venue-meta-label">
+                {dictionary.venuePage.vibe}
+              </p>
               <p className="bl-venue-meta-value">{vibe}</p>
             </div>
 
@@ -326,59 +347,64 @@ export default function VenuePage() {
         {similarVenues.length > 0 ? (
           <section className="bl-venue-similar-section">
             <div className="bl-venue-similar-head">
-              <h2 className="bl-venue-overview-title">Similar places nearby</h2>
-              <p>
-                Alternatives based on area, category, vibe, and personality fit.
-              </p>
+              <h2 className="bl-venue-overview-title">
+                {text.venuePage.similarPlaces}
+              </h2>
+              <p>{text.venuePage.similarDescription}</p>
             </div>
 
             <div className="bl-venue-similar-grid">
-              {similarVenues.map(({ venue: alternative, reasons }) => (
-                <article
-                  key={alternative.slug}
-                  className="bl-venue-similar-card"
-                >
-                  <p className="bl-venue-similar-category">
-                    {alternative.category}
-                  </p>
-                  <h3 className="bl-venue-similar-name">{alternative.name}</h3>
-                  <p className="bl-venue-similar-area">📍 {alternative.area}</p>
-                  <p className="bl-venue-similar-description">
-                    {alternative.shortDescription ?? alternative.description}
-                  </p>
-
-                  {reasons.length > 0 ? (
-                    <div className="bl-venue-similar-reasons">
-                      {reasons.slice(0, 3).map((reason) => (
-                        <span key={`${alternative.slug}-${reason}`}>
-                          {reason}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  <div className="bl-venue-similar-actions">
-                    <button
-                      type="button"
-                      className={`bl-venue-favorite-btn${
-                        isFavorite(alternative.slug) ? " is-active" : ""
-                      }`}
-                      onClick={() => toggleFavorite(alternative.slug)}
+              {similarVenues.map(({ venue: alternative, reasons }) => {
+                  const adv = getVenueDisplay(alternative, language);
+                  return (
+                    <article
+                      key={alternative.slug}
+                      className="bl-venue-similar-card"
                     >
-                      {isFavorite(alternative.slug)
-                        ? dictionary.venuePage.removeFavorite
-                        : dictionary.venuePage.saveFavorite}
-                    </button>
+                      <p className="bl-venue-similar-category">
+                        {dictionary.categoryNames[alternative.categorySlug] ?? dictionary.venuePage.unknownCategory}
+                      </p>
+                      <h3 className="bl-venue-similar-name">{alternative.name}</h3>
+                      <p className="bl-venue-similar-area">
+                        📍 {alternative.area}
+                      </p>
+                      <p className="bl-venue-similar-description">
+                        {adv.shortDescription ?? adv.description}
+                      </p>
 
-                    <Link
-                      to={`/venues/${alternative.slug}?from=venue&source=${venue.slug}`}
-                      className="bl-venue-back-link"
-                    >
-                      {dictionary.venueCard.viewDetails} →
-                    </Link>
-                  </div>
-                </article>
-              ))}
+                      {reasons.length > 0 ? (
+                        <div className="bl-venue-similar-reasons">
+                          {reasons.slice(0, 3).map((reason) => (
+                            <span key={`${alternative.slug}-${reason}`}>
+                              {reason}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+
+                      <div className="bl-venue-similar-actions">
+                        <button
+                          type="button"
+                          className={`bl-venue-favorite-btn${
+                            isFavorite(alternative.slug) ? " is-active" : ""
+                          }`}
+                          onClick={() => toggleFavorite(alternative.slug)}
+                        >
+                          {isFavorite(alternative.slug)
+                            ? dictionary.venuePage.removeFavorite
+                            : dictionary.venuePage.saveFavorite}
+                        </button>
+
+                        <Link
+                          to={`/venues/${alternative.slug}?from=venue&source=${venue.slug}`}
+                          className="bl-venue-back-link"
+                        >
+                          {dictionary.venueCard.viewDetails} →
+                        </Link>
+                      </div>
+                    </article>
+                  );
+                })}
             </div>
           </section>
         ) : null}

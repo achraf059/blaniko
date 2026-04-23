@@ -5,7 +5,7 @@ import { FilterChips } from "../components/discovery/FilterChips";
 import { SearchBar } from "../components/discovery/SearchBar";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
-import { categories } from "../data/mockData";
+import { categories, getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
@@ -92,8 +92,8 @@ export default function SearchPage() {
             "outdoor",
           ].includes(category.slug),
         )
-        .map((category) => ({ value: category.slug, label: category.name })),
-    [],
+        .map((category) => ({ value: category.slug, label: dictionary.categoryNames[category.slug] ?? category.name })),
+    [dictionary.categoryNames],
   );
 
   const budgetOptions = [
@@ -288,7 +288,7 @@ export default function SearchPage() {
 
   const activeFilterLabels = [
     selectedCategoryName
-      ? `${dictionary.searchPage.summaryCategory}: ${selectedCategoryName}`
+      ? `${dictionary.searchPage.summaryCategory}: ${dictionary.categoryNames[selectedCategory] ?? selectedCategoryName}`
       : "",
     selectedMoodName ? `${text.searchPage.summaryMood}: ${selectedMoodName}` : "",
     selectedAreaName ? `${text.searchPage.summaryArea}: ${selectedAreaName}` : "",
@@ -309,11 +309,9 @@ export default function SearchPage() {
   ].filter(Boolean);
 
   const resultIntentSummary = useMemo(() => {
-    const subject = selectedCategoryName
-      ? selectedCategoryName.toLowerCase()
-      : language === "fr"
-        ? "lieux"
-        : "venues";
+    const subject = selectedCategory
+      ? (dictionary.categoryNames[selectedCategory] ?? selectedCategoryName).toLowerCase()
+      : text.planPage.subjectFallback;
     const prefix = selectedMoodName
       ? `${selectedMoodName.toLowerCase()} ${subject}`
       : subject;
@@ -351,9 +349,12 @@ export default function SearchPage() {
     selectedAreaName,
     selectedBestForName,
     selectedBudget,
-    selectedCategoryName,
+    selectedCategory,
     selectedEnergyName,
     selectedMoodName,
+    dictionary.categoryNames,
+    selectedCategoryName,
+    text,
   ]);
 
   const title = query.trim()
@@ -632,7 +633,7 @@ export default function SearchPage() {
             </p>
             <p>
               {dictionary.searchPage.summaryCategory}:{" "}
-              <span>{selectedCategoryName || "—"}</span>
+              <span>{selectedCategory ? dictionary.categoryNames[selectedCategory] ?? selectedCategoryName : "—"}</span>
             </p>
             <p>
               {text.searchPage.summaryMood}: <span>{selectedMoodName || "—"}</span>
@@ -680,35 +681,39 @@ export default function SearchPage() {
         {filteredVenues.length > 0 ? (
           <section className="bl-search-results">
             <div className="bl-home-venues-grid">
-              {filteredVenues.map((venue) => (
-                <VenueCard
-                  key={venue.slug}
-                  slug={venue.slug}
-                  category={venue.category}
-                  name={venue.name}
-                  area={venue.area}
-                  description={venue.description}
-                  personality={{
-                    bestForTags: venue.bestForTags,
-                    timeOfDay: venue.timeOfDay,
-                    energyLevel: venue.energyLevel,
-                    socialLevel: venue.socialLevel,
-                    spaceType: venue.spaceType,
-                  }}
-                  whyChips={explainVenueMatch(venue, {
-                    query,
-                    category: selectedCategory || undefined,
-                    budget: selectedBudget,
-                    mood: selectedMoodValue,
-                  }, 3, language)}
-                  href={buildVenueHref(venue.slug)}
-                  isFavorite={isFavorite(venue.slug)}
-                  onToggleFavorite={toggleFavorite}
-                  showCollectionPicker
-                  showCompareToggle
-                  labels={dictionary.venueCard}
-                />
-              ))}
+              {filteredVenues.map((venue) => {
+                const vd = getVenueDisplay(venue, language);
+                return (
+                  <VenueCard
+                    key={venue.slug}
+                    slug={venue.slug}
+                    category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
+                    name={venue.name}
+                    area={venue.area}
+                    description={vd.description}
+                    personality={{
+                      bestForTags: venue.bestForTags,
+                      timeOfDay: venue.timeOfDay,
+                      energyLevel: venue.energyLevel,
+                      socialLevel: venue.socialLevel,
+                      spaceType: venue.spaceType,
+                    }}
+                    whyChips={explainVenueMatch(venue, {
+                      query,
+                      category: selectedCategory || undefined,
+                      budget: selectedBudget,
+                      mood: selectedMoodValue,
+                    }, 3, language)}
+                    href={buildVenueHref(venue.slug)}
+                    isFavorite={isFavorite(venue.slug)}
+                    onToggleFavorite={toggleFavorite}
+                    showCollectionPicker
+                    showCompareToggle
+                    language={language}
+                    labels={dictionary.venueCard}
+                  />
+                );
+              })}
             </div>
           </section>
         ) : (

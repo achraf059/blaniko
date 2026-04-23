@@ -1,7 +1,18 @@
+import type { AppLanguage } from "../i18n/types";
+
 export type Category = {
   slug: string;
   name: string;
   description: string;
+};
+
+type VenueTranslation = {
+  description: string;
+  shortDescription?: string;
+  overview?: string;
+  vibe?: string;
+  vibeSummary?: string;
+  audience?: string;
 };
 
 export type Venue = {
@@ -26,7 +37,23 @@ export type Venue = {
   energyLevel?: "low" | "medium" | "high";
   socialLevel?: "low" | "medium" | "high";
   spaceType?: "indoor" | "outdoor" | "mixed";
+  translations?: Partial<Record<Exclude<AppLanguage, "en">, VenueTranslation>>;
 };
+
+export function getVenueDisplay(
+  venue: Venue,
+  language: AppLanguage,
+): Omit<Venue, "translations"> {
+  if (language !== "en" && venue.translations?.[language]) {
+    const t = venue.translations[language]!;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { translations: _t, ...base } = venue;
+    return { ...base, ...t };
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { translations: _t, ...base } = venue;
+  return base;
+}
 
 export const categories: Category[] = [
   {
@@ -99,6 +126,19 @@ export const venues: Venue[] = [
     energyLevel: "low",
     socialLevel: "medium",
     spaceType: "mixed",
+    translations: {
+      fr: {
+        description:
+          "Café en rooftop avec vue sur le coucher de soleil et une atmosphère urbaine calme.",
+        shortDescription:
+          "Café en rooftop avec vue sur le coucher de soleil et une atmosphère urbaine calme.",
+        overview:
+          "Skyline Rooftop Cafe est une adresse fiable à Maarif pour les réunions café, le télétravail et les soirées décontractées. Le cadre en rooftop offre une vue dégagée sur le quartier, surtout au coucher du soleil. Le service est simple et agréable, avec une carte axée sur le café, les boissons fraîches et les snacks légers.",
+        vibe: "Calme, rooftop, moderne",
+        vibeSummary: "Énergie rooftop détendue avec une vue citadine soignée.",
+        audience: "Télétravailleurs, couples, petits groupes",
+      },
+    },
   },
   {
     slug: "bean-district",
@@ -122,6 +162,19 @@ export const venues: Venue[] = [
     energyLevel: "low",
     socialLevel: "low",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Adresse café spécialisé avec un espace calme pour travailler et se réunir.",
+        shortDescription:
+          "Adresse café spécialisé avec un espace calme pour travailler et se réunir.",
+        overview:
+          "Bean District est un café spécialisé compact à Gauthier, reconnu pour son espresso constant et son atmosphère concentrée. Idéal pour les courtes sessions laptop, les réunions clients ou une pause café rapide au centre de Casablanca. Les places sont limitées aux heures de pointe ; les matins offrent généralement l'expérience la plus calme.",
+        vibe: "Minimal, concentré, calme",
+        vibeSummary: "Café spécialisé concentré pour les sessions de travail intensives.",
+        audience: "Amateurs de café, freelancers, professionnels",
+      },
+    },
   },
   {
     slug: "beldi-table-kitchen",
@@ -145,6 +198,19 @@ export const venues: Venue[] = [
     energyLevel: "medium",
     socialLevel: "medium",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Restaurant marocain moderne avec des plats de saison et un service chaleureux.",
+        shortDescription:
+          "Restaurant marocain moderne avec des plats de saison et un service chaleureux.",
+        overview:
+          "Beldi Table Kitchen propose une carte marocaine contemporaine dans un cadre décontracté à Racine. L'espace convient aux dîners informels comme aux petites célébrations, avec un accent clair sur les saveurs locales et les produits frais. C'est un bon choix pour ceux qui recherchent une expérience restaurant moderne sans atmosphère formelle.",
+        vibe: "Chaleureux, local, contemporain",
+        vibeSummary: "Gastronomie marocaine moderne chaleureuse avec une touche soignée.",
+        audience: "Couples, familles, amateurs de bonne cuisine",
+      },
+    },
   },
   {
     slug: "ocean-drive-padel-club",
@@ -168,6 +234,19 @@ export const venues: Venue[] = [
     energyLevel: "high",
     socialLevel: "high",
     spaceType: "outdoor",
+    translations: {
+      fr: {
+        description:
+          "Club de padel bien entretenu avec coaching et créneaux de matchs conviviaux.",
+        shortDescription:
+          "Club de padel bien entretenu avec coaching et créneaux de matchs conviviaux.",
+        overview:
+          "Ocean Drive Padel Club à Ain Diab est l'une des options les plus pratiques pour les joueurs de niveau débutant à intermédiaire. Les courts sont modernes, la réservation est simple, et les créneaux du soir sont généralement animés. C'est aussi un lieu social où les groupes organisent régulièrement des matchs amicaux.",
+        vibe: "Actif, social, côtier",
+        vibeSummary: "Sessions de padel énergiques avec une belle dynamique sociale.",
+        audience: "Joueurs de padel, groupes d'amis, débutants",
+      },
+    },
   },
   {
     slug: "pulse-fit-studio",
@@ -191,6 +270,19 @@ export const venues: Venue[] = [
     energyLevel: "high",
     socialLevel: "medium",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Salle de sport avec cours collectifs, sessions de renforcement et abonnements flexibles.",
+        shortDescription:
+          "Salle de sport avec cours collectifs, sessions de renforcement et abonnements flexibles.",
+        overview:
+          "Pulse Fit Studio est un espace d'entraînement de quartier à Bourgogne. Il combine de petits groupes, des cours axés sur le cardio et un renforcement musculaire de base en un seul endroit. L'atmosphère est bienveillante et pratique, ce qui en fait une bonne option pour ceux qui construisent une routine régulière.",
+        vibe: "Motivant, actif, communautaire",
+        vibeSummary: "Ambiance studio communautaire pour des blocs d'entraînement disciplinés.",
+        audience: "Jeunes professionnels, débutants, sportifs réguliers",
+      },
+    },
   },
   {
     slug: "old-medina-food-walk",
@@ -214,6 +306,19 @@ export const venues: Venue[] = [
     energyLevel: "medium",
     socialLevel: "high",
     spaceType: "outdoor",
+    translations: {
+      fr: {
+        description:
+          "Balade gourmande guidée à travers les adresses street-food de l'Ancienne Médina.",
+        shortDescription:
+          "Balade gourmande guidée à travers les adresses street-food de l'Ancienne Médina.",
+        overview:
+          "Old Medina Food Walk est une activité de découverte construite autour de la culture street-food de Casablanca. Le parcours mêle arrêts snacks classiques, histoires de vendeurs locaux et contexte pratique sur le quartier. Idéal pour les premiers visiteurs ou les résidents qui veulent renouer avec les saveurs de la vieille ville.",
+        vibe: "Culturel, local, animé",
+        vibeSummary: "Parcours culturel animé à travers les saveurs locales classiques.",
+        audience: "Visiteurs, explorateurs culinaires, amis",
+      },
+    },
   },
   {
     slug: "pixel-arena",
@@ -237,6 +342,19 @@ export const venues: Venue[] = [
     energyLevel: "high",
     socialLevel: "high",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Gaming lounge avec consoles, mini-tournois et sessions conviviales.",
+        shortDescription:
+          "Gaming lounge avec consoles, mini-tournois et sessions conviviales.",
+        overview:
+          "Pixel Arena est un gaming lounge central à Gauthier axé sur les sessions sociales plutôt que l'esport formel. L'espace propose des consoles modernes, des tournois hebdomadaires rotatifs et des places adaptées aux groupes. C'est une option populaire en soirée pour les étudiants et jeunes professionnels en quête de divertissement casual.",
+        vibe: "Fun, social, compétitif",
+        vibeSummary: "Lounge casual-compétitif pour les soirées gaming entre amis.",
+        audience: "Gamers, étudiants, groupes d'amis",
+      },
+    },
   },
   {
     slug: "marina-sunset-walk",
@@ -260,6 +378,19 @@ export const venues: Venue[] = [
     energyLevel: "low",
     socialLevel: "medium",
     spaceType: "outdoor",
+    translations: {
+      fr: {
+        description:
+          "Promenade en bord de mer avec vue sur l'océan, particulièrement appréciée au coucher du soleil.",
+        shortDescription:
+          "Promenade en bord de mer avec vue sur l'océan, particulièrement appréciée au coucher du soleil.",
+        overview:
+          "Marina Sunset Walk est un plan outdoor accessible le long du front de mer de Casablanca. Idéal pour les promenades en soirée, les conversations légères et les pauses photo près de la mer. Le parcours est facile, ouvert et accessible à la plupart des tranches d'âge.",
+        vibe: "En plein air, calme, panoramique",
+        vibeSummary: "Parcours en bord de mer pensé pour les douces heures du coucher de soleil.",
+        audience: "Couples, familles, promeneurs",
+      },
+    },
   },
   {
     slug: "ain-diab-bike-loop",
@@ -283,6 +414,19 @@ export const venues: Venue[] = [
     energyLevel: "medium",
     socialLevel: "medium",
     spaceType: "outdoor",
+    translations: {
+      fr: {
+        description:
+          "Parcours cyclable facile le long de la côte avec vue sur la mer et grands espaces.",
+        shortDescription:
+          "Parcours cyclable facile le long de la côte avec vue sur la mer et grands espaces.",
+        overview:
+          "Ain Diab Bike Loop est un plan outdoor simple pour un exercice léger et de l'air frais au bord de la côte. Le parcours est plat et accessible aux débutants, idéal pour les cyclistes occasionnels et les sorties de groupe du week-end. Il est particulièrement agréable en fin d'après-midi quand le coin est moins chaud.",
+        vibe: "Air frais, actif, côtier",
+        vibeSummary: "Boucle d'activité côtière avec une belle bouffée d'air pur.",
+        audience: "Amis, couples, cyclistes débutants",
+      },
+    },
   },
   {
     slug: "kids-play-garden",
@@ -306,6 +450,19 @@ export const venues: Venue[] = [
     energyLevel: "medium",
     socialLevel: "medium",
     spaceType: "outdoor",
+    translations: {
+      fr: {
+        description:
+          "Espace de jeux familial avec zones sécurisées et sièges pour les parents.",
+        shortDescription:
+          "Espace de jeux familial avec zones sécurisées et sièges pour les parents.",
+        overview:
+          "Kids Play Garden à Anfa est conçu pour les familles qui veulent une sortie week-end simple et sécurisée. Il combine des espaces de jeux en plein air, des sièges ombragés pour les parents et des options snacks à proximité. Le lieu est plus actif en fin d'après-midi et les week-ends.",
+        vibe: "Familial, sécurisé, détendu",
+        vibeSummary: "Plan familial sécurisé avec un rythme week-end sans friction.",
+        audience: "Parents, enfants, groupes familiaux",
+      },
+    },
   },
   {
     slug: "anfa-family-workshop-house",
@@ -329,6 +486,19 @@ export const venues: Venue[] = [
     energyLevel: "medium",
     socialLevel: "medium",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Ateliers créatifs du week-end pour enfants avec espace confort pour les parents.",
+        shortDescription:
+          "Ateliers créatifs du week-end pour enfants avec espace confort pour les parents.",
+        overview:
+          "Anfa Family Workshop House propose des activités créatives manuelles pour les enfants, notamment du dessin et de petits travaux artisanaux. Les parents peuvent rester sur place dans un environnement supervisé et confortable. C'est une option familiale pratique pour des plans week-end calmes à Casablanca.",
+        vibe: "Créatif, familial, accueillant",
+        vibeSummary: "Sessions créatives en intérieur pour les enfants et les parents.",
+        audience: "Parents, enfants, groupes familiaux",
+      },
+    },
   },
   {
     slug: "moonlight-bistro",
@@ -352,6 +522,19 @@ export const venues: Venue[] = [
     energyLevel: "low",
     socialLevel: "low",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Adresse dîner cosy avec éclairage tamisé et ambiance soirée romantique.",
+        shortDescription:
+          "Adresse dîner cosy avec éclairage tamisé et ambiance soirée romantique.",
+        overview:
+          "Moonlight Bistro est un restaurant à Racine conçu pour les soirées lentes et les dîners axés sur la conversation. Le cadre est intime, avec une bande-son apaisante et un espacement confortable entre les tables. C'est une option fiable pour les soirées en duo et les petites occasions spéciales.",
+        vibe: "Intime, calme, romantique",
+        vibeSummary: "Ambiance dîner intime pour des soirées en duo mémorables.",
+        audience: "Couples, proches amis",
+      },
+    },
   },
   {
     slug: "weekend-social-hub",
@@ -375,6 +558,19 @@ export const venues: Venue[] = [
     energyLevel: "medium",
     socialLevel: "high",
     spaceType: "indoor",
+    translations: {
+      fr: {
+        description:
+          "Lieu de retrouvailles convivial avec jeux, musique et tables partagées.",
+        shortDescription:
+          "Lieu de retrouvailles convivial avec jeux, musique et tables partagées.",
+        overview:
+          "Weekend Social Hub est un lieu de rendez-vous flexible à Maarif pour les plans de groupe casual. Il combine des sièges partagés, des activités légères et de la musique dans une ambiance sociale mais décontractée. Idéal pour les after-work et les soirées du week-end entre amis.",
+        vibe: "Social, casual, animé",
+        vibeSummary: "Hub social casual pour les plans de groupe flexibles.",
+        audience: "Groupes d'amis, étudiants, jeunes professionnels",
+      },
+    },
   },
 ];
 

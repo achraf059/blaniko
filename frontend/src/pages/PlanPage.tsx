@@ -7,7 +7,8 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
-import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
+import type { AppLanguage } from "../i18n/types";
+import { formatFlowText, getFlowTexts, getPlanStyleDisplay } from "../i18n/flowTexts";
 import {
   explainVenueMatch,
   getDiscoveryCompanionLabel,
@@ -400,37 +401,18 @@ function createRoleCategoryPreferences(mood?: DiscoveryMood): {
   }
 }
 
-function createRoleHints(mood?: DiscoveryMood): {
+function createRoleHints(
+  language: AppLanguage,
+  mood?: DiscoveryMood,
+): {
   start: string;
   main: string;
   end: string;
 } {
-  switch (mood) {
-    case "active":
-      return {
-        start: "Warm-up",
-        main: "Peak movement",
-        end: "Recovery",
-      };
-    case "romantic":
-      return {
-        start: "Slow start",
-        main: "Shared highlight",
-        end: "Soft finish",
-      };
-    case "family-friendly":
-      return {
-        start: "Easy beginning",
-        main: "Family highlight",
-        end: "Calm wrap-up",
-      };
-    default:
-      return {
-        start: "Warm-up",
-        main: "Main moment",
-        end: "Wind-down",
-      };
-  }
+  const text = getFlowTexts(language);
+  const hints = text.planPage.moodRoleHints;
+  const key = (mood ?? "default") as keyof typeof hints;
+  return hints[key] ?? hints.default;
 }
 
 function rankVenue(
@@ -625,29 +607,48 @@ function buildOutingNarrative(options: {
   budget: string;
   companionLabel: string;
   stops: OutingStop[];
+  language: AppLanguage;
 }): string {
-  const budgetText =
-    options.budget === "$"
-      ? "budget-friendly"
-      : options.budget === "$$$"
-        ? "premium"
-        : options.budget === "all"
-          ? "flexible-budget"
-          : "balanced-budget";
+  const text = getFlowTexts(options.language);
+  const display = getPlanStyleDisplay(options.language, options.style.id);
+  const budgetMap = text.planPage.budgetText;
+  const budgetKey = options.budget as keyof typeof budgetMap;
+  const budgetText = budgetMap[budgetKey] ?? budgetMap.default;
 
-  const startHint = options.stops[0]?.roleHint.toLowerCase() ?? "easy start";
-  const mainHint = options.stops[1]?.roleHint.toLowerCase() ?? "main moment";
-  const endHint = options.stops[2]?.roleHint.toLowerCase() ?? "soft follow-up";
+  const startHint = options.stops[0]?.roleHint.toLowerCase() ?? display.roleHints.start.toLowerCase();
+  const mainHint = options.stops[1]?.roleHint.toLowerCase() ?? display.roleHints.main.toLowerCase();
+  const endHint = options.stops[2]?.roleHint.toLowerCase() ?? display.roleHints.end.toLowerCase();
 
   if (options.stops.length >= 3) {
-    return `A ${options.style.summaryTone.pace} in ${options.areaLabel} for ${options.companionLabel.toLowerCase()}, with a ${startHint}, a ${mainHint}, and a ${endHint} (${budgetText}).`;
+    return formatFlowText(text.planPage.narrative3Stops, {
+      pace: display.summaryTone.pace,
+      area: options.areaLabel,
+      companion: options.companionLabel.toLowerCase(),
+      start: startHint,
+      main: mainHint,
+      end: endHint,
+      budget: budgetText,
+    });
   }
 
   if (options.stops.length === 2) {
-    return `A ${options.style.summaryTone.pace} in ${options.areaLabel} for ${options.companionLabel.toLowerCase()}, with a ${startHint} and a ${mainHint} (${budgetText}).`;
+    return formatFlowText(text.planPage.narrative2Stops, {
+      pace: display.summaryTone.pace,
+      area: options.areaLabel,
+      companion: options.companionLabel.toLowerCase(),
+      start: startHint,
+      main: mainHint,
+      budget: budgetText,
+    });
   }
 
-  return `A ${options.style.summaryTone.pace} in ${options.areaLabel} for ${options.companionLabel.toLowerCase()} with a ${options.style.summaryTone.moment} single-stop option (${budgetText}).`;
+  return formatFlowText(text.planPage.narrative1Stop, {
+    pace: display.summaryTone.pace,
+    area: options.areaLabel,
+    companion: options.companionLabel.toLowerCase(),
+    moment: display.summaryTone.moment,
+    budget: budgetText,
+  });
 }
 
 function rankVenueForRole(
@@ -727,6 +728,14 @@ export default function PlanPage() {
   const area = parseArea(searchParams.get("area"));
   const planStyle = parsePlanStyle(searchParams.get("style"));
   const selectedPlanStyle = getPlanStyleById(planStyle);
+  const displayPlanStyle = getPlanStyleDisplay(language, planStyle);
+  const displayStyles = planStyleOptions.reduce(
+    (acc, style) => {
+      acc[style.id] = getPlanStyleDisplay(language, style.id);
+      return acc;
+    },
+    {} as Record<string, ReturnType<typeof getPlanStyleDisplay>>,
+  );
   const refreshSeed = parseSeed(searchParams.get("seed"));
   const parsedLockedRoles = parseLockedRoles(searchParams.get("locks"));
   const [shareFeedback, setShareFeedback] = useState<
@@ -793,18 +802,18 @@ export default function PlanPage() {
     { value: "$$$", label: "$$$" },
   ];
   const areaFilterOptions = [
-    { value: "any", label: language === "fr" ? "Tous les quartiers" : "Any area" },
-    { value: "maarif", label: "Maarif" },
-    { value: "gauthier", label: "Gauthier" },
-    { value: "ain diab", label: "Ain Diab" },
-    { value: "racine", label: "Racine" },
-    { value: "anfa", label: "Anfa" },
+    { value: "any", label: text.planPage.areaAny },
+    { value: "maarif", label: text.planPage.areaNames.maarif },
+    { value: "gauthier", label: text.planPage.areaNames.gauthier },
+    { value: "ain diab", label: text.planPage.areaNames["ain diab"] },
+    { value: "racine", label: text.planPage.areaNames.racine },
+    { value: "anfa", label: text.planPage.areaNames.anfa },
     {
       value: "old medina",
-      label: language === "fr" ? "Ancienne Médina" : "Old Medina",
+      label: text.planPage.areaNames["old medina"],
     },
-    { value: "marina", label: "Marina" },
-    { value: "bourgogne", label: "Bourgogne" },
+    { value: "marina", label: text.planPage.areaNames.marina },
+    { value: "bourgogne", label: text.planPage.areaNames.bourgogne },
   ];
   const stopRoleLabel: Record<StopRoleKey, string> = {
     start: language === "fr" ? text.planPage.startPick : "Start / warm-up",
@@ -828,7 +837,7 @@ export default function PlanPage() {
     selectedPlanStyle.roleCategories ??
     createRoleCategoryPreferences(selectedMood);
   const roleHints =
-    selectedPlanStyle.roleHints ?? createRoleHints(selectedMood);
+    displayPlanStyle.roleHints ?? createRoleHints(language, selectedMood);
 
   const scoreVenuesWithSeed = (seed: number) =>
     venues
@@ -1117,18 +1126,12 @@ export default function PlanPage() {
     const nextSlug = nextStops[stopIndex]?.venue.slug;
 
     if (!nextSlug || previousSlug === nextSlug) {
-      setRefineFeedback(
-        language === "fr"
-          ? "Aucune meilleure alternative trouvée pour cette étape pour le moment."
-          : "No better replacement found for this stop right now.",
-      );
+      setRefineFeedback(text.planPage.noBetterReplacement);
       return;
     }
 
     setRefineFeedback(
-      language === "fr"
-        ? `Étape ${stopRoleStage[roleKey].toLowerCase()} mise à jour.`
-        : `${stopRoleStage[roleKey]} stop updated.`,
+      formatFlowText(text.planPage.stopUpdated, { stage: stopRoleStage[roleKey].toLowerCase() }),
     );
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles });
   };
@@ -1144,12 +1147,8 @@ export default function PlanPage() {
 
     setRefineFeedback(
       lockedRoles.length > 0
-        ? language === "fr"
-          ? "Sortie actualisée en gardant vos étapes verrouillées."
-          : "Outing refreshed while keeping your locked stops."
-        : language === "fr"
-          ? "Sortie actualisée avec une nouvelle séquence."
-          : "Outing refreshed with a new sequence.",
+        ? text.planPage.refreshedLocked
+        : text.planPage.refreshedNew,
     );
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles, seed: nextSeed });
   };
@@ -1157,22 +1156,14 @@ export default function PlanPage() {
   const planSummaryMeta = [
     selectedCompanionName,
     selectedMoodName
-      ? language === "fr"
-        ? `Ambiance ${selectedMoodName}`
-        : `${selectedMoodName} mood`
+      ? formatFlowText(text.planPage.moodPrefix, { mood: selectedMoodName })
       : undefined,
     budget === "all"
-      ? language === "fr"
-        ? "Tous budgets"
-        : "Any budget"
+      ? text.planPage.budgetAny
       : `Budget ${budget}`,
     area === "any"
-      ? language === "fr"
-        ? "Tous les quartiers"
-        : "Any area"
-      : language === "fr"
-        ? `Quartier ${area}`
-        : `Area ${area}`,
+      ? text.planPage.areaAny
+      : formatFlowText(text.planPage.areaPrefix, { area }),
   ]
     .filter(Boolean)
     .join(" • ");
@@ -1185,6 +1176,7 @@ export default function PlanPage() {
     budget,
     companionLabel: selectedCompanionName,
     stops: effectivePlanStops,
+    language,
   });
 
   useEffect(() => {
@@ -1356,7 +1348,7 @@ export default function PlanPage() {
           <div className="bl-plan-style-head">
             <p className="bl-discovery-label">{text.planPage.planStyle}</p>
             <p className="bl-plan-style-subtitle">
-              {selectedPlanStyle.subtitle}
+              {displayPlanStyle.subtitle}
             </p>
           </div>
 
@@ -1379,9 +1371,9 @@ export default function PlanPage() {
                   })
                 }
               >
-                <span>{style.label}</span>
-                <small>{style.subtitle}</small>
-                <small>{style.vibeLine}</small>
+                <span>{displayStyles[style.id].label}</span>
+                <small>{displayStyles[style.id].subtitle}</small>
+                <small>{displayStyles[style.id].vibeLine}</small>
               </button>
             ))}
           </div>
@@ -1524,11 +1516,11 @@ export default function PlanPage() {
           </div>
 
           <p className="bl-plan-results-subtitle">
-            {selectedPlanStyle.resultSubtitle}
+            {displayPlanStyle.resultSubtitle}
           </p>
-          {selectedPlanStyle.explanationChips?.length ? (
+          {displayPlanStyle.explanationChips?.length ? (
             <div className="bl-plan-results-chip-list">
-              {selectedPlanStyle.explanationChips.map((chip) => (
+              {displayPlanStyle.explanationChips.map((chip: string) => (
                 <span
                   key={`${selectedPlanStyle.id}-${chip}`}
                   className="bl-plan-results-chip"
@@ -1598,9 +1590,7 @@ export default function PlanPage() {
 
                     <div className="bl-plan-why-list">
                       {[
-                        `${stopRoleStage[roleKey]} ${
-                          language === "fr" ? "sélection" : "pick"
-                        }`,
+                        `${stopRoleStage[roleKey]} ${text.planPage.chipSuffix}`,
                         selectedPlanStyle.label,
                         ...explainVenueMatch(stop.venue, {
                           budget,

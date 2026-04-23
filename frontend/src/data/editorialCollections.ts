@@ -1,4 +1,5 @@
 import { type Venue } from "./mockData";
+import type { AppLanguage } from "../i18n/types";
 
 export type EditorialSelectionRule = {
   categorySlugs?: string[];
@@ -13,6 +14,16 @@ export type EditorialTheme = {
   mood?: string;
   area?: string;
   budget?: string;
+};
+
+type CollectionTranslation = {
+  title: string;
+  subtitle: string;
+  description: string;
+  whyItMatters: string;
+  explanationChips?: string[];
+  theme?: EditorialTheme;
+  cta?: { label: string };
 };
 
 export type EditorialCollection = {
@@ -31,6 +42,7 @@ export type EditorialCollection = {
     label: string;
     href: string;
   };
+  translations?: Partial<Record<Exclude<AppLanguage, "en">, CollectionTranslation>>;
 };
 
 export const editorialCollections: EditorialCollection[] = [
@@ -59,6 +71,19 @@ export const editorialCollections: EditorialCollection[] = [
       label: "Plan this date flow",
       href: "/plan?mood=romantic&with=partner",
     },
+    translations: {
+      fr: {
+        title: "Les meilleurs spots pour un premier rendez-vous",
+        subtitle: "Des endroits sans pression où la conversation vient naturellement.",
+        description:
+          "Un mélange équilibré de tables douillettes, de rooftops calmes et de promenades vue sur mer pour un premier rendez-vous qui se passe bien.",
+        whyItMatters:
+          "Les meilleurs premiers rendez-vous à Casablanca sont simples : un lieu avec une énergie confortable, assez d'ambiance et sans pression.",
+        theme: { mood: "Romantique", budget: "Varié" },
+        explanationChips: ["Propice à la conversation", "Énergie calme", "Prêt pour le soir"],
+        cta: { label: "Planifier ce rendez-vous" },
+      },
+    },
   },
   {
     id: "under-100-mad",
@@ -81,6 +106,19 @@ export const editorialCollections: EditorialCollection[] = [
     cta: {
       label: "Search low-budget ideas",
       href: "/search?budget=low",
+    },
+    translations: {
+      fr: {
+        title: "Moins de 100 MAD",
+        subtitle: "Des plans en ville de qualité, adaptés à un petit budget.",
+        description:
+          "Une liste budget pour les jours où vous voulez de la qualité sans trop dépenser. Parfait pour les étudiants et les sorties casual en semaine.",
+        whyItMatters:
+          "Économique ne veut pas dire ennuyeux. Casablanca offre de nombreux plans abordables qui restent sociaux, locaux et mémorables.",
+        theme: { budget: "Faible" },
+        explanationChips: ["Petit budget", "Casual", "Facile à répéter"],
+        cta: { label: "Chercher des idées abordables" },
+      },
     },
   },
   {
@@ -108,6 +146,19 @@ export const editorialCollections: EditorialCollection[] = [
       label: "Open chill mood discovery",
       href: "/search?mood=chill",
     },
+    translations: {
+      fr: {
+        title: "Cafés tranquilles pour travailler",
+        subtitle: "Des sélections laptop-friendly pour les heures de concentration et les réunions.",
+        description:
+          "Des cafés calmes avec une ambiance concentrée pour le télétravail, les réunions clients ou le travail en solo au cœur de la ville.",
+        whyItMatters:
+          "Quand votre environnement est calme, votre journée se déroule mieux. Ces adresses vous aident à rester productif sans quitter la vie citadine.",
+        theme: { mood: "Détente", area: "Central" },
+        explanationChips: ["Adapté aux laptops", "Ambiance calme", "Qualité du café"],
+        cta: { label: "Explorer l'ambiance détente" },
+      },
+    },
   },
   {
     id: "sunset-places",
@@ -131,6 +182,19 @@ export const editorialCollections: EditorialCollection[] = [
     cta: {
       label: "See these on map",
       href: "/map",
+    },
+    translations: {
+      fr: {
+        title: "Spots coucher de soleil",
+        subtitle: "Des lieux golden hour et des routes côtières au crépuscule.",
+        description:
+          "Conçu pour les plans en fin d'après-midi : commencez en extérieur près de la mer et terminez par une pause café ou repas détendue.",
+        whyItMatters:
+          "Le coucher de soleil est l'une des plus belles ambiances de Casablanca. Choisir les bons spots transforme une soirée ordinaire en souvenir.",
+        theme: { mood: "Romantique", area: "Côtier" },
+        explanationChips: ["Vue sur mer", "Propice à l'après-midi", "Photo-worthy"],
+        cta: { label: "Voir sur la carte" },
+      },
     },
   },
   {
@@ -156,6 +220,19 @@ export const editorialCollections: EditorialCollection[] = [
       label: "Build a friends outing",
       href: "/plan?mood=social&with=friends",
     },
+    translations: {
+      fr: {
+        title: "Plans décontractés entre amis",
+        subtitle: "Des sélections conviviales avec une énergie sociale.",
+        description:
+          "Pour les plans de groupe spontanés : gaming social, sessions actives et endroits animés où tout le monde peut s'impliquer.",
+        whyItMatters:
+          "Les meilleurs plans entre amis sont flexibles. Ces lieux facilitent le rassemblement, les déplacements et les soirées simples.",
+        theme: { mood: "Social" },
+        explanationChips: ["Idéal en groupe", "Ambiance sociale", "Parfait le week-end"],
+        cta: { label: "Planifier une sortie entre amis" },
+      },
+    },
   },
   {
     id: "cozy-indoor-spots",
@@ -172,11 +249,23 @@ export const editorialCollections: EditorialCollection[] = [
     },
     explanationChips: ["Warm ambiance", "Conversation-first", "All-weather"],
     venueSlugs: ["moonlight-bistro", "beldi-table-kitchen", "bean-district"],
+    translations: {
+      fr: {
+        title: "Espaces intérieurs cosy",
+        subtitle: "Des endroits confort pour les jours plus frais ou les soirées tranquilles.",
+        description:
+          "Des lieux intérieurs avec une atmosphère chaleureuse, propices aux longues conversations, dîners faciles et pauses détendues en ville.",
+        whyItMatters:
+          "Tous les bons plans n'ont pas besoin de mouvement. Parfois, la bonne ambiance intérieure est le plan en soi.",
+        theme: { mood: "Détente", budget: "Moyen" },
+        explanationChips: ["Ambiance chaleureuse", "Conversation en priorité", "Toutes conditions"],
+      },
+    },
   },
 ];
 
 export const featuredEditorialCollections = editorialCollections.filter(
-  (collection) => collection.featured
+  (collection) => collection.featured,
 );
 
 export function getEditorialCollectionBySlug(slug?: string) {
@@ -187,9 +276,29 @@ export function getEditorialCollectionBySlug(slug?: string) {
   return editorialCollections.find((collection) => collection.slug === slug);
 }
 
+export function getCollectionDisplay(
+  collection: EditorialCollection,
+  language: AppLanguage,
+): Omit<EditorialCollection, "translations"> {
+  if (language !== "en" && collection.translations?.[language]) {
+    const t = collection.translations[language]!;
+    return {
+      ...collection,
+      title: t.title ?? collection.title,
+      subtitle: t.subtitle ?? collection.subtitle,
+      description: t.description ?? collection.description,
+      whyItMatters: t.whyItMatters ?? collection.whyItMatters,
+      explanationChips: t.explanationChips ?? collection.explanationChips,
+      theme: t.theme ? { ...collection.theme, ...t.theme } : collection.theme,
+      cta: t.cta && collection.cta ? { ...collection.cta, label: t.cta.label } : collection.cta,
+    };
+  }
+  return collection;
+}
+
 export function resolveEditorialCollectionVenues(
   collection: EditorialCollection,
-  venues: Venue[]
+  venues: Venue[],
 ): Venue[] {
   const deduped = new Map<string, Venue>();
 
@@ -231,7 +340,9 @@ function venueMatchesRule(venue: Venue, rule: EditorialSelectionRule): boolean {
 
   if (rule.areaIncludes?.length) {
     const normalizedArea = normalize(venue.area);
-    const hasAreaMatch = rule.areaIncludes.some((value) => normalizedArea.includes(normalize(value)));
+    const hasAreaMatch = rule.areaIncludes.some((value) =>
+      normalizedArea.includes(normalize(value)),
+    );
     if (!hasAreaMatch) {
       return false;
     }
@@ -239,7 +350,9 @@ function venueMatchesRule(venue: Venue, rule: EditorialSelectionRule): boolean {
 
   if (rule.vibeIncludes?.length) {
     const normalizedVibe = normalize(venue.vibe ?? "");
-    const hasVibeMatch = rule.vibeIncludes.some((value) => normalizedVibe.includes(normalize(value)));
+    const hasVibeMatch = rule.vibeIncludes.some((value) =>
+      normalizedVibe.includes(normalize(value)),
+    );
     if (!hasVibeMatch) {
       return false;
     }
@@ -248,7 +361,7 @@ function venueMatchesRule(venue: Venue, rule: EditorialSelectionRule): boolean {
   if (rule.audienceIncludes?.length) {
     const normalizedAudience = normalize(venue.audience ?? "");
     const hasAudienceMatch = rule.audienceIncludes.some((value) =>
-      normalizedAudience.includes(normalize(value))
+      normalizedAudience.includes(normalize(value)),
     );
     if (!hasAudienceMatch) {
       return false;

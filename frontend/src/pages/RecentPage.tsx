@@ -2,18 +2,18 @@ import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import {
   type RecentActivityItem,
-  type RecentActivityType,
   useRecentActivity,
 } from "../hooks/useRecentActivity";
 import { useI18n } from "../i18n/useI18n";
+import { getFlowTexts } from "../i18n/flowTexts";
 import "./HomePage.css";
 import "./RecentPage.css";
 
-const activityTypeLabel: Record<RecentActivityType, string> = {
-  venue: "Venue",
-  guide: "Guide",
-  area: "Neighborhood",
-  outing: "Outing",
+const activityTypeLabels = {
+  venue: (text: ReturnType<typeof getFlowTexts>) => text.recentPage.typeVenue,
+  guide: (text: ReturnType<typeof getFlowTexts>) => text.recentPage.typeGuide,
+  area: (text: ReturnType<typeof getFlowTexts>) => text.recentPage.typeArea,
+  outing: (text: ReturnType<typeof getFlowTexts>) => text.recentPage.typeOuting,
 };
 
 function formatActivityDate(value: string): string {
@@ -26,7 +26,8 @@ function formatActivityDate(value: string): string {
 }
 
 export default function RecentPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
   const { activities, activityCount, removeActivity, clearActivities } =
     useRecentActivity();
 
@@ -36,22 +37,24 @@ export default function RecentPage() {
 
       <main className="bl-recent-main">
         <section className="bl-recent-hero">
-          <p className="bl-recent-eyebrow">Continue exploring</p>
-          <h1 className="bl-recent-title">Recently viewed</h1>
-          <p className="bl-recent-subtitle">
-            Return to venues, guides, neighborhoods, and outings you opened
-            recently.
-          </p>
+          <p className="bl-recent-eyebrow">{text.recentPage.eyebrow}</p>
+          <h1 className="bl-recent-title">{text.recentPage.title}</h1>
+          <p className="bl-recent-subtitle">{text.recentPage.subtitle}</p>
 
           <div className="bl-recent-head-actions">
-            <p>{activityCount} items</p>
+            <p>
+              {text.recentPage.itemsCount.replace(
+                "{count}",
+                String(activityCount),
+              )}
+            </p>
             {activityCount > 0 ? (
               <button
                 type="button"
                 className="bl-recent-clear-btn"
                 onClick={clearActivities}
               >
-                Clear all
+                {text.recentPage.clearAll}
               </button>
             ) : null}
           </div>
@@ -59,15 +62,12 @@ export default function RecentPage() {
 
         {activities.length === 0 ? (
           <section className="bl-recent-empty">
-            <h2>No recent activity yet.</h2>
-            <p>
-              Open a venue, guide, neighborhood, or outing and it will appear
-              here.
-            </p>
+            <h2>{text.recentPage.emptyTitle}</h2>
+            <p>{text.recentPage.emptyDescription}</p>
             <div className="bl-recent-empty-actions">
-              <Link to="/search">Go to search</Link>
-              <Link to="/guides">Browse guides</Link>
-              <Link to="/plan">Plan an outing</Link>
+              <Link to="/search">{text.recentPage.goSearch}</Link>
+              <Link to="/guides">{text.recentPage.browseGuides}</Link>
+              <Link to="/plan">{text.recentPage.planOuting}</Link>
             </div>
           </section>
         ) : (
@@ -79,14 +79,14 @@ export default function RecentPage() {
               >
                 <div className="bl-recent-card-head">
                   <p className="bl-recent-type">
-                    {activityTypeLabel[item.type]}
+                    {activityTypeLabels[item.type](text)}
                   </p>
                   <button
                     type="button"
                     className="bl-recent-remove-btn"
                     onClick={() => removeActivity(item)}
                   >
-                    Remove
+                    {text.recentPage.remove}
                   </button>
                 </div>
 
@@ -96,7 +96,7 @@ export default function RecentPage() {
                 </p>
 
                 <Link to={item.href} className="bl-recent-open-link">
-                  Open again →
+                  {text.recentPage.openAgain} →
                 </Link>
               </article>
             ))}

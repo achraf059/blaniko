@@ -1,14 +1,14 @@
 import { Link, useParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
-import { categories } from "../data/mockData";
+import { categories, getVenueDisplay } from "../data/mockData";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
   const { slug } = useParams();
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
   const { venues } = useVenues();
 
   const category = categories.find((item) => item.slug === slug);
@@ -79,25 +79,29 @@ export default function CategoryPage() {
 
         <section className="bl-category-venues-section">
           <div className="bl-category-venues-grid">
-            {categoryVenues.map((venue) => (
-              <VenueCard
-                key={venue.slug}
-                slug={venue.slug}
-                category={venue.category}
-                name={venue.name}
-                area={venue.area}
-                description={venue.description}
-                personality={{
-                  bestForTags: venue.bestForTags,
-                  timeOfDay: venue.timeOfDay,
-                  energyLevel: venue.energyLevel,
-                  socialLevel: venue.socialLevel,
-                  spaceType: venue.spaceType,
-                }}
-                href={`/venues/${venue.slug}?from=category&category=${slug}`}
-                labels={dictionary.venueCard}
-              />
-            ))}
+            {categoryVenues.map((venue) => {
+              const vd = getVenueDisplay(venue, language);
+              return (
+                <VenueCard
+                  key={venue.slug}
+                  slug={venue.slug}
+                  category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
+                  name={venue.name}
+                  area={venue.area}
+                  description={vd.description}
+                  personality={{
+                    bestForTags: venue.bestForTags,
+                    timeOfDay: venue.timeOfDay,
+                    energyLevel: venue.energyLevel,
+                    socialLevel: venue.socialLevel,
+                    spaceType: venue.spaceType,
+                  }}
+                  href={`/venues/${venue.slug}?from=category&category=${slug}`}
+                  language={language}
+                  labels={dictionary.venueCard}
+                />
+              );
+            })}
           </div>
         </section>
       </main>

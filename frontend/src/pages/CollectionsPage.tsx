@@ -3,15 +3,18 @@ import type { FormEvent } from "react";
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
+import { getVenueDisplay } from "../data/mockData";
 import { useCollections } from "../hooks/useCollections";
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { getFlowTexts } from "../i18n/flowTexts";
 import "./HomePage.css";
 import "./CollectionsPage.css";
 
 export default function CollectionsPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
   const { venuesBySlug } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const {
@@ -56,11 +59,10 @@ export default function CollectionsPage() {
 
       <main className="bl-collections-main">
         <section className="bl-collections-hero">
-          <p className="bl-collections-eyebrow">Collections</p>
-          <h1 className="bl-collections-title">Saved lists</h1>
+          <p className="bl-collections-eyebrow">{text.collectionsPage.eyebrow}</p>
+          <h1 className="bl-collections-title">{text.collectionsPage.title}</h1>
           <p className="bl-collections-subtitle">
-            Organize venues into reusable lists for plans, moods, or
-            neighborhoods.
+            {text.collectionsPage.subtitle}
           </p>
 
           <form
@@ -70,23 +72,20 @@ export default function CollectionsPage() {
             <input
               value={newCollectionName}
               onChange={(event) => setNewCollectionName(event.target.value)}
-              placeholder="Create a new list"
-              aria-label="New collection name"
+              placeholder={text.collectionsPage.createPlaceholder}
+              aria-label={text.collectionsPage.createAria}
             />
-            <button type="submit">Create collection</button>
+            <button type="submit">{text.collectionsPage.createButton}</button>
           </form>
         </section>
 
         {sortedCollections.length === 0 ? (
           <section className="bl-collections-empty">
-            <h2>No collections yet.</h2>
-            <p>
-              Start by creating a list, then add venues from search, favorites,
-              or details.
-            </p>
+            <h2>{text.collectionsPage.emptyTitle}</h2>
+            <p>{text.collectionsPage.emptyDescription}</p>
             <div className="bl-collections-empty-links">
-              <Link to="/search">Browse search</Link>
-              <Link to="/favorites">Open favorites</Link>
+              <Link to="/search">{text.collectionsPage.browseSearch}</Link>
+              <Link to="/favorites">{text.collectionsPage.openFavorites}</Link>
             </div>
           </section>
         ) : (
@@ -121,16 +120,17 @@ export default function CollectionsPage() {
                           onChange={(event) =>
                             setEditingName(event.target.value)
                           }
-                          aria-label="Rename collection"
+                          aria-label={text.collectionsPage.renameAria}
                         />
-                        <button type="submit">Save</button>
+                        <button type="submit">{text.collectionsPage.save}</button>
                       </form>
                     ) : (
                       <>
                         <h2>{collection.name}</h2>
                         <p>
-                          {collection.venueSlugs.length} saved •{" "}
-                          {existingVenues.length} available
+                          {text.collectionsPage.savedAndAvailable
+                            .replace("{saved}", String(collection.venueSlugs.length))
+                            .replace("{available}", String(existingVenues.length))}
                         </p>
                       </>
                     )}
@@ -154,7 +154,7 @@ export default function CollectionsPage() {
                             setEditingName("");
                           }}
                         >
-                          Cancel
+                          {text.collectionsPage.cancel}
                         </button>
                       )}
 
@@ -172,7 +172,7 @@ export default function CollectionsPage() {
                           )
                         }
                       >
-                        {isExpanded ? "Hide" : "Open"}
+                        {isExpanded ? text.collectionsPage.hide : text.collectionsPage.open}
                       </button>
                     </div>
                   </div>
@@ -181,14 +181,16 @@ export default function CollectionsPage() {
                     <div className="bl-collections-card-body">
                       {existingVenues.length > 0 ? (
                         <div className="bl-home-venues-grid">
-                          {existingVenues.map((venue) => (
+                          {existingVenues.map((venue) => {
+                            const vd = getVenueDisplay(venue, language);
+                            return (
                             <div key={`${collection.id}-${venue.slug}`}>
                               <VenueCard
                                 slug={venue.slug}
-                                category={venue.category}
+                                category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
                                 name={venue.name}
                                 area={venue.area}
-                                description={venue.description}
+                                description={vd.description}
                                 personality={{
                                   bestForTags: venue.bestForTags,
                                   timeOfDay: venue.timeOfDay,
@@ -197,6 +199,7 @@ export default function CollectionsPage() {
                                   spaceType: venue.spaceType,
                                 }}
                                 href={`/venues/${venue.slug}?from=collections`}
+                                language={language}
                                 labels={dictionary.venueCard}
                                 isFavorite={isFavorite(venue.slug)}
                                 onToggleFavorite={toggleFavorite}
@@ -214,24 +217,22 @@ export default function CollectionsPage() {
                                   )
                                 }
                               >
-                                Remove from this list
+                                {text.collectionsPage.removeFromList}
                               </button>
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       ) : (
                         <p className="bl-collections-empty-note">
-                          No available venues in this list yet.
+                          {text.collectionsPage.emptyList}
                         </p>
                       )}
 
                       {missingSlugs.length > 0 ? (
                         <div className="bl-collections-missing">
-                          <h3>Unavailable venues</h3>
-                          <p>
-                            Some saved venues are no longer available in shared
-                            data. You can remove them safely.
-                          </p>
+                          <h3>{text.collectionsPage.missingTitle}</h3>
+                          <p>{text.collectionsPage.missingDescription}</p>
                           <ul>
                             {missingSlugs.map((slug) => (
                               <li key={`${collection.id}-${slug}`}>
@@ -245,7 +246,7 @@ export default function CollectionsPage() {
                                     )
                                   }
                                 >
-                                  Remove
+                                  {text.common.remove}
                                 </button>
                               </li>
                             ))}

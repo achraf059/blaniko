@@ -1,8 +1,10 @@
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
+import { getVenueDisplay } from "../data/mockData";
 import { useCompare } from "../hooks/useCompare";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import { buildCompareInsights } from "../utils/compareInsights";
 import { explainVenueMatch } from "../utils/discoveryInsights";
 import {
@@ -13,7 +15,8 @@ import {
 import "./ComparePage.css";
 
 export default function ComparePage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
   const { compareSlugs, compareCount, removeFromCompare, clearCompare } =
     useCompare();
   const { venuesBySlug } = useVenues();
@@ -32,18 +35,15 @@ export default function ComparePage() {
 
       <main className="bl-compare-main">
         <section className="bl-compare-hero">
-          <p className="bl-compare-eyebrow">Venue compare</p>
-          <h1 className="bl-compare-title">Compare venues side by side</h1>
-          <p className="bl-compare-subtitle">
-            Keep up to 3 venues and compare category, area, budget, vibe, and
-            fit before deciding.
-          </p>
+          <p className="bl-compare-eyebrow">{text.comparePage.eyebrow}</p>
+          <h1 className="bl-compare-title">{text.comparePage.title}</h1>
+          <p className="bl-compare-subtitle">{text.comparePage.subtitle}</p>
 
           <div className="bl-compare-actions">
-            <p>{compareCount} selected</p>
+            <p>{formatFlowText(text.comparePage.selectedCount, { count: compareCount })}</p>
             {compareCount > 0 ? (
               <button type="button" onClick={clearCompare}>
-                Clear compare
+                {text.comparePage.clearCompare}
               </button>
             ) : null}
           </div>
@@ -51,21 +51,18 @@ export default function ComparePage() {
 
         {compareSlugs.length === 0 ? (
           <section className="bl-compare-empty">
-            <h2>No venues selected yet.</h2>
-            <p>
-              Add venues from search, favorites, recommendations, collections,
-              or detail pages.
-            </p>
+            <h2>{text.comparePage.emptyTitle}</h2>
+            <p>{text.comparePage.emptyDescription}</p>
             <div className="bl-compare-empty-links">
-              <Link to="/search">Go to search</Link>
-              <Link to="/favorites">Open favorites</Link>
+              <Link to="/search">{text.comparePage.goSearch}</Link>
+              <Link to="/favorites">{text.comparePage.openFavorites}</Link>
             </div>
           </section>
         ) : (
           <>
             {availableVenues.length > 0 ? (
               <section className="bl-compare-decision-helper">
-                <h2>Decision helper</h2>
+                <h2>{text.comparePage.decisionHelper}</h2>
                 <p>{insights.summary}</p>
 
                 {insights.insightChips.length > 0 ? (
@@ -94,21 +91,23 @@ export default function ComparePage() {
 
             <section className="bl-compare-grid">
               {availableVenues.map((venue) => {
-                const whyChips = explainVenueMatch(venue, {}, 4);
-                const badges = getBestForBadges(venue, 3);
-                const signals = getVenuePersonalitySignals(venue);
+                const vd = getVenueDisplay(venue, language);
+                const categoryName = dictionary.categoryNames[venue.categorySlug] ?? venue.category;
+                const whyChips = explainVenueMatch(venue, {}, 4, language);
+                const badges = getBestForBadges(vd, 3, language);
+                const signals = getVenuePersonalitySignals(vd, language);
                 const standout = insights.standoutByVenue[venue.slug] ?? [];
-                const personality = getVenuePersonalitySection(venue);
+                const personality = getVenuePersonalitySection(vd, language);
 
                 return (
                   <article key={venue.slug} className="bl-compare-card">
                     <div className="bl-compare-card-head">
-                      <p className="bl-compare-category">{venue.category}</p>
+                      <p className="bl-compare-category">{categoryName}</p>
                       <button
                         type="button"
                         onClick={() => removeFromCompare(venue.slug)}
                       >
-                        Remove
+                        {text.common.remove}
                       </button>
                     </div>
 
@@ -124,33 +123,33 @@ export default function ComparePage() {
                     ) : null}
 
                     <div className="bl-compare-group">
-                      <p className="bl-compare-group-title">Quick profile</p>
+                      <p className="bl-compare-group-title">{text.comparePage.quickProfile}</p>
                       <div className="bl-compare-meta">
                         <p>
-                          <strong>Category:</strong> {venue.category}
+                          <strong>{text.comparePage.labelCategory}:</strong> {categoryName}
                         </p>
                         <p>
-                          <strong>Budget:</strong> {venue.priceLevel ?? "—"}
+                          <strong>{text.comparePage.labelBudget}:</strong> {venue.priceLevel ?? text.common.noDataDash}
                         </p>
                         <p>
-                          <strong>Area:</strong> {venue.area}
+                          <strong>{text.comparePage.labelArea}:</strong> {venue.area}
                         </p>
                       </div>
                     </div>
 
                     <div className="bl-compare-group">
                       <p className="bl-compare-group-title">
-                        Vibe & personality
+                        {text.comparePage.vibePersonality}
                       </p>
                       <div className="bl-compare-meta">
                         <p>
-                          <strong>Vibe:</strong> {venue.vibe ?? "—"}
+                          <strong>{text.comparePage.labelVibe}:</strong> {vd.vibe ?? text.common.noDataDash}
                         </p>
                         <p>
-                          <strong>Audience:</strong> {venue.audience ?? "—"}
+                          <strong>{text.comparePage.labelAudience}:</strong> {vd.audience ?? text.common.noDataDash}
                         </p>
                         <p>
-                          <strong>Personality:</strong>{" "}
+                          <strong>{text.comparePage.labelPersonality}:</strong>{" "}
                           {personality.whyPeopleChoose}
                         </p>
                       </div>
@@ -173,7 +172,7 @@ export default function ComparePage() {
                     ) : null}
 
                     <p className="bl-compare-description">
-                      {venue.shortDescription ?? venue.description}
+                      {vd.shortDescription ?? vd.description}
                     </p>
 
                     <div className="bl-compare-why">
@@ -197,14 +196,14 @@ export default function ComparePage() {
 
         {missingSlugs.length > 0 ? (
           <section className="bl-compare-missing">
-            <h3>Unavailable venues</h3>
-            <p>Some compared venues are no longer available in shared data.</p>
+            <h3>{text.comparePage.missingTitle}</h3>
+            <p>{text.comparePage.missingDescription}</p>
             <ul>
               {missingSlugs.map((slug) => (
                 <li key={slug}>
                   <span>{slug}</span>
                   <button type="button" onClick={() => removeFromCompare(slug)}>
-                    Remove
+                    {text.common.remove}
                   </button>
                 </li>
               ))}
