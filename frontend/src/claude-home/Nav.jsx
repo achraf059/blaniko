@@ -1,10 +1,13 @@
 import React from "react";
-const { Icon } = window;
+import { Link, useNavigate } from "react-router";
+import { Icon } from "./Icon.jsx";
+import { useI18n } from "../i18n/useI18n";
 
 // Blaniko — Nav
-const Nav = ({ favoritesCount = 0 }) => {
+export const Nav = ({ favoritesCount = 0 }) => {
+  const navigate = useNavigate();
+  const { language, setLanguage, dictionary } = useI18n();
   const [scrolled, setScrolled] = React.useState(false);
-  const [lang, setLang] = React.useState("EN");
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -14,28 +17,54 @@ const Nav = ({ favoritesCount = 0 }) => {
   return (
     <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="shell nav-inner">
-        <a href="#" className="wordmark" aria-label="Blaniko">
+        <Link to="/" className="wordmark" aria-label="Blaniko">
           <span className="wordmark-dot"/>
           Blaniko
-        </a>
+        </Link>
         <div className="nav-links">
-          <a href="#explore">Explore</a>
-          <a href="#categories">Categories</a>
-          <a href="#curated">Curated</a>
-          <a href="#map">Map</a>
+          <a href="#explore">{dictionary.claudeHome.navExplore}</a>
+          <a href="#categories">{dictionary.claudeHome.navCategories}</a>
+          <a href="#curated">{dictionary.claudeHome.navCurated}</a>
+          <a href="#map">{dictionary.claudeHome.navMap}</a>
         </div>
         <div className="nav-right">
-          <button className="saved-pill" data-empty={favoritesCount === 0}>
+          <button
+            className="saved-pill"
+            data-empty={favoritesCount === 0}
+            onClick={() => navigate("/favorites")}
+          >
             <Icon name={favoritesCount > 0 ? "heartFill" : "heart"} size={14} />
-            Saved
+            {dictionary.claudeHome.saved}
             {favoritesCount > 0 && <span className="count">{favoritesCount}</span>}
           </button>
           <div className="lang-switch">
-            {["EN", "FR", "AR"].map(L => (
-              <button key={L} className={lang === L ? "active" : ""} onClick={() => setLang(L)}>{L}</button>
-            ))}
+            {["EN", "FR", "AR"].map((label) => {
+              const code = label.toLowerCase();
+              const isSupported = code === "en" || code === "fr";
+              const isActive = isSupported && language === code;
+
+              return (
+                <button
+                  key={label}
+                  className={isActive ? "active" : ""}
+                  onClick={() => {
+                    if (code === "en") {
+                      setLanguage("en");
+                    }
+
+                    if (code === "fr") {
+                      setLanguage("fr");
+                    }
+                  }}
+                  aria-disabled={!isSupported}
+                  title={!isSupported ? dictionary.claudeHome.arComingSoon : undefined}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
-          <a href="#join" className="nav-cta">Join the list</a>
+          <a href="#join" className="nav-cta">{dictionary.claudeHome.joinList}</a>
         </div>
       </div>
     </nav>

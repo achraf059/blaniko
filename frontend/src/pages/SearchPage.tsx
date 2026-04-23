@@ -9,36 +9,31 @@ import { categories } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import {
-  discoveryMoodLabel,
   explainVenueMatch,
+  getDiscoveryMoodLabel,
   isDiscoveryMood,
 } from "../utils/discoveryInsights";
 import {
-  energyOptions,
   filterVenuesBySmartDiscovery,
   getAreaLabel,
   getAreaOptions,
-  getBestForLabel,
+  getBestForLabelByLanguage,
   getBestForOptions,
+  getEnergyOptions,
   getOptionLabel,
-  socialLevelOptions,
-  spaceTypeOptions,
-  timeOfDayOptions,
+  getSocialLevelOptions,
+  getSpaceTypeOptions,
+  getTimeOfDayOptions,
 } from "../utils/discoveryFilters";
 import "./HomePage.css";
 import "./SearchPage.css";
 
-const moodOptions = [
-  { value: "chill", label: discoveryMoodLabel.chill },
-  { value: "social", label: discoveryMoodLabel.social },
-  { value: "active", label: discoveryMoodLabel.active },
-  { value: "romantic", label: discoveryMoodLabel.romantic },
-  { value: "family-friendly", label: discoveryMoodLabel["family-friendly"] },
-];
-
 export default function SearchPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
+  const moodLabels = getDiscoveryMoodLabel(language);
   const navigate = useNavigate();
   const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -73,6 +68,17 @@ export default function SearchPage() {
   const [selectedSpaceType, setSelectedSpaceType] = useState(spaceFromUrl);
   const [selectedSocialLevel, setSelectedSocialLevel] = useState(socialFromUrl);
 
+  const moodOptions = useMemo(
+    () => [
+      { value: "chill", label: moodLabels.chill },
+      { value: "social", label: moodLabels.social },
+      { value: "active", label: moodLabels.active },
+      { value: "romantic", label: moodLabels.romantic },
+      { value: "family-friendly", label: moodLabels["family-friendly"] },
+    ],
+    [moodLabels],
+  );
+
   const quickFilters = useMemo(
     () =>
       categories
@@ -98,7 +104,14 @@ export default function SearchPage() {
   ];
 
   const areaOptions = useMemo(() => getAreaOptions(venues), [venues]);
-  const bestForOptions = useMemo(() => getBestForOptions(venues), [venues]);
+  const bestForOptions = useMemo(
+    () => getBestForOptions(venues, language),
+    [language, venues],
+  );
+  const timeOfDayOptions = useMemo(() => getTimeOfDayOptions(language), [language]);
+  const energyOptions = useMemo(() => getEnergyOptions(language), [language]);
+  const spaceTypeOptions = useMemo(() => getSpaceTypeOptions(language), [language]);
+  const socialLevelOptions = useMemo(() => getSocialLevelOptions(language), [language]);
 
   const buildUrl = (overrides?: {
     query?: string;
@@ -258,7 +271,7 @@ export default function SearchPage() {
     ? getAreaLabel(selectedArea, areaOptions)
     : undefined;
   const selectedBestForName = selectedBestFor
-    ? getBestForLabel(selectedBestFor)
+    ? getBestForLabelByLanguage(selectedBestFor, language)
     : undefined;
   const selectedTimeOfDayName = selectedTimeOfDay
     ? getOptionLabel(selectedTimeOfDay, timeOfDayOptions)
@@ -274,36 +287,58 @@ export default function SearchPage() {
     : undefined;
 
   const activeFilterLabels = [
-    selectedCategoryName ? `Category: ${selectedCategoryName}` : "",
-    selectedMoodName ? `Mood: ${selectedMoodName}` : "",
-    selectedAreaName ? `Area: ${selectedAreaName}` : "",
-    selectedBestForName ? `Best for: ${selectedBestForName}` : "",
-    selectedTimeOfDayName ? `Time: ${selectedTimeOfDayName}` : "",
-    selectedEnergyName ? `Energy: ${selectedEnergyName}` : "",
-    selectedSpaceName ? `Space: ${selectedSpaceName}` : "",
-    selectedSocialName ? `Vibe: ${selectedSocialName}` : "",
-    selectedBudget !== "all" ? `Budget: ${selectedBudget}` : "",
+    selectedCategoryName
+      ? `${dictionary.searchPage.summaryCategory}: ${selectedCategoryName}`
+      : "",
+    selectedMoodName ? `${text.searchPage.summaryMood}: ${selectedMoodName}` : "",
+    selectedAreaName ? `${text.searchPage.summaryArea}: ${selectedAreaName}` : "",
+    selectedBestForName
+      ? `${text.searchPage.summaryBestFor}: ${selectedBestForName}`
+      : "",
+    selectedTimeOfDayName
+      ? `${text.searchPage.summaryTime}: ${selectedTimeOfDayName}`
+      : "",
+    selectedEnergyName ? `${text.searchPage.summaryEnergy}: ${selectedEnergyName}` : "",
+    selectedSpaceName ? `${text.searchPage.summarySpace}: ${selectedSpaceName}` : "",
+    selectedSocialName
+      ? `${text.searchPage.summarySocialVibe}: ${selectedSocialName}`
+      : "",
+    selectedBudget !== "all"
+      ? `${dictionary.searchPage.summaryBudget}: ${selectedBudget}`
+      : "",
   ].filter(Boolean);
 
   const resultIntentSummary = useMemo(() => {
     const subject = selectedCategoryName
       ? selectedCategoryName.toLowerCase()
-      : "venues";
+      : language === "fr"
+        ? "lieux"
+        : "venues";
     const prefix = selectedMoodName
       ? `${selectedMoodName.toLowerCase()} ${subject}`
       : subject;
     const chunks = [prefix];
 
     if (selectedAreaName) {
-      chunks.push(`in ${selectedAreaName}`);
+      chunks.push(
+        language === "fr" ? `à ${selectedAreaName}` : `in ${selectedAreaName}`,
+      );
     }
 
     if (selectedBestForName) {
-      chunks.push(`for ${selectedBestForName.toLowerCase()}`);
+      chunks.push(
+        language === "fr"
+          ? `pour ${selectedBestForName.toLowerCase()}`
+          : `for ${selectedBestForName.toLowerCase()}`,
+      );
     }
 
     if (selectedBudget !== "all") {
-      chunks.push(`with ${selectedBudget} budget`);
+      chunks.push(
+        language === "fr"
+          ? `avec budget ${selectedBudget}`
+          : `with ${selectedBudget} budget`,
+      );
     }
 
     if (selectedEnergyName) {
@@ -312,6 +347,7 @@ export default function SearchPage() {
 
     return chunks.join(" ");
   }, [
+    language,
     selectedAreaName,
     selectedBestForName,
     selectedBudget,
@@ -323,7 +359,9 @@ export default function SearchPage() {
   const title = query.trim()
     ? dictionary.searchPage.titleForQuery.replace("{query}", query.trim())
     : selectedMoodValue
-      ? `${selectedMoodName} mood picks`
+      ? language === "fr"
+        ? `Sélection ambiance ${selectedMoodName}`
+        : `${selectedMoodName} mood picks`
       : dictionary.searchPage.titleDefault;
 
   const buildVenueHref = (slug: string) => {
@@ -456,7 +494,9 @@ export default function SearchPage() {
 
           {selectedMoodValue ? (
             <p className="bl-search-mood-summary">
-              You are exploring the <strong>{selectedMoodName}</strong> mood.
+              {formatFlowText(text.searchPage.moodSummary, {
+                mood: selectedMoodName ?? text.common.noDataDash,
+              })}
             </p>
           ) : null}
 
@@ -481,7 +521,7 @@ export default function SearchPage() {
             </div>
 
             <div>
-              <p className="bl-discovery-label">Mood</p>
+              <p className="bl-discovery-label">{text.common.mood}</p>
               <FilterChips
                 options={moodOptions}
                 selectedValue={selectedMood || undefined}
@@ -490,11 +530,11 @@ export default function SearchPage() {
             </div>
 
             <details className="bl-search-advanced-filters">
-              <summary>More filters</summary>
+              <summary>{text.common.moreFilters}</summary>
 
               {areaOptions.length > 0 ? (
                 <div>
-                  <p className="bl-discovery-label">Area</p>
+                  <p className="bl-discovery-label">{text.common.area}</p>
                   <FilterChips
                     options={areaOptions}
                     selectedValue={selectedArea || undefined}
@@ -505,7 +545,7 @@ export default function SearchPage() {
 
               {bestForOptions.length > 0 ? (
                 <div>
-                  <p className="bl-discovery-label">Best for</p>
+                  <p className="bl-discovery-label">{text.common.bestFor}</p>
                   <FilterChips
                     options={bestForOptions}
                     selectedValue={selectedBestFor || undefined}
@@ -515,7 +555,7 @@ export default function SearchPage() {
               ) : null}
 
               <div>
-                <p className="bl-discovery-label">Best time</p>
+                <p className="bl-discovery-label">{text.common.bestTime}</p>
                 <FilterChips
                   options={timeOfDayOptions}
                   selectedValue={selectedTimeOfDay || undefined}
@@ -524,7 +564,7 @@ export default function SearchPage() {
               </div>
 
               <div>
-                <p className="bl-discovery-label">Energy</p>
+                <p className="bl-discovery-label">{text.common.energy}</p>
                 <FilterChips
                   options={energyOptions}
                   selectedValue={selectedEnergyLevel || undefined}
@@ -533,7 +573,7 @@ export default function SearchPage() {
               </div>
 
               <div>
-                <p className="bl-discovery-label">Space</p>
+                <p className="bl-discovery-label">{text.common.space}</p>
                 <FilterChips
                   options={spaceTypeOptions}
                   selectedValue={selectedSpaceType || undefined}
@@ -542,7 +582,7 @@ export default function SearchPage() {
               </div>
 
               <div>
-                <p className="bl-discovery-label">Social vibe</p>
+                <p className="bl-discovery-label">{text.common.socialVibe}</p>
                 <FilterChips
                   options={socialLevelOptions}
                   selectedValue={selectedSocialLevel || undefined}
@@ -583,7 +623,9 @@ export default function SearchPage() {
 
           <div className="bl-search-params">
             <p>
-              You are viewing <span>{resultIntentSummary}</span>
+              {formatFlowText(text.searchPage.viewingIntent, {
+                intent: resultIntentSummary,
+              })}
             </p>
             <p>
               {dictionary.searchPage.summaryQuery}: <span>{query || "—"}</span>
@@ -593,25 +635,25 @@ export default function SearchPage() {
               <span>{selectedCategoryName || "—"}</span>
             </p>
             <p>
-              Mood: <span>{selectedMoodName || "—"}</span>
+              {text.searchPage.summaryMood}: <span>{selectedMoodName || "—"}</span>
             </p>
             <p>
-              Area: <span>{selectedAreaName || "—"}</span>
+              {text.searchPage.summaryArea}: <span>{selectedAreaName || "—"}</span>
             </p>
             <p>
-              Best for: <span>{selectedBestForName || "—"}</span>
+              {text.searchPage.summaryBestFor}: <span>{selectedBestForName || "—"}</span>
             </p>
             <p>
-              Time: <span>{selectedTimeOfDayName || "—"}</span>
+              {text.searchPage.summaryTime}: <span>{selectedTimeOfDayName || "—"}</span>
             </p>
             <p>
-              Energy: <span>{selectedEnergyName || "—"}</span>
+              {text.searchPage.summaryEnergy}: <span>{selectedEnergyName || "—"}</span>
             </p>
             <p>
-              Space: <span>{selectedSpaceName || "—"}</span>
+              {text.searchPage.summarySpace}: <span>{selectedSpaceName || "—"}</span>
             </p>
             <p>
-              Social vibe: <span>{selectedSocialName || "—"}</span>
+              {text.searchPage.summarySocialVibe}: <span>{selectedSocialName || "—"}</span>
             </p>
             <p>
               {dictionary.searchPage.summaryBudget}:{" "}
@@ -658,7 +700,7 @@ export default function SearchPage() {
                     category: selectedCategory || undefined,
                     budget: selectedBudget,
                     mood: selectedMoodValue,
-                  })}
+                  }, 3, language)}
                   href={buildVenueHref(venue.slug)}
                   isFavorite={isFavorite(venue.slug)}
                   onToggleFavorite={toggleFavorite}
@@ -675,8 +717,7 @@ export default function SearchPage() {
               {dictionary.searchPage.emptyTitle}
             </h2>
             <p className="bl-search-empty-description">
-              No exact match found for your current filters. Try clearing one or
-              two filters, or switch to a broader mood/area.
+              {text.searchPage.noMatchDescription}
             </p>
             <div className="bl-search-empty-actions">
               <button
@@ -684,14 +725,14 @@ export default function SearchPage() {
                 className="bl-search-clear-btn"
                 onClick={clearFilters}
               >
-                Reset all filters
+                {text.searchPage.resetAllFilters}
               </button>
               <button
                 type="button"
                 className="bl-search-clear-btn"
                 onClick={() => navigate(buildMapUrl())}
               >
-                View on map
+                {text.searchPage.viewOnMap}
               </button>
             </div>
             <Link to="/" className="bl-search-back-link">

@@ -1,15 +1,12 @@
 import React from "react";
 import "./data.js";
-import "./Icon.jsx";
-import "./Nav.jsx";
-import "./Hero.jsx";
-import "./Continuation.jsx";
-import "./Features.jsx";
-import "./Sections.jsx";
-import "./state.jsx";
-import "./scroll-motion.js";
-
-const { Nav, Hero, Continuation, Moods, Categories, Editorial, Curated, MapPreview, How, FooterCTA, Foot, CompareTray, BlanikoState } = window;
+import { Nav } from "./Nav.jsx";
+import { Hero } from "./Hero.jsx";
+import { Continuation } from "./Continuation.jsx";
+import { Moods, MapPreview, Editorial, CompareTray } from "./Features.jsx";
+import { Categories, Curated, How, FooterCTA, Foot } from "./Sections.jsx";
+import { useFavorites } from "../hooks/useFavorites";
+import { useCompare } from "../hooks/useCompare";
 
 // Blaniko — App root + Tweaks panel
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -29,22 +26,36 @@ const PALETTES = {
 const App = () => {
   const [tweaksOpen, setTweaksOpen] = React.useState(false);
   const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
-  const state = BlanikoState();
+  const { favoriteSlugs, toggleFavorite } = useFavorites();
+  const { compareSlugs, toggleCompare, clearCompare } = useCompare();
 
   // Listen for host tweaks activation
   React.useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     const onMsg = (e) => {
       if (!e.data) return;
       if (e.data.type === "__activate_edit_mode") setTweaksOpen(true);
       if (e.data.type === "__deactivate_edit_mode") setTweaksOpen(false);
     };
+
     window.addEventListener("message", onMsg);
-    window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+    }
+
     return () => window.removeEventListener("message", onMsg);
   }, []);
 
   // Apply palette to :root
   React.useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+
     const p = PALETTES[tweaks.palette] || PALETTES.lavender;
     Object.entries(p).forEach(([k, v]) => {
       document.documentElement.style.setProperty(k, v);
@@ -54,14 +65,18 @@ const App = () => {
   const setTweak = (k, v) => {
     const next = { ...tweaks, [k]: v };
     setTweaks(next);
-    window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, "*");
+    if (typeof window !== "undefined" && window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, "*");
+    }
     // Re-measure scroll motion after layout changes
-    setTimeout(() => window.__blanikoScroll?.measure(), 60);
+    if (typeof window !== "undefined") {
+      setTimeout(() => window.__blanikoScroll?.measure(), 60);
+    }
   };
 
   return (
     <>
-      <Nav favoritesCount={state.favorites.length} />
+      <Nav favoritesCount={favoriteSlugs.length} />
       <main>
         <Hero />
         <Continuation />
@@ -69,10 +84,10 @@ const App = () => {
         <Categories />
         <Editorial />
         <Curated
-          favorites={state.favorites}
-          toggleFav={state.toggleFav}
-          compare={state.compare}
-          toggleCmp={state.toggleCmp}
+          favorites={favoriteSlugs}
+          toggleFav={toggleFavorite}
+          compare={compareSlugs}
+          toggleCmp={toggleCompare}
         />
         <MapPreview />
         <How />
@@ -80,7 +95,7 @@ const App = () => {
       </main>
       <Foot />
 
-      <CompareTray items={state.compare} onClear={state.clearCmp} />
+      <CompareTray items={compareSlugs} onClear={clearCompare} />
 
       <div className={`tweaks ${tweaksOpen ? "open" : ""}`}>
         <h4>Tweaks</h4>

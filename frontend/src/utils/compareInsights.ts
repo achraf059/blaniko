@@ -1,4 +1,5 @@
 import { type Venue } from "../data/mockData";
+import type { AppLanguage } from "../i18n/types";
 import { getBestForBadges } from "./venuePersonality";
 
 type CompareCallout = {
@@ -148,10 +149,16 @@ function addStandout(
   map[venueSlug] = [...(map[venueSlug] ?? []), label];
 }
 
-export function buildCompareInsights(venues: Venue[]): CompareInsights {
+export function buildCompareInsights(
+  venues: Venue[],
+  language: AppLanguage = "en",
+): CompareInsights {
+  const isFr = language === "fr";
   if (venues.length === 0) {
     return {
-      summary: "Add venues to compare and get decision-oriented insights.",
+      summary: isFr
+        ? "Ajoutez des lieux à comparer pour obtenir des insights de décision."
+        : "Add venues to compare and get decision-oriented insights.",
       insightChips: [],
       callouts: [],
       standoutByVenue: {},
@@ -163,8 +170,12 @@ export function buildCompareInsights(venues: Venue[]): CompareInsights {
 
   const summary =
     venues.length === 1
-      ? `You have one venue selected in ${areas[0] ?? "Casablanca"}. Add more venues to unlock decision insights.`
-      : `Comparing ${venues.length} venues across ${categories.length} categories in ${areas.length} areas.`;
+      ? isFr
+        ? `Vous avez un lieu sélectionné à ${areas[0] ?? "Casablanca"}. Ajoutez-en d'autres pour débloquer les insights.`
+        : `You have one venue selected in ${areas[0] ?? "Casablanca"}. Add more venues to unlock decision insights.`
+      : isFr
+        ? `Comparaison de ${venues.length} lieux sur ${categories.length} catégories dans ${areas.length} quartiers.`
+        : `Comparing ${venues.length} venues across ${categories.length} categories in ${areas.length} areas.`;
 
   const insightChips: string[] = [];
   const callouts: CompareCallout[] = [];
@@ -175,13 +186,13 @@ export function buildCompareInsights(venues: Venue[]): CompareInsights {
     "min"
   );
   if (cheapest) {
-    insightChips.push("Most budget-friendly");
+    insightChips.push(isFr ? "Le plus budget-friendly" : "Most budget-friendly");
     callouts.push({
-      label: "Best budget pick",
+      label: isFr ? "Meilleur choix budget" : "Best budget pick",
       venueSlug: cheapest.slug,
       venueName: cheapest.name,
     });
-    addStandout(standoutByVenue, cheapest.slug, "Best budget");
+    addStandout(standoutByVenue, cheapest.slug, isFr ? "Meilleur budget" : "Best budget");
   }
 
   const mostSocial = getUniqueWinner(
@@ -189,13 +200,13 @@ export function buildCompareInsights(venues: Venue[]): CompareInsights {
     "max"
   );
   if (mostSocial && socialScore(mostSocial.socialLevel) > 0) {
-    insightChips.push("Most social option");
+    insightChips.push(isFr ? "Option la plus sociale" : "Most social option");
     callouts.push({
-      label: "Best for social plans",
+      label: isFr ? "Idéal pour les plans sociaux" : "Best for social plans",
       venueSlug: mostSocial.slug,
       venueName: mostSocial.name,
     });
-    addStandout(standoutByVenue, mostSocial.slug, "Most social");
+    addStandout(standoutByVenue, mostSocial.slug, isFr ? "Le plus social" : "Most social");
   }
 
   const calmest = getUniqueWinner(
@@ -206,52 +217,52 @@ export function buildCompareInsights(venues: Venue[]): CompareInsights {
     "min"
   );
   if (calmest) {
-    insightChips.push("Calmest option");
+    insightChips.push(isFr ? "Option la plus calme" : "Calmest option");
     callouts.push({
-      label: "Best calm pick",
+      label: isFr ? "Meilleur choix calme" : "Best calm pick",
       venueSlug: calmest.slug,
       venueName: calmest.name,
     });
-    addStandout(standoutByVenue, calmest.slug, "Calmest");
+    addStandout(standoutByVenue, calmest.slug, isFr ? "Le plus calme" : "Calmest");
   }
 
   const dateWinner = pickSingleCandidate(venues, isDateFriendly);
   if (dateWinner) {
-    insightChips.push("Best for dates");
+    insightChips.push(isFr ? "Idéal en duo" : "Best for dates");
     callouts.push({
-      label: "Date night match",
+      label: isFr ? "Correspondance soirée en duo" : "Date night match",
       venueSlug: dateWinner.slug,
       venueName: dateWinner.name,
     });
-    addStandout(standoutByVenue, dateWinner.slug, "Date-friendly");
+    addStandout(standoutByVenue, dateWinner.slug, isFr ? "Idéal en duo" : "Date-friendly");
   }
 
   const friendsWinner = pickSingleCandidate(venues, isFriendsFriendly);
   if (friendsWinner) {
-    insightChips.push("Best for friends");
+    insightChips.push(isFr ? "Idéal entre amis" : "Best for friends");
     callouts.push({
-      label: "Friends hangout match",
+      label: isFr ? "Correspondance sortie entre amis" : "Friends hangout match",
       venueSlug: friendsWinner.slug,
       venueName: friendsWinner.name,
     });
-    addStandout(standoutByVenue, friendsWinner.slug, "Friends fit");
+    addStandout(standoutByVenue, friendsWinner.slug, isFr ? "Adapté amis" : "Friends fit");
   }
 
   const eveningWinner = pickSingleCandidate(venues, isEveningFriendly);
   if (eveningWinner) {
-    insightChips.push("Strongest evening pick");
-    addStandout(standoutByVenue, eveningWinner.slug, "Evening-ready");
+    insightChips.push(isFr ? "Meilleur choix du soir" : "Strongest evening pick");
+    addStandout(standoutByVenue, eveningWinner.slug, isFr ? "Prêt pour le soir" : "Evening-ready");
   }
 
   const workWinner = pickSingleCandidate(venues, isWorkFriendly);
   if (workWinner) {
-    insightChips.push("Best work-friendly option");
+    insightChips.push(isFr ? "Meilleure option travail" : "Best work-friendly option");
     callouts.push({
-      label: "Focus/work pick",
+      label: isFr ? "Choix focus/travail" : "Focus/work pick",
       venueSlug: workWinner.slug,
       venueName: workWinner.name,
     });
-    addStandout(standoutByVenue, workWinner.slug, "Work-friendly");
+    addStandout(standoutByVenue, workWinner.slug, isFr ? "Adapté au travail" : "Work-friendly");
   }
 
   return {

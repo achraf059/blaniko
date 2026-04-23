@@ -1,38 +1,44 @@
 import React from "react";
-const { Icon } = window;
+import { Link } from "react-router";
+import { Icon } from "./Icon.jsx";
+import { useI18n } from "../i18n/useI18n";
+import { getClaudeHomeLocalizedData } from "./data.js";
 
 // Blaniko — Section 2: Collage continuation
-const Continuation = () => {
+export const Continuation = () => {
+  const { language, dictionary } = useI18n();
+  const { continuationSlots } = getClaudeHomeLocalizedData(language);
+
   return (
     <section className="continuation shell" id="explore">
       <div className="continuation-head">
         <div className="left">
-          <div style={{ marginBottom: 12 }}>02 — Continuation</div>
-          <h2>A closer <em>look</em> — hand-picked from this week in the city.</h2>
+          <div style={{ marginBottom: 12 }}>{dictionary.claudeHome.continuationEyebrow}</div>
+          <h2>
+            {dictionary.claudeHome.continuationTitlePrefix} <em>{dictionary.claudeHome.continuationTitleEmphasis}</em> — {dictionary.claudeHome.continuationTitleSuffix}
+          </h2>
         </div>
         <div className="right">
-          Weekly edits, drawn from the people, places, and small rituals that make
-          a Saturday in Casablanca worth planning.
+          {dictionary.claudeHome.continuationRight}
         </div>
       </div>
 
       <div className="collage">
-        <div className="slot slot-1" data-slot-for="c1" data-label="Slot 01"/>
-        <div className="slot slot-2" data-slot-for="c2" data-label="Slot 02"/>
-        <div className="slot slot-3" data-slot-for="c3" data-label="Slot 03"/>
-        <div className="slot slot-4" data-slot-for="c4" data-label="Slot 04"/>
+        <div className="slot slot-1" data-slot-for="c1" data-label={continuationSlots[0]}/>
+        <div className="slot slot-2" data-slot-for="c2" data-label={continuationSlots[1]}/>
+        <div className="slot slot-3" data-slot-for="c3" data-label={continuationSlots[2]}/>
+        <div className="slot slot-4" data-slot-for="c4" data-label={continuationSlots[3]}/>
 
         <div className="slot-copy">
-          <div className="small">This week's edit</div>
-          <h3>Four ways to spend the weekend — each chosen for a different mood.</h3>
+          <div className="small">{dictionary.claudeHome.continuationCardLabel}</div>
+          <h3>{dictionary.claudeHome.continuationCardTitle}</h3>
           <p>
-            Morning swell. Afternoon clay. Evening reel. Late film. Move between
-            them at your own pace, or take one at a time.
+            {dictionary.claudeHome.continuationCardDescription}
           </p>
-          <a href="#curated" className="link">
-            See the full edit
+          <Link to="/guides" className="link">
+            {dictionary.claudeHome.continuationCta}
             <Icon name="arrow" size={14} />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

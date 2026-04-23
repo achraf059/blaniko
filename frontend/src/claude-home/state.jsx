@@ -1,7 +1,7 @@
 import React from "react";
 
 // Blaniko — shared product state (favorites + compare) with localStorage
-const BlanikoState = () => {
+export const useBlanikoState = () => {
   const [favorites, setFavorites] = React.useState(() => {
     try { return JSON.parse(localStorage.getItem("blaniko.fav") || "[]"); } catch { return []; }
   });
@@ -27,4 +27,4 @@ const BlanikoState = () => {
   return { favorites, toggleFav, compare, toggleCmp, clearCmp };
 };
 
-Object.assign(window, { BlanikoState });
+Object.assign(window, { BlanikoState: useBlanikoState });

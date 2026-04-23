@@ -1,4 +1,5 @@
 import { type Venue } from "../data/mockData";
+import type { AppLanguage } from "../i18n/types";
 import {
   getVenueSearchText,
   type DiscoveryMood,
@@ -24,41 +25,108 @@ type Option = {
   label: string;
 };
 
-export const timeOfDayOptions: Option[] = [
-  { value: "morning", label: "Morning" },
-  { value: "afternoon", label: "Afternoon" },
-  { value: "evening", label: "Evening" },
-  { value: "late-night", label: "Late-night" },
-];
+const byLanguage = {
+  en: {
+    timeOfDayOptions: [
+      { value: "morning", label: "Morning" },
+      { value: "afternoon", label: "Afternoon" },
+      { value: "evening", label: "Evening" },
+      { value: "late-night", label: "Late-night" },
+    ],
+    energyOptions: [
+      { value: "low", label: "Low energy" },
+      { value: "medium", label: "Medium energy" },
+      { value: "high", label: "High energy" },
+    ],
+    spaceTypeOptions: [
+      { value: "indoor", label: "Indoor" },
+      { value: "outdoor", label: "Outdoor" },
+      { value: "mixed", label: "Indoor / Outdoor" },
+    ],
+    socialLevelOptions: [
+      { value: "low", label: "Calm" },
+      { value: "medium", label: "Balanced" },
+      { value: "high", label: "Social" },
+    ],
+    bestForLabelMap: {
+      "date-spot": "Date spot",
+      friends: "Friends",
+      "solo-coffee": "Solo coffee",
+      "work-friendly": "Work-friendly",
+      "family-friendly": "Family-friendly",
+      "budget-pick": "Budget pick",
+      "sunset-spot": "Sunset spot",
+      "late-night": "Late-night",
+    },
+  },
+  fr: {
+    timeOfDayOptions: [
+      { value: "morning", label: "Matin" },
+      { value: "afternoon", label: "Après-midi" },
+      { value: "evening", label: "Soir" },
+      { value: "late-night", label: "Tard le soir" },
+    ],
+    energyOptions: [
+      { value: "low", label: "Énergie faible" },
+      { value: "medium", label: "Énergie moyenne" },
+      { value: "high", label: "Énergie élevée" },
+    ],
+    spaceTypeOptions: [
+      { value: "indoor", label: "Intérieur" },
+      { value: "outdoor", label: "Extérieur" },
+      { value: "mixed", label: "Intérieur / Extérieur" },
+    ],
+    socialLevelOptions: [
+      { value: "low", label: "Calme" },
+      { value: "medium", label: "Équilibré" },
+      { value: "high", label: "Social" },
+    ],
+    bestForLabelMap: {
+      "date-spot": "Idéal en duo",
+      friends: "Amis",
+      "solo-coffee": "Café en solo",
+      "work-friendly": "Adapté au travail",
+      "family-friendly": "Familial",
+      "budget-pick": "Petit budget",
+      "sunset-spot": "Spot sunset",
+      "late-night": "Tard le soir",
+    },
+  },
+} satisfies Record<
+  AppLanguage,
+  {
+    timeOfDayOptions: Option[];
+    energyOptions: Option[];
+    spaceTypeOptions: Option[];
+    socialLevelOptions: Option[];
+    bestForLabelMap: Record<string, string>;
+  }
+>;
 
-export const energyOptions: Option[] = [
-  { value: "low", label: "Low energy" },
-  { value: "medium", label: "Medium energy" },
-  { value: "high", label: "High energy" },
-];
+function getBundle(language: AppLanguage) {
+  return byLanguage[language] ?? byLanguage.en;
+}
 
-export const spaceTypeOptions: Option[] = [
-  { value: "indoor", label: "Indoor" },
-  { value: "outdoor", label: "Outdoor" },
-  { value: "mixed", label: "Indoor / Outdoor" },
-];
+export const timeOfDayOptions: Option[] = byLanguage.en.timeOfDayOptions;
+export const energyOptions: Option[] = byLanguage.en.energyOptions;
+export const spaceTypeOptions: Option[] = byLanguage.en.spaceTypeOptions;
+export const socialLevelOptions: Option[] = byLanguage.en.socialLevelOptions;
 
-export const socialLevelOptions: Option[] = [
-  { value: "low", label: "Calm" },
-  { value: "medium", label: "Balanced" },
-  { value: "high", label: "Social" },
-];
+export function getTimeOfDayOptions(language: AppLanguage): Option[] {
+  return getBundle(language).timeOfDayOptions;
+}
 
-const bestForLabelMap: Record<string, string> = {
-  "date-spot": "Date spot",
-  friends: "Friends",
-  "solo-coffee": "Solo coffee",
-  "work-friendly": "Work-friendly",
-  "family-friendly": "Family-friendly",
-  "budget-pick": "Budget pick",
-  "sunset-spot": "Sunset spot",
-  "late-night": "Late-night",
-};
+export function getEnergyOptions(language: AppLanguage): Option[] {
+  return getBundle(language).energyOptions;
+}
+
+export function getSpaceTypeOptions(language: AppLanguage): Option[] {
+  return getBundle(language).spaceTypeOptions;
+}
+
+export function getSocialLevelOptions(language: AppLanguage): Option[] {
+  return getBundle(language).socialLevelOptions;
+}
 
 function toSlug(value: string): string {
   return value
@@ -100,8 +168,9 @@ export function getAreaOptions(venues: Venue[]): Option[] {
     .sort((first, second) => first.label.localeCompare(second.label));
 }
 
-export function getBestForOptions(venues: Venue[]): Option[] {
+export function getBestForOptions(venues: Venue[], language: AppLanguage = "en"): Option[] {
   const tags = new Set<string>();
+  const bestForLabelMap: Record<string, string> = getBundle(language).bestForLabelMap;
 
   venues.forEach((venue) => {
     venue.bestForTags?.forEach((tag) => tags.add(tag));
@@ -116,6 +185,14 @@ export function getBestForOptions(venues: Venue[]): Option[] {
 }
 
 export function getBestForLabel(value: string): string {
+  return getBestForLabelByLanguage(value, "en");
+}
+
+export function getBestForLabelByLanguage(
+  value: string,
+  language: AppLanguage,
+): string {
+  const bestForLabelMap: Record<string, string> = getBundle(language).bestForLabelMap;
   return bestForLabelMap[value] ?? toTitleCase(value);
 }
 

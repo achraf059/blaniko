@@ -1,20 +1,20 @@
 import React from "react";
-const { Icon } = window;
+import { Link, useNavigate } from "react-router";
+import { Icon } from "./Icon.jsx";
+import { useI18n } from "../i18n/useI18n";
+import { getClaudeHomeLocalizedData } from "./data.js";
 
 // Blaniko — Moods, Map preview, Editorial feature, Compare tray
-const Moods = () => {
-  const moods = [
-    { title: "Tonight", sub: "after 7pm", ico: "moon" },
-    { title: "Under MAD 200", sub: "budget picks", ico: "coin" },
-    { title: "Date night", sub: "for two", ico: "heart2" },
-    { title: "With friends", sub: "3+ people", ico: "users" },
-  ];
+export const Moods = () => {
+  const navigate = useNavigate();
+  const { language, dictionary } = useI18n();
+  const { moods } = getClaudeHomeLocalizedData(language);
   return (
     <section className="moods shell" id="moods">
-      <div className="moods-head">Find by mood</div>
+      <div className="moods-head">{dictionary.claudeHome.moodsHead}</div>
       <div className="mood-grid">
         {moods.map(m => (
-          <button key={m.title} className="mood">
+          <button key={m.title} className="mood" onClick={() => navigate(m.href)}>
             <div className="ico"><Icon name={m.ico} size={18} /></div>
             <div>
               <div className="mood-title">{m.title}</div>
@@ -27,31 +27,26 @@ const Moods = () => {
   );
 };
 
-const MapPreview = () => {
-  const pins = [
-    { top: 38, left: 28, label: "Ain Diab" },
-    { top: 52, left: 48, label: "Corniche" },
-    { top: 30, left: 62, label: "Triangle d'Or" },
-    { top: 64, left: 72, label: "Old Medina" },
-    { top: 72, left: 40, label: "Anfa" },
-    { top: 22, left: 45, label: "Sidi Bernoussi" },
-  ];
+export const MapPreview = () => {
+  const navigate = useNavigate();
+  const { language, dictionary } = useI18n();
+  const { mapPins } = getClaudeHomeLocalizedData(language);
   return (
     <section className="mapband shell" id="map">
       <div className="map-card">
         <div className="left">
           <div>
-            <div className="eyebrow">06 — Map</div>
-            <h3>See the city <em>as a map</em>, not a list.</h3>
+            <div className="eyebrow">{dictionary.claudeHome.mapEyebrow}</div>
+            <h3>{dictionary.claudeHome.mapTitlePrefix} <em>{dictionary.claudeHome.mapTitleEmphasis}</em>, {dictionary.claudeHome.mapTitleSuffix}</h3>
           </div>
           <div className="map-meta">
-            <span className="dot"><span className="swatch" style={{background:"var(--plum)"}}/>220 activities</span>
-            <span className="dot"><span className="swatch" style={{background:"var(--heather)"}}/>12 neighborhoods</span>
+            <span className="dot"><span className="swatch" style={{background:"var(--plum)"}}/>{dictionary.claudeHome.mapActivities}</span>
+            <span className="dot"><span className="swatch" style={{background:"var(--heather)"}}/>{dictionary.claudeHome.mapNeighborhoods}</span>
           </div>
-          <a href="#" className="open-map">
-            Open map
+          <button className="open-map" onClick={() => navigate("/map")}>
+            {dictionary.claudeHome.mapOpen}
             <Icon name="arrow" size={14} />
-          </a>
+          </button>
         </div>
         <div className="right">
           {/* Stylized coastline suggestion */}
@@ -73,10 +68,41 @@ const MapPreview = () => {
             <path d="M80,80 C140,100 220,120 340,90" stroke="#6B4E8A" strokeWidth="0.6" fill="none" opacity="0.2" strokeDasharray="3 4"/>
           </svg>
           <div className="map-neighborhoods">
-            {pins.map(p => (
+            {mapPins.map(p => (
               <React.Fragment key={p.label}>
-                <div className="map-pin" style={{ top: p.top + "%", left: p.left + "%" }} title={p.label}/>
-                <div className="map-label" style={{ top: (p.top - 6) + "%", left: p.left + "%" }}>{p.label}</div>
+                <div
+                  className="map-pin"
+                  style={{ top: p.top + "%", left: p.left + "%" }}
+                  title={p.label}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    navigate(`/map?area=${encodeURIComponent(p.areaQuery ?? p.label)}`)
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      navigate(`/map?area=${encodeURIComponent(p.areaQuery ?? p.label)}`);
+                    }
+                  }}
+                />
+                <div
+                  className="map-label"
+                  style={{ top: (p.top - 6) + "%", left: p.left + "%" }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    navigate(`/map?area=${encodeURIComponent(p.areaQuery ?? p.label)}`)
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      navigate(`/map?area=${encodeURIComponent(p.areaQuery ?? p.label)}`);
+                    }
+                  }}
+                >
+                  {p.label}
+                </div>
               </React.Fragment>
             ))}
           </div>
@@ -86,32 +112,36 @@ const MapPreview = () => {
   );
 };
 
-const Editorial = () => (
-  <section className="editorial shell">
-    <div className="ed-card">
-      <div className="ed-img"/>
-      <div>
-        <div className="ed-eyebrow">Weekly edit · Issue 14</div>
-        <h3>A quiet guide to <em>autumn</em> in Casablanca.</h3>
-        <p>
-          Six spaces to slow down in, from a rooftop library above Maarif to a glassblower's
-          studio in Bouskoura. Writing and photographs by our editors.
-        </p>
-        <div className="ed-foot">
-          <span className="author"><span className="avatar-s"/>Leïla Bensaïd</span>
-          <span>·</span>
-          <span>6 min read</span>
-        </div>
-        <a href="#" className="read">
-          Read the edit
-          <Icon name="arrow" size={14} />
-        </a>
-      </div>
-    </div>
-  </section>
-);
+export const Editorial = () => {
+  const { language, dictionary } = useI18n();
+  const { editorialMeta } = getClaudeHomeLocalizedData(language);
 
-const CompareTray = ({ items, onClear }) => {
+  return (
+    <section className="editorial shell">
+      <div className="ed-card">
+        <div className="ed-img"/>
+        <div>
+          <div className="ed-eyebrow">{dictionary.claudeHome.editorialEyebrow}</div>
+          <h3>{dictionary.claudeHome.editorialTitlePrefix} <em>{dictionary.claudeHome.editorialTitleEmphasis}</em> {dictionary.claudeHome.editorialTitleSuffix}</h3>
+          <p>{dictionary.claudeHome.editorialDescription}</p>
+          <div className="ed-foot">
+            <span className="author"><span className="avatar-s"/>{editorialMeta.author}</span>
+            <span>·</span>
+            <span>{editorialMeta.readTime}</span>
+          </div>
+          <Link to="/guides" className="read">
+            {dictionary.claudeHome.editorialRead}
+            <Icon name="arrow" size={14} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export const CompareTray = ({ items, onClear }) => {
+  const navigate = useNavigate();
+  const { dictionary } = useI18n();
   const show = items.length >= 2;
   return (
     <div className={`compare-tray ${show ? "show" : ""}`}>
@@ -121,12 +151,12 @@ const CompareTray = ({ items, onClear }) => {
         ))}
       </div>
       <div>
-        <div className="tray-label">Compare</div>
-        <div>{items.length} activities selected</div>
+        <div className="tray-label">{dictionary.claudeHome.compareLabel}</div>
+        <div>{dictionary.claudeHome.compareSelected.replace("{count}", String(items.length))}</div>
       </div>
-      <button className="clear" onClick={onClear}>Clear</button>
-      <button className="go">
-        Compare
+      <button className="clear" onClick={onClear}>{dictionary.claudeHome.compareClear}</button>
+      <button className="go" onClick={() => navigate("/compare")}>
+        {dictionary.claudeHome.compareGo}
         <Icon name="arrow" size={14} />
       </button>
     </div>

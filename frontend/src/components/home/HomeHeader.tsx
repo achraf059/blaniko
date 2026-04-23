@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 import { useCompare } from "../../hooks/useCompare";
+import { getFlowTexts } from "../../i18n/flowTexts";
+import { useI18n } from "../../i18n/useI18n";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 
 type HomeHeaderProps = {
@@ -19,6 +21,9 @@ type HomeHeaderProps = {
 
 export function HomeHeader({ labels }: HomeHeaderProps) {
   const { compareCount } = useCompare();
+  const { language } = useI18n();
+  const text = getFlowTexts(language);
+  const compareLabel = `${text.common.compare} (${compareCount})`;
 
   return (
     <header className="bl-home-header">
@@ -31,7 +36,7 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
         <ul className="bl-home-nav-links">
           <li>
             <Link to="/guides" className="bl-home-nav-link">
-              Guides
+              {text.common.guides}
             </Link>
           </li>
           <li>
@@ -46,7 +51,7 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
           </li>
           <li>
             <Link to="/compare" className="bl-home-nav-link">
-              Compare ({compareCount})
+              {compareLabel}
             </Link>
           </li>
           <li>
@@ -61,10 +66,10 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
 
         <div className="bl-home-header-actions">
           <details className="bl-home-mobile-menu">
-            <summary className="bl-home-mobile-menu-summary">Menu</summary>
+            <summary className="bl-home-mobile-menu-summary">{text.common.menu}</summary>
             <div className="bl-home-mobile-menu-panel">
               <Link to="/guides" className="bl-home-mobile-menu-link">
-                Guides
+                {text.common.guides}
               </Link>
               <Link to="/map" className="bl-home-mobile-menu-link">
                 {labels.map}
@@ -73,7 +78,7 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
                 {labels.favorites}
               </Link>
               <Link to="/compare" className="bl-home-mobile-menu-link">
-                Compare ({compareCount})
+                {compareLabel}
               </Link>
               <Link
                 to="/admin"

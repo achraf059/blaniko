@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useCollections } from "../../hooks/useCollections";
+import { getFlowTexts } from "../../i18n/flowTexts";
+import { useI18n } from "../../i18n/useI18n";
 import "./CollectionPicker.css";
 
 type CollectionPickerProps = {
@@ -19,6 +21,8 @@ export function CollectionPicker({
     removeVenueFromCollection,
     isVenueInCollection,
   } = useCollections();
+  const { language } = useI18n();
+  const text = getFlowTexts(language);
   const [newName, setNewName] = useState("");
   const [feedback, setFeedback] = useState<string>("");
 
@@ -36,7 +40,9 @@ export function CollectionPicker({
       return;
     }
 
-    setFeedback(`Saved to ${created.name}`);
+    setFeedback(
+      language === "fr" ? `Enregistré dans ${created.name}` : `Saved to ${created.name}`,
+    );
     setNewName("");
     window.setTimeout(() => setFeedback(""), 1800);
   };
@@ -47,8 +53,12 @@ export function CollectionPicker({
         <span aria-hidden="true">🗂</span>
         <span>
           {count > 0
-            ? `In ${count} list${count > 1 ? "s" : ""}`
-            : "Add to list"}
+            ? language === "fr"
+              ? `Dans ${count} liste${count > 1 ? "s" : ""}`
+              : `In ${count} list${count > 1 ? "s" : ""}`
+            : language === "fr"
+              ? "Ajouter à la liste"
+              : "Add to list"}
         </span>
       </summary>
 
@@ -82,7 +92,9 @@ export function CollectionPicker({
           </div>
         ) : (
           <p className="bl-collection-picker-empty">
-            No lists yet. Create your first one.
+            {language === "fr"
+              ? "Aucune liste pour le moment. Créez la première."
+              : "No lists yet. Create your first one."}
           </p>
         )}
 
@@ -90,10 +102,12 @@ export function CollectionPicker({
           <input
             value={newName}
             onChange={(event) => setNewName(event.target.value)}
-            placeholder="New list name"
-            aria-label="New collection name"
+            placeholder={text.collectionsPage.createPlaceholder}
+            aria-label={text.collectionsPage.createAria}
           />
-          <button type="submit">Create + add</button>
+          <button type="submit">
+            {language === "fr" ? "Créer + ajouter" : "Create + add"}
+          </button>
         </form>
 
         {feedback ? (

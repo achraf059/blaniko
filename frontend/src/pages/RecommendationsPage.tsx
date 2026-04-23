@@ -17,9 +17,10 @@ import {
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import {
-  discoveryMoodLabel,
   explainVenueMatch,
+  getDiscoveryMoodLabel,
   isDiscoveryCompanion,
   isDiscoveryMood,
 } from "../utils/discoveryInsights";
@@ -33,65 +34,10 @@ type QuizQuestion = {
   description?: string;
 };
 
-const QUESTIONS: QuizQuestion[] = [
-  {
-    id: "companion",
-    title: "Who are you with?",
-    options: [
-      { value: "alone", label: "Alone" },
-      { value: "friends", label: "Friends" },
-      { value: "family", label: "Family" },
-      { value: "partner", label: "Partner" },
-    ],
-  },
-  {
-    id: "category",
-    title: "What are you looking for?",
-    options: [
-      { value: "cafes", label: "Cafes" },
-      { value: "restaurants", label: "Restaurants" },
-      { value: "activities", label: "Activities" },
-      { value: "sports", label: "Sports" },
-      { value: "gaming", label: "Gaming" },
-      { value: "outdoor", label: "Outdoor" },
-    ],
-  },
-  {
-    id: "budget",
-    title: "What is your budget?",
-    options: [
-      { value: "all", label: "All" },
-      { value: "$", label: "$" },
-      { value: "$$", label: "$$" },
-      { value: "$$$", label: "$$$" },
-    ],
-  },
-  {
-    id: "area",
-    title: "Preferred area?",
-    options: [
-      { value: "any", label: "Any" },
-      { value: "maarif", label: "Maarif" },
-      { value: "ain diab", label: "Ain Diab" },
-      { value: "gauthier", label: "Gauthier" },
-      { value: "old medina", label: "Old Medina" },
-    ],
-  },
-  {
-    id: "vibe",
-    title: "What vibe do you want?",
-    options: [
-      { value: "chill", label: "Chill" },
-      { value: "social", label: "Social" },
-      { value: "active", label: "Active" },
-      { value: "romantic", label: "Romantic" },
-      { value: "family-friendly", label: "Family-friendly" },
-    ],
-  },
-];
-
 export default function RecommendationsPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
+  const moodLabels = getDiscoveryMoodLabel(language);
   const navigate = useNavigate();
   const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -100,7 +46,80 @@ export default function RecommendationsPage() {
     "idle" | "copied" | "failed"
   >("idle");
 
-  const questions = QUESTIONS;
+  const questions = useMemo<QuizQuestion[]>(
+    () => [
+      {
+        id: "companion",
+        title: text.recommendationsPage.qCompanion,
+        options: [
+          { value: "alone", label: text.recommendationsPage.optionAlone },
+          { value: "friends", label: text.recommendationsPage.optionFriends },
+          { value: "family", label: text.recommendationsPage.optionFamily },
+          { value: "partner", label: text.recommendationsPage.optionPartner },
+        ],
+      },
+      {
+        id: "category",
+        title: text.recommendationsPage.qCategory,
+        options: [
+          { value: "cafes", label: text.recommendationsPage.optionCafes },
+          {
+            value: "restaurants",
+            label: text.recommendationsPage.optionRestaurants,
+          },
+          {
+            value: "activities",
+            label: text.recommendationsPage.optionActivities,
+          },
+          { value: "sports", label: text.recommendationsPage.optionSports },
+          { value: "gaming", label: text.recommendationsPage.optionGaming },
+          { value: "outdoor", label: text.recommendationsPage.optionOutdoor },
+        ],
+      },
+      {
+        id: "budget",
+        title: text.recommendationsPage.qBudget,
+        options: [
+          { value: "all", label: text.common.all },
+          { value: "$", label: "$" },
+          { value: "$$", label: "$$" },
+          { value: "$$$", label: "$$$" },
+        ],
+      },
+      {
+        id: "area",
+        title: text.recommendationsPage.qArea,
+        options: [
+          { value: "any", label: text.recommendationsPage.optionAny },
+          { value: "maarif", label: text.recommendationsPage.optionMaarif },
+          {
+            value: "ain diab",
+            label: text.recommendationsPage.optionAinDiab,
+          },
+          {
+            value: "gauthier",
+            label: text.recommendationsPage.optionGauthier,
+          },
+          {
+            value: "old medina",
+            label: text.recommendationsPage.optionOldMedina,
+          },
+        ],
+      },
+      {
+        id: "vibe",
+        title: text.recommendationsPage.qVibe,
+        options: [
+          { value: "chill", label: moodLabels.chill },
+          { value: "social", label: moodLabels.social },
+          { value: "active", label: moodLabels.active },
+          { value: "romantic", label: moodLabels.romantic },
+          { value: "family-friendly", label: moodLabels["family-friendly"] },
+        ],
+      },
+    ],
+    [moodLabels, text],
+  );
 
   const allowedAnswerValues = useMemo(
     () =>
@@ -404,6 +423,13 @@ export default function RecommendationsPage() {
             <ProgressBar
               currentStep={stepIndex + 1}
               totalSteps={questions.length}
+              ariaLabel={text.recommendationsPage.quizProgress}
+              stepLabel={(current, total) =>
+                formatFlowText(text.recommendationsPage.stepOf, {
+                  current,
+                  total,
+                })
+              }
             />
 
             <QuizStep
@@ -420,7 +446,7 @@ export default function RecommendationsPage() {
                 onClick={previousStep}
                 disabled={stepIndex === 0}
               >
-                Back
+                {text.recommendationsPage.back}
               </button>
               <button
                 type="button"
@@ -429,29 +455,45 @@ export default function RecommendationsPage() {
                 disabled={!currentValue}
               >
                 {stepIndex === questions.length - 1
-                  ? "See recommendations"
-                  : "Next"}
+                  ? text.recommendationsPage.seeRecommendations
+                  : text.recommendationsPage.next}
               </button>
             </div>
           </section>
         ) : (
           <>
             <ResultsHeader
-              headline="Your most compatible picks"
-              summary={`Built for ${summary || "your current preferences"}`}
+              eyebrow={text.recommendationsPage.resultsEyebrow}
+              headline={text.recommendationsPage.headline}
+              summary={formatFlowText(text.recommendationsPage.summaryBuiltFor, {
+                summary: summary || text.recommendationsPage.summaryFallback,
+              })}
               topCount={topMatches.length}
               alternativesCount={alternatives.length}
+              topCountLabel={(count) =>
+                formatFlowText(text.recommendationsPage.topMatchesCount, {
+                  count,
+                })
+              }
+              alternativesCountLabel={(count) =>
+                formatFlowText(text.recommendationsPage.backupsCount, {
+                  count,
+                })
+              }
             />
 
             {selectedMood ? (
               <p className="bl-reco-mood-summary">
-                Discovery mode:{" "}
-                <strong>{discoveryMoodLabel[selectedMood]}</strong> mood.
+                {text.recommendationsPage.modePrefix}{" "}
+                <strong>{moodLabels[selectedMood]}</strong>
+                {text.recommendationsPage.modeSuffix}
               </p>
             ) : null}
 
             <section className="bl-reco-results-section">
-              <h2 className="bl-reco-section-title">Top matches</h2>
+              <h2 className="bl-reco-section-title">
+                {text.recommendationsPage.topMatches}
+              </h2>
               <div className="bl-home-venues-grid">
                 {topMatches.map(({ venue }) => (
                   <VenueCard
@@ -474,7 +516,7 @@ export default function RecommendationsPage() {
                       area: answers.area || undefined,
                       mood: selectedMood,
                       companion: selectedCompanion,
-                    })}
+                    }, 3, language)}
                     href={buildVenueHref(venue.slug)}
                     labels={dictionary.venueCard}
                     isFeatured
@@ -490,7 +532,7 @@ export default function RecommendationsPage() {
             {alternatives.length > 0 ? (
               <section className="bl-reco-results-section">
                 <h2 className="bl-reco-section-title">
-                  Also worth considering
+                  {text.recommendationsPage.alternatives}
                 </h2>
                 <div className="bl-home-venues-grid">
                   {alternatives.map(({ venue }) => (
@@ -514,7 +556,7 @@ export default function RecommendationsPage() {
                         area: answers.area || undefined,
                         mood: selectedMood,
                         companion: selectedCompanion,
-                      })}
+                      }, 3, language)}
                       href={buildVenueHref(venue.slug)}
                       labels={dictionary.venueCard}
                       isFavorite={isFavorite(venue.slug)}
@@ -533,14 +575,14 @@ export default function RecommendationsPage() {
                 className="bl-reco-action-secondary"
                 onClick={retakeQuiz}
               >
-                Retake discovery
+                {text.recommendationsPage.retake}
               </button>
               <button
                 type="button"
                 className="bl-reco-action-secondary"
                 onClick={copyResultsLink}
               >
-                Copy results link
+                {text.recommendationsPage.copyLink}
               </button>
               <button
                 type="button"
@@ -554,14 +596,14 @@ export default function RecommendationsPage() {
                 className="bl-reco-action-primary"
                 onClick={browseAllResults}
               >
-                Open full results
+                {text.recommendationsPage.openFullResults}
               </button>
               <button
                 type="button"
                 className="bl-reco-action-primary"
                 onClick={() => navigate("/plan")}
               >
-                Plan my outing
+                {text.recommendationsPage.planOuting}
               </button>
             </div>
 
@@ -572,8 +614,8 @@ export default function RecommendationsPage() {
                 aria-live="polite"
               >
                 {shareFeedback === "copied"
-                  ? "Share link copied to your clipboard."
-                  : "Could not copy automatically. Please copy the URL from your browser."}
+                  ? text.recommendationsPage.copied
+                  : text.recommendationsPage.copyFailed}
               </p>
             ) : null}
           </>

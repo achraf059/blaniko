@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { useCompare } from "../../hooks/useCompare";
+import { getFlowTexts } from "../../i18n/flowTexts";
+import { useI18n } from "../../i18n/useI18n";
 import "./CompareToggle.css";
 
 type CompareToggleProps = {
@@ -13,6 +15,8 @@ export function CompareToggle({
   compact = false,
 }: CompareToggleProps) {
   const { compareCount, isCompared, toggleCompare } = useCompare();
+  const { language } = useI18n();
+  const text = getFlowTexts(language);
   const [feedback, setFeedback] = useState("");
 
   const compared = isCompared(venueSlug);
@@ -26,23 +30,37 @@ export function CompareToggle({
           const result = toggleCompare(venueSlug);
 
           if (result === "limit") {
-            setFeedback("Compare is limited to 3 venues.");
+            setFeedback(
+              language === "fr"
+                ? "La comparaison est limitée à 3 lieux."
+                : "Compare is limited to 3 venues.",
+            );
             window.setTimeout(() => setFeedback(""), 1800);
             return;
           }
 
           setFeedback(
-            result === "added" ? "Added to compare." : "Removed from compare.",
+            result === "added"
+              ? language === "fr"
+                ? "Ajouté à la comparaison."
+                : "Added to compare."
+              : language === "fr"
+                ? "Retiré de la comparaison."
+                : "Removed from compare.",
           );
           window.setTimeout(() => setFeedback(""), 1400);
         }}
         aria-pressed={compared}
       >
-        {compared ? "✓ In compare" : "+ Compare"}
+        {compared
+          ? language === "fr"
+            ? "✓ Dans la comparaison"
+            : "✓ In compare"
+          : `+ ${text.common.compare}`}
       </button>
 
       <Link to="/compare" className="bl-compare-toggle-link">
-        Compare ({compareCount})
+        {`${text.common.compare} (${compareCount})`}
       </Link>
 
       {feedback ? (

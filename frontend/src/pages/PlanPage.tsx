@@ -7,10 +7,11 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import {
-  discoveryCompanionLabel,
-  discoveryMoodLabel,
   explainVenueMatch,
+  getDiscoveryCompanionLabel,
+  getDiscoveryMoodLabel,
   isDiscoveryMood,
   type DiscoveryCompanion,
   type DiscoveryMood,
@@ -56,18 +57,6 @@ type StopRoleKey = "start" | "main" | "end";
 
 const stopRoleOrder: StopRoleKey[] = ["start", "main", "end"];
 
-const stopRoleLabel: Record<StopRoleKey, string> = {
-  start: "Start / warm-up",
-  main: "Main stop",
-  end: "Optional follow-up",
-};
-
-const stopRoleStage: Record<StopRoleKey, string> = {
-  start: "Start",
-  main: "Main",
-  end: "Follow-up",
-};
-
 const SAVED_OUTINGS_KEY = "blaniko_saved_outings_v1";
 
 const companionOptions = [
@@ -78,11 +67,11 @@ const companionOptions = [
 ];
 
 const moodOptions = [
-  { value: "chill", label: discoveryMoodLabel.chill },
-  { value: "social", label: discoveryMoodLabel.social },
-  { value: "active", label: discoveryMoodLabel.active },
-  { value: "romantic", label: discoveryMoodLabel.romantic },
-  { value: "family-friendly", label: discoveryMoodLabel["family-friendly"] },
+  { value: "chill", label: "Chill" },
+  { value: "social", label: "Social" },
+  { value: "active", label: "Active" },
+  { value: "romantic", label: "Romantic" },
+  { value: "family-friendly", label: "Family-friendly" },
 ];
 
 const budgetOptions = [
@@ -722,7 +711,10 @@ function formatSavedDate(value: string): string {
 }
 
 export default function PlanPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
+  const moodLabels = getDiscoveryMoodLabel(language);
+  const companionLabels = getDiscoveryCompanionLabel(language);
   const location = useLocation();
   const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -781,12 +773,56 @@ export default function PlanPage() {
   )
     ? (companion as DiscoveryCompanion)
     : undefined;
+  const companionFilterOptions = [
+    { value: "alone", label: companionLabels.alone },
+    { value: "friends", label: companionLabels.friends },
+    { value: "family", label: companionLabels.family },
+    { value: "partner", label: companionLabels.partner },
+  ];
+  const moodFilterOptions = [
+    { value: "chill", label: moodLabels.chill },
+    { value: "social", label: moodLabels.social },
+    { value: "active", label: moodLabels.active },
+    { value: "romantic", label: moodLabels.romantic },
+    { value: "family-friendly", label: moodLabels["family-friendly"] },
+  ];
+  const budgetFilterOptions = [
+    { value: "all", label: text.common.all },
+    { value: "$", label: "$" },
+    { value: "$$", label: "$$" },
+    { value: "$$$", label: "$$$" },
+  ];
+  const areaFilterOptions = [
+    { value: "any", label: language === "fr" ? "Tous les quartiers" : "Any area" },
+    { value: "maarif", label: "Maarif" },
+    { value: "gauthier", label: "Gauthier" },
+    { value: "ain diab", label: "Ain Diab" },
+    { value: "racine", label: "Racine" },
+    { value: "anfa", label: "Anfa" },
+    {
+      value: "old medina",
+      label: language === "fr" ? "Ancienne Médina" : "Old Medina",
+    },
+    { value: "marina", label: "Marina" },
+    { value: "bourgogne", label: "Bourgogne" },
+  ];
+  const stopRoleLabel: Record<StopRoleKey, string> = {
+    start: language === "fr" ? text.planPage.startPick : "Start / warm-up",
+    main: language === "fr" ? text.planPage.mainPick : "Main stop",
+    end: language === "fr" ? text.planPage.followUpPick : "Optional follow-up",
+  };
+  const stopRoleStage: Record<StopRoleKey, string> = {
+    start: language === "fr" ? text.planPage.startPick : "Start",
+    main: language === "fr" ? text.planPage.mainPick : "Main",
+    end: language === "fr" ? text.planPage.followUpPick : "Follow-up",
+  };
+
   const selectedMoodName = selectedMood
-    ? discoveryMoodLabel[selectedMood]
+    ? moodLabels[selectedMood]
     : undefined;
   const selectedCompanionName = selectedCompanion
-    ? discoveryCompanionLabel[selectedCompanion]
-    : "Friends";
+    ? companionLabels[selectedCompanion]
+    : companionLabels.friends;
 
   const rolePreferences =
     selectedPlanStyle.roleCategories ??
@@ -1081,11 +1117,19 @@ export default function PlanPage() {
     const nextSlug = nextStops[stopIndex]?.venue.slug;
 
     if (!nextSlug || previousSlug === nextSlug) {
-      setRefineFeedback("No better replacement found for this stop right now.");
+      setRefineFeedback(
+        language === "fr"
+          ? "Aucune meilleure alternative trouvée pour cette étape pour le moment."
+          : "No better replacement found for this stop right now.",
+      );
       return;
     }
 
-    setRefineFeedback(`${stopRoleStage[roleKey]} stop updated.`);
+    setRefineFeedback(
+      language === "fr"
+        ? `Étape ${stopRoleStage[roleKey].toLowerCase()} mise à jour.`
+        : `${stopRoleStage[roleKey]} stop updated.`,
+    );
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles });
   };
 
@@ -1100,23 +1144,41 @@ export default function PlanPage() {
 
     setRefineFeedback(
       lockedRoles.length > 0
-        ? "Outing refreshed while keeping your locked stops."
-        : "Outing refreshed with a new sequence.",
+        ? language === "fr"
+          ? "Sortie actualisée en gardant vos étapes verrouillées."
+          : "Outing refreshed while keeping your locked stops."
+        : language === "fr"
+          ? "Sortie actualisée avec une nouvelle séquence."
+          : "Outing refreshed with a new sequence.",
     );
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles, seed: nextSeed });
   };
 
   const planSummaryMeta = [
     selectedCompanionName,
-    selectedMoodName ? `${selectedMoodName} mood` : undefined,
-    budget === "all" ? "Any budget" : `Budget ${budget}`,
-    area === "any" ? "Any area" : `Area ${area}`,
+    selectedMoodName
+      ? language === "fr"
+        ? `Ambiance ${selectedMoodName}`
+        : `${selectedMoodName} mood`
+      : undefined,
+    budget === "all"
+      ? language === "fr"
+        ? "Tous budgets"
+        : "Any budget"
+      : `Budget ${budget}`,
+    area === "any"
+      ? language === "fr"
+        ? "Tous les quartiers"
+        : "Any area"
+      : language === "fr"
+        ? `Quartier ${area}`
+        : `Area ${area}`,
   ]
     .filter(Boolean)
     .join(" • ");
 
   const selectedAreaLabel =
-    areaOptions.find((option) => option.value === area)?.label ?? "Casablanca";
+    areaFilterOptions.find((option) => option.value === area)?.label ?? "Casablanca";
   const planSummary = buildOutingNarrative({
     style: selectedPlanStyle,
     areaLabel: selectedAreaLabel,
@@ -1282,17 +1344,17 @@ export default function PlanPage() {
 
       <main className="bl-plan-main">
         <section className="bl-plan-hero">
-          <p className="bl-plan-eyebrow">Plan My Outing</p>
-          <h1 className="bl-plan-title">Craft your signature city outing</h1>
+          <p className="bl-plan-eyebrow">{text.planPage.eyebrow}</p>
+          <h1 className="bl-plan-title">{text.planPage.title}</h1>
           <p className="bl-plan-subtitle">
-            Pick a plan style first, then fine-tune mood, budget, and area. We
-            generate a curated outing flow from the existing Casablanca venue
-            data.
+            {text.planPage.subtitle}
           </p>
-          <p className="bl-plan-current-summary">Current plan: {planSummary}</p>
+          <p className="bl-plan-current-summary">
+            {formatFlowText(text.planPage.currentPlan, { plan: planSummary })}
+          </p>
 
           <div className="bl-plan-style-head">
-            <p className="bl-discovery-label">Plan style</p>
+            <p className="bl-discovery-label">{text.planPage.planStyle}</p>
             <p className="bl-plan-style-subtitle">
               {selectedPlanStyle.subtitle}
             </p>
@@ -1326,9 +1388,9 @@ export default function PlanPage() {
 
           <div className="bl-plan-controls">
             <div>
-              <p className="bl-discovery-label">Who are you with?</p>
+              <p className="bl-discovery-label">{text.planPage.whoWith}</p>
               <FilterChips
-                options={companionOptions}
+                options={companionFilterOptions}
                 selectedValue={companion}
                 onSelect={(value) =>
                   updatePlannerParams({
@@ -1342,9 +1404,9 @@ export default function PlanPage() {
             </div>
 
             <div>
-              <p className="bl-discovery-label">Mood</p>
+              <p className="bl-discovery-label">{text.common.mood}</p>
               <FilterChips
-                options={moodOptions}
+                options={moodFilterOptions}
                 selectedValue={mood}
                 onSelect={(value) =>
                   updatePlannerParams({
@@ -1358,9 +1420,9 @@ export default function PlanPage() {
             </div>
 
             <div>
-              <p className="bl-discovery-label">Budget</p>
+              <p className="bl-discovery-label">{dictionary.searchPage.summaryBudget}</p>
               <FilterChips
-                options={budgetOptions}
+                options={budgetFilterOptions}
                 selectedValue={budget}
                 onSelect={(value) =>
                   updatePlannerParams({
@@ -1374,9 +1436,9 @@ export default function PlanPage() {
             </div>
 
             <div>
-              <p className="bl-discovery-label">Preferred area</p>
+              <p className="bl-discovery-label">{text.planPage.preferredArea}</p>
               <FilterChips
-                options={areaOptions}
+                options={areaFilterOptions}
                 selectedValue={area}
                 onSelect={(value) =>
                   updatePlannerParams({
@@ -1406,7 +1468,7 @@ export default function PlanPage() {
                   });
                 }}
               >
-                Reset planner
+                {text.planPage.resetPlanner}
               </button>
 
               <button
@@ -1414,7 +1476,7 @@ export default function PlanPage() {
                 className="bl-plan-primary-btn"
                 onClick={handleRegenerateOuting}
               >
-                Refresh suggestions
+                {text.planPage.refresh}
               </button>
 
               <button
@@ -1422,7 +1484,7 @@ export default function PlanPage() {
                 className="bl-plan-secondary-btn"
                 onClick={handleCopyOutingLink}
               >
-                Copy outing link
+                {text.planPage.copyLink}
               </button>
 
               <button
@@ -1430,20 +1492,20 @@ export default function PlanPage() {
                 className="bl-plan-primary-btn"
                 onClick={handleSaveOuting}
               >
-                Save outing
+                {text.planPage.saveOuting}
               </button>
             </div>
 
             {shareFeedback !== "idle" ? (
               <p className="bl-plan-feedback">
                 {shareFeedback === "copied"
-                  ? "Outing link copied."
-                  : "Could not copy link."}
+                  ? text.planPage.linkCopied
+                  : text.planPage.linkCopyFailed}
               </p>
             ) : null}
 
             {saveFeedback === "saved" ? (
-              <p className="bl-plan-feedback">Outing saved.</p>
+              <p className="bl-plan-feedback">{text.planPage.outingSaved}</p>
             ) : null}
             {refineFeedback ? (
               <p className="bl-plan-feedback">{refineFeedback}</p>
@@ -1453,8 +1515,12 @@ export default function PlanPage() {
 
         <section className="bl-plan-results">
           <div className="bl-plan-results-head">
-            <h2>Your outing route</h2>
-            <p>{effectivePlanStops.length} stops</p>
+            <h2>{text.planPage.routeTitle}</h2>
+            <p>
+              {formatFlowText(text.planPage.stopsCount, {
+                count: effectivePlanStops.length,
+              })}
+            </p>
           </div>
 
           <p className="bl-plan-results-subtitle">
@@ -1486,14 +1552,18 @@ export default function PlanPage() {
                     key={`${stop.role}-${stop.venue.slug}`}
                     className="bl-plan-card"
                   >
-                    <p className="bl-plan-stop-index">Stop {index + 1}</p>
+                    <p className="bl-plan-stop-index">
+                      {formatFlowText(text.planPage.stopLabel, {
+                        index: index + 1,
+                      })}
+                    </p>
                     <p className="bl-plan-stop-stage">
                       {stopRoleStage[roleKey]}
                     </p>
                     <p className="bl-plan-stop-role">{stop.role}</p>
                     <p className="bl-plan-stop-hint">{stop.roleHint}</p>
                     <p className="bl-plan-stop-lock-state">
-                      {isLocked ? "Locked" : "Unlocked"}
+                      {isLocked ? text.planPage.locked : text.planPage.unlocked}
                     </p>
                     <p className="bl-plan-stop-category">
                       {stop.venue.category}
@@ -1504,9 +1574,9 @@ export default function PlanPage() {
                       {stop.venue.shortDescription ?? stop.venue.description}
                     </p>
 
-                    {getBestForBadges(stop.venue, 2).length > 0 ? (
+                    {getBestForBadges(stop.venue, 2, language).length > 0 ? (
                       <div className="bl-plan-stop-badges">
-                        {getBestForBadges(stop.venue, 2).map(
+                        {getBestForBadges(stop.venue, 2, language).map(
                           (badge, badgeIndex) => (
                             <span
                               key={`${stop.venue.slug}-plan-badge-${badge}-${badgeIndex}`}
@@ -1518,9 +1588,9 @@ export default function PlanPage() {
                       </div>
                     ) : null}
 
-                    {getVenuePersonalitySignals(stop.venue).length > 0 ? (
+                    {getVenuePersonalitySignals(stop.venue, language).length > 0 ? (
                       <p className="bl-plan-stop-signals">
-                        {getVenuePersonalitySignals(stop.venue)
+                        {getVenuePersonalitySignals(stop.venue, language)
                           .slice(0, 2)
                           .join(" • ")}
                       </p>
@@ -1528,14 +1598,16 @@ export default function PlanPage() {
 
                     <div className="bl-plan-why-list">
                       {[
-                        `${stopRoleStage[roleKey]} pick`,
+                        `${stopRoleStage[roleKey]} ${
+                          language === "fr" ? "sélection" : "pick"
+                        }`,
                         selectedPlanStyle.label,
                         ...explainVenueMatch(stop.venue, {
                           budget,
                           area,
                           mood: selectedMood,
                           companion: selectedCompanion,
-                        }),
+                        }, 3, language),
                       ]
                         .slice(0, 5)
                         .map((chip, chipIndex) => (
@@ -1554,7 +1626,7 @@ export default function PlanPage() {
                         className="bl-plan-stop-utility-btn"
                         onClick={() => handleReplaceStop(roleKey)}
                       >
-                        Replace this stop
+                        {text.planPage.replaceStop}
                       </button>
 
                       <button
@@ -1562,7 +1634,7 @@ export default function PlanPage() {
                         className={`bl-plan-stop-utility-btn${isLocked ? " is-active" : ""}`}
                         onClick={() => handleToggleStopLock(roleKey)}
                       >
-                        {isLocked ? "Unlock" : "Lock"}
+                        {isLocked ? text.planPage.unlock : text.planPage.lock}
                       </button>
 
                       <button
@@ -1590,25 +1662,26 @@ export default function PlanPage() {
             </div>
           ) : (
             <div className="bl-plan-empty">
-              <h3>Not enough venues for this exact combination yet.</h3>
-              <p>
-                Try a broader area or budget to unlock more complete outing
-                routes.
-              </p>
+              <h3>{text.planPage.notEnoughTitle}</h3>
+              <p>{text.planPage.notEnoughDescription}</p>
             </div>
           )}
         </section>
 
         <section className="bl-plan-saved">
           <div className="bl-plan-results-head">
-            <h2>Saved outings</h2>
-            <p>{savedOutings.length} saved</p>
+            <h2>{text.planPage.savedOutings}</h2>
+            <p>
+              {formatFlowText(text.planPage.savedCount, {
+                count: savedOutings.length,
+              })}
+            </p>
           </div>
 
           {savedOutings.length === 0 ? (
             <div className="bl-plan-empty">
-              <h3>No saved outings yet.</h3>
-              <p>Save a generated route to keep it and open it again later.</p>
+              <h3>{text.planPage.noSavedTitle}</h3>
+              <p>{text.planPage.noSavedDescription}</p>
             </div>
           ) : (
             <div className="bl-plan-saved-list">
@@ -1642,7 +1715,7 @@ export default function PlanPage() {
                       })}
                       className="bl-plan-details-link"
                     >
-                      Open again
+                      {text.planPage.openAgain}
                     </Link>
 
                     <button
@@ -1650,7 +1723,7 @@ export default function PlanPage() {
                       className="bl-plan-secondary-btn"
                       onClick={() => handleDeleteSavedOuting(outing.id)}
                     >
-                      Delete
+                      {text.planPage.delete}
                     </button>
                   </div>
                 </article>
