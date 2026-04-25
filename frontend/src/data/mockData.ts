@@ -109,7 +109,7 @@ export const venues: Venue[] = [
   {
     slug: "skyline-rooftop-cafe",
     name: "Skyline Rooftop Cafe",
-    category: "Cafes",
+    category: "Cafes & Hangouts",
     categorySlug: "cafes",
     area: "Maarif, Casablanca",
     coordinates: { lat: 33.5763, lng: -7.6333 },
@@ -145,7 +145,7 @@ export const venues: Venue[] = [
   {
     slug: "bean-district",
     name: "Bean District",
-    category: "Cafes",
+    category: "Cafes & Hangouts",
     categorySlug: "cafes",
     area: "Gauthier, Casablanca",
     coordinates: { lat: 33.5894, lng: -7.6212 },
@@ -180,20 +180,20 @@ export const venues: Venue[] = [
   },
   {
     slug: "beldi-table-kitchen",
-    name: "Beldi Table Kitchen",
-    category: "Restaurants",
+    name: "Beldi Tasting Table",
+    category: "Food Experiences",
     categorySlug: "restaurants",
     area: "Racine, Casablanca",
     coordinates: { lat: 33.5921, lng: -7.6265 },
     description:
-      "Modern Moroccan restaurant with seasonal dishes and warm service.",
+      "Moroccan tasting-table experience built around shared dishes and slow conversation.",
     shortDescription:
-      "Modern Moroccan restaurant with seasonal dishes and warm service.",
+      "Moroccan tasting-table experience built around shared dishes and slow conversation.",
     overview:
-      "Beldi Table Kitchen offers a contemporary Moroccan menu in a relaxed Racine setting. The space is suitable for both casual dinners and small celebrations, with a clear focus on local flavors and fresh ingredients. It is a practical choice for people looking for a modern restaurant experience without a formal atmosphere.",
-    vibe: "Warm, local, contemporary",
-    vibeSummary: "Warm modern Moroccan dining with a polished feel.",
-    audience: "Couples, families, food lovers",
+      "Beldi Tasting Table is a food-led experience in Racine for people who want more than a standard dinner. The format centers on shared Moroccan plates, seasonal flavors, and a calm setting made for conversation. It works well for date nights, visiting friends, or small family plans where the meal is part of the experience.",
+    vibe: "Warm, local, shared-table",
+    vibeSummary: "Shared Moroccan tasting experience with a polished, intimate feel.",
+    audience: "Couples, visiting friends, small families",
     priceLevel: "$$$",
     bestForTags: ["date-spot", "family-friendly"],
     timeOfDay: ["evening"],
@@ -203,14 +203,14 @@ export const venues: Venue[] = [
     translations: {
       fr: {
         description:
-          "Restaurant marocain moderne avec des plats de saison et un service chaleureux.",
+          "Expérience de dégustation marocaine autour de plats partagés et de conversations tranquilles.",
         shortDescription:
-          "Restaurant marocain moderne avec des plats de saison et un service chaleureux.",
+          "Expérience de dégustation marocaine autour de plats partagés et de conversations tranquilles.",
         overview:
-          "Beldi Table Kitchen propose une carte marocaine contemporaine dans un cadre décontracté à Racine. L'espace convient aux dîners informels comme aux petites célébrations, avec un accent clair sur les saveurs locales et les produits frais. C'est un bon choix pour ceux qui recherchent une expérience restaurant moderne sans atmosphère formelle.",
-        vibe: "Chaleureux, local, contemporain",
-        vibeSummary: "Gastronomie marocaine moderne chaleureuse avec une touche soignée.",
-        audience: "Couples, familles, amateurs de bonne cuisine",
+          "Beldi Tasting Table est une expérience food à Racine pour ceux qui veulent plus qu'un dîner classique. Le format met l'accent sur des plats marocains à partager, des saveurs de saison et un cadre calme pensé pour la conversation. C'est une bonne option pour une soirée en duo, des amis de passage ou un petit plan familial où le repas fait partie de l'expérience.",
+        vibe: "Chaleureux, local, table partagée",
+        vibeSummary: "Expérience de dégustation marocaine partagée avec une ambiance intime et soignée.",
+        audience: "Couples, amis de passage, petites familles",
       },
     },
   },
