@@ -1,91 +1,180 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides project memory and guidance for Claude Code when working in this repository.
 
 @AGENTS.md
 
-## Project
+## Project Summary
 
-Blaniko is a Casablanca activities and venue discovery platform. The current MVP is focused on activities and amusement; restaurants and hotels are out of scope for now.
+Blaniko is a startup project focused on helping people discover activities, venues, and things to do in Casablanca, Morocco.
 
-**Active development is in `frontend/`** (plain React + Vite). The `app/` Next.js folder is secondary/migration-related — do not treat it as the primary app unless explicitly instructed.
+The long-term vision is to grow into a broader lifestyle platform, but the current MVP is intentionally focused on discovery.
 
-The current design is not considered final. The goal is to progressively build a stronger, more polished, more premium product — not just patch small UI issues. Redesign suggestions are welcome as long as they respect MVP scope.
+Current MVP focus:
 
-The active branch is `feat/discovery-experience-lab`. New work should align with its discovery-first purpose.
+- Activities and venues in Casablanca
+- Homepage discovery experience
+- Categories
+- Venue listings
+- Venue detail pages
+- Search and filtering
+- Favorites
+- Recommendations
+- Map discovery
+- Admin venue management MVP
+- English / French localization
+
+Not included yet:
+
+- User accounts
+- Authentication
+- Payments
+- Booking or reservation system
+- Backend API
+- Database
+- Live Google Sheets sync
+
+## Current Technical State
+
+The active app is:
+
+frontend/
+
+The stack is:
+
+- React
+- Vite
+- TypeScript
+- React Router
+- CSS files
+- npm
+
+This project was originally started with Next.js, but it has been migrated to React + Vite. The old Next.js app/ folder has been removed. Do not recreate it.
+
+Root npm scripts proxy into frontend/.
+
+## Branch Strategy
+
+Current permanent branches:
+
+- dev = active development branch
+- staging = later testing/demo branch
+- main = stable/public branch
+
+Do not push directly to protected branches.
+
+Normal workflow:
+
+1. Start from dev.
+2. Create a feature or chore branch.
+3. Make focused changes.
+4. Run npm run build.
+5. Run npm run lint.
+6. Open a Pull Request into dev.
+7. Merge only after checks pass.
+
+Do not promote dev to staging until the project is ready for a serious demo or testing phase.
 
 ## Commands
 
-All scripts proxy into the `frontend/` subdirectory:
+From the repository root:
 
-```bash
-npm run dev      # Vite dev server (http://localhost:5173)
-npm run build    # tsc -b && vite build
-npm run lint     # ESLint
-npm run preview  # Preview production build
-```
+npm run dev
+npm run build
+npm run lint
+npm run preview
 
-To run commands directly inside the frontend package:
-```bash
-cd frontend && npx tsc --noEmit   # type-check only
-cd frontend && npx eslint src/path/to/file.tsx  # lint a single file
-```
+Direct frontend commands if needed:
 
-There are no tests.
+cd frontend && npx tsc --noEmit
+cd frontend && npx eslint src/path/to/file.tsx
+
+There are currently no automated tests.
 
 ## Architecture
 
-The repo contains **two separate apps** at different stages of development:
+Primary app:
 
-### `frontend/` — Active Vite + React SPA (primary)
-- **Stack**: React 19, React Router v7, TypeScript 6, Vite 8. No backend, no external state library.
-- **Entry**: `frontend/src/main.tsx` → wraps app in `<I18nProvider>` + `<BrowserRouter>`, renders `App.tsx`
-- **Routing**: `App.tsx` declares all routes. Each route maps to a page in `src/pages/`. Pages colocate their CSS (`PageName.css` next to `PageName.tsx`).
-- **Components**: `src/components/` organized by feature (`home/`, `collections/`, `compare/`, `discovery/`, `recommendations/`).
+- frontend/src/main.tsx initializes the app
+- frontend/src/App.tsx defines routes
+- frontend/src/pages/ contains page components
+- frontend/src/components/ contains reusable UI components
+- frontend/src/data/ contains static/mock data
+- frontend/src/hooks/ contains localStorage-based hooks
+- frontend/src/i18n/ contains localization logic
+- frontend/src/utils/ contains helper logic
 
-### `app/` — Next.js App Router (secondary, migration-related)
-- Uses Next.js App Router with server components and Tailwind CSS.
-- Has its own `data/mockData.ts`, `i18n/`, and `components/` trees — separate from `frontend/`.
-- Server-side language detection via `app/i18n/server.ts` → `getCurrentLanguage()`.
-- Root scripts (`npm run dev` etc.) point to `frontend/`, not `app/`. The Next.js app has no dedicated script in root `package.json` yet.
-- **Do not default to working here** unless the user explicitly asks.
+Homepage design:
 
-**Styling**: `frontend/` uses plain colocated CSS files (`PageName.css` beside each component). `app/` uses Tailwind utility classes. Match the styling system of whichever app you're working in.
+- frontend/src/pages/HomePage.tsx imports the current Claude homepage integration
+- frontend/src/claude-home/ contains integrated Claude Design homepage code
+- docs/design-archive/claude-export/ contains archived raw Claude Design files only
 
-## Data & State
+Do not work in docs/design-archive as if it is production code.
 
-**All data is static/mock** — no backend API exists.
+## Data and State
 
-- `frontend/src/data/mockData.ts` — defines the `Venue` and `Category` types, and exports all base venue/category data. This is the source of truth for venue shape.
-- `frontend/src/data/areas.ts`, `editorialCollections.ts` — supplementary static data.
+All app data is currently static/mock.
 
-**State hooks** all follow the same pattern: read from `localStorage` on mount, write back with `window.dispatchEvent(new CustomEvent(...))` so all open tabs/components stay in sync without a global store.
+Main data files:
 
-| Hook | Storage key | Purpose |
-|------|-------------|---------|
-| `useAdminVenues` | `blaniko:admin-venues:v1` | Merges base venues with admin edits; source for all venue reads |
-| `useVenues` | — | Thin wrapper over `useAdminVenues`; exposes `venues`, `venuesBySlug`, `getVenueBySlug` |
-| `useFavorites` | `blaniko:favorites:v1` | Per-user favorited venue slugs |
-| `useCollections` | `blaniko:collections:v1` | User-created named collections of venue slugs |
-| `useCompare` | `blaniko:compare:v1` | Up to 3 venues queued for side-by-side comparison |
-| `useRecentActivity` | — | Tracks recently viewed venues |
+- frontend/src/data/mockData.ts
+- frontend/src/data/areas.ts
+- frontend/src/data/editorialCollections.ts
 
-Always call `useVenues` (not `useAdminVenues` directly) when reading venue data in UI components.
+State uses custom hooks and localStorage. Important hooks:
+
+- useVenues
+- useFavorites
+- useCollections
+- useCompare
+- useRecentActivity
+
+When reading venue data in UI components, prefer useVenues.
 
 ## i18n
 
-`frontend/src/i18n/` implements a custom two-language system (EN/FR):
-- `dictionaries.ts` — exports `getDictionary(language)` returning a typed `Dictionary` object.
-- `I18nProvider.tsx` — stores selected language in `localStorage` (`blaniko:lang`) and sets `document.documentElement.lang`.
-- `useI18n.ts` — hook to access `{ language, setLanguage, dictionary }` anywhere in the tree.
+The app supports English and French.
 
-When adding new UI strings, add them to the `Dictionary` type in `dictionaries.ts` and provide both EN and FR values.
+Use the existing i18n system in frontend/src/i18n/.
 
-The `app/` Next.js app has its own parallel i18n in `app/i18n/dictionaries.ts` (server-side, no context provider).
+When adding visible UI strings:
 
-## Working with Claude
+- update the Dictionary type if needed
+- add English text
+- add French text
+- avoid hardcoded visible strings
 
-- Before editing, read the relevant files, briefly explain the plan, then make targeted changes.
-- Do not assume the current design should be preserved — redesign suggestions are welcome when the user signals they want a better result.
-- Keep changes scoped to the MVP (activities/amusement discovery in Casablanca). Do not expand scope toward restaurants, hotels, or broader features unless asked.
-- Help improve the product step by step toward a more polished, premium experience.
+## Product Direction
+
+Blaniko is currently focused on discovery, not transactions.
+
+Keep the MVP focused. Do not add accounts, payments, bookings, restaurants, hotels, or large backend systems unless explicitly requested.
+
+Important upcoming product decisions:
+
+- how venue data should move from Google Sheets into the app
+- which pages should remain in the MVP
+- what should be polished before a demo
+- how to organize team work across frontend, data, QA, and business
+
+## Team Context
+
+- Achraf: founder, product lead, main technical lead
+- Akram: UI / frontend
+- Mohamed: category pages, listings, data integration, responsive testing
+- Benmoussa: tourism and market research
+- Ouassim: operations, QA, research support, data cleaning
+- Bekkali: business, partnerships, venue outreach, revenue ideas
+
+## Claude Code Behavior
+
+Before editing:
+
+1. inspect relevant files
+2. explain the plan briefly
+3. make targeted changes
+4. avoid broad unrelated rewrites
+5. run build and lint when code changes
+
+Never assume generated design exports should be committed directly. Keep production code inside frontend/.
