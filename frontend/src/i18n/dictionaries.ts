@@ -270,7 +270,7 @@ const en: Dictionary = {
     badge: "Casablanca Discovery Platform",
     title: "Discover Casablanca",
     subtitle:
-      "Find cafes, restaurants, sports spots, and unique city experiences in one simple place. Blaniko helps you explore Casablanca like a local.",
+      "Find activities, hangouts, sports spots, and unique city experiences in one simple place. Blaniko helps you explore Casablanca like a local.",
     searchPlaceholder: "Search places, categories, or areas",
     searchAction: "Search",
     quickFiltersLabel: "Quick category filters",
@@ -373,8 +373,8 @@ const en: Dictionary = {
     compareGo: "Compare",
   },
   categoryNames: {
-    cafes: "Cafes",
-    restaurants: "Restaurants",
+    cafes: "Cafes & Hangouts",
+    restaurants: "Food Experiences",
     activities: "Activities",
     sports: "Sports",
     gaming: "Gaming",
@@ -384,8 +384,8 @@ const en: Dictionary = {
     friends: "Friends",
   },
   categoryDescriptions: {
-    cafes: "Coffee spots and chill city corners across Casablanca.",
-    restaurants: "Local favorites and modern dining places in the city.",
+    cafes: "Atmospheric cafés, social spots, and work-friendly hangouts.",
+    restaurants: "Food-led experiences, date-night spots, and memorable dining plans.",
     activities: "Experiences to break your routine and explore Casablanca.",
     sports: "Padel, fitness, and active vibes around town.",
     gaming: "Arcades, lounges, and social gaming spots.",
@@ -556,7 +556,7 @@ const fr: Dictionary = {
     badge: "Plateforme de découverte à Casablanca",
     title: "Découvrez Casablanca",
     subtitle:
-      "Trouvez des cafés, restaurants, activités sportives et expériences locales au même endroit. Blaniko vous aide à explorer Casablanca comme un habitant.",
+      "Trouvez des activités, hangouts, spots sportifs et expériences locales au même endroit. Blaniko vous aide à explorer Casablanca comme un habitant.",
     searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
     searchAction: "Rechercher",
     quickFiltersLabel: "Filtres rapides",
@@ -661,8 +661,8 @@ const fr: Dictionary = {
     compareGo: "Comparer",
   },
   categoryNames: {
-    cafes: "Cafés",
-    restaurants: "Restaurants",
+    cafes: "Cafés & Hangouts",
+    restaurants: "Expériences food",
     activities: "Activités",
     sports: "Sports",
     gaming: "Gaming",
@@ -672,8 +672,8 @@ const fr: Dictionary = {
     friends: "Amis",
   },
   categoryDescriptions: {
-    cafes: "Des cafés et coins détente partout à Casablanca.",
-    restaurants: "Des adresses locales et des restaurants modernes en ville.",
+    cafes: "Des cafés d’ambiance, spots sociaux et hangouts pour travailler ou sortir.",
+    restaurants: "Des expériences autour de la food, des soirées en duo et des plans mémorables.",
     activities: "Des expériences pour changer de routine et explorer Casablanca.",
     sports: "Padel, fitness et activités dynamiques en ville.",
     gaming: "Arcades, lounges et espaces gaming conviviaux.",
