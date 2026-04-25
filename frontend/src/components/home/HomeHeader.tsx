@@ -1,4 +1,7 @@
 import { Link } from "react-router";
+import { useCompare } from "../../hooks/useCompare";
+import { getFlowTexts } from "../../i18n/flowTexts";
+import { useI18n } from "../../i18n/useI18n";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 
 type HomeHeaderProps = {
@@ -17,6 +20,11 @@ type HomeHeaderProps = {
 };
 
 export function HomeHeader({ labels }: HomeHeaderProps) {
+  const { compareCount } = useCompare();
+  const { language } = useI18n();
+  const text = getFlowTexts(language);
+  const compareLabel = `${text.common.compare} (${compareCount})`;
+
   return (
     <header className="bl-home-header">
       <nav className="bl-home-nav">
@@ -27,23 +35,8 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
 
         <ul className="bl-home-nav-links">
           <li>
-            <Link to="/" className="bl-home-nav-link">
-              {labels.home}
-            </Link>
-          </li>
-          <li>
-            <Link to="/#categories" className="bl-home-nav-link">
-              {labels.categories}
-            </Link>
-          </li>
-          <li>
-            <Link to="/#venues" className="bl-home-nav-link">
-              {labels.venues}
-            </Link>
-          </li>
-          <li>
-            <Link to="/favorites" className="bl-home-nav-link">
-              {labels.favorites}
+            <Link to="/guides" className="bl-home-nav-link">
+              {text.common.guides}
             </Link>
           </li>
           <li>
@@ -52,33 +45,56 @@ export function HomeHeader({ labels }: HomeHeaderProps) {
             </Link>
           </li>
           <li>
-            <Link to="/admin" className="bl-home-nav-link">
-              {labels.admin}
+            <Link to="/favorites" className="bl-home-nav-link">
+              {labels.favorites}
             </Link>
           </li>
           <li>
-            <Link to="/" className="bl-home-nav-link">
-              {labels.about}
+            <Link to="/compare" className="bl-home-nav-link">
+              {compareLabel}
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/admin"
+              className="bl-home-nav-link bl-home-nav-link-admin"
+            >
+              {labels.admin}
             </Link>
           </li>
         </ul>
 
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-          <Link to="/favorites" className="bl-home-nav-link">
-            {labels.favorites}
-          </Link>
+        <div className="bl-home-header-actions">
+          <details className="bl-home-mobile-menu">
+            <summary className="bl-home-mobile-menu-summary">{text.common.menu}</summary>
+            <div className="bl-home-mobile-menu-panel">
+              <Link to="/guides" className="bl-home-mobile-menu-link">
+                {text.common.guides}
+              </Link>
+              <Link to="/map" className="bl-home-mobile-menu-link">
+                {labels.map}
+              </Link>
+              <Link to="/favorites" className="bl-home-mobile-menu-link">
+                {labels.favorites}
+              </Link>
+              <Link to="/compare" className="bl-home-mobile-menu-link">
+                {compareLabel}
+              </Link>
+              <Link
+                to="/admin"
+                className="bl-home-mobile-menu-link bl-home-mobile-menu-link-admin"
+              >
+                {labels.admin}
+              </Link>
+            </div>
+          </details>
 
-          <Link to="/map" className="bl-home-nav-link">
-            {labels.map}
-          </Link>
+          <LanguageSwitcher
+            labelEn={labels.languageEn}
+            labelFr={labels.languageFr}
+          />
 
-          <Link to="/admin" className="bl-home-nav-link">
-            {labels.admin}
-          </Link>
-
-          <LanguageSwitcher labelEn={labels.languageEn} labelFr={labels.languageFr} />
-
-          <Link to="/#venues" className="bl-home-explore-btn">
+          <Link to="/search" className="bl-home-explore-btn">
             {labels.exploreNow}
           </Link>
         </div>

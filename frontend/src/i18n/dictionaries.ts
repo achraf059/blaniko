@@ -45,6 +45,73 @@ export type Dictionary = {
     featuredSubtitle: string;
     footerText: string;
   };
+  claudeHome: {
+    navExplore: string;
+    navCategories: string;
+    navCurated: string;
+    navMap: string;
+    saved: string;
+    joinList: string;
+    arComingSoon: string;
+    heroEyebrowCity: string;
+    heroHeadlinePrefix: string;
+    heroHeadlineEmphasis: string;
+    heroHeadlineSuffix: string;
+    heroSubtitle: string;
+    heroSearchPlaceholder: string;
+    heroExplore: string;
+    heroTagWeekend: string;
+    heroTagOutdoor: string;
+    heroTagUnder200: string;
+    heroTagDateNight: string;
+    heroTagWithKids: string;
+    heroTagTonight: string;
+    continuationEyebrow: string;
+    continuationTitlePrefix: string;
+    continuationTitleEmphasis: string;
+    continuationTitleSuffix: string;
+    continuationRight: string;
+    continuationCardLabel: string;
+    continuationCardTitle: string;
+    continuationCardDescription: string;
+    continuationCta: string;
+    categoriesEyebrow: string;
+    categoriesTitlePrefix: string;
+    categoriesTitleEmphasis: string;
+    categoriesRight: string;
+    curatedEyebrow: string;
+    curatedTitlePrefix: string;
+    curatedTitleEmphasis: string;
+    curatedTitleSuffix: string;
+    curatedRight: string;
+    mapEyebrow: string;
+    mapTitlePrefix: string;
+    mapTitleEmphasis: string;
+    mapTitleSuffix: string;
+    mapActivities: string;
+    mapNeighborhoods: string;
+    mapOpen: string;
+    howEyebrow: string;
+    howTitlePrefix: string;
+    howTitleEmphasis: string;
+    howTitleSuffix: string;
+    moodsHead: string;
+    footerCtaTitlePrefix: string;
+    footerCtaTitleEmphasis: string;
+    footerEmailPlaceholder: string;
+    footerSmallNote: string;
+    editorialEyebrow: string;
+    editorialTitlePrefix: string;
+    editorialTitleEmphasis: string;
+    editorialTitleSuffix: string;
+    editorialDescription: string;
+    editorialRead: string;
+    compareLabel: string;
+    compareSelected: string;
+    compareClear: string;
+    compareGo: string;
+  };
+  categoryNames: Record<string, string>;
   categoryDescriptions: Record<string, string>;
   categoryPage: {
     backHome: string;
@@ -59,6 +126,7 @@ export type Dictionary = {
     viewDetails: string;
     saveFavorite: string;
     removeFavorite: string;
+    whyThisPlace: string;
   };
   venuePage: {
     backToHome: string;
@@ -80,6 +148,7 @@ export type Dictionary = {
     fallbackPriceLevel: string;
     saveFavorite: string;
     removeFavorite: string;
+    unknownCategory: string;
   };
   searchPage: {
     eyebrow: string;
@@ -173,6 +242,14 @@ export type Dictionary = {
     deleteConfirm: string;
     savedFeedback: string;
     deletedFeedback: string;
+    errNameRequired: string;
+    errCategoryRequired: string;
+    errAreaRequired: string;
+    errBudgetFormat: string;
+    errShortDescriptionRequired: string;
+    errCoordsBothRequired: string;
+    errLatitudeRange: string;
+    errLongitudeRange: string;
   };
 };
 
@@ -191,7 +268,7 @@ const en: Dictionary = {
   },
   hero: {
     badge: "Casablanca Discovery Platform",
-    title: "Discover the best things to do in Casablanca.",
+    title: "Discover Casablanca",
     subtitle:
       "Find cafes, restaurants, sports spots, and unique city experiences in one simple place. Blaniko helps you explore Casablanca like a local.",
     searchPlaceholder: "Search places, categories, or areas",
@@ -222,6 +299,90 @@ const en: Dictionary = {
     featuredSubtitle: "Handpicked spots to start exploring Casablanca.",
     footerText: "Discover what to do in Casablanca.",
   },
+  claudeHome: {
+    navExplore: "Explore",
+    navCategories: "Categories",
+    navCurated: "Curated",
+    navMap: "Map",
+    saved: "Saved",
+    joinList: "Join the list",
+    arComingSoon: "Arabic coming soon",
+    heroEyebrowCity: "Casablanca · MA",
+    heroHeadlinePrefix: "Discover the",
+    heroHeadlineEmphasis: "quietly extraordinary",
+    heroHeadlineSuffix: "in Casablanca.",
+    heroSubtitle:
+      "A curated guide to the activities, workshops, and weekend plans that make the city feel like yours — chosen with taste, updated every week.",
+    heroSearchPlaceholder: "Surf, pottery, rooftop dinner…",
+    heroExplore: "Explore",
+    heroTagWeekend: "This weekend",
+    heroTagOutdoor: "Outdoor",
+    heroTagUnder200: "Under MAD 200",
+    heroTagDateNight: "Date night",
+    heroTagWithKids: "With kids",
+    heroTagTonight: "Tonight",
+    continuationEyebrow: "02 — Continuation",
+    continuationTitlePrefix: "A closer",
+    continuationTitleEmphasis: "look",
+    continuationTitleSuffix: "hand-picked from this week in the city.",
+    continuationRight:
+      "Weekly edits, drawn from the people, places, and small rituals that make a Saturday in Casablanca worth planning.",
+    continuationCardLabel: "This week's edit",
+    continuationCardTitle:
+      "Four ways to spend the weekend — each chosen for a different mood.",
+    continuationCardDescription:
+      "Morning swell. Afternoon clay. Evening reel. Late film. Move between them at your own pace, or take one at a time.",
+    continuationCta: "See the full edit",
+    categoriesEyebrow: "03 — Browse",
+    categoriesTitlePrefix: "Every mood",
+    categoriesTitleEmphasis: "has a category",
+    categoriesRight:
+      "Nine ways into the city. Pick an entry point — or drift between them.",
+    curatedEyebrow: "04 — Curated",
+    curatedTitlePrefix: "The week's",
+    curatedTitleEmphasis: "picks",
+    curatedTitleSuffix: "chosen with care.",
+    curatedRight:
+      "Editor-curated activities, updated every Monday. No pay-to-play.",
+    mapEyebrow: "06 — Map",
+    mapTitlePrefix: "See the city",
+    mapTitleEmphasis: "as a map",
+    mapTitleSuffix: "not a list.",
+    mapActivities: "220 activities",
+    mapNeighborhoods: "12 neighborhoods",
+    mapOpen: "Open map",
+    howEyebrow: "05 — How it works",
+    howTitlePrefix: "A simple",
+    howTitleEmphasis: "rhythm",
+    howTitleSuffix: "discover, choose, go.",
+    moodsHead: "Find by mood",
+    footerCtaTitlePrefix: "Find your",
+    footerCtaTitleEmphasis: "weekend",
+    footerEmailPlaceholder: "your@email.com",
+    footerSmallNote: "One email a week · unsubscribe any time",
+    editorialEyebrow: "Weekly edit · Issue 14",
+    editorialTitlePrefix: "A quiet guide to",
+    editorialTitleEmphasis: "autumn",
+    editorialTitleSuffix: "in Casablanca.",
+    editorialDescription:
+      "Six spaces to slow down in, from a rooftop library above Maarif to a glassblower's studio in Bouskoura. Writing and photographs by our editors.",
+    editorialRead: "Read the edit",
+    compareLabel: "Compare",
+    compareSelected: "{count} activities selected",
+    compareClear: "Clear",
+    compareGo: "Compare",
+  },
+  categoryNames: {
+    cafes: "Cafes",
+    restaurants: "Restaurants",
+    activities: "Activities",
+    sports: "Sports",
+    gaming: "Gaming",
+    outdoor: "Outdoor",
+    family: "Family",
+    couples: "Couples",
+    friends: "Friends",
+  },
   categoryDescriptions: {
     cafes: "Coffee spots and chill city corners across Casablanca.",
     restaurants: "Local favorites and modern dining places in the city.",
@@ -247,6 +408,7 @@ const en: Dictionary = {
     viewDetails: "View details",
     saveFavorite: "Save",
     removeFavorite: "Saved",
+    whyThisPlace: "Why this place?",
   },
   venuePage: {
     backToHome: "Back to homepage",
@@ -270,6 +432,7 @@ const en: Dictionary = {
     fallbackPriceLevel: "$$",
     saveFavorite: "Save to favorites",
     removeFavorite: "Remove from favorites",
+    unknownCategory: "Venue",
   },
   searchPage: {
     eyebrow: "Discovery results",
@@ -365,6 +528,14 @@ const en: Dictionary = {
     deleteConfirm: "Delete this venue from local admin data?",
     savedFeedback: "Venue saved locally.",
     deletedFeedback: "Venue deleted locally.",
+    errNameRequired: "Name is required.",
+    errCategoryRequired: "Category is required.",
+    errAreaRequired: "Area is required.",
+    errBudgetFormat: "Budget must be $, $$ or $$$.",
+    errShortDescriptionRequired: "Short description is required.",
+    errCoordsBothRequired: "Both latitude and longitude are required together.",
+    errLatitudeRange: "Latitude must be between -90 and 90.",
+    errLongitudeRange: "Longitude must be between -180 and 180.",
   },
 };
 
@@ -383,7 +554,7 @@ const fr: Dictionary = {
   },
   hero: {
     badge: "Plateforme de découverte à Casablanca",
-    title: "Découvrez les meilleures choses à faire à Casablanca.",
+    title: "Découvrez Casablanca",
     subtitle:
       "Trouvez des cafés, restaurants, activités sportives et expériences locales au même endroit. Blaniko vous aide à explorer Casablanca comme un habitant.",
     searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
@@ -416,6 +587,90 @@ const fr: Dictionary = {
       "Une sélection d'adresses pour commencer à explorer Casablanca.",
     footerText: "Découvrez quoi faire à Casablanca.",
   },
+  claudeHome: {
+    navExplore: "Explorer",
+    navCategories: "Catégories",
+    navCurated: "Sélection",
+    navMap: "Carte",
+    saved: "Enregistrés",
+    joinList: "Rejoindre la liste",
+    arComingSoon: "Arabe bientôt disponible",
+    heroEyebrowCity: "Casablanca · MA",
+    heroHeadlinePrefix: "Découvrez le",
+    heroHeadlineEmphasis: "discrètement extraordinaire",
+    heroHeadlineSuffix: "à Casablanca.",
+    heroSubtitle:
+      "Un guide sélectionné d'activités, d'ateliers et de plans de week-end qui rendent la ville plus personnelle — choisi avec goût, mis à jour chaque semaine.",
+    heroSearchPlaceholder: "Surf, poterie, dîner rooftop…",
+    heroExplore: "Explorer",
+    heroTagWeekend: "Ce week-end",
+    heroTagOutdoor: "En plein air",
+    heroTagUnder200: "Moins de 200 MAD",
+    heroTagDateNight: "Soirée en duo",
+    heroTagWithKids: "Avec enfants",
+    heroTagTonight: "Ce soir",
+    continuationEyebrow: "02 — Continuation",
+    continuationTitlePrefix: "Un regard",
+    continuationTitleEmphasis: "plus proche",
+    continuationTitleSuffix: "sélectionné dans l'édition de cette semaine.",
+    continuationRight:
+      "Des sélections hebdomadaires inspirées des lieux, des gens et des petits rituels qui rendent un samedi à Casablanca digne d'être planifié.",
+    continuationCardLabel: "Édition de la semaine",
+    continuationCardTitle:
+      "Quatre façons de vivre le week-end — chacune pensée pour une ambiance différente.",
+    continuationCardDescription:
+      "Vague du matin. Poterie l'après-midi. Séance du soir. Film tardif. Enchaînez-les à votre rythme, ou choisissez-en une seule.",
+    continuationCta: "Voir l'édition complète",
+    categoriesEyebrow: "03 — Explorer",
+    categoriesTitlePrefix: "Chaque ambiance",
+    categoriesTitleEmphasis: "a sa catégorie",
+    categoriesRight:
+      "Neuf portes d'entrée dans la ville. Choisissez un point de départ — ou passez de l'une à l'autre.",
+    curatedEyebrow: "04 — Sélection",
+    curatedTitlePrefix: "Les",
+    curatedTitleEmphasis: "choix de la semaine",
+    curatedTitleSuffix: "choisis avec soin.",
+    curatedRight:
+      "Des activités sélectionnées par l'équipe, mises à jour chaque lundi. Pas de mise en avant payante.",
+    mapEyebrow: "06 — Carte",
+    mapTitlePrefix: "Voyez la ville",
+    mapTitleEmphasis: "comme une carte",
+    mapTitleSuffix: "pas comme une liste.",
+    mapActivities: "220 activités",
+    mapNeighborhoods: "12 quartiers",
+    mapOpen: "Ouvrir la carte",
+    howEyebrow: "05 — Fonctionnement",
+    howTitlePrefix: "Un",
+    howTitleEmphasis: "rythme simple",
+    howTitleSuffix: "découvrez, choisissez, partez.",
+    moodsHead: "Explorer par ambiance",
+    footerCtaTitlePrefix: "Trouvez votre",
+    footerCtaTitleEmphasis: "week-end",
+    footerEmailPlaceholder: "votre@email.com",
+    footerSmallNote: "Un email par semaine · désinscription à tout moment",
+    editorialEyebrow: "Édition hebdo · Numéro 14",
+    editorialTitlePrefix: "Un guide paisible de",
+    editorialTitleEmphasis: "l'automne",
+    editorialTitleSuffix: "à Casablanca.",
+    editorialDescription:
+      "Six lieux pour ralentir, d'une bibliothèque rooftop au-dessus de Maarif à l'atelier d'un souffleur de verre à Bouskoura. Rédaction et photos par nos éditeurs.",
+    editorialRead: "Lire l'édition",
+    compareLabel: "Comparer",
+    compareSelected: "{count} activités sélectionnées",
+    compareClear: "Effacer",
+    compareGo: "Comparer",
+  },
+  categoryNames: {
+    cafes: "Cafés",
+    restaurants: "Restaurants",
+    activities: "Activités",
+    sports: "Sports",
+    gaming: "Gaming",
+    outdoor: "Plein air",
+    family: "Famille",
+    couples: "Couples",
+    friends: "Amis",
+  },
   categoryDescriptions: {
     cafes: "Des cafés et coins détente partout à Casablanca.",
     restaurants: "Des adresses locales et des restaurants modernes en ville.",
@@ -441,6 +696,7 @@ const fr: Dictionary = {
     viewDetails: "Voir les détails",
     saveFavorite: "Enregistrer",
     removeFavorite: "Enregistré",
+    whyThisPlace: "Pourquoi cet endroit ?",
   },
   venuePage: {
     backToHome: "Retour à l'accueil",
@@ -464,6 +720,7 @@ const fr: Dictionary = {
     fallbackPriceLevel: "$$",
     saveFavorite: "Ajouter aux favoris",
     removeFavorite: "Retirer des favoris",
+    unknownCategory: "Lieu",
   },
   searchPage: {
     eyebrow: "Résultats découverte",
@@ -563,6 +820,14 @@ const fr: Dictionary = {
     deleteConfirm: "Supprimer ce lieu des données admin locales ?",
     savedFeedback: "Lieu enregistré localement.",
     deletedFeedback: "Lieu supprimé localement.",
+    errNameRequired: "Le nom est requis.",
+    errCategoryRequired: "La catégorie est requise.",
+    errAreaRequired: "Le quartier est requis.",
+    errBudgetFormat: "Le budget doit être $, $$ ou $$$.",
+    errShortDescriptionRequired: "La description courte est requise.",
+    errCoordsBothRequired: "Latitude et longitude sont requises ensemble.",
+    errLatitudeRange: "La latitude doit être entre -90 et 90.",
+    errLongitudeRange: "La longitude doit être entre -180 et 180.",
   },
 };
 

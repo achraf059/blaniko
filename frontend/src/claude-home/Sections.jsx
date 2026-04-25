@@ -1,0 +1,176 @@
+import React from "react";
+import { useNavigate } from "react-router";
+import { Icon } from "./Icon.jsx";
+import { getClaudeHomeLocalizedData } from "./data.js";
+import { useI18n } from "../i18n/useI18n";
+
+// Blaniko — Categories + Curated + How + Footer
+export const Categories = () => {
+  const navigate = useNavigate();
+  const { language, dictionary } = useI18n();
+  const { categories } = getClaudeHomeLocalizedData(language);
+
+  return (
+    <section className="categories shell" id="categories">
+      <div className="section-head">
+        <div>
+          <div className="eyebrow">{dictionary.claudeHome.categoriesEyebrow}</div>
+          <h2>{dictionary.claudeHome.categoriesTitlePrefix} <em>{dictionary.claudeHome.categoriesTitleEmphasis}</em>.</h2>
+        </div>
+        <div className="head-right">
+          {dictionary.claudeHome.categoriesRight}
+        </div>
+      </div>
+      <div className="cat-grid">
+        {categories.map(c => (
+          <button
+            key={c.name}
+            className="cat"
+            onClick={() => navigate(`/categories/${c.slug}`)}
+          >
+            <div className="ico"><Icon name={c.ico} size={20} /></div>
+            <div className="arrow"><Icon name="arrowUpRight" size={16} /></div>
+            <div>
+              <div className="name">{c.name}</div>
+              <div className="count">{c.count}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export const Curated = ({ favorites, toggleFav, compare, toggleCmp }) => {
+  const navigate = useNavigate();
+  const { language, dictionary } = useI18n();
+  const { curated } = getClaudeHomeLocalizedData(language);
+  const row1 = curated.slice(0, 3);
+  const row2 = curated.slice(3, 6);
+  const renderCard = (a, wide) => {
+    const id = a.venueSlug;
+    const isFav = favorites.includes(id);
+    const isCmp = compare.includes(id);
+    return (
+      <div
+        key={id}
+        className={`cur-card ${wide ? "wide" : ""}`}
+        onClick={() => navigate(`/venues/${id}`)}
+      >
+        <div className={`cur-img ${a.img}`}></div>
+        <button
+          className={`cmp-check ${isCmp ? "active" : ""}`}
+          onClick={(e) => { e.stopPropagation(); toggleCmp(id); }}
+          aria-label={dictionary.claudeHome.compareGo}
+        >
+          <span className="box">{isCmp && <Icon name="check" size={10} />}</span>
+          {dictionary.claudeHome.compareGo}
+        </button>
+        <button
+          className={`fav-btn ${isFav ? "active pulse" : ""}`}
+          onClick={(e) => { e.stopPropagation(); toggleFav(id); }}
+          aria-label="Save to favorites"
+          onAnimationEnd={(e) => e.currentTarget.classList.remove("pulse")}
+        >
+          <Icon name={isFav ? "heartFill" : "heart"} size={16} />
+        </button>
+        <div className="cur-top">
+          {a.chips.map(ch => <span key={ch} className="chip">{ch}</span>)}
+        </div>
+        <div className="cur-body">
+          <div className="cur-title">{a.title}</div>
+          <div className="cur-meta">
+            <span>{a.price}</span>
+            <span>{a.duration}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  return (
+    <section className="curated shell" id="curated">
+      <div className="section-head">
+        <div>
+          <div className="eyebrow">{dictionary.claudeHome.curatedEyebrow}</div>
+          <h2>{dictionary.claudeHome.curatedTitlePrefix} <em>{dictionary.claudeHome.curatedTitleEmphasis}</em>, {dictionary.claudeHome.curatedTitleSuffix}</h2>
+        </div>
+        <div className="head-right">
+          {dictionary.claudeHome.curatedRight}
+        </div>
+      </div>
+
+      <div className="curated-grid">
+        {row1.map((a, i) => renderCard(a, i === 0))}
+      </div>
+
+      <div className="curated-grid row-2">
+        {row2.map((a, i) => renderCard(a, i === 2))}
+      </div>
+    </section>
+  );
+};
+
+export const How = () => {
+  const { language, dictionary } = useI18n();
+  const { howSteps } = getClaudeHomeLocalizedData(language);
+
+  return (
+    <section className="how shell" id="about">
+      <div className="section-head" style={{ marginBottom: 56 }}>
+        <div>
+          <div className="eyebrow">{dictionary.claudeHome.howEyebrow}</div>
+          <h2>{dictionary.claudeHome.howTitlePrefix} <em>{dictionary.claudeHome.howTitleEmphasis}</em> — {dictionary.claudeHome.howTitleSuffix}</h2>
+        </div>
+      </div>
+      <div className="how-grid">
+        {howSteps.map((step, index) => (
+          <div key={step.title} className="how-item">
+            <div className="num">{String(index + 1).padStart(2, "0")}</div>
+            <h4>{step.title}</h4>
+            <p>{step.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export const FooterCTA = () => {
+  const navigate = useNavigate();
+  const { dictionary } = useI18n();
+
+  return (
+    <section className="shell" id="join">
+      <div className="footer-cta">
+        <div className="footer-cta-inner">
+          <h3>{dictionary.claudeHome.footerCtaTitlePrefix} <em>{dictionary.claudeHome.footerCtaTitleEmphasis}</em>.</h3>
+          <div>
+            <div className="email">
+              <input type="email" placeholder={dictionary.claudeHome.footerEmailPlaceholder} />
+              <button onClick={() => navigate("/guides")}>{dictionary.claudeHome.joinList}</button>
+            </div>
+            <div className="small-note">{dictionary.claudeHome.footerSmallNote}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export const Foot = () => {
+  const { language } = useI18n();
+  const { footer } = getClaudeHomeLocalizedData(language);
+
+  return (
+    <footer className="shell foot">
+      <div>{footer.madeIn}</div>
+      <div className="foot-links">
+        <a href="#">{footer.instagram}</a>
+        <a href="#">{footer.contact}</a>
+        <a href="#">{footer.privacy}</a>
+      </div>
+    </footer>
+  );
+};
+
+Object.assign(window, { Categories, Curated, How, FooterCTA, Foot });

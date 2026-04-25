@@ -1,7 +1,7 @@
 .bl-admin-page {
   min-height: 100vh;
-  background: #ece0cf;
-  color: #0f172a;
+  background: transparent;
+  color: var(--color-text);
 }
 
 .bl-admin-main {
@@ -13,10 +13,11 @@
 }
 
 .bl-admin-hero {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: linear-gradient(135deg, #fffaf3 0%, #f6ecdf 52%, #f1e3cf 100%);
+  background: var(--gradient-hero);
   padding: 1.4rem;
+  box-shadow: var(--shadow-section);
 }
 
 .bl-admin-eyebrow {
@@ -25,7 +26,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(180, 83, 9, 0.82);
+  color: var(--color-primary-dark);
 }
 
 .bl-admin-title {
@@ -38,7 +39,7 @@
 .bl-admin-subtitle,
 .bl-admin-helper {
   margin: 0.55rem 0 0;
-  color: #475569;
+  color: var(--color-muted);
   line-height: 1.6;
 }
 
@@ -50,10 +51,11 @@
 
 .bl-admin-list-card,
 .bl-admin-form-card {
-  border: 1px solid #d1c2ab;
+  border: 1px solid var(--color-border);
   border-radius: 1.5rem;
-  background: #fffaf3;
+  background: color-mix(in srgb, var(--color-surface-elevated) 76%, var(--color-surface) 24%);
   padding: 1rem;
+  box-shadow: var(--shadow-card);
 }
 
 .bl-admin-list-head,
@@ -73,12 +75,12 @@
 
 .bl-admin-form-badge {
   border-radius: 9999px;
-  border: 1px solid #dccfbe;
-  background: #fff8ee;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   padding: 0.18rem 0.55rem;
   font-size: 0.7rem;
   font-weight: 700;
-  color: #7c4b1e;
+  color: var(--color-primary-dark);
 }
 
 .bl-admin-filters {
@@ -91,10 +93,10 @@
 .bl-admin-select,
 .bl-admin-textarea {
   width: 100%;
-  border: 1px solid #d8cab6;
+  border: 1px solid var(--color-border);
   border-radius: 0.8rem;
-  background: #fff8ee;
-  color: #1f2937;
+  background: var(--color-card);
+  color: var(--color-text);
   padding: 0.56rem 0.75rem;
   font-size: 0.84rem;
   box-sizing: border-box;
@@ -115,9 +117,9 @@
 }
 
 .bl-admin-list-item {
-  border: 1px solid #dccfbe;
+  border: 1px solid var(--color-border);
   border-radius: 0.95rem;
-  background: #fff8ee;
+  background: var(--color-card);
   padding: 0.8rem;
   display: flex;
   align-items: center;
@@ -126,22 +128,22 @@
 }
 
 .bl-admin-list-item.is-active {
-  border-color: #d97706;
-  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(184, 168, 232, 0.18);
 }
 
 .bl-admin-list-name {
   margin: 0;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .bl-admin-list-meta,
 .bl-admin-list-ready {
   margin: 0.3rem 0 0;
   font-size: 0.76rem;
-  color: #64748b;
+  color: var(--color-muted);
 }
 
 .bl-admin-list-footer {
@@ -165,7 +167,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #7c4b1e;
+  color: var(--color-primary-dark);
 }
 
 .bl-admin-field small {
@@ -181,7 +183,7 @@
   margin: 0.75rem 0 0;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #7c4b1e;
+  color: var(--color-primary-dark);
 }
 
 .bl-admin-primary-btn,
@@ -196,14 +198,14 @@
 
 .bl-admin-primary-btn {
   border: none;
-  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: #fff;
 }
 
 .bl-admin-secondary-btn {
-  border: 1px solid #d8cab6;
-  background: #fffaf2;
-  color: #334155;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
 }
 
 .bl-admin-delete-btn {

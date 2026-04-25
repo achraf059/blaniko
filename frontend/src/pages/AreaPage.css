@@ -1,0 +1,232 @@
+.bl-area-page {
+  min-height: 100vh;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.bl-area-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-area-not-found {
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+  background: var(--color-card);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.bl-area-not-found-title {
+  margin: 1rem 0 0;
+  font-size: 1.5rem;
+}
+
+.bl-area-not-found-description {
+  margin: 0.5rem 0 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.bl-area-not-found-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bl-area-not-found-links a {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-surface-elevated);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.bl-area-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+  background: var(--gradient-hero);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-section);
+}
+
+.bl-area-hero-glow-right,
+.bl-area-hero-glow-left {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(48px);
+}
+
+.bl-area-hero-glow-right {
+  right: -4rem;
+  top: -3.5rem;
+  width: 11rem;
+  height: 11rem;
+  background: rgba(184, 168, 232, 0.35);
+}
+
+.bl-area-hero-glow-left {
+  left: -3rem;
+  bottom: -5rem;
+  width: 9rem;
+  height: 9rem;
+  background: rgba(159, 141, 232, 0.26);
+}
+
+.bl-area-hero-content {
+  position: relative;
+}
+
+.bl-area-back-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.bl-area-eyebrow {
+  margin: 1rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-primary-dark);
+}
+
+.bl-area-title {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.9rem, 4vw, 2.25rem);
+  font-weight: 600;
+}
+
+.bl-area-description {
+  margin: 0.75rem 0 0;
+  max-width: 44rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.bl-area-meta-grid {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bl-area-meta-card {
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-card);
+  padding: 0.85rem;
+}
+
+.bl-area-meta-label {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.bl-area-meta-value {
+  margin: 0.4rem 0 0;
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.bl-area-curated-hint {
+  margin: 0.9rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.bl-area-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bl-area-action-link {
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 0.42rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.bl-area-venues-section {
+  margin-top: 1.2rem;
+}
+
+.bl-area-results-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 0.3rem 0.72rem;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.bl-area-results-count {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.bl-area-venues-grid {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.bl-area-empty {
+  margin-top: 0.9rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-card) 84%, var(--color-surface-elevated) 16%);
+  padding: 1rem;
+}
+
+.bl-area-empty h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.bl-area-empty p {
+  margin: 0.5rem 0 0;
+  color: var(--color-muted);
+}
+
+@media (min-width: 640px) {
+  .bl-area-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bl-area-meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .bl-area-venues-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,296 @@
+.bl-guides-page {
+  min-height: 100vh;
+  color: var(--color-text);
+}
+
+.bl-guides-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-guides-hero,
+.bl-guides-card,
+.bl-guide-detail-hero,
+.bl-guide-detail-why,
+.bl-guide-detail-venues,
+.bl-guides-empty-state {
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+  background: var(--color-card);
+  padding: 1.2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.bl-guides-hero,
+.bl-guide-detail-hero {
+  background: var(--gradient-hero);
+  box-shadow: var(--shadow-section);
+}
+
+.bl-guides-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-primary-dark);
+}
+
+.bl-guides-title {
+  margin: 0.65rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+}
+
+.bl-guides-subtitle,
+.bl-guide-detail-subtitle,
+.bl-guide-detail-description {
+  margin: 0.5rem 0 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.bl-guides-grid {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.bl-guides-card-head h2 {
+  margin: 0.45rem 0 0;
+  font-size: 1.2rem;
+}
+
+.bl-guides-card-kicker {
+  margin: 0;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.bl-guides-card-subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.bl-guides-card-description {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.bl-guides-card-chips {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.bl-guides-card-chips span,
+.bl-guide-detail-theme-row span {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  color: var(--color-primary-dark);
+  background: color-mix(in srgb, var(--color-surface) 84%, var(--color-card) 16%);
+}
+
+.bl-guides-card-meta {
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bl-guides-card-meta p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.bl-guides-card-meta a,
+.bl-guide-detail-venue-card a,
+.bl-guide-detail-back-link,
+.bl-guides-empty-links a,
+.bl-guides-empty-state a,
+.bl-guide-detail-cta-row a {
+  color: var(--color-primary-dark);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.bl-guide-detail-back-link {
+  display: inline-flex;
+  margin-bottom: 0.7rem;
+}
+
+.bl-guide-detail-hero h1 {
+  margin: 0.55rem 0 0;
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+}
+
+.bl-guide-detail-theme-row {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bl-guide-detail-why,
+.bl-guide-detail-venues,
+.bl-guide-detail-cta-row {
+  margin-top: 1rem;
+}
+
+.bl-guide-detail-why h2,
+.bl-guide-detail-section-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.bl-guide-detail-why p {
+  margin: 0.55rem 0 0;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.bl-guide-detail-section-head p {
+  margin: 0.4rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.bl-guide-detail-venue-grid {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.bl-guide-detail-venue-card {
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-card) 82%, var(--color-surface-elevated) 18%);
+  padding: 0.95rem;
+}
+
+.bl-guide-detail-venue-category {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.bl-guide-detail-venue-card h3 {
+  margin: 0.45rem 0 0;
+  font-size: 1rem;
+}
+
+.bl-guide-detail-venue-area,
+.bl-guide-detail-venue-description {
+  margin: 0.45rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.bl-guide-detail-venue-badges {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.bl-guide-detail-venue-badges span {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  padding: 0.16rem 0.45rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  background: color-mix(in srgb, var(--color-card) 82%, var(--color-surface-elevated) 18%);
+}
+
+.bl-guide-detail-venue-signals {
+  margin: 0.45rem 0 0;
+  font-size: 0.74rem;
+  color: var(--color-muted);
+}
+
+.bl-guide-detail-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.bl-guide-detail-cta-row a,
+.bl-guides-empty-state a {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-surface-elevated);
+  padding: 0.45rem 0.72rem;
+}
+
+.bl-guides-empty-state h1,
+.bl-guides-empty-state h3,
+.bl-guides-empty-state p {
+  margin: 0;
+}
+
+.bl-guides-empty-state p {
+  margin-top: 0.55rem;
+  color: var(--color-muted);
+}
+
+.bl-guides-empty-links {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .bl-guides-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .bl-guides-hero,
+  .bl-guides-card,
+  .bl-guide-detail-hero,
+  .bl-guide-detail-why,
+  .bl-guide-detail-venues,
+  .bl-guides-empty-state {
+    padding: 1.45rem;
+  }
+
+  .bl-guides-grid,
+  .bl-guide-detail-venue-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bl-guide-detail-venue-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .bl-guides-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bl-guide-detail-venue-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

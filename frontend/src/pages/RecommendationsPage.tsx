@@ -5,7 +5,6 @@ import { VenueCard } from "../components/home/VenueCard";
 import { ProgressBar } from "../components/recommendations/ProgressBar";
 import { QuizStep } from "../components/recommendations/QuizStep";
 import { ResultsHeader } from "../components/recommendations/ResultsHeader";
-import { venues } from "../data/mockData";
 import {
   buildAllowedAnswerValues,
   buildRecommendationSearchParams,
@@ -15,8 +14,17 @@ import {
   persistRecommendationState,
   type QuizAnswers,
 } from "../hooks/recommendationState";
+import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
+import {
+  explainVenueMatch,
+  getDiscoveryMoodLabel,
+  isDiscoveryCompanion,
+  isDiscoveryMood,
+} from "../utils/discoveryInsights";
 import "./HomePage.css";
 import "./RecommendationsPage.css";
 
@@ -27,71 +35,92 @@ type QuizQuestion = {
   description?: string;
 };
 
-const QUESTIONS: QuizQuestion[] = [
-  {
-    id: "companion",
-    title: "Who are you with?",
-    options: [
-      { value: "alone", label: "Alone" },
-      { value: "friends", label: "Friends" },
-      { value: "family", label: "Family" },
-      { value: "partner", label: "Partner" },
-    ],
-  },
-  {
-    id: "category",
-    title: "What are you looking for?",
-    options: [
-      { value: "cafes", label: "Cafes" },
-      { value: "restaurants", label: "Restaurants" },
-      { value: "activities", label: "Activities" },
-      { value: "sports", label: "Sports" },
-      { value: "gaming", label: "Gaming" },
-      { value: "outdoor", label: "Outdoor" },
-    ],
-  },
-  {
-    id: "budget",
-    title: "What is your budget?",
-    options: [
-      { value: "all", label: "All" },
-      { value: "$", label: "$" },
-      { value: "$$", label: "$$" },
-      { value: "$$$", label: "$$$" },
-    ],
-  },
-  {
-    id: "area",
-    title: "Preferred area?",
-    options: [
-      { value: "any", label: "Any" },
-      { value: "maarif", label: "Maarif" },
-      { value: "ain diab", label: "Ain Diab" },
-      { value: "gauthier", label: "Gauthier" },
-      { value: "old medina", label: "Old Medina" },
-    ],
-  },
-  {
-    id: "vibe",
-    title: "What vibe do you want?",
-    options: [
-      { value: "chill", label: "Chill" },
-      { value: "social", label: "Social" },
-      { value: "active", label: "Active" },
-      { value: "romantic", label: "Romantic" },
-      { value: "family-friendly", label: "Family-friendly" },
-    ],
-  },
-];
-
 export default function RecommendationsPage() {
-  const { dictionary } = useI18n();
+  const { dictionary, language } = useI18n();
+  const text = getFlowTexts(language);
+  const moodLabels = getDiscoveryMoodLabel(language);
   const navigate = useNavigate();
+  const { venues } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [shareFeedback, setShareFeedback] = useState<"idle" | "copied" | "failed">("idle");
+  const [shareFeedback, setShareFeedback] = useState<
+    "idle" | "copied" | "failed"
+  >("idle");
 
-  const questions = QUESTIONS;
+  const questions = useMemo<QuizQuestion[]>(
+    () => [
+      {
+        id: "companion",
+        title: text.recommendationsPage.qCompanion,
+        options: [
+          { value: "alone", label: text.recommendationsPage.optionAlone },
+          { value: "friends", label: text.recommendationsPage.optionFriends },
+          { value: "family", label: text.recommendationsPage.optionFamily },
+          { value: "partner", label: text.recommendationsPage.optionPartner },
+        ],
+      },
+      {
+        id: "category",
+        title: text.recommendationsPage.qCategory,
+        options: [
+          { value: "cafes", label: text.recommendationsPage.optionCafes },
+          {
+            value: "restaurants",
+            label: text.recommendationsPage.optionRestaurants,
+          },
+          {
+            value: "activities",
+            label: text.recommendationsPage.optionActivities,
+          },
+          { value: "sports", label: text.recommendationsPage.optionSports },
+          { value: "gaming", label: text.recommendationsPage.optionGaming },
+          { value: "outdoor", label: text.recommendationsPage.optionOutdoor },
+        ],
+      },
+      {
+        id: "budget",
+        title: text.recommendationsPage.qBudget,
+        options: [
+          { value: "all", label: text.common.all },
+          { value: "$", label: "$" },
+          { value: "$$", label: "$$" },
+          { value: "$$$", label: "$$$" },
+        ],
+      },
+      {
+        id: "area",
+        title: text.recommendationsPage.qArea,
+        options: [
+          { value: "any", label: text.recommendationsPage.optionAny },
+          { value: "maarif", label: text.recommendationsPage.optionMaarif },
+          {
+            value: "ain diab",
+            label: text.recommendationsPage.optionAinDiab,
+          },
+          {
+            value: "gauthier",
+            label: text.recommendationsPage.optionGauthier,
+          },
+          {
+            value: "old medina",
+            label: text.recommendationsPage.optionOldMedina,
+          },
+        ],
+      },
+      {
+        id: "vibe",
+        title: text.recommendationsPage.qVibe,
+        options: [
+          { value: "chill", label: moodLabels.chill },
+          { value: "social", label: moodLabels.social },
+          { value: "active", label: moodLabels.active },
+          { value: "romantic", label: moodLabels.romantic },
+          { value: "family-friendly", label: moodLabels["family-friendly"] },
+        ],
+      },
+    ],
+    [moodLabels, text],
+  );
 
   const allowedAnswerValues = useMemo(
     () =>
@@ -99,9 +128,9 @@ export default function RecommendationsPage() {
         questions.map((question) => ({
           id: question.id,
           options: question.options.map((option) => ({ value: option.value })),
-        }))
+        })),
       ),
-    [questions]
+    [questions],
   );
 
   const initialRecommendationState = useMemo(
@@ -112,12 +141,18 @@ export default function RecommendationsPage() {
         totalSteps: questions.length,
         allowedValues: allowedAnswerValues,
       }),
-    [allowedAnswerValues, questions, searchParams]
+    [allowedAnswerValues, questions, searchParams],
   );
 
-  const [stepIndex, setStepIndex] = useState(initialRecommendationState.stepIndex);
-  const [isComplete, setIsComplete] = useState(initialRecommendationState.isComplete);
-  const [answers, setAnswers] = useState<QuizAnswers>(initialRecommendationState.answers);
+  const [stepIndex, setStepIndex] = useState(
+    initialRecommendationState.stepIndex,
+  );
+  const [isComplete, setIsComplete] = useState(
+    initialRecommendationState.isComplete,
+  );
+  const [answers, setAnswers] = useState<QuizAnswers>(
+    initialRecommendationState.answers,
+  );
 
   const currentQuestion = questions[stepIndex];
   const currentValue = answers[currentQuestion.id];
@@ -147,7 +182,13 @@ export default function RecommendationsPage() {
   const scoredResults = useMemo(() => {
     const companionKeywords: Record<string, string[]> = {
       alone: ["solo", "freelancer", "remote", "professional", "general"],
-      friends: ["friends", "groups", "students", "young professionals", "gamers"],
+      friends: [
+        "friends",
+        "groups",
+        "students",
+        "young professionals",
+        "gamers",
+      ],
       family: ["family", "parents", "children", "kid"],
       partner: ["couples", "romantic", "intimate", "date"],
     };
@@ -184,17 +225,18 @@ export default function RecommendationsPage() {
         const audienceText = (venue.audience ?? "").toLowerCase();
         if (answers.companion) {
           const match = companionKeywords[answers.companion]?.some((keyword) =>
-            audienceText.includes(keyword)
+            audienceText.includes(keyword),
           );
           if (match) {
             score += 2;
           }
         }
 
-        const vibeText = `${venue.vibe ?? ""} ${venue.description}`.toLowerCase();
+        const vibeText =
+          `${venue.vibe ?? ""} ${venue.description}`.toLowerCase();
         if (answers.vibe) {
           const match = vibeKeywords[answers.vibe]?.some((keyword) =>
-            vibeText.includes(keyword)
+            vibeText.includes(keyword),
           );
           if (match) {
             score += 2;
@@ -204,10 +246,14 @@ export default function RecommendationsPage() {
         return { venue, score };
       })
       .sort((first, second) => second.score - first.score);
-  }, [answers]);
+  }, [answers, venues]);
 
   const topMatches = scoredResults.slice(0, 3);
   const alternatives = scoredResults.slice(3, 8);
+  const selectedMood = isDiscoveryMood(answers.vibe) ? answers.vibe : undefined;
+  const selectedCompanion = isDiscoveryCompanion(answers.companion)
+    ? answers.companion
+    : undefined;
 
   const summary = [
     getLabel("companion", answers.companion),
@@ -217,7 +263,34 @@ export default function RecommendationsPage() {
     getLabel("vibe", answers.vibe),
   ]
     .filter(Boolean)
-    .join(" + ");
+    .join(" • ");
+
+  const buildVenueHref = (slug: string) => {
+    const params = new URLSearchParams();
+    params.set("from", "recommendations");
+
+    if (answers.companion) {
+      params.set("with", answers.companion);
+    }
+
+    if (answers.category) {
+      params.set("category", answers.category);
+    }
+
+    if (answers.budget) {
+      params.set("budget", answers.budget);
+    }
+
+    if (answers.area) {
+      params.set("area", answers.area);
+    }
+
+    if (answers.vibe) {
+      params.set("mood", answers.vibe);
+    }
+
+    return `/venues/${slug}?${params.toString()}`;
+  };
 
   const applyAnswer = (value: string) => {
     setAnswers((previous) => ({ ...previous, [currentQuestion.id]: value }));
@@ -268,6 +341,10 @@ export default function RecommendationsPage() {
       params.set("category", answers.category);
     }
 
+    if (answers.vibe) {
+      params.set("mood", answers.vibe);
+    }
+
     if (answers.budget && answers.budget !== "all") {
       params.set("budget", answers.budget);
     }
@@ -281,6 +358,10 @@ export default function RecommendationsPage() {
 
     if (answers.category) {
       params.set("category", answers.category);
+    }
+
+    if (answers.vibe) {
+      params.set("mood", answers.vibe);
     }
 
     if (answers.budget && answers.budget !== "all") {
@@ -330,11 +411,27 @@ export default function RecommendationsPage() {
       <main className="bl-reco-main">
         {!isComplete ? (
           <section className="bl-reco-card">
-            <p className="bl-reco-eyebrow">{dictionary.recommendationsPage.eyebrow}</p>
-            <h1 className="bl-reco-title">{dictionary.recommendationsPage.title}</h1>
-            <p className="bl-reco-subtitle">{dictionary.recommendationsPage.subtitle}</p>
+            <p className="bl-reco-eyebrow">
+              {dictionary.recommendationsPage.eyebrow}
+            </p>
+            <h1 className="bl-reco-title">
+              {dictionary.recommendationsPage.title}
+            </h1>
+            <p className="bl-reco-subtitle">
+              {dictionary.recommendationsPage.subtitle}
+            </p>
 
-            <ProgressBar currentStep={stepIndex + 1} totalSteps={questions.length} />
+            <ProgressBar
+              currentStep={stepIndex + 1}
+              totalSteps={questions.length}
+              ariaLabel={text.recommendationsPage.quizProgress}
+              stepLabel={(current, total) =>
+                formatFlowText(text.recommendationsPage.stepOf, {
+                  current,
+                  total,
+                })
+              }
+            />
 
             <QuizStep
               title={currentQuestion.title}
@@ -350,7 +447,7 @@ export default function RecommendationsPage() {
                 onClick={previousStep}
                 disabled={stepIndex === 0}
               >
-                Back
+                {text.recommendationsPage.back}
               </button>
               <button
                 type="button"
@@ -358,72 +455,143 @@ export default function RecommendationsPage() {
                 onClick={nextStep}
                 disabled={!currentValue}
               >
-                {stepIndex === questions.length - 1 ? "See recommendations" : "Next"}
+                {stepIndex === questions.length - 1
+                  ? text.recommendationsPage.seeRecommendations
+                  : text.recommendationsPage.next}
               </button>
             </div>
           </section>
         ) : (
           <>
             <ResultsHeader
-              headline="Your best matches in Casablanca"
-              summary={`Best matches for ${summary || "your current preferences"}`}
+              eyebrow={text.recommendationsPage.resultsEyebrow}
+              headline={text.recommendationsPage.headline}
+              summary={formatFlowText(text.recommendationsPage.summaryBuiltFor, {
+                summary: summary || text.recommendationsPage.summaryFallback,
+              })}
               topCount={topMatches.length}
               alternativesCount={alternatives.length}
+              topCountLabel={(count) =>
+                formatFlowText(text.recommendationsPage.topMatchesCount, {
+                  count,
+                })
+              }
+              alternativesCountLabel={(count) =>
+                formatFlowText(text.recommendationsPage.backupsCount, {
+                  count,
+                })
+              }
             />
 
+            {selectedMood ? (
+              <p className="bl-reco-mood-summary">
+                {text.recommendationsPage.modePrefix}{" "}
+                <strong>{moodLabels[selectedMood]}</strong>
+                {text.recommendationsPage.modeSuffix}
+              </p>
+            ) : null}
+
             <section className="bl-reco-results-section">
-              <h2 className="bl-reco-section-title">Top recommendations</h2>
+              <h2 className="bl-reco-section-title">
+                {text.recommendationsPage.topMatches}
+              </h2>
               <div className="bl-home-venues-grid">
-                {topMatches.map(({ venue }) => (
-                  <VenueCard
-                    key={venue.slug}
-                    slug={venue.slug}
-                    category={venue.category}
-                    name={venue.name}
-                    area={venue.area}
-                    description={venue.description}
-                    href={`/venues/${venue.slug}?from=recommendations`}
-                    labels={dictionary.venueCard}
-                    isFeatured
-                    isFavorite={isFavorite(venue.slug)}
-                    onToggleFavorite={toggleFavorite}
-                  />
-                ))}
+                {topMatches.map(({ venue }) => {
+                  const vd = getVenueDisplay(venue, language);
+                  return (
+                    <VenueCard
+                      key={venue.slug}
+                      slug={venue.slug}
+                      category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
+                      name={venue.name}
+                      area={venue.area}
+                      description={vd.description}
+                      personality={{
+                        bestForTags: venue.bestForTags,
+                        timeOfDay: venue.timeOfDay,
+                        energyLevel: venue.energyLevel,
+                        socialLevel: venue.socialLevel,
+                        spaceType: venue.spaceType,
+                      }}
+                      whyChips={explainVenueMatch(venue, {
+                        category: answers.category || undefined,
+                        budget: answers.budget,
+                        area: answers.area || undefined,
+                        mood: selectedMood,
+                        companion: selectedCompanion,
+                      }, 3, language)}
+                      href={buildVenueHref(venue.slug)}
+                      language={language}
+                      labels={dictionary.venueCard}
+                      isFeatured
+                      isFavorite={isFavorite(venue.slug)}
+                      onToggleFavorite={toggleFavorite}
+                      showCollectionPicker
+                      showCompareToggle
+                    />
+                  );
+                })}
               </div>
             </section>
 
             {alternatives.length > 0 ? (
               <section className="bl-reco-results-section">
-                <h2 className="bl-reco-section-title">Alternative picks</h2>
+                <h2 className="bl-reco-section-title">
+                  {text.recommendationsPage.alternatives}
+                </h2>
                 <div className="bl-home-venues-grid">
-                  {alternatives.map(({ venue }) => (
-                    <VenueCard
-                      key={venue.slug}
-                      slug={venue.slug}
-                      category={venue.category}
-                      name={venue.name}
-                      area={venue.area}
-                      description={venue.description}
-                      href={`/venues/${venue.slug}?from=recommendations`}
-                      labels={dictionary.venueCard}
-                      isFavorite={isFavorite(venue.slug)}
-                      onToggleFavorite={toggleFavorite}
-                    />
-                  ))}
+                  {alternatives.map(({ venue }) => {
+                    const vd = getVenueDisplay(venue, language);
+                    return (
+                      <VenueCard
+                        key={venue.slug}
+                        slug={venue.slug}
+                        category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
+                        name={venue.name}
+                        area={venue.area}
+                        description={vd.description}
+                        personality={{
+                          bestForTags: venue.bestForTags,
+                          timeOfDay: venue.timeOfDay,
+                          energyLevel: venue.energyLevel,
+                          socialLevel: venue.socialLevel,
+                          spaceType: venue.spaceType,
+                        }}
+                        whyChips={explainVenueMatch(venue, {
+                          category: answers.category || undefined,
+                          budget: answers.budget,
+                          area: answers.area || undefined,
+                          mood: selectedMood,
+                          companion: selectedCompanion,
+                        }, 3, language)}
+                        href={buildVenueHref(venue.slug)}
+                        language={language}
+                        labels={dictionary.venueCard}
+                        isFavorite={isFavorite(venue.slug)}
+                        onToggleFavorite={toggleFavorite}
+                        showCollectionPicker
+                        showCompareToggle
+                      />
+                    );
+                  })}
                 </div>
               </section>
             ) : null}
 
             <div className="bl-reco-results-actions">
-              <button type="button" className="bl-reco-action-secondary" onClick={retakeQuiz}>
-                Retake quiz
+              <button
+                type="button"
+                className="bl-reco-action-secondary"
+                onClick={retakeQuiz}
+              >
+                {text.recommendationsPage.retake}
               </button>
               <button
                 type="button"
                 className="bl-reco-action-secondary"
                 onClick={copyResultsLink}
               >
-                Copy results link
+                {text.recommendationsPage.copyLink}
               </button>
               <button
                 type="button"
@@ -437,15 +605,26 @@ export default function RecommendationsPage() {
                 className="bl-reco-action-primary"
                 onClick={browseAllResults}
               >
-                Browse all results
+                {text.recommendationsPage.openFullResults}
+              </button>
+              <button
+                type="button"
+                className="bl-reco-action-primary"
+                onClick={() => navigate("/plan")}
+              >
+                {text.recommendationsPage.planOuting}
               </button>
             </div>
 
             {shareFeedback !== "idle" ? (
-              <p className="bl-reco-share-feedback" role="status" aria-live="polite">
+              <p
+                className="bl-reco-share-feedback"
+                role="status"
+                aria-live="polite"
+              >
                 {shareFeedback === "copied"
-                  ? "Share link copied to your clipboard."
-                  : "Could not copy automatically. Please copy the URL from your browser."}
+                  ? text.recommendationsPage.copied
+                  : text.recommendationsPage.copyFailed}
               </p>
             ) : null}
           </>

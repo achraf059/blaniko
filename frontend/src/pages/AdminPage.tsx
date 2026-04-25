@@ -3,6 +3,7 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { categories, type Venue } from "../data/mockData";
 import { useAdminVenues } from "../hooks/useAdminVenues";
 import { useI18n } from "../i18n/useI18n";
+import type { Dictionary } from "../i18n/dictionaries";
 import "./HomePage.css";
 import "./AdminPage.css";
 
@@ -65,35 +66,48 @@ function toFormState(venue: Venue): AdminFormState {
   };
 }
 
-function validateForm(state: AdminFormState): AdminFormErrors {
+function validateForm(
+  state: AdminFormState,
+  e: Pick<
+    Dictionary["adminPage"],
+    | "errNameRequired"
+    | "errCategoryRequired"
+    | "errAreaRequired"
+    | "errBudgetFormat"
+    | "errShortDescriptionRequired"
+    | "errCoordsBothRequired"
+    | "errLatitudeRange"
+    | "errLongitudeRange"
+  >,
+): AdminFormErrors {
   const errors: AdminFormErrors = {};
 
   if (!state.name.trim()) {
-    errors.name = "Name is required.";
+    errors.name = e.errNameRequired;
   }
 
   if (!state.categorySlug.trim()) {
-    errors.categorySlug = "Category is required.";
+    errors.categorySlug = e.errCategoryRequired;
   }
 
   if (!state.area.trim()) {
-    errors.area = "Area is required.";
+    errors.area = e.errAreaRequired;
   }
 
   if (!["$", "$$", "$$$"].includes(state.priceLevel)) {
-    errors.priceLevel = "Budget must be $, $$ or $$$.";
+    errors.priceLevel = e.errBudgetFormat;
   }
 
   if (!state.shortDescription.trim()) {
-    errors.shortDescription = "Short description is required.";
+    errors.shortDescription = e.errShortDescriptionRequired;
   }
 
   const hasLatitude = state.latitude.trim().length > 0;
   const hasLongitude = state.longitude.trim().length > 0;
 
   if (hasLatitude !== hasLongitude) {
-    errors.latitude = "Both latitude and longitude are required together.";
-    errors.longitude = "Both latitude and longitude are required together.";
+    errors.latitude = e.errCoordsBothRequired;
+    errors.longitude = e.errCoordsBothRequired;
   }
 
   if (hasLatitude && hasLongitude) {
@@ -101,11 +115,11 @@ function validateForm(state: AdminFormState): AdminFormErrors {
     const lng = Number.parseFloat(state.longitude);
 
     if (Number.isNaN(lat) || lat < -90 || lat > 90) {
-      errors.latitude = "Latitude must be between -90 and 90.";
+      errors.latitude = e.errLatitudeRange;
     }
 
     if (Number.isNaN(lng) || lng < -180 || lng > 180) {
-      errors.longitude = "Longitude must be between -180 and 180.";
+      errors.longitude = e.errLongitudeRange;
     }
   }
 
@@ -176,7 +190,7 @@ export default function AdminPage() {
   };
 
   const handleSave = () => {
-    const errors = validateForm(formState);
+    const errors = validateForm(formState, dictionary.adminPage);
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);

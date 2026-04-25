@@ -1,0 +1,26 @@
+.bl-language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-surface-elevated);
+  padding: 2px;
+}
+
+.bl-language-switcher-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.bl-language-switcher-btn.is-active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
