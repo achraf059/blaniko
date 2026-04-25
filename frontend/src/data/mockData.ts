@@ -58,13 +58,15 @@ export function getVenueDisplay(
 export const categories: Category[] = [
   {
     slug: "cafes",
-    name: "Cafes",
-    description: "Coffee spots and chill city corners across Casablanca.",
+    name: "Cafes & Hangouts",
+    description:
+      "Atmospheric cafés, social spots, and work-friendly hangouts.",
   },
   {
     slug: "restaurants",
-    name: "Restaurants",
-    description: "Local favorites and modern dining places in the city.",
+    name: "Food Experiences",
+    description:
+      "Food-led experiences, date-night spots, and memorable dining plans.",
   },
   {
     slug: "activities",
