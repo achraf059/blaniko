@@ -3,6 +3,7 @@ import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { CollectionPicker } from "../components/collections/CollectionPicker";
 import { CompareToggle } from "../components/compare/CompareToggle";
 import { HomeHeader } from "../components/home/HomeHeader";
+import { VenueImage } from "../components/home/VenueImage";
 import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useRecentActivity } from "../hooks/useRecentActivity";
@@ -134,19 +135,21 @@ export default function VenuePage() {
         <HomeHeader labels={dictionary.header} />
 
         <main className="bl-venue-main">
-          <section className="bl-venue-not-found">
-            <Link to={backHref} className="bl-venue-back-link">
-              ← {backLabel}
-            </Link>
+          <div className="bl-venue-content">
+            <section className="bl-venue-not-found">
+              <Link to={backHref} className="bl-venue-back-link">
+                ← {backLabel}
+              </Link>
 
-            <h1 className="bl-venue-not-found-title">
-              {dictionary.venuePage.notFoundTitle}
-            </h1>
+              <h1 className="bl-venue-not-found-title">
+                {dictionary.venuePage.notFoundTitle}
+              </h1>
 
-            <p className="bl-venue-not-found-description">
-              {dictionary.venuePage.notFoundDescription}
-            </p>
-          </section>
+              <p className="bl-venue-not-found-description">
+                {dictionary.venuePage.notFoundDescription}
+              </p>
+            </section>
+          </div>
         </main>
       </div>
     );
@@ -187,188 +190,275 @@ export default function VenuePage() {
       <HomeHeader labels={dictionary.header} />
 
       <main className="bl-venue-main">
-        <section className="bl-venue-hero">
-          <div className="bl-venue-hero-glow-right" />
-          <div className="bl-venue-hero-glow-left" />
+        {/* Full-bleed hero image */}
+        <div className="bl-venue-hero-wrap">
+          <VenueImage
+            category={categoryName}
+            categorySlug={venue.categorySlug}
+            alt={venue.name}
+            aspectRatio="auto"
+            className="bl-venue-hero-image"
+          />
+          <div className="bl-venue-hero-overlay">
+            <Link to={backHref} className="bl-venue-back-link bl-venue-back-link-hero">
+              ← {backLabel}
+            </Link>
+          </div>
+        </div>
 
-          <div className="bl-venue-hero-grid">
-            <div>
-              <Link to={backHref} className="bl-venue-back-link">
-                ← {backLabel}
-              </Link>
+        <div className="bl-venue-content">
+          {/* Editorial title area */}
+          <header className="bl-venue-title-area">
+            <p className="bl-venue-category-pill">{categoryName}</p>
+            <h1 className="bl-venue-title">{venue.name}</h1>
+            <div className="bl-venue-title-meta">
+              <span className="bl-venue-area-badge">
+                <span aria-hidden="true">📍</span>
+                {venue.area}
+              </span>
+              {venue.priceLevel ? (
+                <span className="bl-venue-price-badge">{priceLevel}</span>
+              ) : null}
+            </div>
+            <p className="bl-venue-short-description">{shortDescription}</p>
+          </header>
 
-              <p className="bl-venue-category-pill">{categoryName}</p>
-
-              <h1 className="bl-venue-title">{venue.name}</h1>
-
-              <p className="bl-venue-area-line">
-                {dictionary.venuePage.area}: <span>{venue.area}</span>
-              </p>
-
-              <p className="bl-venue-short-description">{shortDescription}</p>
-
-              <div className="bl-venue-why-card">
-                <p className="bl-venue-why-title">
-                  {text.venuePage.whyThisPlace}
-                </p>
-                <div className="bl-venue-why-list">
-                  {whyThisPlace.map((reason) => (
-                    <span key={reason} className="bl-venue-why-chip">
-                      {reason}
-                    </span>
-                  ))}
-                </div>
+          {/* Contextual why-chips (only shown when navigated from search/plan) */}
+          {whyThisPlace.length > 0 ? (
+            <div className="bl-venue-context-chips">
+              <p className="bl-venue-why-title">{text.venuePage.whyThisPlace}</p>
+              <div className="bl-venue-why-list">
+                {whyThisPlace.map((reason) => (
+                  <span key={reason} className="bl-venue-why-chip">
+                    {reason}
+                  </span>
+                ))}
               </div>
+            </div>
+          ) : null}
 
-              {personality.bestFor.length > 0 ? (
-                <div className="bl-venue-why-card">
-                  <p className="bl-venue-why-title">
-                    {text.venuePage.bestFor}
-                  </p>
-                  <div className="bl-venue-why-list">
-                    {personality.bestFor.map((tag, index) => (
-                      <span
-                        key={`${venue.slug}-best-for-${tag}-${index}`}
-                        className="bl-venue-why-chip"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+          {/* Two-column body */}
+          <div className="bl-venue-body-grid">
+            {/* Main content column */}
+            <div className="bl-venue-body-main">
+              {/* Overview */}
+              <section className="bl-venue-body-section">
+                <h2 className="bl-venue-section-title">
+                  {dictionary.venuePage.overview}
+                </h2>
+                <p className="bl-venue-overview-text">{overview}</p>
+              </section>
+
+              {/* Personality */}
+              <section className="bl-venue-body-section">
+                <h2 className="bl-venue-section-title">
+                  {text.venuePage.personalityTitle}
+                </h2>
+                <p className="bl-venue-overview-text">
+                  {personality.whyPeopleChoose}
+                </p>
+
+                {personality.bestFor.length > 0 ? (
+                  <div className="bl-venue-why-card">
+                    <p className="bl-venue-why-title">
+                      {text.venuePage.bestFor}
+                    </p>
+                    <div className="bl-venue-why-list">
+                      {personality.bestFor.map((tag, index) => (
+                        <span
+                          key={`${venue.slug}-best-for-${tag}-${index}`}
+                          className="bl-venue-why-chip"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {personality.bestTimeToGo.length > 0 ? (
+                  <div className="bl-venue-why-card">
+                    <p className="bl-venue-why-title">
+                      {text.venuePage.bestTimeToGo}
+                    </p>
+                    <div className="bl-venue-why-list">
+                      {personality.bestTimeToGo.map((time, index) => (
+                        <span
+                          key={`${venue.slug}-time-${time}-${index}`}
+                          className="bl-venue-why-chip"
+                        >
+                          {time}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {personality.atmosphere ? (
+                  <div className="bl-venue-why-card">
+                    <p className="bl-venue-why-title">
+                      {text.venuePage.atmosphere}
+                    </p>
+                    <p className="bl-venue-personality-atmosphere">
+                      {personality.atmosphere}
+                    </p>
+                  </div>
+                ) : null}
+              </section>
+
+              {/* Practical info */}
+              <section className="bl-venue-body-section">
+                <div className="bl-venue-meta-grid">
+                  <div className="bl-venue-meta-card">
+                    <p className="bl-venue-meta-label">
+                      {dictionary.venuePage.area}
+                    </p>
+                    <p className="bl-venue-meta-value">{venue.area}</p>
+                  </div>
+
+                  <div className="bl-venue-meta-card">
+                    <p className="bl-venue-meta-label">
+                      {dictionary.venuePage.vibe}
+                    </p>
+                    <p className="bl-venue-meta-value">{vibe}</p>
+                  </div>
+
+                  <div className="bl-venue-meta-card">
+                    <p className="bl-venue-meta-label">
+                      {dictionary.venuePage.audience}
+                    </p>
+                    <p className="bl-venue-meta-value">{audience}</p>
+                  </div>
+
+                  <div className="bl-venue-meta-card">
+                    <p className="bl-venue-meta-label">
+                      {dictionary.venuePage.priceLevel}
+                    </p>
+                    <p className="bl-venue-meta-value">{priceLevel}</p>
                   </div>
                 </div>
-              ) : null}
+              </section>
 
-              <button
-                type="button"
-                className={`bl-venue-favorite-btn${isVenueFavorite ? " is-active" : ""}`}
-                onClick={() => toggleFavorite(venue.slug)}
-                aria-pressed={isVenueFavorite}
-              >
-                <span aria-hidden="true">{isVenueFavorite ? "♥" : "♡"}</span>
-                <span>
-                  {isVenueFavorite
-                    ? dictionary.venuePage.removeFavorite
-                    : dictionary.venuePage.saveFavorite}
-                </span>
-              </button>
+              {/* Area / map placeholder */}
+              <section className="bl-venue-body-section bl-venue-map-section">
+                <h2 className="bl-venue-section-title">
+                  {dictionary.venuePage.panelEyebrow}
+                </h2>
+                <div className="bl-venue-map-panel" aria-hidden="true">
+                  <div className="bl-venue-map-pin-wrap">
+                    <div className="bl-venue-map-pin">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="bl-venue-map-pin-icon"
+                        aria-hidden="true"
+                      >
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                      </svg>
+                    </div>
+                    <span className="bl-venue-map-area-tag">{venue.area}</span>
+                  </div>
+                </div>
+                <p className="bl-venue-map-caption">
+                  {dictionary.venuePage.panelSubtitle}
+                </p>
+              </section>
+            </div>
 
-              <CollectionPicker venueSlug={venue.slug} />
-              <CompareToggle venueSlug={venue.slug} />
+            {/* Sticky action sidebar */}
+            <aside className="bl-venue-sidebar">
+              <div className="bl-venue-action-card">
+                <button
+                  type="button"
+                  className={`bl-venue-favorite-btn${isVenueFavorite ? " is-active" : ""}`}
+                  onClick={() => toggleFavorite(venue.slug)}
+                  aria-pressed={isVenueFavorite}
+                >
+                  <span aria-hidden="true">{isVenueFavorite ? "♥" : "♡"}</span>
+                  <span>
+                    {isVenueFavorite
+                      ? dictionary.venuePage.removeFavorite
+                      : dictionary.venuePage.saveFavorite}
+                  </span>
+                </button>
 
-              <p>
-                <Link to="/collections" className="bl-venue-back-link">
+                <div className="bl-venue-action-divider" />
+
+                <CollectionPicker venueSlug={venue.slug} />
+                <CompareToggle venueSlug={venue.slug} />
+
+                <div className="bl-venue-action-divider" />
+
+                <div className="bl-venue-action-meta">
+                  <div className="bl-venue-action-meta-row">
+                    <span className="bl-venue-action-meta-label">
+                      {dictionary.venuePage.priceLevel}
+                    </span>
+                    <span className="bl-venue-action-meta-value">{priceLevel}</span>
+                  </div>
+                  <div className="bl-venue-action-meta-row">
+                    <span className="bl-venue-action-meta-label">
+                      {dictionary.venuePage.vibe}
+                    </span>
+                    <span className="bl-venue-action-meta-value">{vibe}</span>
+                  </div>
+                  <div className="bl-venue-action-meta-row">
+                    <span className="bl-venue-action-meta-label">
+                      {dictionary.venuePage.audience}
+                    </span>
+                    <span className="bl-venue-action-meta-value">{audience}</span>
+                  </div>
+                </div>
+
+                <Link to="/collections" className="bl-venue-collections-link">
                   {text.common.openCollections}
                 </Link>
-              </p>
-            </div>
-
-            <div className="bl-venue-side-panel">
-              <div className="bl-venue-side-panel-image" />
-              <p className="bl-venue-side-panel-eyebrow">
-                {dictionary.venuePage.panelEyebrow}
-              </p>
-              <p className="bl-venue-side-panel-subtitle">
-                {dictionary.venuePage.panelSubtitle}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="bl-venue-content-grid">
-          <div className="bl-venue-overview-card">
-            <h2 className="bl-venue-overview-title">
-              {dictionary.venuePage.overview}
-            </h2>
-            <p className="bl-venue-overview-text">{overview}</p>
-          </div>
-
-          <div className="bl-venue-overview-card bl-venue-personality-card">
-            <h2 className="bl-venue-overview-title">
-              {text.venuePage.personalityTitle}
-            </h2>
-            <p className="bl-venue-overview-text bl-venue-personality-summary">
-              {personality.whyPeopleChoose}
-            </p>
-
-            {personality.bestTimeToGo.length > 0 ? (
-              <div className="bl-venue-why-card">
-                <p className="bl-venue-why-title">
-                  {text.venuePage.bestTimeToGo}
-                </p>
-                <div className="bl-venue-why-list">
-                  {personality.bestTimeToGo.map((time, index) => (
-                    <span
-                      key={`${venue.slug}-time-${time}-${index}`}
-                      className="bl-venue-why-chip"
-                    >
-                      {time}
-                    </span>
-                  ))}
-                </div>
               </div>
-            ) : null}
-
-            {personality.atmosphere ? (
-              <div className="bl-venue-why-card">
-                <p className="bl-venue-why-title">
-                  {text.venuePage.atmosphere}
-                </p>
-                <p className="bl-venue-personality-atmosphere">
-                  {personality.atmosphere}
-                </p>
-              </div>
-            ) : null}
+            </aside>
           </div>
+        </div>
 
-          <div className="bl-venue-meta-grid">
-            <div className="bl-venue-meta-card">
-              <p className="bl-venue-meta-label">
-                {dictionary.venuePage.vibe}
-              </p>
-              <p className="bl-venue-meta-value">{vibe}</p>
-            </div>
-
-            <div className="bl-venue-meta-card">
-              <p className="bl-venue-meta-label">
-                {dictionary.venuePage.audience}
-              </p>
-              <p className="bl-venue-meta-value">{audience}</p>
-            </div>
-
-            <div className="bl-venue-meta-card">
-              <p className="bl-venue-meta-label">
-                {dictionary.venuePage.priceLevel}
-              </p>
-              <p className="bl-venue-meta-value">{priceLevel}</p>
-            </div>
-          </div>
-        </section>
-
+        {/* Similar venues horizontal carousel */}
         {similarVenues.length > 0 ? (
           <section className="bl-venue-similar-section">
             <div className="bl-venue-similar-head">
-              <h2 className="bl-venue-overview-title">
+              <h2 className="bl-venue-section-title">
                 {text.venuePage.similarPlaces}
               </h2>
-              <p>{text.venuePage.similarDescription}</p>
+              <p className="bl-venue-similar-description">
+                {text.venuePage.similarDescription}
+              </p>
             </div>
 
-            <div className="bl-venue-similar-grid">
+            <div className="bl-venue-similar-carousel">
               {similarVenues.map(({ venue: alternative, reasons }) => {
-                  const adv = getVenueDisplay(alternative, language);
-                  return (
-                    <article
-                      key={alternative.slug}
-                      className="bl-venue-similar-card"
-                    >
-                      <p className="bl-venue-similar-category">
-                        {dictionary.categoryNames[alternative.categorySlug] ?? dictionary.venuePage.unknownCategory}
-                      </p>
-                      <h3 className="bl-venue-similar-name">{alternative.name}</h3>
+                const adv = getVenueDisplay(alternative, language);
+                const altCategoryName =
+                  dictionary.categoryNames[alternative.categorySlug] ??
+                  dictionary.venuePage.unknownCategory;
+                return (
+                  <article
+                    key={alternative.slug}
+                    className="bl-venue-similar-card"
+                  >
+                    {/* Compact image placeholder — category shown via VenueImage label */}
+                    <VenueImage
+                      category={altCategoryName}
+                      categorySlug={alternative.categorySlug}
+                      alt={alternative.name}
+                      aspectRatio="auto"
+                      className="bl-venue-similar-image"
+                    />
+
+                    <div className="bl-venue-similar-body">
+                      <h3 className="bl-venue-similar-name">
+                        {alternative.name}
+                      </h3>
                       <p className="bl-venue-similar-area">
-                        📍 {alternative.area}
+                        <span aria-hidden="true">📍</span>
+                        {alternative.area}
                       </p>
-                      <p className="bl-venue-similar-description">
+                      <p className="bl-venue-similar-desc">
                         {adv.shortDescription ?? adv.description}
                       </p>
 
@@ -402,9 +492,10 @@ export default function VenuePage() {
                           {dictionary.venueCard.viewDetails} →
                         </Link>
                       </div>
-                    </article>
-                  );
-                })}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
         ) : null}
