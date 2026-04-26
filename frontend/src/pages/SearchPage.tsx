@@ -27,7 +27,6 @@ import {
   getSpaceTypeOptions,
   getTimeOfDayOptions,
 } from "../utils/discoveryFilters";
-import "./HomePage.css";
 import "./SearchPage.css";
 
 export default function SearchPage() {
@@ -308,55 +307,6 @@ export default function SearchPage() {
       : "",
   ].filter(Boolean);
 
-  const resultIntentSummary = useMemo(() => {
-    const subject = selectedCategory
-      ? (dictionary.categoryNames[selectedCategory] ?? selectedCategoryName).toLowerCase()
-      : text.planPage.subjectFallback;
-    const prefix = selectedMoodName
-      ? `${selectedMoodName.toLowerCase()} ${subject}`
-      : subject;
-    const chunks = [prefix];
-
-    if (selectedAreaName) {
-      chunks.push(
-        language === "fr" ? `à ${selectedAreaName}` : `in ${selectedAreaName}`,
-      );
-    }
-
-    if (selectedBestForName) {
-      chunks.push(
-        language === "fr"
-          ? `pour ${selectedBestForName.toLowerCase()}`
-          : `for ${selectedBestForName.toLowerCase()}`,
-      );
-    }
-
-    if (selectedBudget !== "all") {
-      chunks.push(
-        language === "fr"
-          ? `avec budget ${selectedBudget}`
-          : `with ${selectedBudget} budget`,
-      );
-    }
-
-    if (selectedEnergyName) {
-      chunks.push(`(${selectedEnergyName.toLowerCase()})`);
-    }
-
-    return chunks.join(" ");
-  }, [
-    language,
-    selectedAreaName,
-    selectedBestForName,
-    selectedBudget,
-    selectedCategory,
-    selectedEnergyName,
-    selectedMoodName,
-    dictionary.categoryNames,
-    selectedCategoryName,
-    text,
-  ]);
-
   const title = query.trim()
     ? dictionary.searchPage.titleForQuery.replace("{query}", query.trim())
     : selectedMoodValue
@@ -488,6 +438,7 @@ export default function SearchPage() {
       <HomeHeader labels={dictionary.header} />
 
       <main className="bl-search-main">
+        {/* Editorial hero */}
         <section className="bl-search-hero">
           <p className="bl-search-eyebrow">{dictionary.searchPage.eyebrow}</p>
           <h1 className="bl-search-title">{title}</h1>
@@ -501,7 +452,7 @@ export default function SearchPage() {
             </p>
           ) : null}
 
-          <div className="bl-search-controls">
+          <div className="bl-search-bar-wrap">
             <SearchBar
               value={query}
               onChange={setQuery}
@@ -509,30 +460,60 @@ export default function SearchPage() {
               placeholder={dictionary.searchPage.searchPlaceholder}
               submitLabel={dictionary.searchPage.searchAction}
             />
+          </div>
+        </section>
 
-            <div>
-              <p className="bl-discovery-label">
-                {dictionary.searchPage.quickFiltersLabel}
-              </p>
-              <FilterChips
-                options={quickFilters}
-                selectedValue={selectedCategory || undefined}
-                onSelect={handleCategorySelect}
-              />
-            </div>
+        {/* Sticky frosted-glass primary filter rail */}
+        <div className="bl-search-filter-rail">
+          <div className="bl-search-filter-rail-scroll">
+            <FilterChips
+              options={quickFilters}
+              selectedValue={selectedCategory || undefined}
+              onSelect={handleCategorySelect}
+            />
 
-            <div>
-              <p className="bl-discovery-label">{text.common.mood}</p>
-              <FilterChips
-                options={moodOptions}
-                selectedValue={selectedMood || undefined}
-                onSelect={handleMoodSelect}
-              />
-            </div>
+            <span className="bl-search-filter-sep" aria-hidden="true" />
 
-            <details className="bl-search-advanced-filters">
-              <summary>{text.common.moreFilters}</summary>
+            <FilterChips
+              options={moodOptions}
+              selectedValue={selectedMood || undefined}
+              onSelect={handleMoodSelect}
+            />
 
+            <span className="bl-search-filter-sep" aria-hidden="true" />
+
+            <BudgetSelector
+              options={budgetOptions}
+              selectedValue={selectedBudget}
+              onSelect={handleBudgetSelect}
+            />
+
+            <span className="bl-search-filter-sep" aria-hidden="true" />
+
+            <button
+              type="button"
+              className="bl-search-clear-btn"
+              onClick={clearFilters}
+            >
+              {dictionary.searchPage.clearFilters}
+            </button>
+
+            <button
+              type="button"
+              className="bl-search-map-btn"
+              onClick={() => navigate(buildMapUrl())}
+            >
+              {dictionary.header.map}
+            </button>
+          </div>
+        </div>
+
+        {/* Secondary: advanced filters + active filter tags */}
+        <div className="bl-search-secondary-filters">
+          <details className="bl-search-advanced-filters">
+            <summary>{text.common.moreFilters}</summary>
+
+            <div className="bl-search-advanced-filters-grid">
               {areaOptions.length > 0 ? (
                 <div>
                   <p className="bl-discovery-label">{text.common.area}</p>
@@ -590,97 +571,25 @@ export default function SearchPage() {
                   onSelect={handleSocialSelect}
                 />
               </div>
-            </details>
-
-            <div className="bl-search-budget-row">
-              <div>
-                <p className="bl-discovery-label">
-                  {dictionary.searchPage.budgetLabel}
-                </p>
-                <BudgetSelector
-                  options={budgetOptions}
-                  selectedValue={selectedBudget}
-                  onSelect={handleBudgetSelect}
-                />
-              </div>
-
-              <button
-                type="button"
-                className="bl-search-clear-btn"
-                onClick={clearFilters}
-              >
-                {dictionary.searchPage.clearFilters}
-              </button>
-
-              <button
-                type="button"
-                className="bl-search-clear-btn"
-                onClick={() => navigate(buildMapUrl())}
-              >
-                {dictionary.header.map}
-              </button>
             </div>
-          </div>
+          </details>
 
-          <div className="bl-search-params">
-            <p>
-              {formatFlowText(text.searchPage.viewingIntent, {
-                intent: resultIntentSummary,
-              })}
-            </p>
-            <p>
-              {dictionary.searchPage.summaryQuery}: <span>{query || "—"}</span>
-            </p>
-            <p>
-              {dictionary.searchPage.summaryCategory}:{" "}
-              <span>{selectedCategory ? dictionary.categoryNames[selectedCategory] ?? selectedCategoryName : "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summaryMood}: <span>{selectedMoodName || "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summaryArea}: <span>{selectedAreaName || "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summaryBestFor}: <span>{selectedBestForName || "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summaryTime}: <span>{selectedTimeOfDayName || "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summaryEnergy}: <span>{selectedEnergyName || "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summarySpace}: <span>{selectedSpaceName || "—"}</span>
-            </p>
-            <p>
-              {text.searchPage.summarySocialVibe}: <span>{selectedSocialName || "—"}</span>
-            </p>
-            <p>
-              {dictionary.searchPage.summaryBudget}:{" "}
-              <span>
-                {selectedBudget === "all"
-                  ? dictionary.searchPage.budgetAll
-                  : selectedBudget}
-              </span>
-            </p>
-            <p>
-              {filteredVenues.length} {dictionary.searchPage.resultsLabel}
-            </p>
+          {activeFilterLabels.length > 0 ? (
+            <div className="bl-search-active-filters">
+              {activeFilterLabels.map((label) => (
+                <span key={label}>{label}</span>
+              ))}
+            </div>
+          ) : null}
+        </div>
 
-            {activeFilterLabels.length > 0 ? (
-              <div className="bl-search-active-filters">
-                {activeFilterLabels.map((label) => (
-                  <span key={label}>{label}</span>
-                ))}
-              </div>
-            ) : null}
-          </div>
-        </section>
-
+        {/* Results */}
         {filteredVenues.length > 0 ? (
           <section className="bl-search-results">
-            <div className="bl-home-venues-grid">
+            <p className="bl-search-results-count">
+              {filteredVenues.length} {dictionary.searchPage.resultsLabel}
+            </p>
+            <div className="bl-search-venues-grid">
               {filteredVenues.map((venue) => {
                 const vd = getVenueDisplay(venue, language);
                 return (
@@ -734,7 +643,7 @@ export default function SearchPage() {
               </button>
               <button
                 type="button"
-                className="bl-search-clear-btn"
+                className="bl-search-map-btn"
                 onClick={() => navigate(buildMapUrl())}
               >
                 {text.searchPage.viewOnMap}
