@@ -1,12 +1,14 @@
 import { Link } from "react-router";
 import { CollectionPicker } from "../collections/CollectionPicker";
 import { CompareToggle } from "../compare/CompareToggle";
+import { VenueImage } from "./VenueImage";
 import { type Venue } from "../../data/mockData";
 import type { AppLanguage } from "../../i18n/types";
 import {
   getBestForBadges,
   getVenuePersonalitySignals,
 } from "../../utils/venuePersonality";
+import "./VenueCard.css";
 
 type VenueCardProps = {
   slug: string;
@@ -34,6 +36,24 @@ type VenueCardProps = {
     whyThisPlace: string;
   };
 };
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="bl-home-venue-favorite-icon"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 export function VenueCard({
   slug,
@@ -66,30 +86,24 @@ export function VenueCard({
 
   return (
     <article className="bl-home-venue-card">
-      <div className="bl-home-venue-top">
-        <div className="bl-home-venue-top-content">
-          <p className="bl-home-venue-category">{category}</p>
-          {isFeatured ? (
-            <span className="bl-home-venue-featured">{featuredLabel}</span>
-          ) : null}
-        </div>
+      {/* Image — category shown via VenueImage's built-in label */}
+      <div className="bl-home-venue-image-wrap">
+        <VenueImage category={category} alt={name} aspectRatio="16 / 10" />
 
-        <div className="bl-home-venue-area-preview">{areaPreview}</div>
+        {onToggleFavorite ? (
+          <button
+            type="button"
+            className={`bl-home-venue-favorite${isFavorite ? " is-active" : ""}`}
+            onClick={() => onToggleFavorite(slug)}
+            aria-pressed={isFavorite}
+            aria-label={isFavorite ? removeFavoriteLabel : saveFavoriteLabel}
+            title={isFavorite ? removeFavoriteLabel : saveFavoriteLabel}
+          >
+            <HeartIcon filled={isFavorite} />
+            <span>{isFavorite ? removeFavoriteLabel : saveFavoriteLabel}</span>
+          </button>
+        ) : null}
       </div>
-
-      {onToggleFavorite ? (
-        <button
-          type="button"
-          className={`bl-home-venue-favorite${isFavorite ? " is-active" : ""}`}
-          onClick={() => onToggleFavorite(slug)}
-          aria-pressed={isFavorite}
-          aria-label={isFavorite ? removeFavoriteLabel : saveFavoriteLabel}
-          title={isFavorite ? removeFavoriteLabel : saveFavoriteLabel}
-        >
-          <span aria-hidden="true">{isFavorite ? "♥" : "♡"}</span>
-          <span>{isFavorite ? removeFavoriteLabel : saveFavoriteLabel}</span>
-        </button>
-      ) : null}
 
       {showCollectionPicker ? (
         <CollectionPicker venueSlug={slug} compact />
@@ -98,6 +112,13 @@ export function VenueCard({
       {showCompareToggle ? <CompareToggle venueSlug={slug} compact /> : null}
 
       <div className="bl-home-venue-body">
+        <div className="bl-home-venue-meta">
+          {isFeatured ? (
+            <span className="bl-home-venue-featured">{featuredLabel}</span>
+          ) : null}
+          <span className="bl-home-venue-area-preview">{areaPreview}</span>
+        </div>
+
         <h3 className="bl-home-venue-name">{name}</h3>
 
         <p className="bl-home-venue-area">
