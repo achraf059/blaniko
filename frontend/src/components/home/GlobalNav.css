@@ -1,0 +1,191 @@
+.bl-global-nav-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--surface) 80%, transparent 20%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 220ms var(--ease),
+    border-color 220ms var(--ease),
+    backdrop-filter 220ms var(--ease),
+    box-shadow 220ms var(--ease);
+}
+
+.bl-global-nav-header.is-scrolled {
+  border-bottom-color: var(--line);
+  background: color-mix(in srgb, var(--surface) 72%, var(--mist) 28%);
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+  box-shadow: 0 14px 36px -28px rgba(61, 41, 102, 0.35);
+}
+
+.bl-global-nav {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+  max-width: 72rem;
+  min-height: 4rem;
+  padding: 0.5rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-global-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.bl-global-nav-brand-mark {
+  width: 0.56rem;
+  height: 0.56rem;
+  border-radius: 999px;
+  background: linear-gradient(140deg, var(--heather), var(--plum));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--heather) 18%, transparent 82%);
+}
+
+.bl-global-nav-brand-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.28rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--plum-deep);
+}
+
+.bl-global-nav-links {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 0 0.4rem;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.bl-global-nav-link {
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  font-weight: 550;
+  transition: color 180ms var(--ease);
+}
+
+.bl-global-nav-link:hover {
+  color: var(--ink);
+}
+
+.bl-global-nav-link-admin {
+  color: color-mix(in srgb, var(--ink-soft) 85%, var(--plum-deep) 15%);
+}
+
+.bl-global-nav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.bl-global-nav-mobile-menu {
+  position: relative;
+}
+
+.bl-global-nav-mobile-summary {
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 80%, var(--mist) 20%);
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 650;
+  padding: 0.36rem 0.7rem;
+  cursor: pointer;
+}
+
+.bl-global-nav-mobile-summary::-webkit-details-marker {
+  display: none;
+}
+
+.bl-global-nav-mobile-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  min-width: 13rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 86%, var(--mist) 14%);
+  box-shadow: 0 16px 36px -26px rgba(61, 41, 102, 0.5);
+  padding: 0.45rem;
+  display: grid;
+  gap: 0.22rem;
+  z-index: 35;
+}
+
+.bl-global-nav-mobile-link {
+  border-radius: 0.62rem;
+  padding: 0.45rem 0.52rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 0.81rem;
+}
+
+.bl-global-nav-mobile-link:hover {
+  background: color-mix(in srgb, var(--mist) 46%, var(--surface) 54%);
+  color: var(--plum-deep);
+}
+
+.bl-global-nav-mobile-link-admin {
+  color: var(--ink-soft);
+}
+
+.bl-global-nav-cta {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--plum-deep) 75%, black 25%);
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--plum-deep) 78%, black 22%),
+    color-mix(in srgb, var(--plum) 66%, var(--plum-deep) 34%)
+  );
+  color: #fff;
+  padding: 0.48rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition:
+    transform 180ms var(--ease),
+    box-shadow 180ms var(--ease),
+    filter 180ms var(--ease);
+}
+
+.bl-global-nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -16px rgba(61, 41, 102, 0.8);
+  filter: brightness(1.04);
+}
+
+@media (min-width: 640px) {
+  .bl-global-nav-cta {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 768px) {
+  .bl-global-nav-links {
+    display: inline-flex;
+  }
+
+  .bl-global-nav-mobile-menu {
+    display: none;
+  }
+}
