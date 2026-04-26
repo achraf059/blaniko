@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
+import { VenueImage } from "../components/home/VenueImage";
 import {
   editorialCollections,
   getCollectionDisplay,
@@ -37,35 +38,40 @@ export default function GuidesPage() {
 
             return (
               <article key={collection.id} className="bl-guides-card">
-                <div className="bl-guides-card-head">
+                <div className="bl-guides-card-cover">
+                  <VenueImage
+                    categorySlug={collection.slug.includes("date") ? "outdoor" : "culture"}
+                    aspectRatio="16 / 10"
+                  />
+                </div>
+
+                <div className="bl-guides-card-body">
                   <p className="bl-guides-card-kicker">
                     {text.guidesPage.editorialCollection}
                   </p>
-                  <h2>{display.title}</h2>
-                </div>
-
-                <p className="bl-guides-card-subtitle">{display.subtitle}</p>
-                <p className="bl-guides-card-description">
-                  {display.description}
-                </p>
-
-                {display.explanationChips?.length ? (
-                  <div className="bl-guides-card-chips">
-                    {display.explanationChips.map((chip) => (
-                      <span key={`${collection.slug}-${chip}`}>{chip}</span>
-                    ))}
-                  </div>
-                ) : null}
-
-                <div className="bl-guides-card-meta">
-                  <p>
-                    {formatFlowText(text.guidesPage.matchedVenues, {
-                      count: matchedVenues.length,
-                    })}
+                  <h2 className="bl-guides-card-title">{display.title}</h2>
+                  <p className="bl-guides-card-description">
+                    {display.description}
                   </p>
-                  <Link to={`/guides/${collection.slug}`}>
-                    {text.guidesPage.openGuide} →
-                  </Link>
+
+                  {display.explanationChips?.length ? (
+                    <div className="bl-guides-card-chips">
+                      {display.explanationChips.map((chip) => (
+                        <span key={`${collection.slug}-${chip}`}>{chip}</span>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  <div className="bl-guides-card-meta">
+                    <p>
+                      {formatFlowText(text.guidesPage.matchedVenues, {
+                        count: matchedVenues.length,
+                      })}
+                    </p>
+                    <Link to={`/guides/${collection.slug}`} className="bl-guides-card-link">
+                      Read guide <span>→</span>
+                    </Link>
+                  </div>
                 </div>
               </article>
             );
