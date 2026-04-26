@@ -1,28 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --bg: #faf7fc;
+  --bg-warm: #f6f3f9;
+  --surface: #ffffff;
+  --mist: #e8dff5;
+  --heather: #b8a4d6;
+  --plum: #6b4e8a;
+  --plum-deep: #3d2966;
+  --ink: #1f1530;
+  --ink-soft: #5a4d70;
+  --line: rgba(107, 78, 138, 0.14);
+  --line-soft: rgba(107, 78, 138, 0.08);
+  --accent: #d9b382;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --color-primary: #9b87e8;
-  --color-primary-hover: #866fdc;
-  --color-primary-dark: #5b4b8a;
-  --color-background: #f4f0fb;
-  --color-background-alt: #ece6f7;
-  --color-surface: #f7f3fc;
-  --color-surface-elevated: #fbf9fe;
-  --color-card: #fbf9fe;
-  --color-hero: #f1ebfa;
-  --color-highlight: #cfc3f4;
-  --color-accent: #cfc3f4;
-  --color-accent-soft: #e7e0f8;
-  --color-text: #232433;
-  --color-muted: #6e7080;
-  --color-border: #d8d0e8;
+  --color-primary: var(--plum);
+  --color-primary-hover: color-mix(in srgb, var(--plum) 84%, var(--plum-deep) 16%);
+  --color-primary-dark: var(--plum-deep);
+  --color-background: var(--bg);
+  --color-background-alt: var(--bg-warm);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface);
+  --color-card: var(--surface);
+  --color-hero: var(--mist);
+  --color-highlight: var(--heather);
+  --color-accent: var(--accent);
+  --color-accent-soft: color-mix(in srgb, var(--accent) 22%, var(--surface) 78%);
+  --color-text: var(--ink);
+  --color-muted: var(--ink-soft);
+  --color-border: var(--line);
 
-  --color-primary-soft: #e8e0fb;
-  --color-primary-soft-strong: #d6c9f6;
+  --color-primary-soft: color-mix(in srgb, var(--plum) 16%, var(--surface) 84%);
+  --color-primary-soft-strong: color-mix(in srgb, var(--plum) 28%, var(--surface) 72%);
 
   --gradient-app:
     radial-gradient(circle at 14% 8%, color-mix(in srgb, var(--color-primary) 19%, transparent 81%), transparent 38%),
@@ -46,7 +66,7 @@
     color-mix(in srgb, var(--color-surface) 64%, var(--color-highlight) 36%) 100%
   );
 
-  --shadow-tint: rgba(91, 75, 138, 0.12);
+  --shadow-tint: rgba(61, 41, 102, 0.16);
   --shadow-card: 0 10px 28px -22px var(--shadow-tint);
   --shadow-card-hover: 0 18px 40px -24px var(--shadow-tint);
   --shadow-section: 0 20px 50px -38px var(--shadow-tint);
@@ -65,12 +85,32 @@ body,
 
 body {
   margin: 0;
-  background: var(--gradient-app);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(1100px 500px at 85% -5%, rgba(184, 164, 214, 0.18), transparent 60%),
+    radial-gradient(800px 400px at 5% 15%, rgba(232, 223, 245, 0.45), transparent 55%),
+    var(--bg);
   color: var(--color-text);
 }
 
 a {
   color: var(--color-primary-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
 }
 
 button,
