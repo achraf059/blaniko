@@ -24,3 +24,16 @@
   background: var(--color-primary-soft);
   color: var(--color-primary-dark);
 }
+
+.bl-language-switcher-btn.is-disabled,
+.bl-language-switcher-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  color: var(--color-muted);
+}
+
+.bl-language-switcher-btn.is-disabled:hover,
+.bl-language-switcher-btn:disabled:hover {
+  background: transparent;
+  color: var(--color-muted);
+}
