@@ -31,7 +31,7 @@ const localizedHomeData = {
       { name: "For kids", count: "33 activities", ico: "kite", slug: "family" },
     ],
     curated: [
-      { title: "A slow morning at the corniche", chips: ["Morning", "Outdoor"], price: "From 0", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
+      { title: "A slow morning at the corniche", chips: ["Morning", "Outdoor"], price: "Free", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
       { title: "Pottery with Leïla", chips: ["Workshop"], price: "MAD 320", duration: "3h", img: "c3", venueSlug: "anfa-family-workshop-house" },
       { title: "Jazz at Villa des Arts", chips: ["Tonight"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
       { title: "Dawn surf at Dar Bouazza", chips: ["Water"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
@@ -99,7 +99,7 @@ const localizedHomeData = {
       { name: "Pour enfants", count: "33 activités", ico: "kite", slug: "family" },
     ],
     curated: [
-      { title: "Une matinée douce à la corniche", chips: ["Matin", "Plein air"], price: "À partir de 0", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
+      { title: "Une matinée douce à la corniche", chips: ["Matin", "Plein air"], price: "Gratuit", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
       { title: "Poterie avec Leïla", chips: ["Atelier"], price: "MAD 320", duration: "3h", img: "c3", venueSlug: "anfa-family-workshop-house" },
       { title: "Jazz à la Villa des Arts", chips: ["Ce soir"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
       { title: "Surf à l'aube à Dar Bouazza", chips: ["Eau"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
