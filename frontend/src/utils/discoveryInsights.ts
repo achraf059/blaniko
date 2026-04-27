@@ -136,6 +136,7 @@ export function getVenueSearchText(venue: Venue): string {
     venue.vibeSummary,
     venue.audience,
     venue.bestForTags?.join(" "),
+    venue.searchKeywords?.join(" "),
     venue.timeOfDay?.join(" "),
     venue.energyLevel,
     venue.socialLevel,

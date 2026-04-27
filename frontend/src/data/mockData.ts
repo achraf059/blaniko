@@ -33,6 +33,7 @@ export type Venue = {
   audience?: string;
   priceLevel?: string;
   bestForTags?: string[];
+  searchKeywords?: string[];
   timeOfDay?: Array<"morning" | "afternoon" | "evening" | "late-night">;
   energyLevel?: "low" | "medium" | "high";
   socialLevel?: "low" | "medium" | "high";
@@ -124,6 +125,7 @@ export const venues: Venue[] = [
     audience: "Remote workers, couples, small groups",
     priceLevel: "$$",
     bestForTags: ["sunset-spot", "solo-coffee", "date-spot"],
+    searchKeywords: ["rooftop dinner", "rooftop cafe", "rooftop cinema", "cinema", "movie night", "screening", "sunset dinner", "date night"],
     timeOfDay: ["afternoon", "evening"],
     energyLevel: "low",
     socialLevel: "medium",
@@ -232,6 +234,7 @@ export const venues: Venue[] = [
     audience: "Padel players, friend groups, beginners",
     priceLevel: "$$",
     bestForTags: ["friends", "late-night"],
+    searchKeywords: ["jetski", "jet ski", "surf", "surfing", "water sports", "beach activity", "coastal sport", "ain diab activity"],
     timeOfDay: ["afternoon", "evening"],
     energyLevel: "high",
     socialLevel: "high",
@@ -268,6 +271,7 @@ export const venues: Venue[] = [
     audience: "Young professionals, beginners, regular trainees",
     priceLevel: "$$",
     bestForTags: ["friends"],
+    searchKeywords: ["yoga", "wellness", "fitness", "gym", "workout", "training", "health", "active routine"],
     timeOfDay: ["morning", "evening"],
     energyLevel: "high",
     socialLevel: "medium",
@@ -484,6 +488,7 @@ export const venues: Venue[] = [
     audience: "Parents, children, family groups",
     priceLevel: "$$",
     bestForTags: ["family-friendly"],
+    searchKeywords: ["pottery", "ceramics", "clay", "art workshop", "creative workshop", "family workshop", "kids workshop"],
     timeOfDay: ["afternoon"],
     energyLevel: "medium",
     socialLevel: "medium",
@@ -520,6 +525,7 @@ export const venues: Venue[] = [
     audience: "Couples, close friends",
     priceLevel: "$$$",
     bestForTags: ["date-spot", "late-night"],
+    searchKeywords: ["rooftop dinner", "dinner", "romantic dinner", "date night", "evening dinner", "jazz", "live music"],
     timeOfDay: ["evening", "late-night"],
     energyLevel: "low",
     socialLevel: "low",
@@ -556,6 +562,7 @@ export const venues: Venue[] = [
     audience: "Friend groups, students, young professionals",
     priceLevel: "$$",
     bestForTags: ["friends", "late-night"],
+    searchKeywords: ["karting", "go kart", "go-kart", "racing", "karting night", "group activity", "weekend activity"],
     timeOfDay: ["evening", "late-night"],
     energyLevel: "medium",
     socialLevel: "high",
