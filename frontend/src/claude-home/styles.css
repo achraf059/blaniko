@@ -1249,3 +1249,16 @@ a { color: inherit; text-decoration: none; }
   .ed-card { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
   .saved-pill { display: none; }
 }
+
+.lang-switch button.is-disabled,
+.lang-switch button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  color: var(--muted);
+}
+
+.lang-switch button.is-disabled:hover,
+.lang-switch button:disabled:hover {
+  color: var(--muted);
+  background: transparent;
+}

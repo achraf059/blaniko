@@ -55,7 +55,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
               return (
                 <button
                   key={label}
-                  className={isActive ? "active" : ""}
+                  className={`${isActive ? "active" : ""} ${!isSupported ? "is-disabled" : ""}`.trim()}
                   onClick={() => {
                     if (code === "en") {
                       setLanguage("en");
@@ -65,6 +65,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
                       setLanguage("fr");
                     }
                   }}
+                  disabled={!isSupported}
                   aria-disabled={!isSupported}
                   title={!isSupported ? dictionary.claudeHome.arComingSoon : undefined}
                 >
