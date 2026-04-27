@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { useCompare } from "../../hooks/useCompare";
-import { getFlowTexts } from "../../i18n/flowTexts";
 import { useI18n } from "../../i18n/useI18n";
+import { getFlowTexts } from "../../i18n/flowTexts";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import "./GlobalNav.css";
 
@@ -13,7 +12,6 @@ export type GlobalNavProps = {
     venues: string;
     favorites: string;
     map: string;
-    admin: string;
     about: string;
     exploreNow: string;
     languageEn: string;
@@ -22,10 +20,9 @@ export type GlobalNavProps = {
 };
 
 export function GlobalNav({ labels }: GlobalNavProps) {
-  const { compareCount } = useCompare();
-  const { language } = useI18n();
+  const { language, dictionary } = useI18n();
   const text = getFlowTexts(language);
-  const compareLabel = `${text.common.compare} (${compareCount})`;
+  const homeNav = dictionary.claudeHome;
   const [isScrolled, setIsScrolled] = useState(false);
   const mobileMenuRef = useRef<HTMLDetailsElement>(null);
 
@@ -73,29 +70,24 @@ export function GlobalNav({ labels }: GlobalNavProps) {
 
         <ul className="bl-global-nav-links">
           <li>
-            <Link to="/guides" className="bl-global-nav-link">
-              {text.common.guides}
-            </Link>
+            <a href="/#explore" className="bl-global-nav-link">
+              {homeNav.navExplore}
+            </a>
           </li>
           <li>
-            <Link to="/map" className="bl-global-nav-link">
-              {labels.map}
-            </Link>
+            <a href="/#categories" className="bl-global-nav-link">
+              {homeNav.navCategories}
+            </a>
           </li>
           <li>
-            <Link to="/favorites" className="bl-global-nav-link">
-              {labels.favorites}
-            </Link>
+            <a href="/#curated" className="bl-global-nav-link">
+              {homeNav.navCurated}
+            </a>
           </li>
           <li>
-            <Link to="/compare" className="bl-global-nav-link">
-              {compareLabel}
-            </Link>
-          </li>
-          <li>
-            <Link to="/admin" className="bl-global-nav-link bl-global-nav-link-admin">
-              {labels.admin}
-            </Link>
+            <a href="/#map" className="bl-global-nav-link">
+              {homeNav.navMap}
+            </a>
           </li>
         </ul>
 
@@ -103,31 +95,27 @@ export function GlobalNav({ labels }: GlobalNavProps) {
           <details ref={mobileMenuRef} className="bl-global-nav-mobile-menu">
             <summary className="bl-global-nav-mobile-summary">{text.common.menu}</summary>
             <div className="bl-global-nav-mobile-panel">
-              <Link to="/guides" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
-                {text.common.guides}
-              </Link>
-              <Link to="/map" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
-                {labels.map}
-              </Link>
-              <Link
-                to="/favorites"
-                className="bl-global-nav-mobile-link"
-                onClick={closeMobileMenu}
-              >
-                {labels.favorites}
-              </Link>
-              <Link to="/compare" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
-                {compareLabel}
-              </Link>
-              <Link
-                to="/admin"
-                className="bl-global-nav-mobile-link bl-global-nav-mobile-link-admin"
-                onClick={closeMobileMenu}
-              >
-                {labels.admin}
+              <a href="/#explore" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
+                {homeNav.navExplore}
+              </a>
+              <a href="/#categories" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
+                {homeNav.navCategories}
+              </a>
+              <a href="/#curated" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
+                {homeNav.navCurated}
+              </a>
+              <a href="/#map" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
+                {homeNav.navMap}
+              </a>
+              <Link to="/favorites" className="bl-global-nav-mobile-link" onClick={closeMobileMenu}>
+                {homeNav.saved}
               </Link>
             </div>
           </details>
+
+          <Link to="/favorites" className="bl-global-nav-saved-pill">
+            {homeNav.saved}
+          </Link>
 
           <LanguageSwitcher
             labelEn={labels.languageEn}
