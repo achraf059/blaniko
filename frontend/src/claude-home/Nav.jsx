@@ -17,7 +17,16 @@ export const Nav = ({ favoritesCount = 0 }) => {
   return (
     <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="shell nav-inner">
-        <Link to="/" className="wordmark" aria-label="Blaniko">
+        <Link
+          to="/"
+          className="wordmark"
+          aria-label="Blaniko"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/", { replace: true });
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
           <span className="wordmark-dot"/>
           Blaniko
         </Link>
