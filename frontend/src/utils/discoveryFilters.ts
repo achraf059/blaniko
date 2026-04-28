@@ -2,6 +2,7 @@ import { type Venue } from "../data/mockData";
 import type { AppLanguage } from "../i18n/types";
 import {
   getVenueSearchText,
+  normalizeText,
   type DiscoveryMood,
   isDiscoveryMood,
   venueMatchesMood,
@@ -204,6 +205,51 @@ export function getOptionLabel(value: string, options: Option[]): string {
   return options.find((option) => option.value === value)?.label ?? value;
 }
 
+const synonymMap: Record<string, string[]> = {
+  pool: ["swimming", "water", "sea", "coast"],
+  piscine: ["pool", "swimming", "water", "sea"],
+  beach: ["water", "sea", "coast"],
+  plage: ["beach", "water", "sea", "coast"],
+  kids: ["family", "children", "child-friendly"],
+  children: ["kids", "family"],
+  family: ["kids", "children"],
+  date: ["romantic", "couples", "date spot", "date night"],
+  couple: ["romantic", "couples", "date", "date spot"],
+  cheap: ["budget", "free"],
+  free: ["budget", "cheap"],
+  night: ["late-night", "date night"],
+  evening: ["night", "late-night"],
+  restaurant: ["food", "dinner"],
+  dinner: ["restaurant", "food", "romantic"],
+  cafe: ["coffee", "cafes"],
+  coffee: ["cafe", "cafes"],
+  sport: ["sports", "fitness"],
+  sports: ["sport", "fitness"],
+  workout: ["fitness", "gym", "wellness"],
+  gym: ["fitness", "workout", "wellness"],
+  wellness: ["fitness", "yoga"],
+  yoga: ["wellness", "fitness"],
+};
+
+function expandQuery(normalizedQuery: string): string[] {
+  const synonyms = synonymMap[normalizedQuery] ?? [];
+  return [...new Set([normalizedQuery, ...synonyms])];
+}
+
+function matchesSearchTerm(venueText: string, term: string): boolean {
+  const normalizedTerm = normalizeText(term)
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+  if (!normalizedTerm) {
+    return false;
+  }
+
+  const normalizedVenueText = ` ${venueText.replace(/[^a-z0-9]+/g, " ")} `;
+
+  return normalizedVenueText.includes(` ${normalizedTerm} `);
+}
+
 export function filterVenuesBySmartDiscovery(
   venues: Venue[],
   filters: SmartDiscoveryFilters
@@ -214,7 +260,10 @@ export function filterVenuesBySmartDiscovery(
 
   return venues.filter((venue) => {
     if (filters.query.trim()) {
-      if (!getVenueSearchText(venue).includes(filters.query.trim().toLowerCase())) {
+      const normalizedQuery = normalizeText(filters.query);
+      const terms = expandQuery(normalizedQuery);
+      const venueText = getVenueSearchText(venue);
+      if (!terms.some((term) => matchesSearchTerm(venueText, term))) {
         return false;
       }
     }
