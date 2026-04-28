@@ -41,7 +41,7 @@ export const Categories = () => {
   );
 };
 
-export const Curated = ({ favorites, toggleFav, compare, toggleCmp }) => {
+export const Curated = ({ favorites, toggleFav }) => {
   const navigate = useNavigate();
   const { language, dictionary } = useI18n();
   const { curated } = getClaudeHomeLocalizedData(language);
@@ -50,7 +50,6 @@ export const Curated = ({ favorites, toggleFav, compare, toggleCmp }) => {
   const renderCard = (a, wide) => {
     const id = a.venueSlug;
     const isFav = favorites.includes(id);
-    const isCmp = compare.includes(id);
     return (
       <div
         key={id}
@@ -58,14 +57,6 @@ export const Curated = ({ favorites, toggleFav, compare, toggleCmp }) => {
         onClick={() => navigate(`/venues/${id}`)}
       >
         <div className={`cur-img ${a.img}`}></div>
-        <button
-          className={`cmp-check ${isCmp ? "active" : ""}`}
-          onClick={(e) => { e.stopPropagation(); toggleCmp(id); }}
-          aria-label={dictionary.claudeHome.compareGo}
-        >
-          <span className="box">{isCmp && <Icon name="check" size={10} />}</span>
-          {dictionary.claudeHome.compareGo}
-        </button>
         <button
           className={`fav-btn ${isFav ? "active pulse" : ""}`}
           onClick={(e) => { e.stopPropagation(); toggleFav(id); }}
