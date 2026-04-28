@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "blaniko:favorites:v1";
-const FAVORITES_EVENT = "blaniko:favorites-updated";
-
-type FavoritesEventDetail = {
-  slugs: string[];
-};
 
 function sanitizeFavoriteSlugs(rawValue: unknown): string[] {
   if (!Array.isArray(rawValue)) {
@@ -50,23 +45,23 @@ function readFavoriteSlugs(): string[] {
   }
 }
 
-function writeFavoriteSlugs(slugs: string[]): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const normalized = sanitizeFavoriteSlugs(slugs);
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-  window.dispatchEvent(
-    new CustomEvent<FavoritesEventDetail>(FAVORITES_EVENT, {
-      detail: { slugs: normalized },
-    })
-  );
-}
-
 export function useFavorites() {
   const [favoriteSlugs, setFavoriteSlugs] = useState<string[]>(() => readFavoriteSlugs());
 
+  // Persist to localStorage whenever favorites change.
+  // Running this in an effect (after commit) keeps state updaters pure and
+  // ensures the DOM has already updated before we write — so the first click
+  // always reflects immediately in the UI.
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const normalized = sanitizeFavoriteSlugs(favoriteSlugs);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+  }, [favoriteSlugs]);
+
+  // Cross-tab sync: pick up changes made in other browser tabs.
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== STORAGE_KEY) {
@@ -86,17 +81,10 @@ export function useFavorites() {
       }
     };
 
-    const handleFavoritesUpdated = (event: Event) => {
-      const customEvent = event as CustomEvent<FavoritesEventDetail>;
-      setFavoriteSlugs(sanitizeFavoriteSlugs(customEvent.detail?.slugs));
-    };
-
     window.addEventListener("storage", handleStorage);
-    window.addEventListener(FAVORITES_EVENT, handleFavoritesUpdated);
 
     return () => {
       window.removeEventListener("storage", handleStorage);
-      window.removeEventListener(FAVORITES_EVENT, handleFavoritesUpdated);
     };
   }, []);
 
@@ -117,9 +105,7 @@ export function useFavorites() {
         return previous;
       }
 
-      const next = [...previous, slug];
-      writeFavoriteSlugs(next);
-      return next;
+      return [...previous, slug];
     });
   }, []);
 
@@ -131,7 +117,6 @@ export function useFavorites() {
         return previous;
       }
 
-      writeFavoriteSlugs(next);
       return next;
     });
   }, []);
@@ -142,18 +127,14 @@ export function useFavorites() {
     }
 
     setFavoriteSlugs((previous) => {
-      const next = previous.includes(slug)
+      return previous.includes(slug)
         ? previous.filter((item) => item !== slug)
         : [...previous, slug];
-
-      writeFavoriteSlugs(next);
-      return next;
     });
   }, []);
 
   const clearFavorites = useCallback(() => {
     setFavoriteSlugs([]);
-    writeFavoriteSlugs([]);
   }, []);
 
   return {
