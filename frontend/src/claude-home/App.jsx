@@ -86,8 +86,6 @@ const App = () => {
         <Curated
           favorites={favoriteSlugs}
           toggleFav={toggleFavorite}
-          compare={compareSlugs}
-          toggleCmp={toggleCompare}
         />
         <MapPreview />
         <How />
