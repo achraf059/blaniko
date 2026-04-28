@@ -39,6 +39,15 @@
   max-height: clamp(180px, 22vw, 260px);
 }
 
+/* On phones (single-column layout) the clamp resolves to its minimum 180px, which
+   is smaller than the natural height from the aspect-ratio. Removing the cap lets
+   the card fill its full width at the correct 16:10 ratio on mobile. */
+@media (max-width: 640px) {
+  .bl-home-venue-card .bl-venue-image {
+    max-height: none;
+  }
+}
+
 /* Subtle scale on image content when card is hovered */
 .bl-home-venue-card .bl-venue-image-media,
 .bl-home-venue-card .bl-venue-image-placeholder {
