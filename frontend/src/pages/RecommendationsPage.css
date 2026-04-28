@@ -1,5 +1,6 @@
 .bl-reco-page {
   min-height: 100vh;
+  min-height: 100dvh;
   background: transparent;
   color: var(--color-text);
 }

@@ -43,6 +43,7 @@ html, body {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height — avoids mobile browser chrome overlap */
   background:
     radial-gradient(1200px 600px at 80% -10%, rgba(184, 164, 214, 0.22), transparent 60%),
     radial-gradient(900px 500px at 10% 20%, rgba(232, 223, 245, 0.5), transparent 55%),
@@ -134,6 +135,7 @@ a { color: inherit; text-decoration: none; }
   padding-top: 140px;
   padding-bottom: 80px;
   min-height: 92vh;
+  min-height: 92dvh;
   display: flex; flex-direction: column;
   justify-content: center;
   overflow: visible;
@@ -1248,6 +1250,122 @@ a { color: inherit; text-decoration: none; }
   .map-card .right { min-height: 260px; }
   .ed-card { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
   .saved-pill { display: none; }
+}
+
+/* =========================================================
+   RESPONSIVE — phones (≤ 640px)
+   Fills the gap between "nothing" and the 900px tablet breakpoint.
+   ========================================================= */
+@media (max-width: 640px) {
+  /* Hero — tighter padding, no fixed min-height */
+  .hero {
+    padding-top: 90px;
+    padding-bottom: 48px;
+    min-height: unset;
+  }
+  .hero-headline { font-size: clamp(32px, 10.5vw, 48px); }
+  .hero-sub { font-size: 15px; margin-top: 18px; }
+
+  /* Hero search — stack input above button on phones */
+  .hero-search {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 18px;
+    padding: 10px;
+    max-width: 100%;
+    gap: 8px;
+  }
+  /* Hide the decorative search icon when stacked */
+  .hero-search > svg { display: none; }
+  .hero-search input {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  /* Hide location pill + divider — not useful in stacked layout */
+  .hero-search .divider,
+  .hero-search .where { display: none; }
+  .hero-search button.go {
+    width: 100%;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 13px 18px;
+  }
+
+  /* Nav — hide CTA button on phones, tighten gap */
+  .nav-cta { display: none; }
+  .nav-inner { gap: 12px; }
+
+  /* Sections — tighter vertical padding on phones */
+  .moods { padding: 28px 0 40px; }
+  .categories { padding: 56px 0 36px; }
+  .curated { padding: 56px 0 36px; }
+  .how { padding: 48px 0; }
+  .section-head { margin-bottom: 24px; gap: 12px; }
+  .section-head h2 { font-size: clamp(22px, 7.5vw, 34px); }
+
+  /* Mood grid — 1 column on phones (was 2 at 900px) */
+  .mood-grid { grid-template-columns: 1fr; }
+
+  /* Category grid — 1 column on phones (was 2 at 900px) */
+  .cat-grid { grid-template-columns: 1fr; }
+  .cat { min-height: 120px; }
+
+  /* Collage — single column on phones (was 2-col at 900px) */
+  .collage { grid-template-columns: 1fr; }
+  .slot-copy { grid-column: span 1; }
+  .continuation { padding: 28px 0 48px; }
+  .continuation-head { gap: 12px; }
+
+  /* Map card */
+  .map-card .left { padding: 22px 22px 26px; }
+  .map-card .right { min-height: 180px; }
+
+  /* Editorial */
+  .ed-card { padding: 18px; gap: 18px; }
+
+  /* Curated card title — smaller on phones so it doesn't overflow */
+  .cur-card .cur-title { font-size: 20px; }
+  .cur-card.wide .cur-title { font-size: 24px; }
+
+  /* Footer CTA — tighter padding and stacked email form */
+  .footer-cta {
+    padding: 32px 18px;
+    margin: 40px 0 20px;
+    border-radius: 18px;
+  }
+  .footer-cta-inner { gap: 20px; }
+  .footer-cta .email {
+    flex-direction: column;
+    border-radius: 14px;
+    padding: 8px;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .footer-cta .email input { padding: 8px 14px; }
+  .footer-cta .email button {
+    border-radius: 10px;
+    text-align: center;
+    padding: 12px 18px;
+  }
+
+  /* Footer meta — stack links on phones */
+  .foot {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding: 28px 0 36px;
+  }
+  .foot-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+}
+
+/* Show heart/fav button on touch devices — no hover state available on phones */
+@media (hover: none) {
+  .fav-btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .lang-switch button.is-disabled,

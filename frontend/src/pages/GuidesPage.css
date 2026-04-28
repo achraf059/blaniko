@@ -1,5 +1,6 @@
 .bl-guides-page {
   min-height: 100vh;
+  min-height: 100dvh;
   color: var(--color-text);
 }
 
