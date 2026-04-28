@@ -469,6 +469,56 @@
   margin-bottom: 1.5rem;
 }
 
+/* Close-ideas suggestion block */
+
+.bl-search-close-ideas {
+  margin: 0 auto 1.75rem;
+  max-width: 28rem;
+}
+
+.bl-search-close-ideas-label {
+  margin: 0 0 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.bl-search-close-ideas-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.bl-search-close-ideas-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 88%, var(--mist) 12%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 130ms ease,
+    border-color 130ms ease,
+    color 130ms ease;
+}
+
+.bl-search-close-ideas-chip:hover {
+  background: color-mix(in srgb, var(--plum) 14%, var(--surface) 86%);
+  border-color: var(--plum);
+  color: var(--plum-deep);
+}
+
 .bl-search-back-link {
   display: inline-flex;
   font-size: 0.875rem;

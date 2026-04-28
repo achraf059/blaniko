@@ -205,6 +205,160 @@ export function getOptionLabel(value: string, options: Option[]): string {
   return options.find((option) => option.value === value)?.label ?? value;
 }
 
+export type SearchSuggestion = {
+  label: string;
+  query?: string;
+  category?: string;
+  area?: string;
+  bestFor?: string;
+};
+
+const fallbackSuggestions: Record<string, SearchSuggestion[]> = {
+  pool: [
+    { label: "Water activities", query: "water" },
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Ain Diab", area: "ain-diab" },
+  ],
+  piscine: [
+    { label: "Water activities", query: "water" },
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Ain Diab", area: "ain-diab" },
+  ],
+  beach: [
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Ain Diab", area: "ain-diab" },
+    { label: "Marina", area: "marina" },
+  ],
+  plage: [
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Ain Diab", area: "ain-diab" },
+    { label: "Marina", area: "marina" },
+  ],
+  food: [
+    { label: "Food experiences", category: "restaurants" },
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Cafes", category: "cafes" },
+  ],
+  restaurant: [
+    { label: "Food experiences", category: "restaurants" },
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Cafes", category: "cafes" },
+  ],
+  dinner: [
+    { label: "Food experiences", category: "restaurants" },
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Couples", category: "couples" },
+  ],
+  kids: [
+    { label: "Family-friendly", bestFor: "family-friendly" },
+    { label: "Family", category: "family" },
+    { label: "Outdoor", category: "outdoor" },
+  ],
+  children: [
+    { label: "Family-friendly", bestFor: "family-friendly" },
+    { label: "Family", category: "family" },
+    { label: "Outdoor", category: "outdoor" },
+  ],
+  family: [
+    { label: "Family-friendly", bestFor: "family-friendly" },
+    { label: "Family", category: "family" },
+    { label: "Outdoor", category: "outdoor" },
+  ],
+  night: [
+    { label: "Late-night", bestFor: "late-night" },
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Gaming", category: "gaming" },
+    { label: "Dinner", query: "dinner" },
+  ],
+  evening: [
+    { label: "Late-night", bestFor: "late-night" },
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Dinner", query: "dinner" },
+  ],
+  gym: [
+    { label: "Sports", category: "sports" },
+    { label: "Fitness", query: "fitness" },
+    { label: "Wellness", query: "wellness" },
+  ],
+  workout: [
+    { label: "Sports", category: "sports" },
+    { label: "Fitness", query: "fitness" },
+    { label: "Activities", category: "activities" },
+  ],
+  wellness: [
+    { label: "Sports", category: "sports" },
+    { label: "Yoga", query: "yoga" },
+    { label: "Activities", category: "activities" },
+  ],
+  yoga: [
+    { label: "Wellness", query: "wellness" },
+    { label: "Sports", category: "sports" },
+    { label: "Activities", category: "activities" },
+  ],
+  pottery: [
+    { label: "Activities", category: "activities" },
+    { label: "Workshop", query: "workshop" },
+    { label: "Family-friendly", bestFor: "family-friendly" },
+  ],
+  art: [
+    { label: "Activities", category: "activities" },
+    { label: "Workshop", query: "workshop" },
+  ],
+  workshop: [
+    { label: "Activities", category: "activities" },
+    { label: "Family-friendly", bestFor: "family-friendly" },
+    { label: "Creative", query: "creative" },
+  ],
+  // extra aliases
+  piscina: [
+    { label: "Water activities", query: "water" },
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Ain Diab", area: "ain-diab" },
+  ],
+  romantic: [
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Couples", category: "couples" },
+    { label: "Food experiences", category: "restaurants" },
+  ],
+  cheap: [
+    { label: "Budget pick", bestFor: "budget-pick" },
+    { label: "Cafes", category: "cafes" },
+    { label: "Activities", category: "activities" },
+  ],
+  date: [
+    { label: "Date spot", bestFor: "date-spot" },
+    { label: "Couples", category: "couples" },
+    { label: "Food experiences", category: "restaurants" },
+  ],
+};
+
+export function getSearchFallbackSuggestions(query: string): SearchSuggestion[] {
+  const normalized = normalizeText(query);
+
+  // 1. Exact match
+  const exact = fallbackSuggestions[normalized];
+  if (exact) return exact;
+
+  // 2. Word-by-word scan — collect from all matching tokens, dedup, cap at 4
+  const words = normalized.split(" ").filter(Boolean);
+  const seen = new Set<string>();
+  const merged: SearchSuggestion[] = [];
+
+  for (const word of words) {
+    const hits = fallbackSuggestions[word];
+    if (!hits) continue;
+    for (const s of hits) {
+      const key = `${s.query ?? ""}|${s.category ?? ""}|${s.area ?? ""}|${s.bestFor ?? ""}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        merged.push(s);
+      }
+    }
+  }
+
+  return merged.slice(0, 4);
+}
+
 const synonymMap: Record<string, string[]> = {
   pool: ["swimming", "water", "sea", "coast"],
   piscine: ["pool", "swimming", "water", "sea"],

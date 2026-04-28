@@ -23,9 +23,11 @@ import {
   getBestForOptions,
   getEnergyOptions,
   getOptionLabel,
+  getSearchFallbackSuggestions,
   getSocialLevelOptions,
   getSpaceTypeOptions,
   getTimeOfDayOptions,
+  type SearchSuggestion,
 } from "../utils/discoveryFilters";
 import "./SearchPage.css";
 
@@ -419,6 +421,30 @@ export default function SearchPage() {
     navigate(buildUrl({ socialLevel: nextSocial }));
   };
 
+  const closeSuggestions = useMemo(
+    () =>
+      filteredVenues.length === 0 && query.trim()
+        ? getSearchFallbackSuggestions(query)
+        : [],
+    [filteredVenues.length, query],
+  );
+
+  const getSuggestionLabel = (s: SearchSuggestion): string => {
+    if (s.category) return dictionary.categoryNames[s.category] ?? s.label;
+    if (s.bestFor) return getBestForLabelByLanguage(s.bestFor, language);
+    return s.label;
+  };
+
+  const handleSuggestionClick = (s: SearchSuggestion) => {
+    const params = new URLSearchParams();
+    if (s.query) params.set("q", s.query);
+    if (s.category) params.set("category", s.category);
+    if (s.area) params.set("area", s.area);
+    if (s.bestFor) params.set("bestFor", s.bestFor);
+    const suffix = params.toString();
+    navigate(suffix ? `/search?${suffix}` : "/search");
+  };
+
   const clearFilters = () => {
     setQuery("");
     setSelectedCategory("");
@@ -633,6 +659,27 @@ export default function SearchPage() {
             <p className="bl-search-empty-description">
               {text.searchPage.noMatchDescription}
             </p>
+
+            {closeSuggestions.length > 0 ? (
+              <div className="bl-search-close-ideas">
+                <p className="bl-search-close-ideas-label">
+                  {text.searchPage.closeIdeasTitle}
+                </p>
+                <div className="bl-search-close-ideas-chips">
+                  {closeSuggestions.map((s) => (
+                    <button
+                      key={`${s.query ?? ""}${s.category ?? ""}${s.area ?? ""}${s.bestFor ?? ""}`}
+                      type="button"
+                      className="bl-search-close-ideas-chip"
+                      onClick={() => handleSuggestionClick(s)}
+                    >
+                      {getSuggestionLabel(s)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
             <div className="bl-search-empty-actions">
               <button
                 type="button"
