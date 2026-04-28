@@ -236,6 +236,7 @@ const byLanguage = {
         "No exact map matches for your current filters. Try a broader area, fewer personality filters, or reset all filters.",
       casablancaWatermark: "Casablanca",
       mapFilteredFor: "Map view is filtered for the {mood} mood.",
+      closeIdeasTitle: "Close ideas",
     },
     planPage: {
       eyebrow: "Plan My Outing",
@@ -601,6 +602,7 @@ const byLanguage = {
         "Aucune correspondance exacte sur la carte pour vos filtres actuels. Essayez un quartier plus large, moins de filtres personnalité, ou réinitialisez.",
       casablancaWatermark: "Casablanca",
       mapFilteredFor: "La carte est filtrée pour l'ambiance {mood}.",
+      closeIdeasTitle: "Idées proches",
     },
     planPage: {
       eyebrow: "Planifier ma sortie",
