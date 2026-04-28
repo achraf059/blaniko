@@ -6,7 +6,12 @@ export function HashScrollHandler() {
 
   useEffect(() => {
     if (!location.hash) {
-      return;
+      // Scroll to top on pathname change (not on search/filter param changes).
+      // Use setTimeout to ensure it runs after React DOM updates.
+      const timeout = window.setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      }, 0);
+      return () => window.clearTimeout(timeout);
     }
 
     const id = decodeURIComponent(location.hash.replace("#", ""));
