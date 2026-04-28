@@ -2,7 +2,6 @@ import React from "react";
 import "./data.js";
 import { Nav } from "./Nav.jsx";
 import { Hero } from "./Hero.jsx";
-import { Continuation } from "./Continuation.jsx";
 import { Moods, MapPreview, Editorial, CompareTray } from "./Features.jsx";
 import { Categories, Curated, How, FooterCTA, Foot } from "./Sections.jsx";
 import { useFavorites } from "../hooks/useFavorites";
@@ -79,7 +78,6 @@ const App = () => {
       <Nav favoritesCount={favoriteSlugs.length} />
       <main>
         <Hero />
-        <Continuation />
         <Moods />
         <Categories />
         <Editorial />
