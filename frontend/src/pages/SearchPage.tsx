@@ -436,11 +436,28 @@ export default function SearchPage() {
   };
 
   const handleSuggestionClick = (s: SearchSuggestion) => {
+    const nextQuery = s.query ?? "";
+    const nextCategory = s.category ?? "";
+    const nextArea = s.area ?? "";
+    const nextBestFor = s.bestFor ?? "";
+
+    // Reset all local state so filteredVenues recomputes from the suggestion only
+    setQuery(nextQuery);
+    setSelectedCategory(nextCategory);
+    setSelectedMood("");
+    setSelectedBudget("all");
+    setSelectedArea(nextArea);
+    setSelectedBestFor(nextBestFor);
+    setSelectedTimeOfDay("");
+    setSelectedEnergyLevel("");
+    setSelectedSpaceType("");
+    setSelectedSocialLevel("");
+
     const params = new URLSearchParams();
-    if (s.query) params.set("q", s.query);
-    if (s.category) params.set("category", s.category);
-    if (s.area) params.set("area", s.area);
-    if (s.bestFor) params.set("bestFor", s.bestFor);
+    if (nextQuery) params.set("q", nextQuery);
+    if (nextCategory) params.set("category", nextCategory);
+    if (nextArea) params.set("area", nextArea);
+    if (nextBestFor) params.set("bestFor", nextBestFor);
     const suffix = params.toString();
     navigate(suffix ? `/search?${suffix}` : "/search");
   };
