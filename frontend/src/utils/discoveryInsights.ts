@@ -119,32 +119,38 @@ const companionKeywordMap: Record<DiscoveryCompanion, string[]> = {
   partner: ["couples", "romantic", "date", "intimate"],
 };
 
-function normalizeText(value: string | undefined): string {
-  return (value ?? "").toLowerCase().trim();
+export function normalizeText(value: string | undefined): string {
+  return (value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
 }
 
 export function getVenueSearchText(venue: Venue): string {
-  return [
-    venue.name,
-    venue.category,
-    venue.categorySlug,
-    venue.area,
-    venue.description,
-    venue.shortDescription,
-    venue.overview,
-    venue.vibe,
-    venue.vibeSummary,
-    venue.audience,
-    venue.bestForTags?.join(" "),
-    venue.searchKeywords?.join(" "),
-    venue.timeOfDay?.join(" "),
-    venue.energyLevel,
-    venue.socialLevel,
-    venue.spaceType,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+  return normalizeText(
+    [
+      venue.name,
+      venue.category,
+      venue.categorySlug,
+      venue.area,
+      venue.description,
+      venue.shortDescription,
+      venue.overview,
+      venue.vibe,
+      venue.vibeSummary,
+      venue.audience,
+      venue.bestForTags?.join(" "),
+      venue.searchKeywords?.join(" "),
+      venue.timeOfDay?.join(" "),
+      venue.energyLevel,
+      venue.socialLevel,
+      venue.spaceType,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  );
 }
 
 function getPrimaryArea(venue: Venue): string {
