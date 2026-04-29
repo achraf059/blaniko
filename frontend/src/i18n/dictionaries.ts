@@ -110,6 +110,8 @@ export type Dictionary = {
     compareSelected: string;
     compareClear: string;
     compareGo: string;
+    waitlistSuccess: string;
+    waitlistError: string;
   };
   categoryNames: Record<string, string>;
   categoryDescriptions: Record<string, string>;
@@ -371,6 +373,8 @@ const en: Dictionary = {
     compareSelected: "{count} activities selected",
     compareClear: "Clear",
     compareGo: "Compare",
+    waitlistSuccess: "You're on the list. We'll send good Casablanca plans soon.",
+    waitlistError: "Could not join yet. Please try again.",
   },
   categoryNames: {
     cafes: "Cafes & Hangouts",
@@ -659,6 +663,8 @@ const fr: Dictionary = {
     compareSelected: "{count} activités sélectionnées",
     compareClear: "Effacer",
     compareGo: "Comparer",
+    waitlistSuccess: "Vous êtes sur la liste. On vous envoie bientôt de bonnes idées.",
+    waitlistError: "Impossible de s'inscrire pour l'instant. Réessayez.",
   },
   categoryNames: {
     cafes: "Cafés & Hangouts",

@@ -8,6 +8,10 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Netlify Forms detection — hidden static form required for Vite SPA deploys -->
+    <form name="waitlist" data-netlify="true" hidden>
+      <input type="email" name="email" />
+    </form>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
