@@ -302,7 +302,7 @@ const en: Dictionary = {
   claudeHome: {
     navExplore: "Explore",
     navCategories: "Categories",
-    navCurated: "Curated",
+    navCurated: "Picks",
     navMap: "Map",
     saved: "Saved",
     joinList: "Join the list",
