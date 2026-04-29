@@ -80,11 +80,11 @@ const App = () => {
         <Hero />
         <Moods />
         <Categories />
-        <Editorial />
         <Curated
           favorites={favoriteSlugs}
           toggleFav={toggleFavorite}
         />
+        <Editorial />
         <MapPreview />
         <How />
         <FooterCTA />
