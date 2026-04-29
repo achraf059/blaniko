@@ -127,8 +127,33 @@ export const How = () => {
 };
 
 export const FooterCTA = () => {
-  const navigate = useNavigate();
   const { dictionary } = useI18n();
+  const [email, setEmail] = React.useState("");
+  const [status, setStatus] = React.useState("idle"); // idle | submitting | success | error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || !/\S+@\S+\.\S+/.test(trimmed)) {
+      setStatus("error");
+      return;
+    }
+    setStatus("submitting");
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ "form-name": "waitlist", email: trimmed }).toString(),
+      });
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
 
   return (
     <section className="shell" id="join">
@@ -136,11 +161,39 @@ export const FooterCTA = () => {
         <div className="footer-cta-inner">
           <h3>{dictionary.claudeHome.footerCtaTitlePrefix} <em>{dictionary.claudeHome.footerCtaTitleEmphasis}</em>.</h3>
           <div>
-            <div className="email">
-              <input type="email" placeholder={dictionary.claudeHome.footerEmailPlaceholder} />
-              <button onClick={() => navigate("/guides")}>{dictionary.claudeHome.joinList}</button>
-            </div>
-            <div className="small-note">{dictionary.claudeHome.footerSmallNote}</div>
+            {status === "success" ? (
+              <div className="small-note">{dictionary.claudeHome.waitlistSuccess}</div>
+            ) : (
+              <form
+                name="waitlist"
+                data-netlify="true"
+                onSubmit={handleSubmit}
+                noValidate
+              >
+                <input type="hidden" name="form-name" value="waitlist" />
+                <div className="email">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder={dictionary.claudeHome.footerEmailPlaceholder}
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
+                    disabled={status === "submitting"}
+                  />
+                  <button type="submit" disabled={status === "submitting"}>
+                    {dictionary.claudeHome.joinList}
+                  </button>
+                </div>
+                {status === "error" && (
+                  <div className="small-note" style={{ marginTop: 10 }}>
+                    {dictionary.claudeHome.waitlistError}
+                  </div>
+                )}
+                {status !== "error" && (
+                  <div className="small-note">{dictionary.claudeHome.footerSmallNote}</div>
+                )}
+              </form>
+            )}
           </div>
         </div>
       </div>
