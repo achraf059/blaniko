@@ -40,9 +40,9 @@ const localizedHomeData = {
     ],
     howSteps: [
       {
-        title: "Curated, not crawled.",
+        title: "Picked by people.",
         description:
-          "Every activity is hand-picked by locals who've actually done it. No scraped listings, no filler.",
+          "Every place is selected with local taste, not copied from random listings.",
       },
       {
         title: "Clear, honest details.",
