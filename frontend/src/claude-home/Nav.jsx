@@ -27,8 +27,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          <span className="wordmark-dot"/>
-          Blaniko
+          <img src="/brand/blaniko-wordmark.png" alt="Blaniko" />
         </Link>
         <div className="nav-links">
           <a href="#explore">{dictionary.claudeHome.navExplore}</a>
