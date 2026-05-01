@@ -280,10 +280,38 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   overflow: hidden;
 }
-.float-card .img.p1 { background: linear-gradient(140deg, #E8DFF5 0%, #B8A4D6 100%); }
-.float-card .img.p2 { background: linear-gradient(140deg, #D9CFE8 0%, #8F72B5 100%); }
-.float-card .img.p3 { background: linear-gradient(140deg, #F1E8F8 0%, #C9B8E8 100%); }
-.float-card .img.p4 { background: linear-gradient(140deg, #E6D9F3 0%, #9A7FBF 100%); }
+.float-card .img.p1 {
+  background-image:
+    linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
+    url("/homepage/hero/hero-night-out-maarif.png");
+  background-size: cover;
+  background-position: center;
+  background-color: #8f72b5;
+}
+.float-card .img.p2 {
+  background-image:
+    linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
+    url("/homepage/hero/hero-padel-ocean-drive.png");
+  background-size: cover;
+  background-position: center;
+  background-color: #8f72b5;
+}
+.float-card .img.p3 {
+  background-image:
+    linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
+    url("/homepage/hero/hero-rooftop-sundowner.png");
+  background-size: cover;
+  background-position: center;
+  background-color: #8f72b5;
+}
+.float-card .img.p4 {
+  background-image:
+    linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
+    url("/homepage/hero/hero-old-medina-food-walk.png");
+  background-size: cover;
+  background-position: center;
+  background-color: #8f72b5;
+}
 .float-card .img.p5 { background: linear-gradient(140deg, #F4EFFB 0%, #D9B382 120%); }
 
 .float-card .img::after {
