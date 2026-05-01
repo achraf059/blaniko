@@ -1,10 +1,10 @@
 const localizedHomeData = {
   en: {
     heroCards: [
-      { id: "c1", title: "Sunset Jetski", tagline: "Ain Diab · Water", price: "MAD 450", img: "p2", venueSlug: "ocean-drive-padel-club" },
-      { id: "c2", title: "Rooftop Cinema", tagline: "Triangle d'Or · Culture", price: "MAD 120", img: "p3", venueSlug: "skyline-rooftop-cafe" },
-      { id: "c3", title: "Medina Walk", tagline: "Old Medina · Culture", price: "Free", img: "p4", venueSlug: "old-medina-food-walk" },
-      { id: "c4", title: "Karting Night", tagline: "Bouskoura · Sport", price: "MAD 220", img: "p1", venueSlug: "weekend-social-hub" },
+      { id: "c1", title: "Padel at Ocean Drive", tagline: "Ain Diab · Sport", price: "MAD 450", img: "p2", venueSlug: "ocean-drive-padel-club" },
+      { id: "c2", title: "Rooftop Sundowner", tagline: "Maarif · Café", price: "MAD 120", img: "p3", venueSlug: "skyline-rooftop-cafe" },
+      { id: "c3", title: "Old Medina Food Walk", tagline: "Old Medina · Culture", price: "Free", img: "p4", venueSlug: "old-medina-food-walk" },
+      { id: "c4", title: "Night out in Maarif", tagline: "Maarif · Social", price: "MAD 220", img: "p1", venueSlug: "weekend-social-hub" },
     ],
     moods: [
       { title: "Tonight", sub: "after 7pm", ico: "moon", href: "/search?mood=social" },
@@ -33,10 +33,10 @@ const localizedHomeData = {
     curated: [
       { title: "A slow morning at the corniche", chips: ["Morning", "Outdoor"], price: "Free", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
       { title: "Pottery with Leïla", chips: ["Workshop"], price: "MAD 320", duration: "3h", img: "c3", venueSlug: "anfa-family-workshop-house" },
-      { title: "Jazz at Villa des Arts", chips: ["Tonight"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
-      { title: "Dawn surf at Dar Bouazza", chips: ["Water"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
+      { title: "Dinner at Moonlight Bistro", chips: ["Dinner"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
+      { title: "Padel session, Ain Diab", chips: ["Sport"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
       { title: "Rooftop supper club", chips: ["Dining", "Curated"], price: "MAD 480", duration: "3h", img: "c5", venueSlug: "skyline-rooftop-cafe" },
-      { title: "Anfa photography walk", chips: ["Culture"], price: "MAD 180", duration: "2h", img: "c6", venueSlug: "old-medina-food-walk" },
+      { title: "Street food in the Old Medina", chips: ["Culture", "Food"], price: "MAD 180", duration: "2h", img: "c6", venueSlug: "old-medina-food-walk" },
     ],
     howSteps: [
       {
@@ -69,10 +69,10 @@ const localizedHomeData = {
   },
   fr: {
     heroCards: [
-      { id: "c1", title: "Jetski au coucher du soleil", tagline: "Ain Diab · Eau", price: "MAD 450", img: "p2", venueSlug: "ocean-drive-padel-club" },
-      { id: "c2", title: "Cinéma rooftop", tagline: "Triangle d'Or · Culture", price: "MAD 120", img: "p3", venueSlug: "skyline-rooftop-cafe" },
-      { id: "c3", title: "Balade médina", tagline: "Ancienne Médina · Culture", price: "Gratuit", img: "p4", venueSlug: "old-medina-food-walk" },
-      { id: "c4", title: "Soirée karting", tagline: "Bouskoura · Sport", price: "MAD 220", img: "p1", venueSlug: "weekend-social-hub" },
+      { id: "c1", title: "Padel à Ocean Drive", tagline: "Ain Diab · Sport", price: "MAD 450", img: "p2", venueSlug: "ocean-drive-padel-club" },
+      { id: "c2", title: "Coucher de soleil en rooftop", tagline: "Maarif · Café", price: "MAD 120", img: "p3", venueSlug: "skyline-rooftop-cafe" },
+      { id: "c3", title: "Balade gourmande en médina", tagline: "Ancienne Médina · Culture", price: "Gratuit", img: "p4", venueSlug: "old-medina-food-walk" },
+      { id: "c4", title: "Soirée à Maarif", tagline: "Maarif · Social", price: "MAD 220", img: "p1", venueSlug: "weekend-social-hub" },
     ],
     moods: [
       { title: "Ce soir", sub: "après 19h", ico: "moon", href: "/search?mood=social" },
@@ -101,10 +101,10 @@ const localizedHomeData = {
     curated: [
       { title: "Une matinée douce à la corniche", chips: ["Matin", "Plein air"], price: "Gratuit", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
       { title: "Poterie avec Leïla", chips: ["Atelier"], price: "MAD 320", duration: "3h", img: "c3", venueSlug: "anfa-family-workshop-house" },
-      { title: "Jazz à la Villa des Arts", chips: ["Ce soir"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
-      { title: "Surf à l'aube à Dar Bouazza", chips: ["Eau"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
+      { title: "Dîner au Moonlight Bistro", chips: ["Dîner"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
+      { title: "Session padel, Ain Diab", chips: ["Sport"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
       { title: "Dîner rooftop en petit comité", chips: ["Dîner", "Sélection"], price: "MAD 480", duration: "3h", img: "c5", venueSlug: "skyline-rooftop-cafe" },
-      { title: "Balade photo à Anfa", chips: ["Culture"], price: "MAD 180", duration: "2h", img: "c6", venueSlug: "old-medina-food-walk" },
+      { title: "Street food dans l'Ancienne Médina", chips: ["Culture", "Food"], price: "MAD 180", duration: "2h", img: "c6", venueSlug: "old-medina-food-walk" },
     ],
     howSteps: [
       {
