@@ -40,19 +40,19 @@ const localizedHomeData = {
     ],
     howSteps: [
       {
-        title: "Picked by people.",
+        title: "Pick a mood.",
         description:
-          "Every place is selected with local taste, not copied from random listings.",
+          "Browse by how you're feeling — quiet morning, social evening, something active, something new.",
       },
       {
-        title: "Clear, honest details.",
+        title: "See what's real.",
         description:
-          "Real prices, real durations, real photos — so you know what you're in for before you tap \"go.\"",
+          "Every pick shows the real price, the real duration, and what makes it worth going — before you commit.",
       },
       {
-        title: "Updated weekly.",
+        title: "Save or share.",
         description:
-          "The city changes. Our edit changes with it. New picks every Monday, right here.",
+          "Save what interests you. Share with whoever you're going with. Come back when the moment is right.",
       },
     ],
     continuationSlots: ["Slot 01", "Slot 02", "Slot 03", "Slot 04"],
@@ -108,19 +108,19 @@ const localizedHomeData = {
     ],
     howSteps: [
       {
-        title: "Sélectionné, pas aspiré.",
+        title: "Choisissez une ambiance.",
         description:
-          "Chaque activité est choisie à la main par des locaux qui l'ont vraiment testée. Pas de listes copiées, pas de remplissage.",
+          "Parcourez selon votre envie — matin calme, soirée sociale, quelque chose d'actif ou de nouveau.",
       },
       {
-        title: "Des infos claires et honnêtes.",
+        title: "Voyez ce qui est réel.",
         description:
-          "Prix réels, durées réelles, photos réelles — pour savoir exactement à quoi vous attendre avant d'y aller.",
+          "Chaque sélection indique le vrai prix, la vraie durée et ce qui vaut le déplacement — avant de vous décider.",
       },
       {
-        title: "Mis à jour chaque semaine.",
+        title: "Enregistrez ou partagez.",
         description:
-          "La ville change. Notre sélection évolue avec elle. Nouvelles idées chaque lundi, ici même.",
+          "Sauvegardez ce qui vous intéresse. Partagez avec ceux qui vous accompagnent. Revenez quand le moment est venu.",
       },
     ],
     continuationSlots: ["Bloc 01", "Bloc 02", "Bloc 03", "Bloc 04"],
