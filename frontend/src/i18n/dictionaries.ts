@@ -50,6 +50,7 @@ export type Dictionary = {
     navCategories: string;
     navCurated: string;
     navMap: string;
+    navContact: string;
     saved: string;
     joinList: string;
     arComingSoon: string;
@@ -95,7 +96,6 @@ export type Dictionary = {
     howTitlePrefix: string;
     howTitleEmphasis: string;
     howTitleSuffix: string;
-    moodsHead: string;
     footerCtaTitlePrefix: string;
     footerCtaTitleEmphasis: string;
     footerEmailPlaceholder: string;
@@ -302,10 +302,11 @@ const en: Dictionary = {
     footerText: "Discover what to do in Casablanca.",
   },
   claudeHome: {
-    navExplore: "Explore",
+    navExplore: "Home",
     navCategories: "Categories",
     navCurated: "Picks",
     navMap: "Map",
+    navContact: "Contact",
     saved: "Saved",
     joinList: "Join the list",
     arComingSoon: "Arabic coming soon",
@@ -335,29 +336,28 @@ const en: Dictionary = {
     continuationCardDescription:
       "Morning swell. Afternoon clay. Evening reel. Late film. Move between them at your own pace, or take one at a time.",
     continuationCta: "See the full edit",
-    categoriesEyebrow: "03 — Browse",
+    categoriesEyebrow: "Browse",
     categoriesTitlePrefix: "Every mood",
     categoriesTitleEmphasis: "has a category",
     categoriesRight:
       "Nine ways into the city. Pick an entry point — or drift between them.",
-    curatedEyebrow: "04 — Picks",
+    curatedEyebrow: "Picks",
     curatedTitlePrefix: "The week's",
     curatedTitleEmphasis: "picks",
     curatedTitleSuffix: "chosen with care.",
     curatedRight:
       "Editor-curated activities, updated every Monday. No pay-to-play.",
-    mapEyebrow: "05 — Map",
+    mapEyebrow: "Map",
     mapTitlePrefix: "See the city",
     mapTitleEmphasis: "as a map",
     mapTitleSuffix: "not a list.",
     mapActivities: "Curated ideas",
     mapNeighborhoods: "Across Casablanca",
     mapOpen: "Open map",
-    howEyebrow: "06 — How it works",
+    howEyebrow: "How it works",
     howTitlePrefix: "A simple",
     howTitleEmphasis: "rhythm",
     howTitleSuffix: "discover, choose, go.",
-    moodsHead: "Find by mood",
     footerCtaTitlePrefix: "Find your",
     footerCtaTitleEmphasis: "weekend",
     footerEmailPlaceholder: "your@email.com",
@@ -592,10 +592,11 @@ const fr: Dictionary = {
     footerText: "Découvrez quoi faire à Casablanca.",
   },
   claudeHome: {
-    navExplore: "Explorer",
+    navExplore: "Accueil",
     navCategories: "Catégories",
     navCurated: "Sélection",
     navMap: "Carte",
+    navContact: "Contact",
     saved: "Enregistrés",
     joinList: "Rejoindre la liste",
     arComingSoon: "Arabe bientôt disponible",
@@ -625,29 +626,28 @@ const fr: Dictionary = {
     continuationCardDescription:
       "Vague du matin. Poterie l'après-midi. Séance du soir. Film tardif. Enchaînez-les à votre rythme, ou choisissez-en une seule.",
     continuationCta: "Voir l'édition complète",
-    categoriesEyebrow: "03 — Explorer",
+    categoriesEyebrow: "Explorer",
     categoriesTitlePrefix: "Chaque ambiance",
     categoriesTitleEmphasis: "a sa catégorie",
     categoriesRight:
       "Neuf portes d'entrée dans la ville. Choisissez un point de départ — ou passez de l'une à l'autre.",
-    curatedEyebrow: "04 — Sélection",
+    curatedEyebrow: "Sélection",
     curatedTitlePrefix: "Les",
     curatedTitleEmphasis: "choix de la semaine",
     curatedTitleSuffix: "choisis avec soin.",
     curatedRight:
       "Des activités sélectionnées par l'équipe, mises à jour chaque lundi. Pas de mise en avant payante.",
-    mapEyebrow: "05 — Carte",
+    mapEyebrow: "Carte",
     mapTitlePrefix: "Voyez la ville",
     mapTitleEmphasis: "comme une carte",
     mapTitleSuffix: "pas comme une liste.",
     mapActivities: "Idées sélectionnées",
     mapNeighborhoods: "À travers Casablanca",
     mapOpen: "Ouvrir la carte",
-    howEyebrow: "06 — Fonctionnement",
+    howEyebrow: "Fonctionnement",
     howTitlePrefix: "Un",
     howTitleEmphasis: "rythme simple",
     howTitleSuffix: "découvrez, choisissez, partez.",
-    moodsHead: "Explorer par ambiance",
     footerCtaTitlePrefix: "Trouvez votre",
     footerCtaTitleEmphasis: "week-end",
     footerEmailPlaceholder: "votre@email.com",

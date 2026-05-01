@@ -79,7 +79,7 @@ export const Curated = ({ favorites, toggleFav }) => {
     );
   };
   return (
-    <section className="curated shell" id="curated">
+    <section className="curated shell" id="picks">
       <div className="section-head">
         <div>
           <div className="eyebrow">{dictionary.claudeHome.curatedEyebrow}</div>
@@ -208,11 +208,6 @@ export const Foot = () => {
   return (
     <footer className="shell foot">
       <div>{footer.madeIn}</div>
-      <div className="foot-links">
-        <a href="#">{footer.instagram}</a>
-        <a href="#">{footer.contact}</a>
-        <a href="#">{footer.privacy}</a>
-      </div>
     </footer>
   );
 };
