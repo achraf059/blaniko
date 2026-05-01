@@ -30,10 +30,11 @@ export const Nav = ({ favoritesCount = 0 }) => {
           <img src="/brand/blaniko-wordmark.png" alt="Blaniko" />
         </Link>
         <div className="nav-links">
-          <a href="#explore">{dictionary.claudeHome.navExplore}</a>
+          <a href="#hero">{dictionary.claudeHome.navExplore}</a>
           <a href="#categories">{dictionary.claudeHome.navCategories}</a>
-          <a href="#curated">{dictionary.claudeHome.navCurated}</a>
+          <a href="#picks">{dictionary.claudeHome.navCurated}</a>
           <a href="#map">{dictionary.claudeHome.navMap}</a>
+          <a href="#join">{dictionary.claudeHome.navContact}</a>
         </div>
         <div className="nav-right">
           <button

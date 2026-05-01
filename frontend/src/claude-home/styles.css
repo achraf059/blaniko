@@ -504,6 +504,8 @@ a { color: inherit; text-decoration: none; }
 
 /* =========================================================
     COMPARE — hover checkbox + docked tray
+    Desktop-only feature for V0. The .cmp-check relies on hover state;
+    it is not discoverable on touch/mobile. Defer full mobile compare to V1.
     ========================================================= */
 .cmp-check {
   position: absolute;
@@ -580,64 +582,6 @@ a { color: inherit; text-decoration: none; }
   transition: transform 200ms var(--ease);
 }
 .compare-tray button.go:hover { transform: scale(1.02); }
-
-/* =========================================================
-   MOODS band (under hero/continuation)
-   ========================================================= */
-.moods {
-  padding: 40px 0 60px;
-}
-.moods-head {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 18px;
-  display: flex; align-items: center; gap: 10px;
-}
-.moods-head::before { content: ""; width: 18px; height: 1px; background: var(--plum); }
-.mood-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-.mood {
-  display: flex; align-items: center; gap: 14px;
-  padding: 18px 20px;
-  border-radius: 14px;
-  background: var(--surface);
-  border: 1px solid var(--line-soft);
-  cursor: pointer;
-  transition: all 250ms var(--ease);
-  text-align: left;
-}
-.mood:hover { border-color: var(--heather); transform: translateY(-2px); box-shadow: 0 14px 30px -20px rgba(61,41,102,0.22); }
-.mood .ico {
-  width: 34px; height: 34px;
-  border-radius: 10px;
-  background: var(--mist);
-  color: var(--plum);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all 250ms var(--ease);
-}
-.mood:hover .ico { background: var(--plum); color: var(--bg); }
-.mood .mood-title {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-}
-.mood .mood-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-top: 2px;
-}
 
 /* =========================================================
    MAP preview band
@@ -1168,9 +1112,6 @@ a { color: inherit; text-decoration: none; }
 .cat:nth-child(6).reveal { --rev-delay: 60ms; }
 .cat:nth-child(7).reveal { --rev-delay: 120ms; }
 .cat:nth-child(8).reveal { --rev-delay: 180ms; }
-.mood:nth-child(2).reveal { --rev-delay: 60ms; }
-.mood:nth-child(3).reveal { --rev-delay: 120ms; }
-.mood:nth-child(4).reveal { --rev-delay: 180ms; }
 
 /* =========================================================
    TWEAKS panel
@@ -1237,7 +1178,6 @@ a { color: inherit; text-decoration: none; }
   .slot { aspect-ratio: 3/4; }
   .slot-copy { grid-column: span 2; }
   .nav-links { display: none; }
-  .mood-grid { grid-template-columns: 1fr 1fr; }
   .map-card { grid-template-columns: 1fr; }
   .map-card .left { padding: 32px; }
   .map-card .right { min-height: 260px; }
@@ -1292,15 +1232,11 @@ a { color: inherit; text-decoration: none; }
   .wordmark img { height: 28px; }
 
   /* Sections — tighter vertical padding on phones */
-  .moods { padding: 28px 0 40px; }
   .categories { padding: 56px 0 36px; }
   .curated { padding: 56px 0 36px; }
   .how { padding: 48px 0; }
   .section-head { margin-bottom: 24px; gap: 12px; }
   .section-head h2 { font-size: clamp(22px, 7.5vw, 34px); }
-
-  /* Mood grid — 1 column on phones (was 2 at 900px) */
-  .mood-grid { grid-template-columns: 1fr; }
 
   /* Category grid — 1 column on phones (was 2 at 900px) */
   .cat-grid { grid-template-columns: 1fr; }

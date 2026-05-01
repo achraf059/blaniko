@@ -1,3 +1,5 @@
+// TODO: V1 — Continuation collage section (4-slot editorial grid). Not rendered on homepage.
+// Placeholder slots need real image data before this can be shown. Hold for V1.
 import React from "react";
 import { Link } from "react-router";
 import { Icon } from "./Icon.jsx";
