@@ -175,8 +175,8 @@ a { color: inherit; text-decoration: none; }
 .float-card {
   animation: cardIn 900ms var(--ease) both;
 }
-.fc-1 { animation-delay: 380ms; }
-.fc-2 { animation-delay: 520ms; }
+.fc-1 { animation-delay: 520ms; }
+.fc-2 { animation-delay: 380ms; }
 .fc-3 { animation-delay: 460ms; }
 .fc-4 { animation-delay: 600ms; }
 @keyframes cardIn {
@@ -283,7 +283,7 @@ a { color: inherit; text-decoration: none; }
 .float-card .img.p1 {
   background-image:
     linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
-    url("/homepage/hero/hero-night-out-maarif.png");
+    url("/homepage/hero/hero-night-out-maarif.webp");
   background-size: cover;
   background-position: center;
   background-color: #8f72b5;
@@ -291,7 +291,7 @@ a { color: inherit; text-decoration: none; }
 .float-card .img.p2 {
   background-image:
     linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
-    url("/homepage/hero/hero-padel-ocean-drive.png");
+    url("/homepage/hero/hero-padel-ocean-drive.webp");
   background-size: cover;
   background-position: center;
   background-color: #8f72b5;
@@ -299,7 +299,7 @@ a { color: inherit; text-decoration: none; }
 .float-card .img.p3 {
   background-image:
     linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
-    url("/homepage/hero/hero-rooftop-sundowner.png");
+    url("/homepage/hero/hero-rooftop-sundowner.webp");
   background-size: cover;
   background-position: center;
   background-color: #8f72b5;
@@ -307,7 +307,7 @@ a { color: inherit; text-decoration: none; }
 .float-card .img.p4 {
   background-image:
     linear-gradient(180deg, rgba(40, 24, 55, 0.08) 0%, rgba(40, 24, 55, 0.58) 100%),
-    url("/homepage/hero/hero-old-medina-food-walk.png");
+    url("/homepage/hero/hero-old-medina-food-walk.webp");
   background-size: cover;
   background-position: center;
   background-color: #8f72b5;
@@ -354,8 +354,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* Card positions (hero) — desktop first */
-.fc-1 { top: 18%; right: 2%; width: 220px; height: 280px; }
-.fc-2 { top: 54%; right: 22%; width: 180px; height: 220px; }
+.fc-1 { top: 54%; right: 22%; width: 180px; height: 220px; }
+.fc-2 { top: 18%; right: 2%;  width: 220px; height: 280px; }
 .fc-3 { top: 10%; right: 28%; width: 160px; height: 200px; }
 .fc-4 { top: 62%; right: 1%; width: 150px; height: 180px; }
 
