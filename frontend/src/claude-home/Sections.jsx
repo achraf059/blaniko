@@ -28,9 +28,14 @@ export const Categories = () => {
             className="cat"
             onClick={() => navigate(`/categories/${c.slug}`)}
           >
-            <div className="ico"><Icon name={c.ico} size={20} /></div>
+            {c.img && (
+              <div
+                className="cat-bg"
+                style={{ backgroundImage: `url(${c.img})` }}
+              />
+            )}
             <div className="arrow"><Icon name="arrowUpRight" size={16} /></div>
-            <div>
+            <div className="cat-text">
               <div className="name">{c.name}</div>
               <div className="count">{c.count}</div>
             </div>

@@ -340,7 +340,7 @@ const en: Dictionary = {
     categoriesTitlePrefix: "Every mood",
     categoriesTitleEmphasis: "has a category",
     categoriesRight:
-      "Nine ways into the city. Pick an entry point — or drift between them.",
+      "Eight ways into the city. Pick an entry point — or drift between them.",
     curatedEyebrow: "Picks",
     curatedTitlePrefix: "The week's",
     curatedTitleEmphasis: "picks",
@@ -630,7 +630,7 @@ const fr: Dictionary = {
     categoriesTitlePrefix: "Chaque ambiance",
     categoriesTitleEmphasis: "a sa catégorie",
     categoriesRight:
-      "Neuf portes d'entrée dans la ville. Choisissez un point de départ — ou passez de l'une à l'autre.",
+      "Huit portes d'entrée dans la ville. Choisissez un point de départ — ou passez de l'une à l'autre.",
     curatedEyebrow: "Sélection",
     curatedTitlePrefix: "Les",
     curatedTitleEmphasis: "choix de la semaine",
