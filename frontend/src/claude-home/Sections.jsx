@@ -61,7 +61,10 @@ export const Curated = ({ favorites, toggleFav }) => {
         className={`cur-card ${wide ? "wide" : ""}`}
         onClick={() => navigate(`/venues/${id}`)}
       >
-        <div className={`cur-img ${a.img}`}></div>
+        <div
+          className={`cur-img ${a.img}`}
+          style={a.imgPath ? { backgroundImage: `url(${a.imgPath})` } : undefined}
+        ></div>
         <button
           className={`fav-btn ${isFav ? "active pulse" : ""}`}
           onClick={(e) => { e.stopPropagation(); toggleFav(id); }}
