@@ -31,12 +31,11 @@ const localizedHomeData = {
       { name: "Culture & Local", count: "Art, craft & local finds", img: "/category-images/culture-local/category-culture-local-01.png", slug: "activities" },
     ],
     curated: [
-      { title: "A slow morning at the corniche", chips: ["Morning", "Outdoor"], price: "Free", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
-      { title: "Pottery with Leïla", chips: ["Workshop"], price: "MAD 320", duration: "3h", img: "c3", venueSlug: "anfa-family-workshop-house" },
-      { title: "Dinner at Moonlight Bistro", chips: ["Dinner"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
-      { title: "Padel session, Ain Diab", chips: ["Sport"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
-      { title: "Rooftop supper club", chips: ["Dining", "Curated"], price: "MAD 480", duration: "3h", img: "c5", venueSlug: "skyline-rooftop-cafe" },
-      { title: "Street food in the Old Medina", chips: ["Culture", "Food"], price: "MAD 180", duration: "2h", img: "c6", venueSlug: "old-medina-food-walk" },
+      { title: "A slow morning at the corniche", chips: ["Morning", "Outdoor"], price: "Free", duration: "2h", img: "pi1", imgPath: "/picks-images/slow-morning-corniche/pick-slow-morning-corniche-01.png", venueSlug: "marina-sunset-walk" },
+      { title: "Escape Room Challenge", chips: ["Group", "Game"], price: "MAD 220", duration: "1.5h", img: "pi2", imgPath: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.png", venueSlug: "anfa-family-workshop-house" },
+      { title: "Modern Moroccan Dinner", chips: ["Dinner"], price: "MAD 350", duration: "2h", img: "pi3", imgPath: "/picks-images/modern-moroccan-dinner/pick-modern-moroccan-dinner-01.png", venueSlug: "moonlight-bistro" },
+      { title: "Pool Night", chips: ["Game"], price: "MAD 80", duration: "2h", img: "pi4", imgPath: "/picks-images/pool-night/pick-pool-night-01.png", venueSlug: "ocean-drive-padel-club" },
+      { title: "Bumper Cars Night", chips: ["Family", "Fun"], price: "MAD 120", duration: "1.5h", img: "pi5", imgPath: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.png", venueSlug: "skyline-rooftop-cafe" },
     ],
     howSteps: [
       {
@@ -99,12 +98,11 @@ const localizedHomeData = {
       { name: "Culture & Local", count: "Art, artisanat et trouvailles locales", img: "/category-images/culture-local/category-culture-local-01.png", slug: "activities" },
     ],
     curated: [
-      { title: "Une matinée douce à la corniche", chips: ["Matin", "Plein air"], price: "Gratuit", duration: "2h", img: "c1", venueSlug: "marina-sunset-walk" },
-      { title: "Poterie avec Leïla", chips: ["Atelier"], price: "MAD 320", duration: "3h", img: "c3", venueSlug: "anfa-family-workshop-house" },
-      { title: "Dîner au Moonlight Bistro", chips: ["Dîner"], price: "MAD 150", duration: "2h", img: "c4", venueSlug: "moonlight-bistro" },
-      { title: "Session padel, Ain Diab", chips: ["Sport"], price: "MAD 280", duration: "4h", img: "c2", venueSlug: "ocean-drive-padel-club" },
-      { title: "Dîner rooftop en petit comité", chips: ["Dîner", "Sélection"], price: "MAD 480", duration: "3h", img: "c5", venueSlug: "skyline-rooftop-cafe" },
-      { title: "Street food dans l'Ancienne Médina", chips: ["Culture", "Food"], price: "MAD 180", duration: "2h", img: "c6", venueSlug: "old-medina-food-walk" },
+      { title: "Une matinée douce à la corniche", chips: ["Matin", "Plein air"], price: "Gratuit", duration: "2h", img: "pi1", imgPath: "/picks-images/slow-morning-corniche/pick-slow-morning-corniche-01.png", venueSlug: "marina-sunset-walk" },
+      { title: "Escape Room Challenge", chips: ["Groupe", "Jeu"], price: "MAD 220", duration: "1h30", img: "pi2", imgPath: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.png", venueSlug: "anfa-family-workshop-house" },
+      { title: "Dîner marocain moderne", chips: ["Dîner"], price: "MAD 350", duration: "2h", img: "pi3", imgPath: "/picks-images/modern-moroccan-dinner/pick-modern-moroccan-dinner-01.png", venueSlug: "moonlight-bistro" },
+      { title: "Soirée billard", chips: ["Jeu"], price: "MAD 80", duration: "2h", img: "pi4", imgPath: "/picks-images/pool-night/pick-pool-night-01.png", venueSlug: "ocean-drive-padel-club" },
+      { title: "Soirée autos tamponneuses", chips: ["Famille", "Fun"], price: "MAD 120", duration: "1h30", img: "pi5", imgPath: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.png", venueSlug: "skyline-rooftop-cafe" },
     ],
     howSteps: [
       {

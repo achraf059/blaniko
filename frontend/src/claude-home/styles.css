@@ -986,7 +986,7 @@ a { color: inherit; text-decoration: none; }
   gap: 16px;
   margin-bottom: 16px;
 }
-.curated-grid.row-2 { grid-template-columns: 1fr 1fr 1.4fr; }
+.curated-grid.row-2 { grid-template-columns: 1fr 1fr; }
 .cur-card {
   position: relative;
   border-radius: 18px;
@@ -1004,13 +1004,15 @@ a { color: inherit; text-decoration: none; }
 .cur-card.wide { aspect-ratio: 3/2.6; }
 .cur-card .cur-img {
   position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
   transition: transform 700ms var(--ease);
 }
 .cur-card:hover .cur-img { transform: scale(1.04); }
 .cur-card .cur-img::after {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(31, 21, 48, 0.7) 100%);
+  background: linear-gradient(180deg, rgba(31, 21, 48, 0.18) 0%, transparent 35%, rgba(31, 21, 48, 0.72) 100%);
 }
 .cur-card .cur-body {
   position: absolute;
@@ -1054,12 +1056,12 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.04em;
 }
 
-.cur-img.c1 { background: linear-gradient(155deg, #9A7FBF, #3D2966); }
-.cur-img.c2 { background: linear-gradient(155deg, #C9B8E8, #6B4E8A); }
-.cur-img.c3 { background: linear-gradient(155deg, #E8DFF5, #B8A4D6); }
-.cur-img.c4 { background: linear-gradient(155deg, #B8A4D6, #3D2966); }
-.cur-img.c5 { background: linear-gradient(155deg, #D9B382, #6B4E8A); }
-.cur-img.c6 { background: linear-gradient(155deg, #8F72B5, #1F1530); }
+/* Picks image classes — background-image set via inline style in Sections.jsx */
+.cur-img.pi1,
+.cur-img.pi2,
+.cur-img.pi3,
+.cur-img.pi4,
+.cur-img.pi5 { background-color: #1F1530; }
 
 /* =========================================================
    HOW IT WORKS
