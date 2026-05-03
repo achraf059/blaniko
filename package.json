@@ -5,7 +5,9 @@
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
     "lint": "npm --prefix frontend run lint",
-    "preview": "npm --prefix frontend run preview"
+    "preview": "npm --prefix frontend run preview",
+    "dev:backend": "npm --prefix backend run dev",
+    "build:backend": "npm --prefix backend run build"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4"
