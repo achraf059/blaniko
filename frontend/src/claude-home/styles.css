@@ -120,6 +120,79 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-cta:hover { background: var(--plum-deep); transform: translateY(-1px); }
 
+/* ── Nav on hero (not scrolled) — glass / ivory treatment ─────────────────
+ * Scoped to .nav:not(.scrolled) so the frosted scroll state is untouched.
+ */
+.nav:not(.scrolled) .nav-links {
+  color: rgba(245, 240, 232, 0.9);
+}
+.nav:not(.scrolled) .nav-links a {
+  color: rgba(245, 240, 232, 0.9);
+  text-shadow: 0 1px 6px rgba(31, 21, 48, 0.55);
+}
+.nav:not(.scrolled) .nav-links a:hover {
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(31, 21, 48, 0.7);
+}
+
+/* Wordmark: make dark logo legible on photo */
+.nav:not(.scrolled) .wordmark img {
+  filter: brightness(0) invert(1) drop-shadow(0 1px 6px rgba(31, 21, 48, 0.5));
+}
+
+/* Language switcher */
+.nav:not(.scrolled) .lang-switch {
+  color: rgba(245, 240, 232, 0.82);
+}
+.nav:not(.scrolled) .lang-switch button {
+  color: rgba(245, 240, 232, 0.82);
+  text-shadow: 0 1px 4px rgba(31, 21, 48, 0.5);
+}
+.nav:not(.scrolled) .lang-switch button.active {
+  background: rgba(245, 240, 232, 0.18);
+  color: rgba(245, 240, 232, 0.98);
+  border: 1px solid rgba(245, 240, 232, 0.32);
+  text-shadow: none;
+}
+.nav:not(.scrolled) .lang-switch button:not(.active):hover {
+  color: #fff;
+  background: rgba(245, 240, 232, 0.1);
+}
+.nav:not(.scrolled) .lang-switch button.is-disabled,
+.nav:not(.scrolled) .lang-switch button:disabled {
+  color: rgba(245, 240, 232, 0.48);
+  text-shadow: 0 1px 3px rgba(31, 21, 48, 0.4);
+  opacity: 1; /* override the base 0.48 opacity — color handles the fade instead */
+}
+
+/* Saved pill — glass on hero */
+.nav:not(.scrolled) .saved-pill {
+  background: rgba(245, 240, 232, 0.1);
+  border-color: rgba(245, 240, 232, 0.28);
+  color: rgba(245, 240, 232, 0.9);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.nav:not(.scrolled) .saved-pill:hover {
+  background: rgba(245, 240, 232, 0.18);
+  border-color: rgba(245, 240, 232, 0.48);
+}
+
+/* Join the list — frosted glass, no heavy solid pill on the image */
+.nav:not(.scrolled) .nav-cta {
+  background: rgba(245, 240, 232, 0.12);
+  color: rgba(245, 240, 232, 0.96);
+  border: 1px solid rgba(245, 240, 232, 0.32);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-shadow: 0 1px 4px rgba(31, 21, 48, 0.35);
+}
+.nav:not(.scrolled) .nav-cta:hover {
+  background: rgba(245, 240, 232, 0.22);
+  border-color: rgba(245, 240, 232, 0.5);
+  transform: translateY(-1px);
+}
+
 /* =========================================================
    HERO
    ========================================================= */
@@ -183,9 +256,11 @@ a { color: inherit; text-decoration: none; }
     ),
     linear-gradient(
       180deg,
-      rgba(45, 29, 60, 0.08) 0%,
-      rgba(45, 29, 60, 0) 45%,
-      rgba(45, 29, 60, 0.12) 100%
+      rgba(31, 21, 48, 0.34) 0%,
+      rgba(31, 21, 48, 0.14) 12%,
+      rgba(31, 21, 48, 0) 38%,
+      rgba(31, 21, 48, 0) 75%,
+      rgba(31, 21, 48, 0.12) 100%
     );
 }
 
