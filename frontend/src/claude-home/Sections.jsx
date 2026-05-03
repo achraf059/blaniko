@@ -135,26 +135,38 @@ export const How = () => {
 };
 
 export const FooterCTA = () => {
-  const { dictionary } = useI18n();
+  const { language, dictionary } = useI18n();
   const [email, setEmail] = React.useState("");
-  const [status, setStatus] = React.useState("idle"); // idle | submitting | success | error
+  // idle | submitting | success | duplicate | invalid_email | error
+  const [status, setStatus] = React.useState("idle");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed || !/\S+@\S+\.\S+/.test(trimmed)) {
-      setStatus("error");
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setStatus("invalid_email");
       return;
     }
     setStatus("submitting");
     try {
-      const res = await fetch("/", {
+      const apiUrl = import.meta.env.VITE_API_URL || "";
+      const res = await fetch(`${apiUrl}/api/waitlist`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ "form-name": "waitlist", email: trimmed }).toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: trimmed,
+          source: "homepage_footer",
+          language: language || "en",
+          page: window.location.pathname || "/",
+        }),
       });
-      if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      if (data.success) {
         setStatus("success");
+      } else if (data.error === "already_subscribed") {
+        setStatus("duplicate");
+      } else if (data.error === "invalid_email") {
+        setStatus("invalid_email");
       } else {
         setStatus("error");
       }
@@ -163,42 +175,43 @@ export const FooterCTA = () => {
     }
   };
 
+  const ch = dictionary.claudeHome;
+  const inlineError =
+    status === "invalid_email" ? ch.waitlistInvalidEmail :
+    status === "duplicate" ? ch.waitlistDuplicate :
+    status === "error" ? ch.waitlistError :
+    null;
+
   return (
     <section className="shell" id="join">
       <div className="footer-cta">
         <div className="footer-cta-inner">
-          <h3>{dictionary.claudeHome.footerCtaTitlePrefix} <em>{dictionary.claudeHome.footerCtaTitleEmphasis}</em>.</h3>
+          <h3>{ch.footerCtaTitlePrefix} <em>{ch.footerCtaTitleEmphasis}</em>.</h3>
           <div>
             {status === "success" ? (
-              <div className="small-note">{dictionary.claudeHome.waitlistSuccess}</div>
+              <div className="small-note">{ch.waitlistSuccess}</div>
             ) : (
-              <form
-                name="waitlist"
-                data-netlify="true"
-                onSubmit={handleSubmit}
-                noValidate
-              >
-                <input type="hidden" name="form-name" value="waitlist" />
+              <form onSubmit={handleSubmit} noValidate>
                 <div className="email">
                   <input
                     type="email"
                     name="email"
-                    placeholder={dictionary.claudeHome.footerEmailPlaceholder}
+                    aria-label={ch.footerEmailPlaceholder}
+                    placeholder={ch.footerEmailPlaceholder}
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
                     disabled={status === "submitting"}
                   />
                   <button type="submit" disabled={status === "submitting"}>
-                    {dictionary.claudeHome.joinList}
+                    {status === "submitting" ? ch.waitlistJoining : ch.joinList}
                   </button>
                 </div>
-                {status === "error" && (
+                {inlineError ? (
                   <div className="small-note" style={{ marginTop: 10 }}>
-                    {dictionary.claudeHome.waitlistError}
+                    {inlineError}
                   </div>
-                )}
-                {status !== "error" && (
-                  <div className="small-note">{dictionary.claudeHome.footerSmallNote}</div>
+                ) : (
+                  <div className="small-note">{ch.footerSmallNote}</div>
                 )}
               </form>
             )}

@@ -112,6 +112,9 @@ export type Dictionary = {
     compareGo: string;
     waitlistSuccess: string;
     waitlistError: string;
+    waitlistJoining: string;
+    waitlistDuplicate: string;
+    waitlistInvalidEmail: string;
   };
   categoryNames: Record<string, string>;
   categoryDescriptions: Record<string, string>;
@@ -373,8 +376,11 @@ const en: Dictionary = {
     compareSelected: "{count} activities selected",
     compareClear: "Clear",
     compareGo: "Compare",
-    waitlistSuccess: "You're on the list. Expect your first Casablanca plans this Friday.",
-    waitlistError: "Could not join yet. Please try again.",
+    waitlistSuccess: "You're on the list. We'll send you curated Casablanca plans soon.",
+    waitlistError: "We could not save this yet. Please try again in a moment.",
+    waitlistJoining: "Joining...",
+    waitlistDuplicate: "You're already on the list.",
+    waitlistInvalidEmail: "Enter a valid email address.",
   },
   categoryNames: {
     cafes: "Cafes & Hangouts",
@@ -663,8 +669,11 @@ const fr: Dictionary = {
     compareSelected: "{count} activités sélectionnées",
     compareClear: "Effacer",
     compareGo: "Comparer",
-    waitlistSuccess: "Vous êtes sur la liste. Votre premier plan Casablanca arrive vendredi.",
-    waitlistError: "Impossible de s'inscrire pour l'instant. Réessayez.",
+    waitlistSuccess: "Vous êtes sur la liste. Nous vous enverrons bientôt des plans Casablanca.",
+    waitlistError: "Impossible d'enregistrer pour l'instant. Réessayez dans un moment.",
+    waitlistJoining: "Inscription...",
+    waitlistDuplicate: "Vous êtes déjà sur la liste.",
+    waitlistInvalidEmail: "Entrez une adresse e-mail valide.",
   },
   categoryNames: {
     cafes: "Cafés & Hangouts",
