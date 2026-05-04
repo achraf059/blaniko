@@ -186,10 +186,16 @@ export const FooterCTA = () => {
     <section className="shell" id="join">
       <div className="footer-cta">
         <div className="footer-cta-inner">
-          <h3>{ch.footerCtaTitlePrefix} <em>{ch.footerCtaTitleEmphasis}</em>.</h3>
-          <div>
+          <div className="footer-cta-copy">
+            <h3>{ch.footerCtaTitlePrefix} <em>{ch.footerCtaTitleEmphasis}</em>.</h3>
+            <p className="footer-cta-subtitle">{ch.footerCtaSubtitle}</p>
+          </div>
+          <div className="footer-cta-form">
             {status === "success" ? (
-              <div className="small-note">{ch.waitlistSuccess}</div>
+              <div className="footer-success">
+                <div className="footer-success-icon">✓</div>
+                <p className="footer-success-msg">{ch.waitlistSuccess}</p>
+              </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate>
                 <div className="email">
@@ -207,7 +213,7 @@ export const FooterCTA = () => {
                   </button>
                 </div>
                 {inlineError ? (
-                  <div className="small-note" style={{ marginTop: 10 }}>
+                  <div className="small-note error" role="alert">
                     {inlineError}
                   </div>
                 ) : (
