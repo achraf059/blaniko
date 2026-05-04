@@ -33,7 +33,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
           <a href="#hero">{dictionary.claudeHome.navExplore}</a>
           <a href="#categories">{dictionary.claudeHome.navCategories}</a>
           <a href="#picks">{dictionary.claudeHome.navCurated}</a>
-          <a href="#map">{dictionary.claudeHome.navMap}</a>
+          {/* Map link hidden until venue coordinates are verified for v0 */}
           <a href="#join">{dictionary.claudeHome.navContact}</a>
         </div>
         <div className="nav-right">
