@@ -47,3 +47,16 @@ next-env.d.ts
 
 # Allow safe backend environment template
 !backend/.env.example
+
+# Local venue image source folders
+venue-images/
+venue-images-raw/
+
+# Claude Design exports / temporary design files
+claude-design-export.zip
+claude-design-combined-export.zip
+claude-design-combined-export/
+claude-design-combined-export 2/
+
+# Local backups
+backups/

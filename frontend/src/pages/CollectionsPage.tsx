@@ -203,8 +203,6 @@ export default function CollectionsPage() {
                                 labels={dictionary.venueCard}
                                 isFavorite={isFavorite(venue.slug)}
                                 onToggleFavorite={toggleFavorite}
-                                showCollectionPicker
-                                showCompareToggle
                               />
 
                               <button

@@ -16,16 +16,15 @@ type VenueTranslation = {
 };
 
 export type Venue = {
+  // Core fields — always present
   slug: string;
   name: string;
   category: string;
   categorySlug: string;
   area: string;
-  coordinates?: {
-    lat: number;
-    lng: number;
-  };
   description: string;
+
+  // Discovery / editorial fields — present in mock data, optional for API venues
   shortDescription?: string;
   overview?: string;
   vibe?: string;
@@ -38,7 +37,23 @@ export type Venue = {
   energyLevel?: "low" | "medium" | "high";
   socialLevel?: "low" | "medium" | "high";
   spaceType?: "indoor" | "outdoor" | "mixed";
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
   translations?: Partial<Record<Exclude<AppLanguage, "en">, VenueTranslation>>;
+
+  // Fields sourced from the Supabase venues table (v0 seed data)
+  externalId?: string;
+  subcategory?: string;
+  region?: string;
+  neighborhood?: string;
+  address?: string;
+  googleMapsLink?: string;
+  phone?: string;
+  imageUrl?: string;
+  isActive?: boolean;
+  source?: string;
 };
 
 export function getVenueDisplay(

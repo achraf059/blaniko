@@ -88,8 +88,6 @@ export default function FavoritesPage() {
                     labels={dictionary.venueCard}
                     isFavorite={isFavorite(venue.slug)}
                     onToggleFavorite={toggleFavorite}
-                    showCollectionPicker
-                    showCompareToggle
                   />
                 );
               })}

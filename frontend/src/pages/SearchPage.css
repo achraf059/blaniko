@@ -41,15 +41,8 @@
   color: var(--ink);
 }
 
-.bl-search-subtitle {
-  margin: 0 0 1.75rem;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--ink-soft);
-}
-
 .bl-search-mood-summary {
-  margin: -1rem 0 1.5rem;
+  margin: 0 0 1.5rem;
   font-size: 0.875rem;
   color: var(--ink-soft);
   line-height: 1.5;
@@ -226,7 +219,7 @@
   color: var(--plum-deep);
 }
 
-/* ===== Filter label (used in advanced filters) ===== */
+/* ===== Filter label ===== */
 
 .bl-discovery-label {
   margin: 0 0 0.4rem;
@@ -242,7 +235,7 @@
 
 .bl-search-filter-rail {
   position: sticky;
-  top: 4rem; /* sits below GlobalNav (min-height: 4rem) */
+  top: 4rem;
   z-index: 15;
   margin: 0 -1.25rem;
   padding: 0.6rem 1.25rem;
@@ -268,7 +261,6 @@
   display: none;
 }
 
-/* Visual separator between chip groups */
 .bl-search-filter-sep {
   display: inline-block;
   width: 1px;
@@ -276,6 +268,52 @@
   background: var(--line);
   flex-shrink: 0;
   border-radius: 1px;
+}
+
+/* "More filters" button */
+.bl-search-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 88%, var(--mist) 12%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 130ms ease,
+    border-color 130ms ease,
+    color 130ms ease;
+}
+
+.bl-search-more-btn:hover,
+.bl-search-more-btn[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--mist) 38%, var(--surface) 62%);
+  border-color: var(--plum);
+  color: var(--plum-deep);
+}
+
+.bl-search-more-btn.has-active {
+  background: color-mix(in srgb, var(--plum) 12%, var(--surface) 88%);
+  border-color: var(--plum);
+  color: var(--plum-deep);
+}
+
+/* Active indicator dot on "More filters" */
+.bl-search-more-dot {
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--plum);
+  flex-shrink: 0;
 }
 
 /* Clear filters button */
@@ -338,76 +376,55 @@
   filter: brightness(1.06);
 }
 
-/* ===== Secondary filters (advanced + active tags) ===== */
+/* ===== Advanced filters panel ===== */
 
-.bl-search-secondary-filters {
-  padding: 0.75rem 0 0;
-}
-
-.bl-search-advanced-filters {
+.bl-search-advanced-panel {
+  margin-top: 0.5rem;
   border: 1px solid var(--line-soft);
   border-radius: 0.875rem;
-  background: color-mix(in srgb, var(--surface) 90%, var(--mist) 10%);
+  background: color-mix(in srgb, var(--surface) 94%, var(--mist) 6%);
   overflow: hidden;
 }
 
-.bl-search-advanced-filters > summary {
+.bl-search-advanced-panel-header {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.65rem 1rem;
-  cursor: pointer;
-  user-select: none;
-  list-style: none;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.bl-search-advanced-panel-title {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--plum-deep);
 }
 
-.bl-search-advanced-filters > summary::-webkit-details-marker {
-  display: none;
+.bl-search-advanced-panel-done {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--plum-deep);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  transition: background 130ms ease;
 }
 
-.bl-search-advanced-filters > summary::after {
-  content: "↓";
-  margin-left: auto;
-  font-size: 0.75rem;
-  transition: transform 200ms var(--ease);
-}
-
-.bl-search-advanced-filters[open] > summary::after {
-  transform: rotate(180deg);
+.bl-search-advanced-panel-done:hover {
+  background: color-mix(in srgb, var(--plum) 10%, var(--surface) 90%);
 }
 
 .bl-search-advanced-filters-grid {
   display: grid;
   gap: 0.875rem;
-  padding: 0.25rem 1rem 1rem;
-}
-
-/* Active filter chips */
-.bl-search-active-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  margin-top: 0.625rem;
-}
-
-.bl-search-active-filters span {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--plum) 10%, var(--surface) 90%);
-  padding: 0.2rem 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--plum-deep);
+  padding: 1rem;
 }
 
 /* ===== Results ===== */
@@ -417,18 +434,17 @@
 }
 
 .bl-search-results-count {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--ink-soft);
 }
 
 .bl-search-venues-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 /* ===== Empty state ===== */
@@ -469,8 +485,6 @@
   gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
-
-/* Close-ideas suggestion block */
 
 .bl-search-close-ideas {
   margin: 0 auto 1.75rem;
@@ -569,7 +583,10 @@
     padding-left: 2rem;
     padding-right: 2rem;
   }
+}
 
+/* 3-column grid only at wider breakpoint so cards aren't cramped */
+@media (min-width: 1200px) {
   .bl-search-venues-grid {
     grid-template-columns: repeat(3, 1fr);
   }

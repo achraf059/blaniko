@@ -14,7 +14,6 @@ import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
-import { explainVenueMatch } from "../utils/discoveryInsights";
 import "./HomePage.css";
 import "./AreaPage.css";
 
@@ -164,7 +163,6 @@ export default function AreaPage() {
                       socialLevel: venue.socialLevel,
                       spaceType: venue.spaceType,
                     }}
-                    whyChips={explainVenueMatch(venue, { area: area.slug }, 3, language)}
                     href={`/venues/${venue.slug}?from=area&area=${area.slug}`}
                     isFavorite={isFavorite(venue.slug)}
                     onToggleFavorite={toggleFavorite}

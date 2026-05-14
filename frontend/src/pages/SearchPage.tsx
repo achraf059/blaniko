@@ -11,18 +11,15 @@ import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import {
-  explainVenueMatch,
   getDiscoveryMoodLabel,
   isDiscoveryMood,
 } from "../utils/discoveryInsights";
 import {
   filterVenuesBySmartDiscovery,
-  getAreaLabel,
   getAreaOptions,
   getBestForLabelByLanguage,
   getBestForOptions,
   getEnergyOptions,
-  getOptionLabel,
   getSearchFallbackSuggestions,
   getSocialLevelOptions,
   getSpaceTypeOptions,
@@ -36,7 +33,7 @@ export default function SearchPage() {
   const text = getFlowTexts(language);
   const moodLabels = getDiscoveryMoodLabel(language);
   const navigate = useNavigate();
-  const { venues } = useVenues();
+  const { venues, isLoading } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
 
@@ -68,6 +65,7 @@ export default function SearchPage() {
   const [selectedEnergyLevel, setSelectedEnergyLevel] = useState(energyFromUrl);
   const [selectedSpaceType, setSelectedSpaceType] = useState(spaceFromUrl);
   const [selectedSocialLevel, setSelectedSocialLevel] = useState(socialFromUrl);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const moodOptions = useMemo(
     () => [
@@ -114,6 +112,17 @@ export default function SearchPage() {
   const spaceTypeOptions = useMemo(() => getSpaceTypeOptions(language), [language]);
   const socialLevelOptions = useMemo(() => getSocialLevelOptions(language), [language]);
 
+  /* True when any advanced filter (outside category) is active */
+  const hasAdvancedFilters =
+    !!selectedMood ||
+    selectedBudget !== "all" ||
+    !!selectedArea ||
+    !!selectedBestFor ||
+    !!selectedTimeOfDay ||
+    !!selectedEnergyLevel ||
+    !!selectedSpaceType ||
+    !!selectedSocialLevel;
+
   const buildUrl = (overrides?: {
     query?: string;
     category?: string;
@@ -138,45 +147,16 @@ export default function SearchPage() {
     const nextSpaceType = overrides?.spaceType ?? selectedSpaceType;
     const nextSocialLevel = overrides?.socialLevel ?? selectedSocialLevel;
 
-    if (nextQuery.trim()) {
-      params.set("q", nextQuery.trim());
-    }
-
-    if (nextCategory) {
-      params.set("category", nextCategory);
-    }
-
-    if (nextMood) {
-      params.set("mood", nextMood);
-    }
-
-    if (nextBudget && nextBudget !== "all") {
-      params.set("budget", nextBudget);
-    }
-
-    if (nextArea) {
-      params.set("area", nextArea);
-    }
-
-    if (nextBestFor) {
-      params.set("bestFor", nextBestFor);
-    }
-
-    if (nextTimeOfDay) {
-      params.set("time", nextTimeOfDay);
-    }
-
-    if (nextEnergy) {
-      params.set("energy", nextEnergy);
-    }
-
-    if (nextSpaceType) {
-      params.set("space", nextSpaceType);
-    }
-
-    if (nextSocialLevel) {
-      params.set("social", nextSocialLevel);
-    }
+    if (nextQuery.trim()) params.set("q", nextQuery.trim());
+    if (nextCategory) params.set("category", nextCategory);
+    if (nextMood) params.set("mood", nextMood);
+    if (nextBudget && nextBudget !== "all") params.set("budget", nextBudget);
+    if (nextArea) params.set("area", nextArea);
+    if (nextBestFor) params.set("bestFor", nextBestFor);
+    if (nextTimeOfDay) params.set("time", nextTimeOfDay);
+    if (nextEnergy) params.set("energy", nextEnergy);
+    if (nextSpaceType) params.set("space", nextSpaceType);
+    if (nextSocialLevel) params.set("social", nextSocialLevel);
 
     const suffix = params.toString();
     return suffix ? `/search?${suffix}` : "/search";
@@ -184,54 +164,21 @@ export default function SearchPage() {
 
   const buildMapUrl = () => {
     const params = new URLSearchParams();
-
-    if (query.trim()) {
-      params.set("q", query.trim());
-    }
-
-    if (selectedCategory) {
-      params.set("category", selectedCategory);
-    }
-
-    if (selectedMood) {
-      params.set("mood", selectedMood);
-    }
-
-    if (selectedBudget !== "all") {
-      params.set("budget", selectedBudget);
-    }
-
-    if (selectedArea) {
-      params.set("area", selectedArea);
-    }
-
-    if (selectedBestFor) {
-      params.set("bestFor", selectedBestFor);
-    }
-
-    if (selectedTimeOfDay) {
-      params.set("time", selectedTimeOfDay);
-    }
-
-    if (selectedEnergyLevel) {
-      params.set("energy", selectedEnergyLevel);
-    }
-
-    if (selectedSpaceType) {
-      params.set("space", selectedSpaceType);
-    }
-
-    if (selectedSocialLevel) {
-      params.set("social", selectedSocialLevel);
-    }
-
+    if (query.trim()) params.set("q", query.trim());
+    if (selectedCategory) params.set("category", selectedCategory);
+    if (selectedMood) params.set("mood", selectedMood);
+    if (selectedBudget !== "all") params.set("budget", selectedBudget);
+    if (selectedArea) params.set("area", selectedArea);
+    if (selectedBestFor) params.set("bestFor", selectedBestFor);
+    if (selectedTimeOfDay) params.set("time", selectedTimeOfDay);
+    if (selectedEnergyLevel) params.set("energy", selectedEnergyLevel);
+    if (selectedSpaceType) params.set("space", selectedSpaceType);
+    if (selectedSocialLevel) params.set("social", selectedSocialLevel);
     const suffix = params.toString();
     return suffix ? `/map?${suffix}` : "/map";
   };
 
-  const selectedMoodValue = isDiscoveryMood(selectedMood)
-    ? selectedMood
-    : undefined;
+  const selectedMoodValue = isDiscoveryMood(selectedMood) ? selectedMood : undefined;
 
   const filteredVenues = useMemo(
     () =>
@@ -268,46 +215,6 @@ export default function SearchPage() {
   const selectedMoodName = moodOptions.find(
     (mood) => mood.value === selectedMood,
   )?.label;
-  const selectedAreaName = selectedArea
-    ? getAreaLabel(selectedArea, areaOptions)
-    : undefined;
-  const selectedBestForName = selectedBestFor
-    ? getBestForLabelByLanguage(selectedBestFor, language)
-    : undefined;
-  const selectedTimeOfDayName = selectedTimeOfDay
-    ? getOptionLabel(selectedTimeOfDay, timeOfDayOptions)
-    : undefined;
-  const selectedEnergyName = selectedEnergyLevel
-    ? getOptionLabel(selectedEnergyLevel, energyOptions)
-    : undefined;
-  const selectedSpaceName = selectedSpaceType
-    ? getOptionLabel(selectedSpaceType, spaceTypeOptions)
-    : undefined;
-  const selectedSocialName = selectedSocialLevel
-    ? getOptionLabel(selectedSocialLevel, socialLevelOptions)
-    : undefined;
-
-  const activeFilterLabels = [
-    selectedCategoryName
-      ? `${dictionary.searchPage.summaryCategory}: ${dictionary.categoryNames[selectedCategory] ?? selectedCategoryName}`
-      : "",
-    selectedMoodName ? `${text.searchPage.summaryMood}: ${selectedMoodName}` : "",
-    selectedAreaName ? `${text.searchPage.summaryArea}: ${selectedAreaName}` : "",
-    selectedBestForName
-      ? `${text.searchPage.summaryBestFor}: ${selectedBestForName}`
-      : "",
-    selectedTimeOfDayName
-      ? `${text.searchPage.summaryTime}: ${selectedTimeOfDayName}`
-      : "",
-    selectedEnergyName ? `${text.searchPage.summaryEnergy}: ${selectedEnergyName}` : "",
-    selectedSpaceName ? `${text.searchPage.summarySpace}: ${selectedSpaceName}` : "",
-    selectedSocialName
-      ? `${text.searchPage.summarySocialVibe}: ${selectedSocialName}`
-      : "",
-    selectedBudget !== "all"
-      ? `${dictionary.searchPage.summaryBudget}: ${selectedBudget}`
-      : "",
-  ].filter(Boolean);
 
   const title = query.trim()
     ? dictionary.searchPage.titleForQuery.replace("{query}", query.trim())
@@ -320,53 +227,20 @@ export default function SearchPage() {
   const buildVenueHref = (slug: string) => {
     const params = new URLSearchParams();
     params.set("from", "search");
-
-    if (selectedCategory) {
-      params.set("category", selectedCategory);
-    }
-
-    if (selectedMood) {
-      params.set("mood", selectedMood);
-    }
-
-    if (selectedBudget) {
-      params.set("budget", selectedBudget);
-    }
-
-    if (selectedArea) {
-      params.set("area", selectedArea);
-    }
-
-    if (selectedBestFor) {
-      params.set("bestFor", selectedBestFor);
-    }
-
-    if (selectedTimeOfDay) {
-      params.set("time", selectedTimeOfDay);
-    }
-
-    if (selectedEnergyLevel) {
-      params.set("energy", selectedEnergyLevel);
-    }
-
-    if (selectedSpaceType) {
-      params.set("space", selectedSpaceType);
-    }
-
-    if (selectedSocialLevel) {
-      params.set("social", selectedSocialLevel);
-    }
-
-    if (query.trim()) {
-      params.set("q", query.trim());
-    }
-
+    if (selectedCategory) params.set("category", selectedCategory);
+    if (selectedMood) params.set("mood", selectedMood);
+    if (selectedBudget) params.set("budget", selectedBudget);
+    if (selectedArea) params.set("area", selectedArea);
+    if (selectedBestFor) params.set("bestFor", selectedBestFor);
+    if (selectedTimeOfDay) params.set("time", selectedTimeOfDay);
+    if (selectedEnergyLevel) params.set("energy", selectedEnergyLevel);
+    if (selectedSpaceType) params.set("space", selectedSpaceType);
+    if (selectedSocialLevel) params.set("social", selectedSocialLevel);
+    if (query.trim()) params.set("q", query.trim());
     return `/venues/${slug}?${params.toString()}`;
   };
 
-  const handleSearchSubmit = () => {
-    navigate(buildUrl());
-  };
+  const handleSearchSubmit = () => { navigate(buildUrl()); };
 
   const handleCategorySelect = (slug: string) => {
     const nextCategory = selectedCategory === slug ? "" : slug;
@@ -441,7 +315,6 @@ export default function SearchPage() {
     const nextArea = s.area ?? "";
     const nextBestFor = s.bestFor ?? "";
 
-    // Reset all local state so filteredVenues recomputes from the suggestion only
     setQuery(nextQuery);
     setSelectedCategory(nextCategory);
     setSelectedMood("");
@@ -476,6 +349,11 @@ export default function SearchPage() {
     navigate("/search");
   };
 
+  /* Editorial results count line */
+  const resultsCountLine = selectedCategory
+    ? `${dictionary.categoryNames[selectedCategory] ?? selectedCategoryName} · ${filteredVenues.length} ${dictionary.searchPage.resultsLabel}`
+    : `${filteredVenues.length} ${dictionary.searchPage.resultsLabel} in Casablanca`;
+
   return (
     <div className="bl-search-page">
       <HomeHeader labels={dictionary.header} />
@@ -485,7 +363,6 @@ export default function SearchPage() {
         <section className="bl-search-hero">
           <p className="bl-search-eyebrow">{dictionary.searchPage.eyebrow}</p>
           <h1 className="bl-search-title">{title}</h1>
-          <p className="bl-search-subtitle">{dictionary.searchPage.subtitle}</p>
 
           {selectedMoodValue ? (
             <p className="bl-search-mood-summary">
@@ -506,7 +383,7 @@ export default function SearchPage() {
           </div>
         </section>
 
-        {/* Sticky frosted-glass primary filter rail */}
+        {/* Sticky primary filter rail — categories only */}
         <div className="bl-search-filter-rail">
           <div className="bl-search-filter-rail-scroll">
             <FilterChips
@@ -517,21 +394,15 @@ export default function SearchPage() {
 
             <span className="bl-search-filter-sep" aria-hidden="true" />
 
-            <FilterChips
-              options={moodOptions}
-              selectedValue={selectedMood || undefined}
-              onSelect={handleMoodSelect}
-            />
-
-            <span className="bl-search-filter-sep" aria-hidden="true" />
-
-            <BudgetSelector
-              options={budgetOptions}
-              selectedValue={selectedBudget}
-              onSelect={handleBudgetSelect}
-            />
-
-            <span className="bl-search-filter-sep" aria-hidden="true" />
+            <button
+              type="button"
+              className={`bl-search-more-btn${hasAdvancedFilters ? " has-active" : ""}`}
+              onClick={() => setShowAdvanced((v) => !v)}
+              aria-expanded={showAdvanced}
+            >
+              {text.common.moreFilters}
+              {hasAdvancedFilters ? <span className="bl-search-more-dot" aria-hidden="true" /> : null}
+            </button>
 
             <button
               type="button"
@@ -551,12 +422,39 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {/* Secondary: advanced filters + active filter tags */}
-        <div className="bl-search-secondary-filters">
-          <details className="bl-search-advanced-filters">
-            <summary>{text.common.moreFilters}</summary>
+        {/* Advanced filters panel — toggled by "More filters" */}
+        {showAdvanced ? (
+          <div className="bl-search-advanced-panel">
+            <div className="bl-search-advanced-panel-header">
+              <p className="bl-search-advanced-panel-title">{text.common.moreFilters}</p>
+              <button
+                type="button"
+                className="bl-search-advanced-panel-done"
+                onClick={() => setShowAdvanced(false)}
+              >
+                Done
+              </button>
+            </div>
 
             <div className="bl-search-advanced-filters-grid">
+              <div>
+                <p className="bl-discovery-label">Mood</p>
+                <FilterChips
+                  options={moodOptions}
+                  selectedValue={selectedMood || undefined}
+                  onSelect={handleMoodSelect}
+                />
+              </div>
+
+              <div>
+                <p className="bl-discovery-label">Budget</p>
+                <BudgetSelector
+                  options={budgetOptions}
+                  selectedValue={selectedBudget}
+                  onSelect={handleBudgetSelect}
+                />
+              </div>
+
               {areaOptions.length > 0 ? (
                 <div>
                   <p className="bl-discovery-label">{text.common.area}</p>
@@ -615,23 +513,19 @@ export default function SearchPage() {
                 />
               </div>
             </div>
-          </details>
-
-          {activeFilterLabels.length > 0 ? (
-            <div className="bl-search-active-filters">
-              {activeFilterLabels.map((label) => (
-                <span key={label}>{label}</span>
-              ))}
-            </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
 
         {/* Results */}
-        {filteredVenues.length > 0 ? (
+        {isLoading ? (
           <section className="bl-search-results">
-            <p className="bl-search-results-count">
-              {filteredVenues.length} {dictionary.searchPage.resultsLabel}
+            <p className="bl-search-results-count" style={{ opacity: 0.5 }}>
+              Finding places…
             </p>
+          </section>
+        ) : filteredVenues.length > 0 ? (
+          <section className="bl-search-results">
+            <p className="bl-search-results-count">{resultsCountLine}</p>
             <div className="bl-search-venues-grid">
               {filteredVenues.map((venue) => {
                 const vd = getVenueDisplay(venue, language);
@@ -643,6 +537,7 @@ export default function SearchPage() {
                     name={venue.name}
                     area={venue.area}
                     description={vd.description}
+                    imageUrl={venue.imageUrl}
                     personality={{
                       bestForTags: venue.bestForTags,
                       timeOfDay: venue.timeOfDay,
@@ -650,17 +545,9 @@ export default function SearchPage() {
                       socialLevel: venue.socialLevel,
                       spaceType: venue.spaceType,
                     }}
-                    whyChips={explainVenueMatch(venue, {
-                      query,
-                      category: selectedCategory || undefined,
-                      budget: selectedBudget,
-                      mood: selectedMoodValue,
-                    }, 3, language)}
                     href={buildVenueHref(venue.slug)}
                     isFavorite={isFavorite(venue.slug)}
                     onToggleFavorite={toggleFavorite}
-                    showCollectionPicker
-                    showCompareToggle
                     language={language}
                     labels={dictionary.venueCard}
                   />
@@ -671,10 +558,10 @@ export default function SearchPage() {
         ) : (
           <section className="bl-search-empty">
             <h2 className="bl-search-empty-title">
-              {dictionary.searchPage.emptyTitle}
+              Nothing quite fits.
             </h2>
             <p className="bl-search-empty-description">
-              {text.searchPage.noMatchDescription}
+              Try a broader search, or explore by category.
             </p>
 
             {closeSuggestions.length > 0 ? (

@@ -20,9 +20,7 @@ import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
 import {
-  explainVenueMatch,
   getDiscoveryMoodLabel,
-  isDiscoveryCompanion,
   isDiscoveryMood,
 } from "../utils/discoveryInsights";
 import "./HomePage.css";
@@ -251,9 +249,6 @@ export default function RecommendationsPage() {
   const topMatches = scoredResults.slice(0, 3);
   const alternatives = scoredResults.slice(3, 8);
   const selectedMood = isDiscoveryMood(answers.vibe) ? answers.vibe : undefined;
-  const selectedCompanion = isDiscoveryCompanion(answers.companion)
-    ? answers.companion
-    : undefined;
 
   const summary = [
     getLabel("companion", answers.companion),
@@ -513,21 +508,12 @@ export default function RecommendationsPage() {
                         socialLevel: venue.socialLevel,
                         spaceType: venue.spaceType,
                       }}
-                      whyChips={explainVenueMatch(venue, {
-                        category: answers.category || undefined,
-                        budget: answers.budget,
-                        area: answers.area || undefined,
-                        mood: selectedMood,
-                        companion: selectedCompanion,
-                      }, 3, language)}
                       href={buildVenueHref(venue.slug)}
                       language={language}
                       labels={dictionary.venueCard}
                       isFeatured
                       isFavorite={isFavorite(venue.slug)}
                       onToggleFavorite={toggleFavorite}
-                      showCollectionPicker
-                      showCompareToggle
                     />
                   );
                 })}
@@ -557,20 +543,11 @@ export default function RecommendationsPage() {
                           socialLevel: venue.socialLevel,
                           spaceType: venue.spaceType,
                         }}
-                        whyChips={explainVenueMatch(venue, {
-                          category: answers.category || undefined,
-                          budget: answers.budget,
-                          area: answers.area || undefined,
-                          mood: selectedMood,
-                          companion: selectedCompanion,
-                        }, 3, language)}
                         href={buildVenueHref(venue.slug)}
                         language={language}
                         labels={dictionary.venueCard}
                         isFavorite={isFavorite(venue.slug)}
                         onToggleFavorite={toggleFavorite}
-                        showCollectionPicker
-                        showCompareToggle
                       />
                     );
                   })}
