@@ -1,13 +1,8 @@
 import { Link } from "react-router";
-import { CollectionPicker } from "../collections/CollectionPicker";
-import { CompareToggle } from "../compare/CompareToggle";
 import { VenueImage } from "./VenueImage";
 import { type Venue } from "../../data/mockData";
 import type { AppLanguage } from "../../i18n/types";
-import {
-  getBestForBadges,
-  getVenuePersonalitySignals,
-} from "../../utils/venuePersonality";
+import { getBestForBadges } from "../../utils/venuePersonality";
 import "./VenueCard.css";
 
 type VenueCardProps = {
@@ -16,17 +11,15 @@ type VenueCardProps = {
   name: string;
   area: string;
   description: string;
+  imageUrl?: string;
   personality?: Pick<
     Venue,
     "bestForTags" | "timeOfDay" | "energyLevel" | "socialLevel" | "spaceType"
   >;
-  whyChips?: string[];
   href?: string;
   isFeatured?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: (slug: string) => void;
-  showCollectionPicker?: boolean;
-  showCompareToggle?: boolean;
   language?: AppLanguage;
   labels?: {
     featured: string;
@@ -61,34 +54,24 @@ export function VenueCard({
   name,
   area,
   description,
+  imageUrl,
   personality,
-  whyChips,
   href = "#",
-  isFeatured = false,
   isFavorite = false,
   onToggleFavorite,
-  showCollectionPicker = false,
-  showCompareToggle = false,
   language = "en",
   labels,
 }: VenueCardProps) {
-  const featuredLabel = labels?.featured ?? "Featured";
-  const viewDetailsLabel = labels?.viewDetails ?? "View details";
   const saveFavoriteLabel = labels?.saveFavorite ?? "Save";
   const removeFavoriteLabel = labels?.removeFavorite ?? "Saved";
-  const whyThisPlaceLabel = labels?.whyThisPlace ?? "Why this place?";
   const areaPreview = area.split(",")[0]?.trim() ?? area;
-  const bestForBadges = getBestForBadges({ description, ...personality }, 3, language);
-  const personalitySignals = getVenuePersonalitySignals(
-    { description, ...personality },
-    language,
-  ).slice(0, 3);
+  const bestForBadges = getBestForBadges({ description, ...personality }, 2, language);
 
   return (
     <article className="bl-home-venue-card">
       {/* Image — category shown via VenueImage's built-in label */}
       <div className="bl-home-venue-image-wrap">
-        <VenueImage category={category} alt={name} aspectRatio="16 / 10" />
+        <VenueImage src={imageUrl} category={category} alt={name} aspectRatio="4 / 3" />
 
         {onToggleFavorite ? (
           <button
@@ -100,70 +83,37 @@ export function VenueCard({
             title={isFavorite ? removeFavoriteLabel : saveFavoriteLabel}
           >
             <HeartIcon filled={isFavorite} />
-            <span>{isFavorite ? removeFavoriteLabel : saveFavoriteLabel}</span>
           </button>
         ) : null}
       </div>
 
-      {showCollectionPicker ? (
-        <CollectionPicker venueSlug={slug} compact />
-      ) : null}
-
-      {showCompareToggle ? <CompareToggle venueSlug={slug} compact /> : null}
-
       <div className="bl-home-venue-body">
-        <div className="bl-home-venue-meta">
-          {isFeatured ? (
-            <span className="bl-home-venue-featured">{featuredLabel}</span>
-          ) : null}
-          <span className="bl-home-venue-area-preview">{areaPreview}</span>
-        </div>
-
         <h3 className="bl-home-venue-name">{name}</h3>
 
-        <p className="bl-home-venue-area">
-          <span aria-hidden="true">📍</span>
-          <span>{area}</span>
-        </p>
+        <p className="bl-home-venue-area">{areaPreview}</p>
 
         <p className="bl-home-venue-description">{description}</p>
 
-        {bestForBadges.length > 0 ? (
-          <div className="bl-home-venue-bestfor-list">
-            {bestForBadges.map((badge, index) => (
-              <span
-                key={`${slug}-${badge}-${index}`}
-                className="bl-home-venue-bestfor-chip"
-              >
-                {badge}
-              </span>
-            ))}
-          </div>
-        ) : null}
-
-        {personalitySignals.length > 0 ? (
-          <p className="bl-home-venue-signals">
-            {personalitySignals.join(" • ")}
-          </p>
-        ) : null}
-
-        {whyChips && whyChips.length > 0 ? (
-          <div className="bl-home-venue-why">
-            <p className="bl-home-venue-why-title">{whyThisPlaceLabel}</p>
-            <div className="bl-home-venue-why-list">
-              {whyChips.map((chip) => (
-                <span key={chip} className="bl-home-venue-why-chip">
-                  {chip}
+        <div className="bl-home-venue-footer">
+          {bestForBadges.length > 0 ? (
+            <div className="bl-home-venue-bestfor-list">
+              {bestForBadges.map((badge, index) => (
+                <span
+                  key={`${slug}-${badge}-${index}`}
+                  className="bl-home-venue-bestfor-chip"
+                >
+                  {badge}
                 </span>
               ))}
             </div>
-          </div>
-        ) : null}
+          ) : (
+            <div className="bl-home-venue-bestfor-list" />
+          )}
 
-        <Link to={href} className="bl-home-venue-link">
-          {viewDetailsLabel}
-          <span>→</span>
-        </Link>
+          <Link to={href} className="bl-home-venue-link">
+            {labels?.viewDetails ?? "Explore"} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
     </article>
   );

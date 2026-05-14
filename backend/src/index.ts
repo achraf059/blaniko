@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import waitlistRouter from "./routes/waitlist";
+import venuesRouter from "./routes/venues";
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
@@ -34,6 +35,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 });
 
 app.use("/api/waitlist", waitlistRouter);
+app.use("/api/venues", venuesRouter);
 
 app.listen(PORT, () => {
   console.log(`blaniko-backend running on http://localhost:${PORT}`);

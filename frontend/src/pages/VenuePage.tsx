@@ -27,7 +27,7 @@ export default function VenuePage() {
   const text = getFlowTexts(language);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
-  const { venues, getVenueBySlug } = useVenues();
+  const { venues, getVenueBySlug, isLoading } = useVenues();
 
   const from = searchParams.get("from");
   const categoryFromQuery = searchParams.get("category");
@@ -129,6 +129,21 @@ export default function VenuePage() {
     });
   }, [location.pathname, location.search, trackActivity, venue]);
 
+  if (isLoading) {
+    return (
+      <div className="bl-venue-page">
+        <HomeHeader labels={dictionary.header} />
+        <main className="bl-venue-main">
+          <div className="bl-venue-content">
+            <section className="bl-venue-not-found">
+              <p style={{ opacity: 0.5 }}>Loading…</p>
+            </section>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   if (!venue) {
     return (
       <div className="bl-venue-page">
@@ -193,6 +208,7 @@ export default function VenuePage() {
         {/* Full-bleed hero image */}
         <div className="bl-venue-hero-wrap">
           <VenueImage
+            src={venue.imageUrl}
             category={categoryName}
             categorySlug={venue.categorySlug}
             alt={venue.name}

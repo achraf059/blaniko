@@ -43,115 +43,12 @@
   color: var(--ink-soft);
 }
 
-/* ===== Editorial identity hero ===== */
+/* ===== Back link — sits above the hero ===== */
 
-.bl-category-hero {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--line-soft);
-  border-radius: 1.5rem;
-  margin-top: 1.5rem;
-  padding: 2rem 1.5rem;
-  background: color-mix(in srgb, var(--surface) 92%, var(--mist) 8%);
-  box-shadow: var(--shadow-card);
-
-  /* Per-category glow defaults — overridden by modifier classes below */
-  --hero-glow-a: var(--plum);
-  --hero-glow-b: color-mix(in srgb, var(--plum) 60%, var(--mist) 40%);
+.bl-category-back-wrap {
+  padding-top: 1.5rem;
+  padding-bottom: 1rem;
 }
-
-/* Per-slug accent themes */
-.bl-category-hero--cafes {
-  --hero-glow-a: #c4a96a;
-  --hero-glow-b: #e8d5a3;
-}
-
-.bl-category-hero--restaurants {
-  --hero-glow-a: #c4634a;
-  --hero-glow-b: #e8b09a;
-}
-
-.bl-category-hero--activities {
-  --hero-glow-a: #4a90c4;
-  --hero-glow-b: #9ac4e8;
-}
-
-.bl-category-hero--sports {
-  --hero-glow-a: #4ac47a;
-  --hero-glow-b: #9ae8b8;
-}
-
-.bl-category-hero--gaming {
-  --hero-glow-a: #7c4ac4;
-  --hero-glow-b: #b89ae8;
-}
-
-.bl-category-hero--outdoor {
-  --hero-glow-a: #5aad6e;
-  --hero-glow-b: #a8d9b4;
-}
-
-.bl-category-hero--family {
-  --hero-glow-a: #e8944a;
-  --hero-glow-b: #f0c890;
-}
-
-.bl-category-hero--couples {
-  --hero-glow-a: #c44a7c;
-  --hero-glow-b: #e89ab8;
-}
-
-.bl-category-hero--friends {
-  --hero-glow-a: #4ab0c4;
-  --hero-glow-b: #9ad8e8;
-}
-
-.bl-category-hero--wellness {
-  --hero-glow-a: #7ab87a;
-  --hero-glow-b: #b8e0b8;
-}
-
-.bl-category-hero--culture {
-  --hero-glow-a: #c4a44a;
-  --hero-glow-b: #e8d09a;
-}
-
-.bl-category-hero--water {
-  --hero-glow-a: #3a8fc4;
-  --hero-glow-b: #8ac4e8;
-}
-
-/* Decorative glow blobs */
-.bl-category-hero-glow-right,
-.bl-category-hero-glow-left {
-  pointer-events: none;
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(56px);
-}
-
-.bl-category-hero-glow-right {
-  right: -4rem;
-  top: -3.5rem;
-  width: 13rem;
-  height: 13rem;
-  background: color-mix(in srgb, var(--hero-glow-a) 30%, transparent 70%);
-}
-
-.bl-category-hero-glow-left {
-  left: -3rem;
-  bottom: -5rem;
-  width: 10rem;
-  height: 10rem;
-  background: color-mix(in srgb, var(--hero-glow-b) 24%, transparent 76%);
-}
-
-.bl-category-hero-content {
-  position: relative;
-  z-index: 1;
-}
-
-/* ===== Back link ===== */
 
 .bl-category-back-link {
   display: inline-flex;
@@ -166,10 +63,67 @@
   color: var(--ink);
 }
 
+/* ===== Editorial hero — full-width, no card treatment ===== */
+
+.bl-category-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 0 2.5rem;
+  min-height: clamp(10rem, 24vw, 16rem);
+
+  /* Per-category glow defaults */
+  --hero-glow-a: var(--plum);
+  --hero-glow-b: color-mix(in srgb, var(--plum) 60%, var(--mist) 40%);
+}
+
+/* Per-slug accent themes — unchanged */
+.bl-category-hero--cafes        { --hero-glow-a: #c4a96a; --hero-glow-b: #e8d5a3; }
+.bl-category-hero--restaurants  { --hero-glow-a: #c4634a; --hero-glow-b: #e8b09a; }
+.bl-category-hero--activities   { --hero-glow-a: #4a90c4; --hero-glow-b: #9ac4e8; }
+.bl-category-hero--sports       { --hero-glow-a: #4ac47a; --hero-glow-b: #9ae8b8; }
+.bl-category-hero--gaming       { --hero-glow-a: #7c4ac4; --hero-glow-b: #b89ae8; }
+.bl-category-hero--outdoor      { --hero-glow-a: #5aad6e; --hero-glow-b: #a8d9b4; }
+.bl-category-hero--family       { --hero-glow-a: #e8944a; --hero-glow-b: #f0c890; }
+.bl-category-hero--couples      { --hero-glow-a: #c44a7c; --hero-glow-b: #e89ab8; }
+.bl-category-hero--friends      { --hero-glow-a: #4ab0c4; --hero-glow-b: #9ad8e8; }
+.bl-category-hero--wellness     { --hero-glow-a: #7ab87a; --hero-glow-b: #b8e0b8; }
+.bl-category-hero--culture      { --hero-glow-a: #c4a44a; --hero-glow-b: #e8d09a; }
+.bl-category-hero--water        { --hero-glow-a: #3a8fc4; --hero-glow-b: #8ac4e8; }
+
+/* Decorative glow blobs */
+.bl-category-hero-glow-right,
+.bl-category-hero-glow-left {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+}
+
+.bl-category-hero-glow-right {
+  right: -5rem;
+  top: -4rem;
+  width: 18rem;
+  height: 18rem;
+  background: color-mix(in srgb, var(--hero-glow-a) 22%, transparent 78%);
+}
+
+.bl-category-hero-glow-left {
+  left: -4rem;
+  bottom: -6rem;
+  width: 14rem;
+  height: 14rem;
+  background: color-mix(in srgb, var(--hero-glow-b) 18%, transparent 82%);
+}
+
+.bl-category-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
 /* ===== Hero typography ===== */
 
 .bl-category-eyebrow {
-  margin: 1.25rem 0 0;
+  margin: 0 0 0.625rem;
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 600;
@@ -179,7 +133,7 @@
 }
 
 .bl-category-title {
-  margin: 0.5rem 0 0;
+  margin: 0 0 0.75rem;
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 600;
@@ -189,51 +143,45 @@
 }
 
 .bl-category-description {
-  margin: 0.875rem 0 0;
+  margin: 0 0 1.25rem;
   max-width: 42rem;
   font-size: 0.9375rem;
   line-height: 1.65;
   color: var(--ink-soft);
 }
 
-/* ===== Result pill ===== */
-
-.bl-category-result-pill {
-  margin-top: 1.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-radius: 9999px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 86%, var(--mist) 14%);
-  padding: 0.3rem 0.875rem;
+/* Result count line — replaces the pill */
+.bl-category-result-line {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint, var(--ink-soft));
 }
 
-.bl-category-result-count {
-  color: var(--plum-deep);
-  font-size: 0.8125rem;
+/* ===== Separator between hero and venue grid ===== */
+
+.bl-category-grid-sep {
+  height: 1px;
+  background: var(--line-soft);
+  margin: 2rem 0 2.5rem;
 }
 
 /* ===== Venue grid ===== */
 
 .bl-category-venues-section {
-  margin-top: 2.5rem;
+  /* spacing handled by grid-sep above */
 }
 
 .bl-category-venues-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 /* ===== Explore other categories row ===== */
 
 .bl-category-other-section {
-  margin-top: 3rem;
+  margin-top: 3.5rem;
   padding-top: 2rem;
   border-top: 1px solid var(--line-soft);
 }
@@ -289,26 +237,17 @@
   }
 
   .bl-category-hero {
-    padding: 2.5rem 2rem;
+    padding: 2.5rem 0 3rem;
   }
 }
 
 @media (min-width: 768px) {
-  .bl-category-main {
-    padding-top: 0;
-  }
-
-  .bl-category-hero {
-    margin-top: 2rem;
-  }
-
   .bl-category-description {
     font-size: 1rem;
   }
 
   .bl-category-venues-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
   }
 }
 

@@ -417,7 +417,7 @@ const en: Dictionary = {
   },
   venueCard: {
     featured: "Featured",
-    viewDetails: "View details",
+    viewDetails: "Explore",
     saveFavorite: "Save",
     removeFavorite: "Saved",
     whyThisPlace: "Why this place?",
@@ -711,7 +711,7 @@ const fr: Dictionary = {
   },
   venueCard: {
     featured: "À la une",
-    viewDetails: "Voir les détails",
+    viewDetails: "Explorer",
     saveFavorite: "Enregistrer",
     removeFavorite: "Enregistré",
     whyThisPlace: "Pourquoi cet endroit ?",

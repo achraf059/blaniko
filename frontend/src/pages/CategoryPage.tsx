@@ -10,10 +10,23 @@ import "./CategoryPage.css";
 export default function CategoryPage() {
   const { slug } = useParams();
   const { dictionary, language } = useI18n();
-  const { venues } = useVenues();
+  const { venues, isLoading } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const category = categories.find((item) => item.slug === slug);
+
+  if (isLoading) {
+    return (
+      <div className="bl-category-page">
+        <HomeHeader labels={dictionary.header} />
+        <main className="bl-category-main">
+          <section className="bl-category-not-found">
+            <p style={{ opacity: 0.5 }}>Finding places…</p>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   if (!category) {
     return (
@@ -47,16 +60,19 @@ export default function CategoryPage() {
       <HomeHeader labels={dictionary.header} />
 
       <main className="bl-category-main">
-        {/* Editorial identity hero with category-specific accent */}
+        {/* Back link — above the hero, not inside it */}
+        <div className="bl-category-back-wrap">
+          <Link to="/" className="bl-category-back-link">
+            ← {dictionary.categoryPage.backHome}
+          </Link>
+        </div>
+
+        {/* Editorial hero */}
         <section className={`bl-category-hero bl-category-hero--${category.slug}`}>
           <div className="bl-category-hero-glow-right" aria-hidden="true" />
           <div className="bl-category-hero-glow-left" aria-hidden="true" />
 
           <div className="bl-category-hero-content">
-            <Link to="/" className="bl-category-back-link">
-              ← {dictionary.categoryPage.backHome}
-            </Link>
-
             <p className="bl-category-eyebrow">
               {dictionary.categoryPage.eyebrow}
             </p>
@@ -68,20 +84,20 @@ export default function CategoryPage() {
                 category.description}
             </p>
 
-            <div className="bl-category-result-pill">
-              <span className="bl-category-result-count">
-                {categoryVenues.length}
-              </span>
-              <span>
-                {categoryVenues.length === 1
-                  ? dictionary.categoryPage.result
-                  : dictionary.categoryPage.results}
-              </span>
-            </div>
+            <p className="bl-category-result-line">
+              {categoryVenues.length}{" "}
+              {categoryVenues.length === 1
+                ? dictionary.categoryPage.result
+                : dictionary.categoryPage.results}{" "}
+              to explore
+            </p>
           </div>
         </section>
 
-        {/* Venue grid using refreshed VenueCard */}
+        {/* Separator between hero and grid */}
+        <div className="bl-category-grid-sep" role="separator" aria-hidden="true" />
+
+        {/* Venue grid */}
         <section className="bl-category-venues-section">
           <div className="bl-category-venues-grid">
             {categoryVenues.map((venue) => {
@@ -97,6 +113,7 @@ export default function CategoryPage() {
                   name={venue.name}
                   area={venue.area}
                   description={vd.description}
+                  imageUrl={venue.imageUrl}
                   personality={{
                     bestForTags: venue.bestForTags,
                     timeOfDay: venue.timeOfDay,
@@ -107,7 +124,6 @@ export default function CategoryPage() {
                   href={`/venues/${venue.slug}?from=category&category=${slug}`}
                   isFavorite={isFavorite(venue.slug)}
                   onToggleFavorite={toggleFavorite}
-                  showCollectionPicker
                   language={language}
                   labels={dictionary.venueCard}
                 />
