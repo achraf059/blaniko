@@ -17,6 +17,7 @@ import {
 } from "../utils/discoveryInsights";
 import { rankVenueAlternatives } from "../utils/venueAlternatives";
 import { getVenuePersonalitySection } from "../utils/venuePersonality";
+import { getVenueImageSrc } from "../utils/venueImage";
 import "./VenuePage.css";
 
 export default function VenuePage() {
@@ -208,7 +209,7 @@ export default function VenuePage() {
         {/* Full-bleed hero image */}
         <div className="bl-venue-hero-wrap">
           <VenueImage
-            src={venue.imageUrl}
+            src={getVenueImageSrc(venue)}
             category={categoryName}
             categorySlug={venue.categorySlug}
             alt={venue.name}
@@ -457,8 +458,8 @@ export default function VenuePage() {
                     key={alternative.slug}
                     className="bl-venue-similar-card"
                   >
-                    {/* Compact image placeholder — category shown via VenueImage label */}
                     <VenueImage
+                      src={getVenueImageSrc(alternative)}
                       category={altCategoryName}
                       categorySlug={alternative.categorySlug}
                       alt={alternative.name}

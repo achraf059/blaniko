@@ -64,8 +64,7 @@ export function GlobalNav({ labels }: GlobalNavProps) {
     >
       <nav className="bl-global-nav" aria-label="Main navigation">
         <Link to="/" className="bl-global-nav-brand" aria-label="Blaniko home">
-          <span className="bl-global-nav-brand-mark" aria-hidden="true" />
-          <span className="bl-global-nav-brand-text">Blaniko</span>
+          <img src="/brand/blaniko-wordmark.png" alt="Blaniko" className="bl-global-nav-wordmark" />
         </Link>
 
         <ul className="bl-global-nav-links">

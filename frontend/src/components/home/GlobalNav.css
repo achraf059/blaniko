@@ -25,57 +25,43 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 2rem;
   width: 100%;
-  max-width: 72rem;
-  min-height: 4rem;
-  padding: 0.5rem 1.25rem;
+  max-width: min(1360px, 92vw);
+  min-height: 4.5rem;
+  padding: 0.75rem 0;
   box-sizing: border-box;
 }
 
 .bl-global-nav-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   text-decoration: none;
-  color: var(--ink);
+  flex-shrink: 0;
 }
 
-.bl-global-nav-brand-mark {
-  width: 0.56rem;
-  height: 0.56rem;
-  border-radius: 999px;
-  background: linear-gradient(140deg, var(--heather), var(--plum));
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--heather) 18%, transparent 82%);
-}
-
-.bl-global-nav-brand-text {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.28rem;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: var(--plum-deep);
+.bl-global-nav-wordmark {
+  height: 34px;
+  width: auto;
+  display: block;
 }
 
 .bl-global-nav-links {
   display: none;
   align-items: center;
-  gap: 1rem;
-  margin: 0 0 0 0.4rem;
+  gap: 1.75rem;
+  margin: 0;
   padding: 0;
   list-style: none;
-  flex: 1;
-  min-width: 0;
 }
 
 .bl-global-nav-link {
   text-decoration: none;
   color: var(--ink-soft);
-  font-size: 0.86rem;
-  font-weight: 550;
-  transition: color 180ms var(--ease);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 200ms var(--ease);
 }
 
 .bl-global-nav-link:hover {
@@ -89,8 +75,7 @@
 .bl-global-nav-actions {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  margin-left: auto;
+  gap: 1.125rem;
   flex-shrink: 0;
 }
 
@@ -101,17 +86,20 @@
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--surface);
-  padding: 0.36rem 0.75rem;
+  padding: 0.45rem 1rem;
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--ink-soft);
+  white-space: nowrap;
   transition:
-    background-color 180ms var(--ease),
-    color 180ms var(--ease);
+    background-color 200ms var(--ease),
+    border-color 200ms var(--ease),
+    color 200ms var(--ease);
 }
 
 .bl-global-nav-saved-pill:hover {
-  background: var(--mist);
+  background: color-mix(in srgb, var(--mist) 40%, var(--surface));
+  border-color: color-mix(in srgb, var(--plum) 30%, var(--line));
   color: var(--ink);
 }
 
@@ -125,10 +113,11 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--surface) 80%, var(--mist) 20%);
   color: var(--ink);
-  font-size: 0.78rem;
-  font-weight: 650;
-  padding: 0.36rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .bl-global-nav-mobile-summary::-webkit-details-marker {
@@ -195,7 +184,7 @@
   filter: brightness(1.04);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 480px) {
   .bl-global-nav-cta {
     display: inline-flex;
   }

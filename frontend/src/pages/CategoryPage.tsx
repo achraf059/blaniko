@@ -5,6 +5,7 @@ import { categories, getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
+import { getVenueImageSrc } from "../utils/venueImage";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
@@ -113,7 +114,7 @@ export default function CategoryPage() {
                   name={venue.name}
                   area={venue.area}
                   description={vd.description}
-                  imageUrl={venue.imageUrl}
+                  imageUrl={getVenueImageSrc(venue)}
                   personality={{
                     bestForTags: venue.bestForTags,
                     timeOfDay: venue.timeOfDay,

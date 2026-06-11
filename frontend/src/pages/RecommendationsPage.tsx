@@ -23,6 +23,7 @@ import {
   getDiscoveryMoodLabel,
   isDiscoveryMood,
 } from "../utils/discoveryInsights";
+import { getVenueImageSrc } from "../utils/venueImage";
 import "./HomePage.css";
 import "./RecommendationsPage.css";
 
@@ -501,6 +502,7 @@ export default function RecommendationsPage() {
                       name={venue.name}
                       area={venue.area}
                       description={vd.description}
+                      imageUrl={getVenueImageSrc(venue)}
                       personality={{
                         bestForTags: venue.bestForTags,
                         timeOfDay: venue.timeOfDay,
@@ -536,6 +538,7 @@ export default function RecommendationsPage() {
                         name={venue.name}
                         area={venue.area}
                         description={vd.description}
+                        imageUrl={getVenueImageSrc(venue)}
                         personality={{
                           bestForTags: venue.bestForTags,
                           timeOfDay: venue.timeOfDay,

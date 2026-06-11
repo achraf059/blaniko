@@ -114,22 +114,33 @@ export const MapPreview = () => {
 
 export const Editorial = () => {
   const { language, dictionary } = useI18n();
-  const { editorialMeta } = getClaudeHomeLocalizedData(language);
+
+  const chips = language === "fr"
+    ? ["En famille", "En intérieur", "Soirée"]
+    : ["Family-friendly", "Indoor", "Evening plan"];
 
   return (
     <section className="editorial shell">
       <div className="ed-card">
-        <div className="ed-img"/>
-        <div>
+        <div className="ed-img">
+          <img
+            src="/images/home/family-cinema-night.png"
+            alt="Family enjoying a movie night in a cinema"
+          />
+        </div>
+        <div className="ed-body">
           <div className="ed-eyebrow">{dictionary.claudeHome.editorialEyebrow}</div>
-          <h3>{dictionary.claudeHome.editorialTitlePrefix} <em>{dictionary.claudeHome.editorialTitleEmphasis}</em> {dictionary.claudeHome.editorialTitleSuffix}</h3>
+          <h3>
+            {dictionary.claudeHome.editorialTitlePrefix}{" "}
+            <em>{dictionary.claudeHome.editorialTitleEmphasis}</em>
+          </h3>
           <p>{dictionary.claudeHome.editorialDescription}</p>
-          <div className="ed-foot">
-            <span className="author"><span className="avatar-s"/>{editorialMeta.author}</span>
-            <span>·</span>
-            <span>{editorialMeta.readTime}</span>
+          <div className="ed-chips">
+            {chips.map((chip) => (
+              <span key={chip}>{chip}</span>
+            ))}
           </div>
-          <Link to="/guides" className="read">
+          <Link to="/guides" className="ed-cta">
             {dictionary.claudeHome.editorialRead}
             <Icon name="arrow" size={14} />
           </Link>

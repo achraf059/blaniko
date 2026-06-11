@@ -27,6 +27,10 @@ const labelByLanguage = {
       "budget-pick": "Budget pick",
       "sunset-spot": "Sunset spot",
       "late-night": "Late-night",
+      "group-activity": "Group activity",
+      active: "Active",
+      competitive: "Competitive",
+      kids: "Good for kids",
     },
     timeLabelMap: {
       morning: "Best in the morning",
@@ -60,6 +64,10 @@ const labelByLanguage = {
       "budget-pick": "Petit budget",
       "sunset-spot": "Spot sunset",
       "late-night": "Tard le soir",
+      "group-activity": "Activité en groupe",
+      active: "Actif",
+      competitive: "Compétitif",
+      kids: "Pour les enfants",
     },
     timeLabelMap: {
       morning: "Idéal le matin",

@@ -1,97 +1,132 @@
+/* ============================================================
+   VenueImage — photo + branded placeholder
+   Uses existing Blaniko tokens from styles/index.css
+   ============================================================ */
+
 .bl-venue-image {
   position: relative;
   width: 100%;
   overflow: hidden;
   border-radius: 1rem;
-  aspect-ratio: var(--bl-venue-image-aspect-ratio, 16 / 10);
-  background: var(--surface);
-  border: 1px solid var(--line-soft);
-}
-
-.bl-venue-image-media,
-.bl-venue-image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: block;
+  aspect-ratio: var(--bl-venue-ar, 4 / 3);
+  background: var(--mist);
 }
 
 .bl-venue-image-media {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.bl-venue-image-placeholder {
+/* ===== Branded placeholder ===== */
+.bl-venue-ph {
   position: relative;
-  isolation: isolate;
-  background: linear-gradient(155deg, #d8d0ec, #6b4e8a, #3d2966);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* default tint — soft purple, on-brand */
+  background: linear-gradient(150deg, color-mix(in srgb, var(--mist) 80%, #fff), var(--heather) 55%, var(--plum));
 }
 
-.bl-venue-image-placeholder.is-water {
-  background: linear-gradient(155deg, #155d4e, #c8bede, #7259a8, #3d2966);
-}
+/* Per-category tints — all kept within the brand purple / warm family
+   so a venue with no photo still reads as "intentional", never broken. */
+.bl-venue-image[data-cat="cafes"]       .bl-venue-ph { background: linear-gradient(150deg, #efe6d8, var(--heather) 58%, var(--plum)); }
+.bl-venue-image[data-cat="restaurants"] .bl-venue-ph { background: linear-gradient(150deg, #ecd9cd, #b78a86 52%, var(--plum-deep)); }
+.bl-venue-image[data-cat="activities"]  .bl-venue-ph { background: linear-gradient(150deg, #e3d8f0, #8a73b0 55%, var(--plum-deep)); }
+.bl-venue-image[data-cat="sports"]      .bl-venue-ph { background: linear-gradient(150deg, #ded3f2, #7259a8 52%, #2e1d54); }
+.bl-venue-image[data-cat="gaming"]      .bl-venue-ph { background: linear-gradient(150deg, #d6ccf2, #5e3f8a 50%, #221545); }
+.bl-venue-image[data-cat="outdoor"]     .bl-venue-ph { background: linear-gradient(150deg, #d9d6ec, #6f7ba8 50%, #3a3068); }
+.bl-venue-image[data-cat="family"]      .bl-venue-ph { background: linear-gradient(150deg, #eadfe9, #ad8fc0 55%, var(--plum)); }
+.bl-venue-image[data-cat="couples"]     .bl-venue-ph { background: linear-gradient(150deg, #ecd5e0, #a86f93 52%, var(--plum-deep)); }
+.bl-venue-image[data-cat="friends"]     .bl-venue-ph { background: linear-gradient(150deg, #e6dcf0, #8a6ab0 52%, var(--plum-deep)); }
 
-.bl-venue-image-placeholder.is-culture {
-  background: linear-gradient(155deg, #d0c8e8, #5a3e82, #2a1a52);
-}
-
-.bl-venue-image-placeholder.is-outdoor {
-  background: linear-gradient(155deg, #c8bdd4, #3d6e55, #1a3428);
-}
-
-.bl-venue-image-placeholder.is-gaming {
-  background: linear-gradient(155deg, #ccc4f0, #5e2e7a, #1a1040);
-}
-
-.bl-venue-image-placeholder.is-workshop {
-  background: linear-gradient(155deg, #e0d4c8, #8a5c30, #4a2a10);
-}
-
-.bl-venue-image-placeholder.is-wellness {
-  background: linear-gradient(155deg, #e8e0d8, #88946a, #d9b382);
-}
-
-.bl-venue-image-placeholder.is-sports {
-  background: linear-gradient(155deg, #d8cff0, #7255a8, #3a2060);
-}
-
-.bl-venue-image-placeholder.is-default {
-  background: linear-gradient(155deg, #d8d0ec, #6b4e8a, #3d2966);
-}
-
-.bl-venue-image-placeholder-stripes {
+/* subtle light wash + hairline texture on every placeholder */
+.bl-venue-ph-tint {
   position: absolute;
   inset: 0;
   z-index: 1;
-  opacity: 0.2;
-  background-image: repeating-linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.2) 0,
-    rgba(255, 255, 255, 0.2) 2px,
-    transparent 2px,
-    transparent 10px
-  );
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.35), transparent 42%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0, rgba(255, 255, 255, 0.1) 1px, transparent 1px, transparent 11px);
 }
 
+/* monogram (default) */
+.bl-venue-ph-mark {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+.bl-venue-ph-coast { opacity: 0.85; }
+.bl-venue-ph-word {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 6px rgba(31, 21, 48, 0.3);
+}
+
+/* serif initial */
+.bl-venue-ph-initial {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(4rem, 9vw, 7rem);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 4px 24px rgba(31, 21, 48, 0.35);
+}
+
+/* coastline texture */
+.bl-venue-ph-waves {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.5;
+  background-image: repeating-radial-gradient(circle at 50% 130%, transparent 0, transparent 26px, rgba(255, 255, 255, 0.22) 26px, rgba(255, 255, 255, 0.22) 28px);
+}
+
+/* micro-label */
+.bl-venue-ph-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.7rem;
+  z-index: 3;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* optional bottom-left label chip (kept for parity with old API) */
 .bl-venue-image-label {
   position: absolute;
   left: 0.75rem;
   bottom: 0.75rem;
-  z-index: 2;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
-  min-height: 1.6rem;
-  max-width: calc(100% - 1.5rem);
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 80%, transparent 20%);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 600;
-  line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
