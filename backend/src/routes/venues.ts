@@ -51,12 +51,78 @@ function toCategorySlug(category: string, subcategory: string | null): string {
   );
 }
 
+type TimeOfDaySlot = "morning" | "afternoon" | "evening" | "late-night";
+
+function computeBestForTags(subcategory: string | null, categorySlug: string): string[] {
+  const sub = (subcategory ?? "").toLowerCase().trim();
+  if (sub === "billiards")              return ["friends", "late-night", "group-activity"];
+  if (sub === "escape room")            return ["friends", "group-activity", "date-spot"];
+  if (sub === "karting")                return ["friends", "group-activity", "active"];
+  if (sub === "bowling")                return ["friends", "group-activity", "date-spot"];
+  if (sub === "laser game")             return ["friends", "group-activity", "active"];
+  if (sub.includes("gaming"))           return ["friends", "late-night", "group-activity"];
+  if (sub === "padel")                  return ["friends", "active", "competitive"];
+  if (sub === "football")               return ["friends", "active", "competitive"];
+  if (sub === "basketball")             return ["friends", "active"];
+  if (sub === "outdoor amusement")      return ["family-friendly", "kids", "budget-pick"];
+  if (sub === "indoor play")            return ["family-friendly", "kids"];
+  if (sub === "theme park")             return ["family-friendly", "kids", "active"];
+  if (sub.includes("beach club"))       return ["friends", "date-spot", "sunset-spot"];
+  // categorySlug fallback
+  if (categorySlug === "sports")        return ["friends", "active"];
+  if (categorySlug === "gaming")        return ["friends", "late-night"];
+  if (categorySlug === "family")        return ["family-friendly", "kids"];
+  if (categorySlug === "outdoor")       return ["friends", "budget-pick"];
+  return ["friends", "group-activity"];
+}
+
+function computeSpaceType(subcategory: string | null): "indoor" | "outdoor" | "mixed" {
+  const sub = (subcategory ?? "").toLowerCase().trim();
+  if (sub === "billiards")         return "indoor";
+  if (sub === "escape room")       return "indoor";
+  if (sub === "bowling")           return "indoor";
+  if (sub === "laser game")        return "indoor";
+  if (sub.includes("gaming"))      return "indoor";
+  if (sub === "padel")             return "indoor";
+  if (sub === "indoor play")       return "indoor";
+  if (sub === "karting")           return "outdoor";
+  if (sub === "football")          return "outdoor";
+  if (sub === "basketball")        return "outdoor";
+  if (sub === "outdoor amusement") return "outdoor";
+  if (sub.includes("beach club"))  return "outdoor";
+  if (sub === "theme park")        return "mixed";
+  return "indoor";
+}
+
+function computeTimeOfDay(subcategory: string | null): TimeOfDaySlot[] {
+  const sub = (subcategory ?? "").toLowerCase().trim();
+  if (sub === "billiards")         return ["evening", "late-night"];
+  if (sub === "escape room")       return ["afternoon", "evening"];
+  if (sub === "karting")           return ["afternoon", "evening"];
+  if (sub === "bowling")           return ["afternoon", "evening"];
+  if (sub === "laser game")        return ["afternoon", "evening"];
+  if (sub.includes("gaming"))      return ["afternoon", "evening", "late-night"];
+  if (sub === "padel")             return ["morning", "afternoon", "evening"];
+  if (sub === "football")          return ["afternoon", "evening"];
+  if (sub === "basketball")        return ["afternoon", "evening"];
+  if (sub === "outdoor amusement") return ["afternoon"];
+  if (sub === "indoor play")       return ["morning", "afternoon"];
+  if (sub === "theme park")        return ["afternoon"];
+  if (sub.includes("beach club"))  return ["afternoon", "evening"];
+  return ["afternoon", "evening"];
+}
+
 function toArea(
   neighborhood: string | null,
   region: string | null
 ): string {
-  if (neighborhood && region) return `${neighborhood}, ${region}`;
-  if (neighborhood) return neighborhood;
+  // Exclude "Not confirmed" placeholder values — fall back to region instead.
+  const confirmedNeighborhood =
+    neighborhood && !neighborhood.toLowerCase().startsWith("not confirmed")
+      ? neighborhood
+      : null;
+
+  if (confirmedNeighborhood) return confirmedNeighborhood;
   if (region) return region;
   return "Casablanca";
 }
@@ -65,11 +131,22 @@ function toArea(
 function mapVenue(row: Record<string, unknown>) {
   const category = String(row.category ?? "");
   const subcategory = row.subcategory ? String(row.subcategory) : null;
-  const neighborhood = row.neighborhood ? String(row.neighborhood) : null;
+  const rawNeighborhood = row.neighborhood ? String(row.neighborhood) : null;
+  // Strip "Not confirmed" placeholder values — treat as unknown neighborhood.
+  const neighborhood = rawNeighborhood && !rawNeighborhood.toLowerCase().startsWith("not confirmed")
+    ? rawNeighborhood
+    : null;
   const region = row.region ? String(row.region) : null;
   const shortDescription = row.short_description
     ? String(row.short_description)
     : String(row.name ?? "");
+
+  const categorySlug = toCategorySlug(category, subcategory);
+
+  // Use DB-stored tags if present; otherwise compute from subcategory.
+  const dbTags = Array.isArray(row.best_for_tags) && (row.best_for_tags as string[]).length > 0
+    ? (row.best_for_tags as string[])
+    : null;
 
   return {
     id: row.id,
@@ -78,13 +155,15 @@ function mapVenue(row: Record<string, unknown>) {
     slug: row.slug,
     // Keep DB category as-is for reference, also expose derived slug
     category,
-    categorySlug: toCategorySlug(category, subcategory),
+    categorySlug,
     subcategory,
     region,
     neighborhood,
     // Compose area string the same way the old mock data did
     area: toArea(neighborhood, region),
-    address: row.address ?? null,
+    address: row.address && !String(row.address).toLowerCase().startsWith("not confirmed")
+      ? row.address
+      : null,
     googleMapsLink: row.google_maps_link ?? null,
     phone: row.phone ?? null,
     shortDescription,
@@ -93,6 +172,10 @@ function mapVenue(row: Record<string, unknown>) {
     imageUrl: row.image_url ?? null,
     isActive: row.is_active,
     source: row.source,
+    // Discovery metadata — computed from subcategory; overridden by DB values when present
+    bestForTags: dbTags ?? computeBestForTags(subcategory, categorySlug),
+    spaceType: row.space_type ?? computeSpaceType(subcategory),
+    timeOfDay: row.time_of_day ?? computeTimeOfDay(subcategory),
   };
 }
 
@@ -105,6 +188,7 @@ router.get("/", async (req: Request, res: Response) => {
     .from("venues")
     .select("*")
     .eq("is_active", true)
+    .neq("external_id", "BLK-0037") // duplicate "Dream World" — hidden until resolved in DB
     .order("external_id", { ascending: true });
 
   if (typeof category === "string" && category.length > 0) {
@@ -137,6 +221,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
     .select("*")
     .eq("slug", slug)
     .eq("is_active", true)
+    .neq("external_id", "BLK-0037")
     .single();
 
   if (error) {

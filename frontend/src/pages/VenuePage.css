@@ -3,7 +3,7 @@
 .bl-venue-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: transparent;
+  background: var(--gradient-internal);
   color: var(--color-text);
 }
 
@@ -565,12 +565,12 @@
 
 /* Subtle image scale on card hover */
 .bl-venue-similar-card:hover .bl-venue-image-media,
-.bl-venue-similar-card:hover .bl-venue-image-placeholder {
+.bl-venue-similar-card:hover .bl-venue-ph {
   transform: scale(1.04);
 }
 
 .bl-venue-similar-image .bl-venue-image-media,
-.bl-venue-similar-image .bl-venue-image-placeholder {
+.bl-venue-similar-image .bl-venue-ph {
   transition: transform 400ms var(--ease);
 }
 

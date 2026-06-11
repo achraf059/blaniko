@@ -94,11 +94,11 @@
   overflow: hidden;
 }
 
-.bl-guides-card-cover .bl-venue-image-placeholder {
+.bl-guides-card-cover .bl-venue-ph {
   transition: transform var(--ease, 300ms ease);
 }
 
-.bl-guides-card:hover .bl-guides-card-cover .bl-venue-image-placeholder {
+.bl-guides-card:hover .bl-guides-card-cover .bl-venue-ph {
   transform: scale(1.03);
 }
 
@@ -194,7 +194,7 @@
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .bl-guides-card,
-  .bl-guides-card-cover .bl-venue-image-placeholder,
+  .bl-guides-card-cover .bl-venue-ph,
   .bl-guides-card-link span {
     transition: none;
   }

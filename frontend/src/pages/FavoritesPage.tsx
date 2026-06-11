@@ -6,6 +6,7 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
+import { getVenueImageSrc } from "../utils/venueImage";
 import "./HomePage.css";
 import "./FavoritesPage.css";
 
@@ -76,6 +77,7 @@ export default function FavoritesPage() {
                     name={venue.name}
                     area={venue.area}
                     description={vd.description}
+                    imageUrl={getVenueImageSrc(venue)}
                     personality={{
                       bestForTags: venue.bestForTags,
                       timeOfDay: venue.timeOfDay,

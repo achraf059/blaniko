@@ -3,7 +3,7 @@
 .bl-category-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: transparent;
+  background: var(--gradient-internal);
   color: var(--color-text);
   text-align: left;
 }
