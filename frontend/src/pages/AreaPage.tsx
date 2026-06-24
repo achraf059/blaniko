@@ -10,6 +10,7 @@ import {
 } from "../data/areas";
 import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
@@ -39,6 +40,18 @@ export default function AreaPage() {
       href: `${location.pathname}${location.search}`,
     });
   }, [area, location.pathname, location.search, trackActivity]);
+
+  // Compute display for meta — must be before the early return so the hook
+  // is always called unconditionally regardless of whether the area exists.
+  const areaDisplay = area ? getAreaDisplay(area, language) : null;
+  usePageMeta(
+    areaDisplay
+      ? (language === "fr"
+          ? `${areaDisplay.name} à Casablanca | Blaniko`
+          : `${areaDisplay.name} in Casablanca | Blaniko`)
+      : (language === "fr" ? "Quartier introuvable | Blaniko" : "Area not found | Blaniko"),
+    areaDisplay?.vibeSummary,
+  );
 
   if (!area) {
     return (

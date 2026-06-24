@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { useAdminApi, type AdminVenueRow, type AdminVenuePatch } from "../hooks/useAdminApi";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import "./AdminPage.css";
 
@@ -102,6 +103,7 @@ function rowToForm(row: AdminVenueRow): AdminFormState {
 
 export default function AdminPage() {
   const { dictionary } = useI18n();
+  usePageMeta("Admin | Blaniko");
   const { rows, isLoading, loadError, fetchVenues, patchVenue } = useAdminApi();
 
   // ── Auth gate ────────────────────────────────────────────────────────────────
