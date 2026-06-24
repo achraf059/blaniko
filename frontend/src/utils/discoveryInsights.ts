@@ -176,10 +176,10 @@ function uniqueReasons(reasons: string[]): string[] {
 
 function categorySupportsMood(categorySlug: string, mood: DiscoveryMood): boolean {
   const moodCategories: Record<DiscoveryMood, string[]> = {
-    chill: ["cafes", "outdoor", "couples"],
-    social: ["friends", "gaming", "activities", "restaurants"],
+    chill: ["activities", "outdoor"],
+    social: ["gaming", "activities", "sports"],
     active: ["sports", "outdoor", "activities"],
-    romantic: ["couples", "restaurants", "cafes", "outdoor"],
+    romantic: ["outdoor", "activities"],
     "family-friendly": ["family", "outdoor", "activities"],
   };
 

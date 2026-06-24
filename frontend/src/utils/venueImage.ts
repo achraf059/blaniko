@@ -3,7 +3,7 @@
  *
  * Priority chain:
  *  1. venue.imageUrl   — explicit URL (e.g. Supabase Storage public URL set in the DB)
- *  2. /images/venues/{externalId}.png — static file served from frontend/public/
+ *  2. /images/venues/{externalId}.webp — static file served from frontend/public/
  *  3. undefined — VenueImage will render the category gradient placeholder
  *
  * Venues with no real photo (e.g. BLK-0003, BLK-0009, BLK-0018) have no file in
@@ -19,6 +19,6 @@ export function getVenueImageSrc(venue: {
   externalId?: string;
 }): string | undefined {
   if (venue.imageUrl) return venue.imageUrl;
-  if (venue.externalId) return `/images/venues/${venue.externalId}.png`;
+  if (venue.externalId) return `/images/venues/${venue.externalId}.webp`;
   return undefined;
 }

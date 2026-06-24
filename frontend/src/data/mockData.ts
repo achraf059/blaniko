@@ -51,6 +51,8 @@ export type Venue = {
   address?: string;
   googleMapsLink?: string;
   phone?: string;
+  website?: string;
+  instagram?: string;
   imageUrl?: string;
   isActive?: boolean;
   source?: string;
@@ -72,18 +74,6 @@ export function getVenueDisplay(
 }
 
 export const categories: Category[] = [
-  {
-    slug: "cafes",
-    name: "Cafes & Hangouts",
-    description:
-      "Atmospheric cafés, social spots, and work-friendly hangouts.",
-  },
-  {
-    slug: "restaurants",
-    name: "Food Experiences",
-    description:
-      "Food-led experiences, date-night spots, and memorable dining plans.",
-  },
   {
     slug: "activities",
     name: "Activities",
@@ -109,128 +99,9 @@ export const categories: Category[] = [
     name: "Family",
     description: "Kid-friendly venues and family activities.",
   },
-  {
-    slug: "couples",
-    name: "Couples",
-    description: "Date ideas and cozy places for two.",
-  },
-  {
-    slug: "friends",
-    name: "Friends",
-    description: "Group plans and weekend hangout places.",
-  },
 ];
 
 export const venues: Venue[] = [
-  {
-    slug: "skyline-rooftop-cafe",
-    name: "Skyline Rooftop Cafe",
-    category: "Cafes & Hangouts",
-    categorySlug: "cafes",
-    area: "Maarif, Casablanca",
-    coordinates: { lat: 33.5763, lng: -7.6333 },
-    description:
-      "Rooftop coffee spot with sunset views and a calm city atmosphere.",
-    shortDescription:
-      "Rooftop coffee spot with sunset views and a calm city atmosphere.",
-    overview:
-      "Skyline Rooftop Cafe is a reliable address in Maarif for coffee meetings, remote work sessions, and relaxed evening catch-ups. The rooftop setting gives open views over the neighborhood, especially around sunset. Service is simple and friendly, with a menu focused on coffee, fresh drinks, and light snacks.",
-    vibe: "Calm, rooftop, modern",
-    vibeSummary: "Relaxed rooftop energy with a polished city view.",
-    audience: "Remote workers, couples, small groups",
-    priceLevel: "$$",
-    bestForTags: ["sunset-spot", "solo-coffee", "date-spot"],
-    searchKeywords: ["rooftop dinner", "rooftop cafe", "rooftop cinema", "cinema", "movie night", "screening", "sunset dinner", "date night"],
-    timeOfDay: ["afternoon", "evening"],
-    energyLevel: "low",
-    socialLevel: "medium",
-    spaceType: "mixed",
-    translations: {
-      fr: {
-        description:
-          "Café en rooftop avec vue sur le coucher de soleil et une atmosphère urbaine calme.",
-        shortDescription:
-          "Café en rooftop avec vue sur le coucher de soleil et une atmosphère urbaine calme.",
-        overview:
-          "Skyline Rooftop Cafe est une adresse fiable à Maarif pour les réunions café, le télétravail et les soirées décontractées. Le cadre en rooftop offre une vue dégagée sur le quartier, surtout au coucher du soleil. Le service est simple et agréable, avec une carte axée sur le café, les boissons fraîches et les snacks légers.",
-        vibe: "Calme, rooftop, moderne",
-        vibeSummary: "Énergie rooftop détendue avec une vue citadine soignée.",
-        audience: "Télétravailleurs, couples, petits groupes",
-      },
-    },
-  },
-  {
-    slug: "bean-district",
-    name: "Bean District",
-    category: "Cafes & Hangouts",
-    categorySlug: "cafes",
-    area: "Gauthier, Casablanca",
-    coordinates: { lat: 33.5894, lng: -7.6212 },
-    description:
-      "Specialty coffee address with a quiet space for work and meetings.",
-    shortDescription:
-      "Specialty coffee address with a quiet space for work and meetings.",
-    overview:
-      "Bean District is a compact specialty cafe in Gauthier known for consistent espresso and a focused atmosphere. It works well for short laptop sessions, client meetings, or a quick coffee break in central Casablanca. Seating is limited at peak times, so mornings are usually the best for a quieter experience.",
-    vibe: "Minimal, focused, quiet",
-    vibeSummary: "Focused specialty café for deep-work sessions.",
-    audience: "Coffee enthusiasts, freelancers, professionals",
-    priceLevel: "$$",
-    bestForTags: ["work-friendly", "solo-coffee"],
-    timeOfDay: ["morning", "afternoon"],
-    energyLevel: "low",
-    socialLevel: "low",
-    spaceType: "indoor",
-    translations: {
-      fr: {
-        description:
-          "Adresse café spécialisé avec un espace calme pour travailler et se réunir.",
-        shortDescription:
-          "Adresse café spécialisé avec un espace calme pour travailler et se réunir.",
-        overview:
-          "Bean District est un café spécialisé compact à Gauthier, reconnu pour son espresso constant et son atmosphère concentrée. Idéal pour les courtes sessions laptop, les réunions clients ou une pause café rapide au centre de Casablanca. Les places sont limitées aux heures de pointe ; les matins offrent généralement l'expérience la plus calme.",
-        vibe: "Minimal, concentré, calme",
-        vibeSummary: "Café spécialisé concentré pour les sessions de travail intensives.",
-        audience: "Amateurs de café, freelancers, professionnels",
-      },
-    },
-  },
-  {
-    slug: "beldi-table-kitchen",
-    name: "Beldi Tasting Table",
-    category: "Food Experiences",
-    categorySlug: "restaurants",
-    area: "Racine, Casablanca",
-    coordinates: { lat: 33.5921, lng: -7.6265 },
-    description:
-      "Moroccan tasting-table experience built around shared dishes and slow conversation.",
-    shortDescription:
-      "Moroccan tasting-table experience built around shared dishes and slow conversation.",
-    overview:
-      "Beldi Tasting Table is a food-led experience in Racine for people who want more than a standard dinner. The format centers on shared Moroccan plates, seasonal flavors, and a calm setting made for conversation. It works well for date nights, visiting friends, or small family plans where the meal is part of the experience.",
-    vibe: "Warm, local, shared-table",
-    vibeSummary: "Shared Moroccan tasting experience with a polished, intimate feel.",
-    audience: "Couples, visiting friends, small families",
-    priceLevel: "$$$",
-    bestForTags: ["date-spot", "family-friendly"],
-    timeOfDay: ["evening"],
-    energyLevel: "medium",
-    socialLevel: "medium",
-    spaceType: "indoor",
-    translations: {
-      fr: {
-        description:
-          "Expérience de dégustation marocaine autour de plats partagés et de conversations tranquilles.",
-        shortDescription:
-          "Expérience de dégustation marocaine autour de plats partagés et de conversations tranquilles.",
-        overview:
-          "Beldi Tasting Table est une expérience food à Racine pour ceux qui veulent plus qu'un dîner classique. Le format met l'accent sur des plats marocains à partager, des saveurs de saison et un cadre calme pensé pour la conversation. C'est une bonne option pour une soirée en duo, des amis de passage ou un petit plan familial où le repas fait partie de l'expérience.",
-        vibe: "Chaleureux, local, table partagée",
-        vibeSummary: "Expérience de dégustation marocaine partagée avec une ambiance intime et soignée.",
-        audience: "Couples, amis de passage, petites familles",
-      },
-    },
-  },
   {
     slug: "ocean-drive-padel-club",
     name: "Ocean Drive Padel Club",
@@ -523,47 +394,10 @@ export const venues: Venue[] = [
     },
   },
   {
-    slug: "moonlight-bistro",
-    name: "Moonlight Bistro",
-    category: "Couples",
-    categorySlug: "couples",
-    area: "Racine, Casablanca",
-    coordinates: { lat: 33.5906, lng: -7.6292 },
-    description:
-      "Cozy dinner address with soft lighting and a date-night atmosphere.",
-    shortDescription:
-      "Cozy dinner address with soft lighting and a date-night atmosphere.",
-    overview:
-      "Moonlight Bistro is a Racine venue designed for slower evenings and conversation-focused dinners. The setting is intimate, with a calm soundtrack and comfortable spacing between tables. It is a dependable option for date nights and small special occasions.",
-    vibe: "Intimate, calm, romantic",
-    vibeSummary: "Intimate dinner mood for meaningful date nights.",
-    audience: "Couples, close friends",
-    priceLevel: "$$$",
-    bestForTags: ["date-spot", "late-night"],
-    searchKeywords: ["rooftop dinner", "dinner", "romantic dinner", "date night", "evening dinner", "jazz", "live music"],
-    timeOfDay: ["evening", "late-night"],
-    energyLevel: "low",
-    socialLevel: "low",
-    spaceType: "indoor",
-    translations: {
-      fr: {
-        description:
-          "Adresse dîner cosy avec éclairage tamisé et ambiance soirée romantique.",
-        shortDescription:
-          "Adresse dîner cosy avec éclairage tamisé et ambiance soirée romantique.",
-        overview:
-          "Moonlight Bistro est un restaurant à Racine conçu pour les soirées lentes et les dîners axés sur la conversation. Le cadre est intime, avec une bande-son apaisante et un espacement confortable entre les tables. C'est une option fiable pour les soirées en duo et les petites occasions spéciales.",
-        vibe: "Intime, calme, romantique",
-        vibeSummary: "Ambiance dîner intime pour des soirées en duo mémorables.",
-        audience: "Couples, proches amis",
-      },
-    },
-  },
-  {
     slug: "weekend-social-hub",
     name: "Weekend Social Hub",
-    category: "Friends",
-    categorySlug: "friends",
+    category: "Activities",
+    categorySlug: "activities",
     area: "Maarif, Casablanca",
     coordinates: { lat: 33.5757, lng: -7.6348 },
     description:
@@ -599,8 +433,6 @@ export const venues: Venue[] = [
 ];
 
 export const featuredVenueSlugs = [
-  "skyline-rooftop-cafe",
   "ocean-drive-padel-club",
-  "old-medina-food-walk",
   "pixel-arena",
 ];

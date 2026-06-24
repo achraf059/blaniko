@@ -5,13 +5,16 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "data:update-venues": "tsx scripts/updateVenueData.ts",
+    "data:update-venues:dry": "tsx scripts/updateVenueData.ts --dry-run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.5.2",
     "validator": "^13.15.35"
   },
   "devDependencies": {

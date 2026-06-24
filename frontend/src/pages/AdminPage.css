@@ -5,6 +5,107 @@
   color: var(--color-text);
 }
 
+/* ===== Admin PIN gate ===== */
+
+.bl-admin-gate-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 4rem);
+  padding: 2rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.bl-admin-gate-form {
+  width: 100%;
+  max-width: 22rem;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bl-admin-gate-eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum);
+}
+
+.bl-admin-gate-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.bl-admin-gate-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.bl-admin-gate-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  text-align: center;
+  transition: border-color 140ms ease;
+}
+
+.bl-admin-gate-input:focus {
+  outline: 2px solid var(--plum);
+  outline-offset: 2px;
+  border-color: var(--plum);
+}
+
+.bl-admin-gate-input.is-error {
+  border-color: var(--terracotta);
+}
+
+.bl-admin-gate-error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--terracotta);
+}
+
+.bl-admin-gate-btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--plum);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.bl-admin-gate-btn:hover {
+  background: var(--plum-deep);
+}
+
 .bl-admin-main {
   margin: 0 auto;
   width: 100%;
@@ -249,4 +350,100 @@
     grid-template-columns: 0.95fr 1.05fr;
     align-items: start;
   }
+}
+
+/* ===== Sprint 5A additions ===== */
+
+.bl-admin-api-error {
+  margin: 0.5rem 0 0;
+  padding: 0.6rem 0.875rem;
+  border-radius: 0.5rem;
+  background: #fff1f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.bl-admin-feedback {
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--plum) 8%, var(--surface) 92%);
+  border: 1px solid color-mix(in srgb, var(--plum) 22%, transparent 78%);
+  color: var(--plum-deep);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.bl-admin-feedback.is-error {
+  background: #fff1f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.bl-admin-inactive-badge {
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.bl-admin-list-item.is-inactive {
+  opacity: 0.6;
+}
+
+.bl-admin-form-section-label {
+  margin: 0.5rem 0 0;
+  grid-column: 1 / -1;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--plum-deep);
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.bl-admin-no-db {
+  margin-left: 0.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #94a3b8;
+}
+
+.bl-admin-form-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.bl-admin-form-empty-sub {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.bl-admin-empty {
+  padding: 1rem;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
 }

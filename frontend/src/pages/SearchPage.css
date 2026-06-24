@@ -573,3 +573,32 @@
     animation: none;
   }
 }
+
+/* ── Dark-mode overrides ── */
+/* "ink-as-background" buttons/chips invert to light in dark mode; use plum fill instead */
+[data-theme="dark"] .bl-discovery-chip.is-selected,
+[data-theme="dark"] .bl-discovery-budget-item.is-selected {
+  background: color-mix(in srgb, var(--plum) 26%, var(--surface));
+  border-color: var(--plum);
+  color: var(--plum-deep);
+}
+[data-theme="dark"] .bl-discovery-search-button {
+  background: var(--plum);
+  color: #fff;
+}
+[data-theme="dark"] .bl-discovery-search-button:hover {
+  background: var(--plum-deep);
+}
+[data-theme="dark"] .bl-search-map-btn {
+  background: var(--plum);
+  border-color: var(--plum);
+  color: #fff;
+}
+[data-theme="dark"] .bl-search-map-btn:hover {
+  background: var(--plum-deep);
+  border-color: var(--plum-deep);
+}
+[data-theme="dark"] .bl-search-advanced-panel-done {
+  background: var(--plum);
+  color: #fff;
+}

@@ -124,7 +124,7 @@ export const Editorial = () => {
       <div className="ed-card">
         <div className="ed-img">
           <img
-            src="/images/home/family-cinema-night.png"
+            src="/images/home/family-cinema-night.webp"
             alt="Family enjoying a movie night in a cinema"
           />
         </div>

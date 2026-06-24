@@ -2,18 +2,39 @@ import React from "react";
 import { Link, useNavigate } from "react-router";
 import { Icon } from "./Icon.jsx";
 import { useI18n } from "../i18n/useI18n";
+import { useTheme } from "../hooks/useTheme";
 
-// Blaniko — Nav
+// Blaniko — Homepage Nav
+// Top links are homepage scroll anchors. Product routes live in the hamburger.
 export const Nav = ({ favoritesCount = 0 }) => {
   const navigate = useNavigate();
   const { language, setLanguage, dictionary } = useI18n();
+  const homeNav = dictionary.claudeHome;
+  const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const menuRef = React.useRef(null);
+
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  React.useEffect(() => {
+    if (!menuOpen) return;
+    const onOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onOutside);
+    return () => document.removeEventListener("mousedown", onOutside);
+  }, [menuOpen]);
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="shell nav-inner">
@@ -29,13 +50,15 @@ export const Nav = ({ favoritesCount = 0 }) => {
         >
           <img src="/brand/blaniko-wordmark.png" alt="Blaniko" />
         </Link>
+
+        {/* Homepage scroll anchors — hidden below 900px via .nav-links rule */}
         <div className="nav-links">
-          <a href="#hero">{dictionary.claudeHome.navExplore}</a>
-          <a href="#categories">{dictionary.claudeHome.navCategories}</a>
-          <a href="#picks">{dictionary.claudeHome.navCurated}</a>
-          {/* Map link hidden until venue coordinates are verified for v0 */}
-          <a href="#join">{dictionary.claudeHome.navContact}</a>
+          <a href="#hero">{homeNav.navExplore}</a>
+          <a href="#categories">{homeNav.navCategories}</a>
+          <a href="#picks">{homeNav.navCurated}</a>
+          <a href="#join">{homeNav.navContact}</a>
         </div>
+
         <div className="nav-right">
           <button
             className="saved-pill"
@@ -43,38 +66,93 @@ export const Nav = ({ favoritesCount = 0 }) => {
             onClick={() => navigate("/favorites")}
           >
             <Icon name={favoritesCount > 0 ? "heartFill" : "heart"} size={14} />
-            {dictionary.claudeHome.saved}
+            {homeNav.saved}
             {favoritesCount > 0 && <span className="count">{favoritesCount}</span>}
           </button>
-          <div className="lang-switch">
-            {["EN", "FR", "AR"].map((label) => {
-              const code = label.toLowerCase();
-              const isSupported = code === "en" || code === "fr";
-              const isActive = isSupported && language === code;
 
+          <div className="lang-switch">
+            {["EN", "FR"].map((label) => {
+              const code = label.toLowerCase();
+              const isActive = language === code;
               return (
                 <button
                   key={label}
-                  className={`${isActive ? "active" : ""} ${!isSupported ? "is-disabled" : ""}`.trim()}
-                  onClick={() => {
-                    if (code === "en") {
-                      setLanguage("en");
-                    }
-
-                    if (code === "fr") {
-                      setLanguage("fr");
-                    }
-                  }}
-                  disabled={!isSupported}
-                  aria-disabled={!isSupported}
-                  title={!isSupported ? dictionary.claudeHome.arComingSoon : undefined}
+                  className={isActive ? "active" : ""}
+                  onClick={() => setLanguage(code)}
                 >
                   {label}
                 </button>
               );
             })}
           </div>
-          <a href="#join" className="nav-cta">{dictionary.claudeHome.joinList}</a>
+
+          {/* Theme toggle */}
+          <button
+            type="button"
+            className="nav-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <line x1="12" y1="2"    x2="12" y2="4.5"  />
+                <line x1="12" y1="19.5" x2="12" y2="22"   />
+                <line x1="4.22"  y1="4.22"  x2="5.87"  y2="5.87"  />
+                <line x1="18.13" y1="18.13" x2="19.78" y2="19.78" />
+                <line x1="2"    y1="12" x2="4.5"  y2="12" />
+                <line x1="19.5" y1="12" x2="22"   y2="12" />
+                <line x1="4.22"  y1="19.78" x2="5.87"  y2="18.13" />
+                <line x1="18.13" y1="5.87"  x2="19.78" y2="4.22"  />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
+
+          {/* Hamburger — product routes (not homepage sections) */}
+          <div className="nav-hamburger-wrap" ref={menuRef}>
+            <button
+              className="nav-hamburger"
+              aria-label="Open menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              {menuOpen ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                  <line x1="2" y1="2" x2="14" y2="14" />
+                  <line x1="14" y1="2" x2="2" y2="14" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                  <line x1="1" y1="3.5" x2="15" y2="3.5" />
+                  <line x1="1" y1="8" x2="15" y2="8" />
+                  <line x1="1" y1="12.5" x2="15" y2="12.5" />
+                </svg>
+              )}
+            </button>
+
+            {menuOpen && (
+              <div className="nav-menu-panel">
+                <p className="nav-menu-section">{homeNav.navMenuExploreBlaniko}</p>
+                <Link to="/search" className="nav-menu-link" onClick={closeMenu}>{homeNav.navSearch}</Link>
+                <Link to="/guides" className="nav-menu-link" onClick={closeMenu}>{homeNav.navGuides}</Link>
+                <Link to="/plan" className="nav-menu-link" onClick={closeMenu}>{homeNav.navPlan}</Link>
+                <Link to="/map" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMap}</Link>
+                <Link to="/recommendations" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMenuRecommendations}</Link>
+
+                <div className="nav-menu-divider" />
+
+                <p className="nav-menu-section">{homeNav.navMenuMore}</p>
+                <Link to="/partners" className="nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
+                <Link to="/privacy" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMenuPrivacy}</Link>
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </nav>

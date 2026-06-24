@@ -42,46 +42,54 @@ export type EditorialCollection = {
     label: string;
     href: string;
   };
+  /** Display-only fields added for the Guides redesign. */
+  image?: string;
+  badge?: { label: string; mood: string };
+  badgeFr?: { label: string };
+  time?: string;
+  level?: string;
+  levelFr?: string;
+  moods?: string[];
   translations?: Partial<Record<Exclude<AppLanguage, "en">, CollectionTranslation>>;
 };
 
 export const editorialCollections: EditorialCollection[] = [
   {
-    id: "best-first-date-spots",
-    slug: "best-first-date-spots",
-    title: "Best first-date spots",
-    subtitle: "Low-pressure places where conversation is easy.",
+    id: "date-friendly-activity-ideas",
+    slug: "date-friendly-activity-ideas",
+    title: "Date-friendly activity ideas",
+    subtitle: "Easy plans for two that are more memorable than scrolling for ideas.",
     description:
-      "A balanced mix of cozy dinner tables, calm rooftops, and sea-view walks for a first date that feels natural.",
+      "From relaxed outdoor spots to playful activities, these picks help you plan something simple, social, and a little more special.",
     whyItMatters:
-      "The best first dates in Casablanca are simple: a place with comfortable energy, enough ambiance, and no pressure to perform.",
-    theme: {
-      mood: "romantic",
-      budget: "mixed",
+      "A good date plan does not need to be complicated. The right setting, the right pace, and one shared activity can make the outing feel intentional.",
+    explanationChips: ["For two", "Low pressure", "Easy to plan"],
+    selectionRule: {
+      categorySlugs: ["activities", "outdoor", "sports"],
+      maxItems: 6,
     },
-    explanationChips: ["Conversation-friendly", "Calm energy", "Evening-ready"],
-    venueSlugs: [
-      "moonlight-bistro",
-      "skyline-rooftop-cafe",
-      "marina-sunset-walk",
-      "beldi-table-kitchen",
-    ],
     featured: true,
+    image: "/homepage/hero/hero-padel-ocean-drive.webp",
+    badge: { label: "Date night", mood: "date" },
+    badgeFr: { label: "Soirée duo" },
+    time: "2–3h",
+    level: "Easy",
+    levelFr: "Facile",
+    moods: ["date", "outdoor", "sunset"],
     cta: {
-      label: "Plan this date flow",
-      href: "/plan?mood=romantic&with=partner",
+      label: "Browse date-friendly ideas",
+      href: "/search?bestFor=date-spot",
     },
     translations: {
       fr: {
-        title: "Les meilleurs spots pour un premier rendez-vous",
-        subtitle: "Des endroits sans pression où la conversation vient naturellement.",
+        title: "Idées d'activités en duo",
+        subtitle: "Des plans simples à deux, plus mémorables que de chercher des idées.",
         description:
-          "Un mélange équilibré de tables douillettes, de rooftops calmes et de promenades vue sur mer pour un premier rendez-vous qui se passe bien.",
+          "Entre spots en plein air et activités ludiques, ces idées aident à organiser une sortie simple, agréable et un peu plus spéciale.",
         whyItMatters:
-          "Les meilleurs premiers rendez-vous à Casablanca sont simples : un lieu avec une énergie confortable, assez d'ambiance et sans pression.",
-        theme: { mood: "Romantique", budget: "Varié" },
-        explanationChips: ["Propice à la conversation", "Énergie calme", "Prêt pour le soir"],
-        cta: { label: "Planifier ce rendez-vous" },
+          "Un bon plan à deux n'a pas besoin d'être compliqué. Le bon cadre, le bon rythme et une activité partagée peuvent rendre la sortie plus intentionnelle.",
+        explanationChips: ["À deux", "Sans pression", "Facile à organiser"],
+        cta: { label: "Explorer les idées en duo" },
       },
     },
   },
@@ -103,6 +111,13 @@ export const editorialCollections: EditorialCollection[] = [
       maxItems: 6,
     },
     featured: true,
+    image: "/picks-images/pool-night/pick-pool-night-01.webp",
+    badge: { label: "Budget pick", mood: "budget" },
+    badgeFr: { label: "Petit budget" },
+    time: "3–4h",
+    level: "Easy",
+    levelFr: "Facile",
+    moods: ["budget", "outdoor", "friends", "weekend"],
     cta: {
       label: "Search low-budget ideas",
       href: "/search?budget=low",
@@ -122,78 +137,79 @@ export const editorialCollections: EditorialCollection[] = [
     },
   },
   {
-    id: "chill-cafes-to-work-from",
-    slug: "chill-cafes-to-work-from",
-    title: "Chill cafés to work from",
-    subtitle: "Laptop-friendly picks for focus hours and meetings.",
+    id: "indoor-plans-slow-days",
+    slug: "indoor-plans-slow-days",
+    title: "Indoor plans for slow days",
+    subtitle: "Low-key activity picks when you want to stay out of the sun.",
     description:
-      "Quiet café options with a focused vibe for remote work blocks, client meetings, or solo deep work in the city.",
+      "Escape rooms, billiards, gaming lounges, and indoor activities — Casablanca has a solid indoor scene for the days you need a plan but not a big one.",
     whyItMatters:
-      "When your environment is calm, your day flows better. These spots help you stay productive without leaving city life.",
-    theme: {
-      mood: "chill",
-      area: "central",
-    },
-    explanationChips: ["Laptop-friendly", "Quiet vibe", "Coffee quality"],
-    venueSlugs: ["bean-district", "skyline-rooftop-cafe"],
+      "Not every outing needs a full itinerary. A good indoor spot in the right part of the city is enough to make a slow day feel worthwhile.",
+    explanationChips: ["No weather dependency", "Easy to extend", "Group or solo"],
     selectionRule: {
-      categorySlugs: ["cafes"],
-      audienceIncludes: ["remote", "freelancers", "professionals"],
-      maxItems: 5,
+      categorySlugs: ["activities", "gaming"],
+      maxItems: 6,
     },
     featured: true,
+    image: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.webp",
+    badge: { label: "Indoor", mood: "indoor" },
+    badgeFr: { label: "Intérieur" },
+    time: "2–4h",
+    level: "Easy",
+    levelFr: "Facile",
+    moods: ["indoor", "friends", "weekend"],
     cta: {
-      label: "Open chill mood discovery",
-      href: "/search?mood=chill",
+      label: "Browse indoor picks",
+      href: "/search?category=activities",
     },
     translations: {
       fr: {
-        title: "Cafés tranquilles pour travailler",
-        subtitle: "Des sélections laptop-friendly pour les heures de concentration et les réunions.",
+        title: "Plans intérieurs pour les jours calmes",
+        subtitle: "Des activités tranquilles pour rester à l'abri du soleil.",
         description:
-          "Des cafés calmes avec une ambiance concentrée pour le télétravail, les réunions clients ou le travail en solo au cœur de la ville.",
+          "Escape games, billard, lounges gaming et activités intérieures — Casablanca offre une bonne scène indoor pour les jours où vous voulez sortir sans faire grand chose.",
         whyItMatters:
-          "Quand votre environnement est calme, votre journée se déroule mieux. Ces adresses vous aident à rester productif sans quitter la vie citadine.",
-        theme: { mood: "Détente", area: "Central" },
-        explanationChips: ["Adapté aux laptops", "Ambiance calme", "Qualité du café"],
-        cta: { label: "Explorer l'ambiance détente" },
+          "Tous les plans n'ont pas besoin d'un itinéraire complet. Un bon endroit intérieur dans le bon quartier suffit à rendre une journée calme mémorable.",
+        explanationChips: ["Sans contrainte météo", "Facile à prolonger", "En groupe ou solo"],
+        cta: { label: "Explorer les plans intérieurs" },
       },
     },
   },
   {
     id: "sunset-places",
     slug: "sunset-places",
-    title: "Sunset places",
-    subtitle: "Golden-hour venues and coastal afterglow routes.",
+    title: "Sunset spots by the coast",
+    subtitle: "Easy end-of-day ideas around Ain Diab and the Marina.",
     description:
-      "Built for late afternoon plans: start outside near the sea and end with a relaxed food or coffee stop.",
+      "Coastal and open-air picks for golden-hour walks, relaxed activities, and simple evening plans near the water.",
     whyItMatters:
-      "Sunset is one of Casablanca's strongest moods. Picking the right spots turns a normal evening into a memorable one.",
-    theme: {
-      mood: "romantic",
-      area: "coast",
-    },
-    explanationChips: ["Sea views", "Late-afternoon friendly", "Photo-worthy"],
-    venueSlugs: ["marina-sunset-walk", "skyline-rooftop-cafe", "ain-diab-bike-loop"],
+      "A sunset plan works best when the location does most of the work. These picks keep the outing simple, scenic, and easy to extend.",
+    explanationChips: ["Golden hour", "Coastal areas", "Easy evening plan"],
     selectionRule: {
       areaIncludes: ["ain diab", "marina"],
-      maxItems: 5,
+      maxItems: 6,
     },
+    image: "/homepage/hero/hero-rooftop-sundowner.webp",
+    badge: { label: "Sunset", mood: "sunset" },
+    badgeFr: { label: "Coucher de soleil" },
+    time: "1–2h",
+    level: "Easy",
+    levelFr: "Facile",
+    moods: ["sunset", "outdoor", "date"],
     cta: {
-      label: "See these on map",
-      href: "/map",
+      label: "Browse sunset ideas",
+      href: "/search?bestFor=sunset-spot",
     },
     translations: {
       fr: {
-        title: "Spots coucher de soleil",
-        subtitle: "Des lieux golden hour et des routes côtières au crépuscule.",
+        title: "Spots sunset près de la côte",
+        subtitle: "Des idées simples en fin de journée autour d'Ain Diab et de la Marina.",
         description:
-          "Conçu pour les plans en fin d'après-midi : commencez en extérieur près de la mer et terminez par une pause café ou repas détendue.",
+          "Des lieux côtiers et en plein air pour les balades au coucher du soleil, les activités calmes et les plans du soir près de l'eau.",
         whyItMatters:
-          "Le coucher de soleil est l'une des plus belles ambiances de Casablanca. Choisir les bons spots transforme une soirée ordinaire en souvenir.",
-        theme: { mood: "Romantique", area: "Côtier" },
-        explanationChips: ["Vue sur mer", "Propice à l'après-midi", "Photo-worthy"],
-        cta: { label: "Voir sur la carte" },
+          "Un bon plan sunset fonctionne mieux quand le lieu fait une grande partie du travail. Ces idées gardent la sortie simple, agréable et facile à prolonger.",
+        explanationChips: ["Golden hour", "Zones côtières", "Plan du soir facile"],
+        cta: { label: "Explorer les idées sunset" },
       },
     },
   },
@@ -201,64 +217,37 @@ export const editorialCollections: EditorialCollection[] = [
     id: "casual-plans-with-friends",
     slug: "casual-plans-with-friends",
     title: "Casual plans with friends",
-    subtitle: "Group-friendly picks with social energy.",
+    subtitle: "Easy group ideas when everyone says they don't know.",
     description:
-      "For spontaneous group plans: social gaming, active sessions, and lively spots where everyone can plug in.",
+      "Simple activity picks for friend groups who want something social, flexible, and easy to organize in Casablanca.",
     whyItMatters:
-      "The strongest friend plans are flexible. These venues make it easy to gather, move, and keep the night simple.",
-    theme: {
-      mood: "social",
+      "The hardest part of a group outing is choosing. These picks keep the plan simple while still giving everyone something to do together.",
+    explanationChips: ["Group-friendly", "Easy to organize", "Flexible timing"],
+    selectionRule: {
+      categorySlugs: ["activities", "gaming", "sports"],
+      maxItems: 6,
     },
-    explanationChips: ["Group-ready", "Social vibe", "Weekend-safe"],
-    venueSlugs: [
-      "weekend-social-hub",
-      "pixel-arena",
-      "ocean-drive-padel-club",
-      "old-medina-food-walk",
-    ],
+    image: "/homepage/hero/hero-night-out-maarif.webp",
+    badge: { label: "Friends", mood: "friends" },
+    badgeFr: { label: "Entre amis" },
+    time: "2–4h",
+    level: "Easy",
+    levelFr: "Facile",
+    moods: ["friends", "indoor", "weekend"],
     cta: {
-      label: "Build a friends outing",
-      href: "/plan?mood=social&with=friends",
+      label: "Browse group ideas",
+      href: "/search?bestFor=friends",
     },
     translations: {
       fr: {
-        title: "Plans décontractés entre amis",
-        subtitle: "Des sélections conviviales avec une énergie sociale.",
+        title: "Plans simples entre amis",
+        subtitle: "Des idées faciles quand tout le monde dit « je ne sais pas ».",
         description:
-          "Pour les plans de groupe spontanés : gaming social, sessions actives et endroits animés où tout le monde peut s'impliquer.",
+          "Des activités simples pour les groupes d'amis qui veulent une sortie sociale, flexible et facile à organiser à Casablanca.",
         whyItMatters:
-          "Les meilleurs plans entre amis sont flexibles. Ces lieux facilitent le rassemblement, les déplacements et les soirées simples.",
-        theme: { mood: "Social" },
-        explanationChips: ["Idéal en groupe", "Ambiance sociale", "Parfait le week-end"],
-        cta: { label: "Planifier une sortie entre amis" },
-      },
-    },
-  },
-  {
-    id: "cozy-indoor-spots",
-    slug: "cozy-indoor-spots",
-    title: "Cozy indoor spots",
-    subtitle: "Comfort-first places for cooler days or slow evenings.",
-    description:
-      "Indoor venues with warm atmospheres, suitable for long conversations, easy dinners, and relaxed city breaks.",
-    whyItMatters:
-      "Not every good plan needs movement. Sometimes the right indoor atmosphere is the plan itself.",
-    theme: {
-      mood: "chill",
-      budget: "mid",
-    },
-    explanationChips: ["Warm ambiance", "Conversation-first", "All-weather"],
-    venueSlugs: ["moonlight-bistro", "beldi-table-kitchen", "bean-district"],
-    translations: {
-      fr: {
-        title: "Espaces intérieurs cosy",
-        subtitle: "Des endroits confort pour les jours plus frais ou les soirées tranquilles.",
-        description:
-          "Des lieux intérieurs avec une atmosphère chaleureuse, propices aux longues conversations, dîners faciles et pauses détendues en ville.",
-        whyItMatters:
-          "Tous les bons plans n'ont pas besoin de mouvement. Parfois, la bonne ambiance intérieure est le plan en soi.",
-        theme: { mood: "Détente", budget: "Moyen" },
-        explanationChips: ["Ambiance chaleureuse", "Conversation en priorité", "Toutes conditions"],
+          "Le plus difficile dans une sortie de groupe, c'est de choisir. Ces idées gardent le plan simple tout en donnant à tout le monde quelque chose à faire ensemble.",
+        explanationChips: ["Entre amis", "Facile à organiser", "Horaires flexibles"],
+        cta: { label: "Explorer les idées de groupe" },
       },
     },
   },

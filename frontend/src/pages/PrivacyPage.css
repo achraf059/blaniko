@@ -1,0 +1,83 @@
+.bl-privacy-page {
+  min-height: 100vh;
+}
+
+.bl-privacy-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 24px 120px;
+}
+
+.bl-privacy-eyebrow {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--plum);
+  margin-bottom: 16px;
+}
+
+.bl-privacy-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.bl-privacy-meta {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+  margin-bottom: 0;
+  opacity: 0.65;
+}
+
+.bl-privacy-body {
+  margin-top: 56px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.bl-privacy-section {
+  padding: 40px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.bl-privacy-section h2 {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.bl-privacy-section p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  max-width: 62ch;
+}
+
+/* Footer privacy note link */
+.footer-privacy-note-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 0.8;
+  transition: opacity 150ms;
+}
+
+.footer-privacy-note-link:hover {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .bl-privacy-main {
+    padding: 48px 20px 80px;
+  }
+}

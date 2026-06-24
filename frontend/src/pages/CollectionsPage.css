@@ -4,6 +4,9 @@
   background: transparent;
   color: var(--color-text);
 }
+[data-theme="dark"] .bl-collections-page {
+  background: var(--bg);
+}
 
 .bl-collections-main {
   margin: 0 auto;

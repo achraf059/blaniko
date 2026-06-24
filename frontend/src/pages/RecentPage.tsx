@@ -6,7 +6,6 @@ import {
 } from "../hooks/useRecentActivity";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
-import "./HomePage.css";
 import "./RecentPage.css";
 
 const activityTypeLabels = {

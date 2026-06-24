@@ -34,15 +34,11 @@
 
 /* Per-category tints — all kept within the brand purple / warm family
    so a venue with no photo still reads as "intentional", never broken. */
-.bl-venue-image[data-cat="cafes"]       .bl-venue-ph { background: linear-gradient(150deg, #efe6d8, var(--heather) 58%, var(--plum)); }
-.bl-venue-image[data-cat="restaurants"] .bl-venue-ph { background: linear-gradient(150deg, #ecd9cd, #b78a86 52%, var(--plum-deep)); }
 .bl-venue-image[data-cat="activities"]  .bl-venue-ph { background: linear-gradient(150deg, #e3d8f0, #8a73b0 55%, var(--plum-deep)); }
 .bl-venue-image[data-cat="sports"]      .bl-venue-ph { background: linear-gradient(150deg, #ded3f2, #7259a8 52%, #2e1d54); }
 .bl-venue-image[data-cat="gaming"]      .bl-venue-ph { background: linear-gradient(150deg, #d6ccf2, #5e3f8a 50%, #221545); }
 .bl-venue-image[data-cat="outdoor"]     .bl-venue-ph { background: linear-gradient(150deg, #d9d6ec, #6f7ba8 50%, #3a3068); }
 .bl-venue-image[data-cat="family"]      .bl-venue-ph { background: linear-gradient(150deg, #eadfe9, #ad8fc0 55%, var(--plum)); }
-.bl-venue-image[data-cat="couples"]     .bl-venue-ph { background: linear-gradient(150deg, #ecd5e0, #a86f93 52%, var(--plum-deep)); }
-.bl-venue-image[data-cat="friends"]     .bl-venue-ph { background: linear-gradient(150deg, #e6dcf0, #8a6ab0 52%, var(--plum-deep)); }
 
 /* subtle light wash + hairline texture on every placeholder */
 .bl-venue-ph-tint {

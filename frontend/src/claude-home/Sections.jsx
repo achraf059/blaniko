@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Icon } from "./Icon.jsx";
 import { getClaudeHomeLocalizedData } from "./data.js";
 import { useI18n } from "../i18n/useI18n";
@@ -26,7 +26,7 @@ export const Categories = () => {
           <button
             key={c.name}
             className="cat"
-            onClick={() => navigate(`/categories/${c.slug}`)}
+            onClick={() => navigate(c.href ?? `/categories/${c.slug}`)}
           >
             {c.img && (
               <div
@@ -41,6 +41,12 @@ export const Categories = () => {
             </div>
           </button>
         ))}
+      </div>
+      <div className="cat-quiz-cta">
+        <Link to="/recommendations" className="cat-quiz-cta-pill">
+          <span className="cat-quiz-cta-prompt">{dictionary.claudeHome.categoriesNotSurePrompt}</span>
+          <span className="cat-quiz-cta-action">{dictionary.claudeHome.categoriesNotSureCta}</span>
+        </Link>
       </div>
     </section>
   );
@@ -114,7 +120,7 @@ export const How = () => {
   const { howSteps } = getClaudeHomeLocalizedData(language);
 
   return (
-    <section className="how shell" id="about">
+    <section className="how shell" id="how">
       <div className="section-head" style={{ marginBottom: 56 }}>
         <div>
           <div className="eyebrow">{dictionary.claudeHome.howEyebrow}</div>
@@ -217,7 +223,10 @@ export const FooterCTA = () => {
                     {inlineError}
                   </div>
                 ) : (
-                  <div className="small-note">{ch.footerSmallNote}</div>
+                  <div className="small-note">
+                    {ch.footerSmallNote}{" "}
+                    <Link to="/privacy" className="footer-privacy-note-link">{ch.footerPrivacyLink}</Link>
+                  </div>
                 )}
               </form>
             )}
@@ -228,15 +237,37 @@ export const FooterCTA = () => {
   );
 };
 
+export const AboutSection = () => {
+  const { dictionary } = useI18n();
+  const ch = dictionary.claudeHome;
+
+  return (
+    <section className="about-section shell" id="about">
+      <div className="section-head">
+        <div>
+          <div className="eyebrow">{ch.aboutEyebrow}</div>
+          <h2>{ch.aboutTitlePrefix} <em>{ch.aboutTitleEmphasis}</em></h2>
+        </div>
+      </div>
+      <p className="about-body">{ch.aboutBody}</p>
+    </section>
+  );
+};
+
 export const Foot = () => {
-  const { language } = useI18n();
+  const { language, dictionary } = useI18n();
   const { footer } = getClaudeHomeLocalizedData(language);
 
   return (
     <footer className="shell foot">
       <div>{footer.madeIn}</div>
+      <div className="foot-links">
+        <a href="/#about" className="foot-about-link">{footer.about}</a>
+        <Link to="/privacy" className="foot-about-link">{dictionary.claudeHome.footerPrivacyLink}</Link>
+        <Link to="/partners" className="foot-about-link">{dictionary.claudeHome.footerForVenues}</Link>
+      </div>
     </footer>
   );
 };
 
-Object.assign(window, { Categories, Curated, How, FooterCTA, Foot });
+Object.assign(window, { Categories, Curated, How, AboutSection, FooterCTA, Foot });
