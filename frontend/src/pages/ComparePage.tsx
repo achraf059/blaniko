@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { getVenueDisplay } from "../data/mockData";
 import { useCompare } from "../hooks/useCompare";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
@@ -17,6 +18,12 @@ import "./ComparePage.css";
 export default function ComparePage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
+  usePageMeta(
+    language === "fr" ? "Comparer des lieux | Blaniko" : "Compare Venues | Blaniko",
+    language === "fr"
+      ? "Comparez des lieux à Casablanca côte à côte pour trouver ce qui vous convient."
+      : "Compare Casablanca venues side by side to find the best fit.",
+  );
   const { compareSlugs, compareCount, removeFromCompare, clearCompare } =
     useCompare();
   const { venuesBySlug } = useVenues();

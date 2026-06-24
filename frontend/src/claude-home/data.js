@@ -144,7 +144,3 @@ export function getClaudeHomeLocalizedData(language) {
 export const HERO_CARDS = localizedHomeData.en.heroCards;
 export const CATEGORIES = localizedHomeData.en.categories;
 export const CURATED = localizedHomeData.en.curated;
-
-if (typeof window !== "undefined") {
-  Object.assign(window, { HERO_CARDS, CATEGORIES, CURATED, getClaudeHomeLocalizedData });
-}

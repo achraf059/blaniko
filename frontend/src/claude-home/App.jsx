@@ -2,7 +2,7 @@ import React from "react";
 import "./data.js";
 import { Nav } from "./Nav.jsx";
 import { Hero } from "./Hero.jsx";
-import { Editorial, CompareTray } from "./Features.jsx"; // MapPreview excluded until venue coordinates are verified for v0
+import { Editorial, CompareTray } from "./Features.jsx";
 import { Categories, Curated, How, AboutSection, FooterCTA, Foot } from "./Sections.jsx";
 import { useFavorites } from "../hooks/useFavorites";
 import { useCompare } from "../hooks/useCompare";
@@ -93,7 +93,6 @@ const App = () => {
           toggleFav={toggleFavorite}
         />
         <Editorial />
-        {/* <MapPreview /> — hidden for v0 until venue coordinates are verified */}
         <AboutSection />
         <FooterCTA />
       </main>

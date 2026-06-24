@@ -232,7 +232,7 @@ export default function VenuePage() {
             <h1 className="bl-venue-title">{venue.name}</h1>
             <div className="bl-venue-title-meta">
               <span className="bl-venue-area-badge">
-                <span aria-hidden="true">📍</span>
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
                 {venue.area}
               </span>
               {venue.priceLevel ? (
@@ -362,7 +362,7 @@ export default function VenuePage() {
                     rel="noopener noreferrer"
                     className="bl-venue-maps-link"
                   >
-                    <span className="bl-venue-maps-link-icon" aria-hidden="true">📍</span>
+                    <svg className="bl-venue-maps-link-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
                     <span className="bl-venue-maps-link-text">
                       <span className="bl-venue-maps-link-name">{venue.area.split(",")[0]?.trim() ?? venue.area}</span>
                       <span className="bl-venue-maps-link-sub">{dictionary.venuePage.panelSubtitle}</span>
@@ -399,7 +399,7 @@ export default function VenuePage() {
                           rel="noopener noreferrer"
                           className="bl-venue-cta-primary"
                         >
-                          <span aria-hidden="true">📍</span>
+                          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
                           {dictionary.venuePage.actionOpenMaps}
                         </a>
                       ) : null}
@@ -411,7 +411,7 @@ export default function VenuePage() {
                               href={`tel:${dialPhone}`}
                               className="bl-venue-cta-pill"
                             >
-                              <span aria-hidden="true">📞</span>
+                              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L11 11.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.4 1.9.6 2.9.7A2 2 0 0 1 22 16.9Z"/></svg>
                               {dictionary.venuePage.actionCall}
                             </a>
                           ) : null}
@@ -422,7 +422,7 @@ export default function VenuePage() {
                               rel="noopener noreferrer"
                               className="bl-venue-cta-pill"
                             >
-                              <span aria-hidden="true">💬</span>
+                              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                               {dictionary.venuePage.actionWhatsApp}
                             </a>
                           ) : null}
@@ -433,7 +433,7 @@ export default function VenuePage() {
                               rel="noopener noreferrer"
                               className="bl-venue-cta-pill"
                             >
-                              <span aria-hidden="true">🌐</span>
+                              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                               {dictionary.venuePage.actionWebsite}
                             </a>
                           ) : null}
@@ -444,7 +444,7 @@ export default function VenuePage() {
                               rel="noopener noreferrer"
                               className="bl-venue-cta-pill"
                             >
-                              <span aria-hidden="true">📸</span>
+                              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                               {dictionary.venuePage.actionInstagram}
                             </a>
                           ) : null}

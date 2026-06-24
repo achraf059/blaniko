@@ -46,5 +46,3 @@ export const Continuation = () => {
     </section>
   );
 };
-
-Object.assign(window, { Continuation });
