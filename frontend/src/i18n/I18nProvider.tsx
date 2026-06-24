@@ -10,6 +10,7 @@ import {
   DEFAULT_LANGUAGE,
   isAppLanguage,
   LANGUAGE_STORAGE_KEY,
+  LANGUAGE_STORAGE_KEY_LEGACY,
   type AppLanguage,
 } from "./types";
 
@@ -18,7 +19,9 @@ function getInitialLanguage(): AppLanguage {
     return DEFAULT_LANGUAGE;
   }
 
-  const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  // Read new key first; fall back to legacy key for existing users.
+  const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY)
+    ?? window.localStorage.getItem(LANGUAGE_STORAGE_KEY_LEGACY);
   return isAppLanguage(saved) ? saved : DEFAULT_LANGUAGE;
 }
 
