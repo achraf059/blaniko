@@ -235,6 +235,12 @@ textarea {
   font: inherit;
 }
 
+/* ── Route-level lazy-load fallback ── */
+.bl-route-loading {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
