@@ -5,6 +5,7 @@ import App from "./App";
 import { HashScrollHandler } from "./components/HashScrollHandler";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { ThemeProvider } from "./hooks/useTheme";
+import { AuthProvider } from "./auth/AuthProvider";
 // claude-home/styles.css is imported here (before index.css and all page CSS)
 // so it always lands at a consistent, predictable position in the CSS cascade
 // regardless of which page the user navigates to first. Without this, Vite dev
@@ -18,10 +19,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <I18nProvider>
+        <AuthProvider>
         <BrowserRouter>
           <HashScrollHandler />
           <App />
         </BrowserRouter>
+        </AuthProvider>
       </I18nProvider>
     </ThemeProvider>
   </React.StrictMode>,

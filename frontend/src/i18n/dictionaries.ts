@@ -60,6 +60,7 @@ export type Dictionary = {
     navMenuMore: string;
     navMenuRecommendations: string;
     navMenuPrivacy: string;
+    navAccount: string;
     saved: string;
     joinList: string;
     arComingSoon: string;
@@ -197,6 +198,29 @@ export type Dictionary = {
     description: string;
     backToHome: string;
     browseVenues: string;
+  };
+  loginPage: {
+    title: string;
+    subtitle: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    submitBtn: string;
+    submitting: string;
+    successTitle: string;
+    successDesc: string;
+    backToHome: string;
+    errorGeneric: string;
+    notConfigured: string;
+  };
+  accountPage: {
+    title: string;
+    loggedInAs: string;
+    logOutBtn: string;
+    logOutting: string;
+    guestTitle: string;
+    guestDesc: string;
+    loginBtn: string;
+    backToHome: string;
   };
   venueCard: {
     featured: string;
@@ -414,6 +438,7 @@ const en: Dictionary = {
     navMenuMore: "More",
     navMenuRecommendations: "Personalized picks",
     navMenuPrivacy: "Privacy",
+    navAccount: "My account",
     saved: "Saved",
     joinList: "Join early",
     arComingSoon: "Arabic coming soon",
@@ -571,6 +596,29 @@ const en: Dictionary = {
     description: "This page doesn't exist or may have moved. Head back to discover places in Casablanca.",
     backToHome: "Back to home",
     browseVenues: "Browse venues",
+  },
+  loginPage: {
+    title: "Sign in",
+    subtitle: "Enter your email and we'll send you a magic link — no password needed.",
+    emailLabel: "Email address",
+    emailPlaceholder: "you@example.com",
+    submitBtn: "Send magic link",
+    submitting: "Sending…",
+    successTitle: "Check your inbox",
+    successDesc: "We sent a sign-in link to your email. Click it to continue.",
+    backToHome: "Back to home",
+    errorGeneric: "Something went wrong. Please try again.",
+    notConfigured: "Auth is not available right now.",
+  },
+  accountPage: {
+    title: "My account",
+    loggedInAs: "Signed in as",
+    logOutBtn: "Sign out",
+    logOutting: "Signing out…",
+    guestTitle: "You're browsing as a guest",
+    guestDesc: "Sign in to access your account across devices.",
+    loginBtn: "Sign in",
+    backToHome: "Back to home",
   },
   venueCard: {
     featured: "Featured",
@@ -794,6 +842,7 @@ const fr: Dictionary = {
     navMenuMore: "Plus",
     navMenuRecommendations: "Idées personnalisées",
     navMenuPrivacy: "Confidentialité",
+    navAccount: "Mon compte",
     saved: "Enregistrés",
     joinList: "Accès anticipé",
     arComingSoon: "Arabe bientôt disponible",
@@ -951,6 +1000,29 @@ const fr: Dictionary = {
     description: "Cette page n'existe pas ou a peut-être été déplacée. Retournez découvrir des lieux à Casablanca.",
     backToHome: "Retour à l'accueil",
     browseVenues: "Explorer les lieux",
+  },
+  loginPage: {
+    title: "Se connecter",
+    subtitle: "Entrez votre email et nous vous enverrons un lien magique — aucun mot de passe nécessaire.",
+    emailLabel: "Adresse email",
+    emailPlaceholder: "vous@exemple.com",
+    submitBtn: "Envoyer le lien magique",
+    submitting: "Envoi en cours…",
+    successTitle: "Vérifiez votre boîte mail",
+    successDesc: "Nous avons envoyé un lien de connexion à votre email. Cliquez dessus pour continuer.",
+    backToHome: "Retour à l'accueil",
+    errorGeneric: "Une erreur est survenue. Veuillez réessayer.",
+    notConfigured: "L'authentification n'est pas disponible pour le moment.",
+  },
+  accountPage: {
+    title: "Mon compte",
+    loggedInAs: "Connecté en tant que",
+    logOutBtn: "Se déconnecter",
+    logOutting: "Déconnexion…",
+    guestTitle: "Vous naviguez en tant qu'invité",
+    guestDesc: "Connectez-vous pour accéder à votre compte sur tous vos appareils.",
+    loginBtn: "Se connecter",
+    backToHome: "Retour à l'accueil",
   },
   venueCard: {
     featured: "À la une",

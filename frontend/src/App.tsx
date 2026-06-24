@@ -16,6 +16,8 @@ import RecentPage from "./pages/RecentPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import PartnersPage from "./pages/PartnersPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import LoginPage from "./pages/LoginPage";
+import AccountPage from "./pages/AccountPage";
 
 // Lazy: heavy / non-critical routes — deferred until first navigation
 const PlanPage = lazy(() => import("./pages/PlanPage"));
@@ -52,6 +54,8 @@ export default function App() {
           <Route path="/venues/:slug" element={<VenuePage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/partners" element={<PartnersPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/account" element={<AccountPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
