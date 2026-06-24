@@ -59,6 +59,10 @@ const stopRoleOrder: StopRoleKey[] = ["start", "main", "end"];
 const SAVED_OUTINGS_KEY = "blaniko:saved-outings:v1";
 const SAVED_OUTINGS_KEY_LEGACY = "blaniko_saved_outings_v1";
 
+// Canonical internal keys — used for URL params and filter matching only.
+// The `label` values here are English fallbacks; actual display strings come
+// from the localized filter option arrays built inside the component
+// (companionFilterOptions, moodFilterOptions, etc. via getFlowTexts/getDiscovery*Label).
 const companionOptions = [
   { value: "alone", label: "Alone" },
   { value: "friends", label: "Friends" },
@@ -1376,6 +1380,7 @@ export default function PlanPage() {
                 key={style.id}
                 type="button"
                 className={`bl-plan-vibe${planStyle === style.id ? " is-active" : ""}`}
+                aria-pressed={planStyle === style.id}
                 onClick={() =>
                   updatePlannerParams({
                     style: style.id,
@@ -1477,6 +1482,7 @@ export default function PlanPage() {
                             className={`bl-plan-lock-btn${isLocked ? " is-locked" : ""}`}
                             onClick={() => handleToggleStopLock(roleKey)}
                             aria-label={isLocked ? text.planPage.unlock : text.planPage.lock}
+                            aria-pressed={isLocked}
                             title={isLocked ? text.planPage.unlock : text.planPage.lock}
                           >
                             {isLocked ? (
@@ -1523,6 +1529,7 @@ export default function PlanPage() {
                             className="bl-plan-mini"
                             onClick={() => handleReplaceStop(roleKey)}
                             disabled={isLocked}
+                            aria-label={`${text.planPage.tryAnother} — ${stop.venue.name}`}
                           >
                             {text.planPage.tryAnother}
                           </button>
@@ -1605,6 +1612,7 @@ export default function PlanPage() {
               type="button"
               className={`bl-plan-btn bl-plan-btn--ghost bl-plan-customize-toggle${customizeOpen ? " is-open" : ""}`}
               onClick={() => setCustomizeOpen(!customizeOpen)}
+              aria-expanded={customizeOpen}
             >
               {customizeOpen ? text.planPage.hideFilters : text.planPage.refine}
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="bl-plan-chevron"><path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -1734,6 +1742,7 @@ export default function PlanPage() {
                       type="button"
                       className="bl-plan-btn bl-plan-btn--ghost"
                       onClick={() => handleDeleteSavedOuting(outing.id)}
+                      aria-label={`${text.planPage.delete} — ${outing.title}`}
                     >
                       {text.planPage.delete}
                     </button>
