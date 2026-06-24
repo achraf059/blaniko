@@ -15,13 +15,14 @@ const activityTypeLabels = {
   outing: (text: ReturnType<typeof getFlowTexts>) => text.recentPage.typeOuting,
 };
 
-function formatActivityDate(value: string): string {
+function formatActivityDate(value: string, language: string): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return "";
   }
 
-  return date.toLocaleString();
+  const locale = language === "fr" ? "fr-FR" : "en-US";
+  return date.toLocaleString(locale);
 }
 
 export default function RecentPage() {
@@ -91,7 +92,7 @@ export default function RecentPage() {
 
                 <h2 className="bl-recent-item-title">{item.title}</h2>
                 <p className="bl-recent-date">
-                  {formatActivityDate(item.timestamp)}
+                  {formatActivityDate(item.timestamp, language)}
                 </p>
 
                 <Link to={item.href} className="bl-recent-open-link">
