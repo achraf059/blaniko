@@ -4,6 +4,9 @@
   background: transparent;
   color: var(--color-text);
 }
+[data-theme="dark"] .bl-compare-page {
+  background: var(--bg);
+}
 
 .bl-compare-main {
   margin: 0 auto;

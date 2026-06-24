@@ -3,6 +3,9 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import waitlistRouter from "./routes/waitlist";
 import venuesRouter from "./routes/venues";
+import adminRouter from "./routes/admin";
+import venueClaimsRouter from "./routes/venue-claims";
+import { publicFormLimiter } from "./middleware/publicFormLimiter";
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
@@ -23,8 +26,8 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    methods: ["GET", "POST", "PATCH"],
+    allowedHeaders: ["Content-Type", "x-admin-pin"],
   })
 );
 
@@ -34,8 +37,10 @@ app.get("/api/health", (_req: Request, res: Response) => {
   res.json({ ok: true, service: "blaniko-backend" });
 });
 
-app.use("/api/waitlist", waitlistRouter);
+app.use("/api/waitlist", publicFormLimiter, waitlistRouter);
 app.use("/api/venues", venuesRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/venue-claims", publicFormLimiter, venueClaimsRouter);
 
 app.listen(PORT, () => {
   console.log(`blaniko-backend running on http://localhost:${PORT}`);

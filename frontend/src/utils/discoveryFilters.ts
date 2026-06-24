@@ -1,3 +1,4 @@
+import { bestForLabels } from "../data/bestForTags";
 import { type Venue } from "../data/mockData";
 import type { AppLanguage } from "../i18n/types";
 import {
@@ -49,20 +50,7 @@ const byLanguage = {
       { value: "medium", label: "Balanced" },
       { value: "high", label: "Social" },
     ],
-    bestForLabelMap: {
-      "date-spot": "Date spot",
-      friends: "Friends",
-      "solo-coffee": "Solo coffee",
-      "work-friendly": "Work-friendly",
-      "family-friendly": "Family-friendly",
-      "budget-pick": "Budget pick",
-      "sunset-spot": "Sunset spot",
-      "late-night": "Late-night",
-      "group-activity": "Group activity",
-      active: "Active",
-      competitive: "Competitive",
-      kids: "Good for kids",
-    },
+    bestForLabelMap: bestForLabels.en,
   },
   fr: {
     timeOfDayOptions: [
@@ -86,20 +74,7 @@ const byLanguage = {
       { value: "medium", label: "Équilibré" },
       { value: "high", label: "Social" },
     ],
-    bestForLabelMap: {
-      "date-spot": "Idéal en duo",
-      friends: "Amis",
-      "solo-coffee": "Café en solo",
-      "work-friendly": "Adapté au travail",
-      "family-friendly": "Familial",
-      "budget-pick": "Petit budget",
-      "sunset-spot": "Spot sunset",
-      "late-night": "Tard le soir",
-      "group-activity": "Activité en groupe",
-      active: "Actif",
-      competitive: "Compétitif",
-      kids: "Pour les enfants",
-    },
+    bestForLabelMap: bestForLabels.fr,
   },
 } satisfies Record<
   AppLanguage,
@@ -243,19 +218,19 @@ const fallbackSuggestions: Record<string, SearchSuggestion[]> = {
     { label: "Marina", area: "marina" },
   ],
   food: [
-    { label: "Food experiences", category: "restaurants" },
+    { label: "Activities", category: "activities" },
     { label: "Date spot", bestFor: "date-spot" },
-    { label: "Cafes", category: "cafes" },
+    { label: "Outdoor", category: "outdoor" },
   ],
   restaurant: [
-    { label: "Food experiences", category: "restaurants" },
+    { label: "Activities", category: "activities" },
     { label: "Date spot", bestFor: "date-spot" },
-    { label: "Cafes", category: "cafes" },
+    { label: "Gaming", category: "gaming" },
   ],
   dinner: [
-    { label: "Food experiences", category: "restaurants" },
+    { label: "Outdoor", category: "outdoor" },
     { label: "Date spot", bestFor: "date-spot" },
-    { label: "Couples", category: "couples" },
+    { label: "Activities", category: "activities" },
   ],
   kids: [
     { label: "Family-friendly", bestFor: "family-friendly" },
@@ -276,12 +251,12 @@ const fallbackSuggestions: Record<string, SearchSuggestion[]> = {
     { label: "Late-night", bestFor: "late-night" },
     { label: "Date spot", bestFor: "date-spot" },
     { label: "Gaming", category: "gaming" },
-    { label: "Dinner", query: "dinner" },
+    { label: "Date spot", bestFor: "date-spot" },
   ],
   evening: [
     { label: "Late-night", bestFor: "late-night" },
     { label: "Date spot", bestFor: "date-spot" },
-    { label: "Dinner", query: "dinner" },
+    { label: "Activities", category: "activities" },
   ],
   gym: [
     { label: "Sports", category: "sports" },
@@ -325,18 +300,18 @@ const fallbackSuggestions: Record<string, SearchSuggestion[]> = {
   ],
   romantic: [
     { label: "Date spot", bestFor: "date-spot" },
-    { label: "Couples", category: "couples" },
-    { label: "Food experiences", category: "restaurants" },
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Activities", category: "activities" },
   ],
   cheap: [
     { label: "Budget pick", bestFor: "budget-pick" },
-    { label: "Cafes", category: "cafes" },
+    { label: "Sports", category: "sports" },
     { label: "Activities", category: "activities" },
   ],
   date: [
     { label: "Date spot", bestFor: "date-spot" },
-    { label: "Couples", category: "couples" },
-    { label: "Food experiences", category: "restaurants" },
+    { label: "Outdoor", category: "outdoor" },
+    { label: "Activities", category: "activities" },
   ],
 };
 
@@ -381,10 +356,6 @@ const synonymMap: Record<string, string[]> = {
   free: ["budget", "cheap"],
   night: ["late-night", "date night"],
   evening: ["night", "late-night"],
-  restaurant: ["food", "dinner"],
-  dinner: ["restaurant", "food", "romantic"],
-  cafe: ["coffee", "cafes"],
-  coffee: ["cafe", "cafes"],
   sport: ["sports", "fitness"],
   sports: ["sport", "fitness"],
   workout: ["fitness", "gym", "wellness"],

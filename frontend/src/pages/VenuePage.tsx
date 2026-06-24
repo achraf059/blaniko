@@ -3,9 +3,11 @@ import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { CollectionPicker } from "../components/collections/CollectionPicker";
 import { CompareToggle } from "../components/compare/CompareToggle";
 import { HomeHeader } from "../components/home/HomeHeader";
+import { VenueCard } from "../components/home/VenueCard";
 import { VenueImage } from "../components/home/VenueImage";
 import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
@@ -111,6 +113,10 @@ export default function VenuePage() {
                           : dictionary.venuePage.backToHome;
 
   const venue = slug ? getVenueBySlug(slug) : undefined;
+  usePageMeta(
+    venue ? `${venue.name} — ${venue.area} | Blaniko` : "Venue | Blaniko",
+    venue?.shortDescription ?? venue?.description,
+  );
   const similarVenues = useMemo(
     () =>
       venue ? rankVenueAlternatives(venue, venues, 4, language) : [],
@@ -137,7 +143,7 @@ export default function VenuePage() {
         <main className="bl-venue-main">
           <div className="bl-venue-content">
             <section className="bl-venue-not-found">
-              <p style={{ opacity: 0.5 }}>Loading…</p>
+              <p style={{ opacity: 0.5 }}>{dictionary.venuePage.loading}</p>
             </section>
           </div>
         </main>
@@ -221,11 +227,7 @@ export default function VenuePage() {
               ← {backLabel}
             </Link>
           </div>
-        </div>
-
-        <div className="bl-venue-content">
-          {/* Editorial title area */}
-          <header className="bl-venue-title-area">
+          <div className="bl-venue-hero-title-overlay">
             <p className="bl-venue-category-pill">{categoryName}</p>
             <h1 className="bl-venue-title">{venue.name}</h1>
             <div className="bl-venue-title-meta">
@@ -237,8 +239,11 @@ export default function VenuePage() {
                 <span className="bl-venue-price-badge">{priceLevel}</span>
               ) : null}
             </div>
-            <p className="bl-venue-short-description">{shortDescription}</p>
-          </header>
+          </div>
+        </div>
+
+        <div className="bl-venue-content">
+          <p className="bl-venue-short-description">{shortDescription}</p>
 
           {/* Contextual why-chips (only shown when navigated from search/plan) */}
           {whyThisPlace.length > 0 ? (
@@ -325,66 +330,138 @@ export default function VenuePage() {
 
               {/* Practical info */}
               <section className="bl-venue-body-section">
-                <div className="bl-venue-meta-grid">
-                  <div className="bl-venue-meta-card">
-                    <p className="bl-venue-meta-label">
-                      {dictionary.venuePage.area}
-                    </p>
-                    <p className="bl-venue-meta-value">{venue.area}</p>
+                <div className="bl-venue-fact-strip">
+                  <div className="bl-venue-fact-item">
+                    <span className="bl-venue-fact-label">{dictionary.venuePage.area}</span>
+                    <span className="bl-venue-fact-value">{venue.area.split(",")[0]?.trim() ?? venue.area}</span>
                   </div>
-
-                  <div className="bl-venue-meta-card">
-                    <p className="bl-venue-meta-label">
-                      {dictionary.venuePage.vibe}
-                    </p>
-                    <p className="bl-venue-meta-value">{vibe}</p>
+                  <div className="bl-venue-fact-item">
+                    <span className="bl-venue-fact-label">{dictionary.venuePage.vibe}</span>
+                    <span className="bl-venue-fact-value">{vibe}</span>
                   </div>
-
-                  <div className="bl-venue-meta-card">
-                    <p className="bl-venue-meta-label">
-                      {dictionary.venuePage.audience}
-                    </p>
-                    <p className="bl-venue-meta-value">{audience}</p>
+                  <div className="bl-venue-fact-item">
+                    <span className="bl-venue-fact-label">{dictionary.venuePage.audience}</span>
+                    <span className="bl-venue-fact-value">{audience}</span>
                   </div>
-
-                  <div className="bl-venue-meta-card">
-                    <p className="bl-venue-meta-label">
-                      {dictionary.venuePage.priceLevel}
-                    </p>
-                    <p className="bl-venue-meta-value">{priceLevel}</p>
+                  <div className="bl-venue-fact-item">
+                    <span className="bl-venue-fact-label">{dictionary.venuePage.priceLevel}</span>
+                    <span className="bl-venue-fact-value">{priceLevel}</span>
                   </div>
                 </div>
               </section>
 
-              {/* Area / map placeholder */}
-              <section className="bl-venue-body-section bl-venue-map-section">
-                <h2 className="bl-venue-section-title">
-                  {dictionary.venuePage.panelEyebrow}
-                </h2>
-                <div className="bl-venue-map-panel" aria-hidden="true">
-                  <div className="bl-venue-map-pin-wrap">
-                    <div className="bl-venue-map-pin">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="bl-venue-map-pin-icon"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                      </svg>
-                    </div>
-                    <span className="bl-venue-map-area-tag">{venue.area}</span>
-                  </div>
-                </div>
-                <p className="bl-venue-map-caption">
-                  {dictionary.venuePage.panelSubtitle}
-                </p>
-              </section>
+              {/* Location link */}
+              {venue.googleMapsLink ? (
+                <section className="bl-venue-body-section">
+                  <h2 className="bl-venue-section-title">
+                    {dictionary.venuePage.panelEyebrow}
+                  </h2>
+                  <a
+                    href={venue.googleMapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bl-venue-maps-link"
+                  >
+                    <span className="bl-venue-maps-link-icon" aria-hidden="true">📍</span>
+                    <span className="bl-venue-maps-link-text">
+                      <span className="bl-venue-maps-link-name">{venue.area.split(",")[0]?.trim() ?? venue.area}</span>
+                      <span className="bl-venue-maps-link-sub">{dictionary.venuePage.panelSubtitle}</span>
+                    </span>
+                    <span className="bl-venue-maps-link-arrow" aria-hidden="true">→</span>
+                  </a>
+                </section>
+              ) : null}
             </div>
 
             {/* Sticky action sidebar */}
             <aside className="bl-venue-sidebar">
               <div className="bl-venue-action-card">
+                {/* Primary CTA block — contact / directions */}
+                {(() => {
+                  const hasMap = Boolean(venue.googleMapsLink);
+                  const hasPhone = Boolean(venue.phone);
+                  const hasWebsite = Boolean(venue.website);
+                  const hasInstagram = Boolean(venue.instagram);
+                  const hasAnyContact = hasMap || hasPhone || hasWebsite || hasInstagram;
+
+                  // Sanitize phone: digits + leading +
+                  const rawPhone = venue.phone ?? "";
+                  const dialPhone = rawPhone.replace(/[^\d+]/g, "");
+                  // WhatsApp: digits only, drop leading +
+                  const waPhone = dialPhone.replace(/^\+/, "");
+
+                  return (
+                    <div className="bl-venue-cta-block">
+                      {hasMap ? (
+                        <a
+                          href={venue.googleMapsLink!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bl-venue-cta-primary"
+                        >
+                          <span aria-hidden="true">📍</span>
+                          {dictionary.venuePage.actionOpenMaps}
+                        </a>
+                      ) : null}
+
+                      {(hasPhone || hasWebsite || hasInstagram) ? (
+                        <div className="bl-venue-cta-pills">
+                          {hasPhone ? (
+                            <a
+                              href={`tel:${dialPhone}`}
+                              className="bl-venue-cta-pill"
+                            >
+                              <span aria-hidden="true">📞</span>
+                              {dictionary.venuePage.actionCall}
+                            </a>
+                          ) : null}
+                          {hasPhone ? (
+                            <a
+                              href={`https://wa.me/${waPhone}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bl-venue-cta-pill"
+                            >
+                              <span aria-hidden="true">💬</span>
+                              {dictionary.venuePage.actionWhatsApp}
+                            </a>
+                          ) : null}
+                          {hasWebsite ? (
+                            <a
+                              href={venue.website!}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bl-venue-cta-pill"
+                            >
+                              <span aria-hidden="true">🌐</span>
+                              {dictionary.venuePage.actionWebsite}
+                            </a>
+                          ) : null}
+                          {hasInstagram ? (
+                            <a
+                              href={venue.instagram!}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bl-venue-cta-pill"
+                            >
+                              <span aria-hidden="true">📸</span>
+                              {dictionary.venuePage.actionInstagram}
+                            </a>
+                          ) : null}
+                        </div>
+                      ) : null}
+
+                      {!hasAnyContact ? (
+                        <p className="bl-venue-cta-soon">
+                          {dictionary.venuePage.actionContactSoon}
+                        </p>
+                      ) : null}
+                    </div>
+                  );
+                })()}
+
+                <div className="bl-venue-action-divider" />
+
                 <button
                   type="button"
                   className={`bl-venue-favorite-btn${isVenueFavorite ? " is-active" : ""}`}
@@ -430,6 +507,15 @@ export default function VenuePage() {
                 <Link to="/collections" className="bl-venue-collections-link">
                   {text.common.openCollections}
                 </Link>
+
+                <div className="bl-venue-owner-cta">
+                  <Link
+                    to={`/partners?venue=${venue.slug}&name=${encodeURIComponent(venue.name)}`}
+                    className="bl-venue-owner-cta-link"
+                  >
+                    {text.venuePage.ownerCta}
+                  </Link>
+                </div>
               </div>
             </aside>
           </div>
@@ -448,69 +534,34 @@ export default function VenuePage() {
             </div>
 
             <div className="bl-venue-similar-carousel">
-              {similarVenues.map(({ venue: alternative, reasons }) => {
+              {similarVenues.map(({ venue: alternative }) => {
                 const adv = getVenueDisplay(alternative, language);
                 const altCategoryName =
                   dictionary.categoryNames[alternative.categorySlug] ??
                   dictionary.venuePage.unknownCategory;
                 return (
-                  <article
+                  <VenueCard
                     key={alternative.slug}
-                    className="bl-venue-similar-card"
-                  >
-                    <VenueImage
-                      src={getVenueImageSrc(alternative)}
-                      category={altCategoryName}
-                      categorySlug={alternative.categorySlug}
-                      alt={alternative.name}
-                      aspectRatio="auto"
-                      className="bl-venue-similar-image"
-                    />
-
-                    <div className="bl-venue-similar-body">
-                      <h3 className="bl-venue-similar-name">
-                        {alternative.name}
-                      </h3>
-                      <p className="bl-venue-similar-area">
-                        <span aria-hidden="true">📍</span>
-                        {alternative.area}
-                      </p>
-                      <p className="bl-venue-similar-desc">
-                        {adv.shortDescription ?? adv.description}
-                      </p>
-
-                      {reasons.length > 0 ? (
-                        <div className="bl-venue-similar-reasons">
-                          {reasons.slice(0, 3).map((reason) => (
-                            <span key={`${alternative.slug}-${reason}`}>
-                              {reason}
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-
-                      <div className="bl-venue-similar-actions">
-                        <button
-                          type="button"
-                          className={`bl-venue-favorite-btn${
-                            isFavorite(alternative.slug) ? " is-active" : ""
-                          }`}
-                          onClick={() => toggleFavorite(alternative.slug)}
-                        >
-                          {isFavorite(alternative.slug)
-                            ? dictionary.venuePage.removeFavorite
-                            : dictionary.venuePage.saveFavorite}
-                        </button>
-
-                        <Link
-                          to={`/venues/${alternative.slug}?from=venue&source=${venue.slug}`}
-                          className="bl-venue-back-link"
-                        >
-                          {dictionary.venueCard.viewDetails} →
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
+                    slug={alternative.slug}
+                    category={altCategoryName}
+                    name={alternative.name}
+                    area={alternative.area}
+                    description={adv.shortDescription ?? adv.description}
+                    imageUrl={getVenueImageSrc(alternative)}
+                    priceLevel={alternative.priceLevel}
+                    personality={{
+                      bestForTags: alternative.bestForTags,
+                      timeOfDay: alternative.timeOfDay,
+                      energyLevel: alternative.energyLevel,
+                      socialLevel: alternative.socialLevel,
+                      spaceType: alternative.spaceType,
+                    }}
+                    href={`/venues/${alternative.slug}?from=venue&source=${venue.slug}`}
+                    isFavorite={isFavorite(alternative.slug)}
+                    onToggleFavorite={toggleFavorite}
+                    language={language}
+                    labels={dictionary.venueCard}
+                  />
                 );
               })}
             </div>

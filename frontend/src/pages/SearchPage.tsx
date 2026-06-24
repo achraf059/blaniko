@@ -7,6 +7,7 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
 import { categories, getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
@@ -33,8 +34,16 @@ export default function SearchPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
   const moodLabels = getDiscoveryMoodLabel(language);
+  usePageMeta(
+    language === "fr"
+      ? "Découvrir des lieux à Casablanca | Blaniko"
+      : "Discover venues in Casablanca | Blaniko",
+    language === "fr"
+      ? "Recherchez et filtrez des activités, lieux et expériences à Casablanca."
+      : "Search and filter activities, venues, and experiences in Casablanca.",
+  );
   const navigate = useNavigate();
-  const { venues, isLoading } = useVenues();
+  const { venues, isLoading, error } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
 
@@ -354,8 +363,8 @@ export default function SearchPage() {
 
   /* Popular quick-entry tags shown inside the header. Wired to existing filters. */
   const popularTags: Array<{ label: string; apply: () => void }> = [
-    { label: dictionary.categoryNames["couples"] ?? "Date night", apply: () => handleCategorySelect("couples") },
-    { label: dictionary.categoryNames["friends"] ?? "With friends", apply: () => handleCategorySelect("friends") },
+    { label: getBestForLabelByLanguage("date-spot", language), apply: () => handleBestForSelect("date-spot") },
+    { label: getBestForLabelByLanguage("friends", language), apply: () => handleBestForSelect("friends") },
     { label: dictionary.categoryNames["outdoor"] ?? "Outdoor", apply: () => handleCategorySelect("outdoor") },
     { label: dictionary.searchPage.budgetLow, apply: () => handleBudgetSelect("$") },
     { label: getBestForLabelByLanguage("sunset-spot", language), apply: () => handleBestForSelect("sunset-spot") },
@@ -363,7 +372,7 @@ export default function SearchPage() {
 
   const resultsCountLine = selectedCategory
     ? `${dictionary.categoryNames[selectedCategory] ?? selectedCategoryName} · ${filteredVenues.length} ${dictionary.searchPage.resultsLabel}`
-    : `${filteredVenues.length} ${dictionary.searchPage.resultsLabel} in Casablanca`;
+    : `${filteredVenues.length} ${dictionary.searchPage.resultsInCity}`;
 
   return (
     <div className="bl-search-page">
@@ -383,7 +392,7 @@ export default function SearchPage() {
             {!isLoading ? (
               <p className="bl-search-head-count">
                 {filteredVenues.length}{" "}
-                {language === "fr" ? "lieux sélectionnés" : "curated places"}
+                {dictionary.searchPage.curatedPlaces}
               </p>
             ) : null}
           </div>
@@ -453,7 +462,7 @@ export default function SearchPage() {
                 className="bl-search-advanced-panel-done"
                 onClick={() => setShowAdvanced(false)}
               >
-                Done
+                {text.common.done}
               </button>
             </div>
 
@@ -541,8 +550,12 @@ export default function SearchPage() {
         {isLoading ? (
           <section className="bl-search-results">
             <p className="bl-search-results-count" style={{ opacity: 0.5 }}>
-              Finding places…
+              {dictionary.searchPage.findingPlaces}
             </p>
+          </section>
+        ) : error ? (
+          <section className="bl-search-results">
+            <p className="bl-api-error">{dictionary.common.apiError}</p>
           </section>
         ) : filteredVenues.length > 0 ? (
           <section className="bl-search-results">
@@ -552,7 +565,7 @@ export default function SearchPage() {
                 <h2 className="bl-search-results-title">{title}</h2>
               </div>
               <p className="bl-search-results-meta">
-                {language === "fr" ? "Sélection · mise à jour chaque semaine" : "Handpicked · updated weekly"}
+                {dictionary.searchPage.handpickedUpdated}
               </p>
             </div>
 
@@ -595,9 +608,9 @@ export default function SearchPage() {
                 <path d="m20 20-3.2-3.2" />
               </svg>
             </span>
-            <h2 className="bl-search-empty-title">Nothing quite fits — yet.</h2>
+            <h2 className="bl-search-empty-title">{dictionary.searchPage.emptyTitle}</h2>
             <p className="bl-search-empty-description">
-              Try a broader search, or explore one of these instead.
+              {dictionary.searchPage.emptyDescription}
             </p>
 
             {closeSuggestions.length > 0 ? (

@@ -4,6 +4,9 @@
   background: transparent;
   color: var(--color-text);
 }
+[data-theme="dark"] .bl-recent-page {
+  background: var(--bg);
+}
 
 .bl-recent-main {
   margin: 0 auto;

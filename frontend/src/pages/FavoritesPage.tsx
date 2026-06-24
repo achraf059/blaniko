@@ -3,17 +3,21 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
 import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
 import { getVenueImageSrc } from "../utils/venueImage";
-import "./HomePage.css";
 import "./FavoritesPage.css";
 
 export default function FavoritesPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
   const { venues } = useVenues();
+
+  usePageMeta(
+    language === "fr" ? "Lieux enregistrés | Blaniko" : "Saved venues | Blaniko",
+  );
   const {
     favoriteSlugs,
     favoritesCount,
@@ -56,7 +60,13 @@ export default function FavoritesPage() {
               <button
                 type="button"
                 className="bl-favorites-clear-btn"
-                onClick={clearFavorites}
+                onClick={() => {
+                  const msg =
+                    language === "fr"
+                      ? "Supprimer tous les lieux enregistrés ? Cette action est irréversible."
+                      : "Clear all saved venues? This cannot be undone.";
+                  if (window.confirm(msg)) clearFavorites();
+                }}
               >
                 {dictionary.favoritesPage.clearAll}
               </button>

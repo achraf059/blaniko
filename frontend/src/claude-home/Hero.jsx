@@ -22,7 +22,7 @@ export const Hero = () => {
     [dictionary.claudeHome.heroTagWeekend]: "/search",
     [dictionary.claudeHome.heroTagOutdoor]: "/search?category=outdoor",
     [dictionary.claudeHome.heroTagUnder200]: "/search?budget=$",
-    [dictionary.claudeHome.heroTagDateNight]: "/search?category=couples",
+    [dictionary.claudeHome.heroTagDateNight]: "/search?bestFor=date-spot",
     [dictionary.claudeHome.heroTagWithKids]: "/search?category=family",
     [dictionary.claudeHome.heroTagTonight]: "/search?mood=social",
   };
@@ -44,7 +44,7 @@ export const Hero = () => {
           </svg>
           {dictionary.claudeHome.heroEyebrowCity}
         </span>
-        <span>34.02°N · 6.83°W</span>
+        <span>33.57°N · 7.59°W</span>
       </div>
 
       <h1 className="hero-headline reveal in">

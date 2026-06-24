@@ -9,11 +9,14 @@ import FavoritesPage from "./pages/FavoritesPage";
 import GuideDetailPage from "./pages/GuideDetailPage";
 import GuidesPage from "./pages/GuidesPage";
 import MapPage from "./pages/MapPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import PlanPage from "./pages/PlanPage";
 import RecentPage from "./pages/RecentPage";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import SearchPage from "./pages/SearchPage";
 import VenuePage from "./pages/VenuePage";
+import PrivacyPage from "./pages/PrivacyPage";
+import PartnersPage from "./pages/PartnersPage";
 
 export default function App() {
   return (
@@ -33,6 +36,9 @@ export default function App() {
       <Route path="/areas/:slug" element={<AreaPage />} />
       <Route path="/categories/:slug" element={<CategoryPage />} />
       <Route path="/venues/:slug" element={<VenuePage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/partners" element={<PartnersPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

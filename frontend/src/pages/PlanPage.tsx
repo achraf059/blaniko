@@ -10,7 +10,6 @@ import { useI18n } from "../i18n/useI18n";
 import type { AppLanguage } from "../i18n/types";
 import { formatFlowText, getFlowTexts, getPlanStyleDisplay } from "../i18n/flowTexts";
 import {
-  explainVenueMatch,
   getDiscoveryCompanionLabel,
   getDiscoveryMoodLabel,
   isDiscoveryMood,
@@ -18,11 +17,9 @@ import {
   type DiscoveryMood,
   venueMatchesMood,
 } from "../utils/discoveryInsights";
-import {
-  getBestForBadges,
-  getVenuePersonalitySignals,
-} from "../utils/venuePersonality";
-import "./HomePage.css";
+import { getBestForBadges } from "../utils/venuePersonality";
+import { VenueImage } from "../components/home/VenueImage";
+import { getVenueImageSrc } from "../utils/venueImage";
 import "./PlanPage.css";
 
 type OutingStop = {
@@ -99,7 +96,6 @@ type PlanStyleId =
   | "friends-hangout"
   | "chill-solo-reset"
   | "under-100-mad"
-  | "productive-afternoon"
   | "sunset-plan"
   | "family-afternoon";
 
@@ -155,16 +151,16 @@ const planStyleOptions: PlanStyleConfig[] = [
       area: "racine",
     },
     roleCategories: {
-      start: ["cafes", "outdoor", "couples"],
-      main: ["couples", "restaurants"],
-      end: ["outdoor", "couples", "cafes"],
+      start: ["outdoor", "activities"],
+      main: ["activities", "outdoor"],
+      end: ["outdoor", "activities"],
     },
     roleHints: {
       start: "Warm connection",
       main: "Signature shared moment",
       end: "Soft afterglow",
     },
-    categoryBoosts: ["couples", "restaurants", "cafes"],
+    categoryBoosts: ["outdoor", "activities"],
     keywordBoosts: ["romantic", "intimate", "couples"],
     preferredPriceLevels: ["$$", "$$$"],
     weighting: { mood: 1.5, budget: 1.2, area: 1 },
@@ -185,16 +181,16 @@ const planStyleOptions: PlanStyleConfig[] = [
       area: "maarif",
     },
     roleCategories: {
-      start: ["cafes", "friends"],
-      main: ["gaming", "sports", "activities", "friends"],
-      end: ["restaurants", "outdoor", "friends"],
+      start: ["gaming", "activities", "sports"],
+      main: ["gaming", "sports", "activities"],
+      end: ["outdoor", "activities", "sports"],
     },
     roleHints: {
       start: "Group warm-up",
       main: "Social peak",
       end: "Easy follow-up",
     },
-    categoryBoosts: ["friends", "gaming", "sports", "activities"],
+    categoryBoosts: ["gaming", "sports", "activities"],
     keywordBoosts: ["friends", "groups", "social"],
     preferredPriceLevels: ["$", "$$"],
     weighting: { mood: 1.3, budget: 1.15, area: 1 },
@@ -210,16 +206,16 @@ const planStyleOptions: PlanStyleConfig[] = [
     vibeLine: "Low-noise reset",
     defaults: { withWho: "alone", mood: "chill", budget: "$$", area: "any" },
     roleCategories: {
-      start: ["cafes", "outdoor"],
-      main: ["cafes", "outdoor", "activities"],
-      end: ["outdoor", "cafes", "restaurants"],
+      start: ["outdoor", "activities"],
+      main: ["outdoor", "activities"],
+      end: ["outdoor", "activities"],
     },
     roleHints: {
       start: "Slow start",
       main: "Reset block",
       end: "Gentle close",
     },
-    categoryBoosts: ["cafes", "outdoor"],
+    categoryBoosts: ["outdoor", "activities"],
     keywordBoosts: ["quiet", "focused", "calm", "solo", "remote"],
     preferredPriceLevels: ["$", "$$"],
     weighting: { mood: 1.4, budget: 1.1, area: 0.95 },
@@ -235,9 +231,9 @@ const planStyleOptions: PlanStyleConfig[] = [
     vibeLine: "Value mode",
     defaults: { withWho: "friends", mood: "social", budget: "$", area: "any" },
     roleCategories: {
-      start: ["cafes", "outdoor"],
-      main: ["activities", "outdoor", "friends", "family"],
-      end: ["outdoor", "cafes", "friends"],
+      start: ["outdoor", "activities"],
+      main: ["activities", "outdoor", "family"],
+      end: ["outdoor", "activities", "sports"],
     },
     roleHints: {
       start: "Low-cost warm-up",
@@ -245,50 +241,13 @@ const planStyleOptions: PlanStyleConfig[] = [
       end: "Budget-friendly finish",
     },
     preferredPriceLevels: ["$"],
-    categoryBoosts: ["outdoor", "activities", "friends"],
+    categoryBoosts: ["outdoor", "activities"],
     weighting: { mood: 1.1, budget: 1.8, area: 0.9 },
     budgetStrict: true,
     explanationChips: ["Price-sensitive picks", "Repeatable low-cost route"],
     summaryTone: { pace: "budget-friendly afternoon", moment: "practical" },
     resultSubtitle:
       "Value-first sequencing with simple, repeatable city stops.",
-  },
-  {
-    id: "productive-afternoon",
-    label: "Productive afternoon",
-    subtitle: "Focus-friendly stops and practical transitions.",
-    vibeLine: "Focus arc",
-    defaults: {
-      withWho: "alone",
-      mood: "chill",
-      budget: "$$",
-      area: "gauthier",
-    },
-    roleCategories: {
-      start: ["cafes"],
-      main: ["cafes", "activities"],
-      end: ["outdoor", "cafes"],
-    },
-    roleHints: {
-      start: "Coffee setup",
-      main: "Deep-work block",
-      end: "Decompress",
-    },
-    categoryBoosts: ["cafes"],
-    keywordBoosts: [
-      "freelancer",
-      "remote",
-      "professionals",
-      "quiet",
-      "focused",
-    ],
-    preferredPriceLevels: ["$$"],
-    preferredAreas: ["gauthier", "maarif"],
-    weighting: { mood: 1.25, budget: 1.2, area: 1.25 },
-    explanationChips: ["Work-friendly sequencing", "Practical area priority"],
-    summaryTone: { pace: "focused city session", moment: "productive" },
-    resultSubtitle:
-      "A work-ready sequence with a clean focus arc and a light close.",
   },
   {
     id: "sunset-plan",
@@ -302,16 +261,16 @@ const planStyleOptions: PlanStyleConfig[] = [
       area: "ain diab",
     },
     roleCategories: {
-      start: ["outdoor", "cafes"],
-      main: ["outdoor", "couples", "activities"],
-      end: ["cafes", "restaurants", "outdoor"],
+      start: ["outdoor", "activities"],
+      main: ["outdoor", "activities", "sports"],
+      end: ["outdoor", "activities"],
     },
     roleHints: {
       start: "Golden-hour start",
       main: "Sunset main stop",
       end: "Night glide",
     },
-    categoryBoosts: ["outdoor", "couples", "cafes"],
+    categoryBoosts: ["outdoor", "activities"],
     keywordBoosts: ["sunset", "coastal", "sea", "scenic"],
     preferredAreas: ["ain diab", "marina"],
     preferredPriceLevels: ["$", "$$"],
@@ -333,9 +292,9 @@ const planStyleOptions: PlanStyleConfig[] = [
       area: "anfa",
     },
     roleCategories: {
-      start: ["cafes", "family"],
+      start: ["family", "activities"],
       main: ["family", "activities", "outdoor"],
-      end: ["family", "restaurants", "outdoor"],
+      end: ["family", "outdoor", "activities"],
     },
     roleHints: {
       start: "Easy start",
@@ -370,33 +329,33 @@ function createRoleCategoryPreferences(mood?: DiscoveryMood): {
   switch (mood) {
     case "active":
       return {
-        start: ["cafes", "outdoor"],
+        start: ["outdoor", "activities"],
         main: ["sports", "activities", "outdoor"],
-        end: ["restaurants", "friends", "cafes"],
+        end: ["outdoor", "activities", "sports"],
       };
     case "romantic":
       return {
-        start: ["cafes", "outdoor"],
-        main: ["couples", "restaurants", "activities"],
-        end: ["restaurants", "couples", "outdoor"],
+        start: ["outdoor", "activities"],
+        main: ["outdoor", "activities"],
+        end: ["outdoor", "activities"],
       };
     case "family-friendly":
       return {
-        start: ["cafes", "family"],
+        start: ["family", "activities"],
         main: ["family", "activities", "outdoor"],
-        end: ["restaurants", "family", "outdoor"],
+        end: ["family", "outdoor", "activities"],
       };
     case "social":
       return {
-        start: ["cafes", "friends"],
-        main: ["gaming", "activities", "sports", "friends"],
-        end: ["restaurants", "friends", "outdoor"],
+        start: ["gaming", "activities", "sports"],
+        main: ["gaming", "activities", "sports"],
+        end: ["outdoor", "activities", "sports"],
       };
     default:
       return {
-        start: ["cafes", "outdoor"],
-        main: ["activities", "restaurants", "sports"],
-        end: ["restaurants", "outdoor", "couples"],
+        start: ["outdoor", "activities"],
+        main: ["activities", "sports", "outdoor"],
+        end: ["outdoor", "activities", "sports"],
       };
   }
 }
@@ -672,17 +631,6 @@ function rankVenueForRole(
     score += role === "main" ? 3 : 2;
   }
 
-  if (role === "start" && ["cafes", "outdoor"].includes(venue.categorySlug)) {
-    score += 1.5;
-  }
-
-  if (
-    role === "end" &&
-    ["restaurants", "outdoor", "cafes"].includes(venue.categorySlug)
-  ) {
-    score += 1.5;
-  }
-
   if (
     role === "main" &&
     options.mood &&
@@ -743,6 +691,16 @@ export default function PlanPage() {
   >("idle");
   const [saveFeedback, setSaveFeedback] = useState<"idle" | "saved">("idle");
   const [refineFeedback, setRefineFeedback] = useState<string>("");
+  const [customizeOpen, setCustomizeOpen] = useState(false);
+
+  const VIBE_EMOJIS: Record<string, string> = {
+    "date-night": "🌙",
+    "friends-hangout": "👥",
+    "chill-solo-reset": "☁️",
+    "under-100-mad": "💰",
+    "sunset-plan": "🌅",
+    "family-afternoon": "👨‍👩‍👧",
+  };
   const [savedOutings, setSavedOutings] = useState<SavedOuting[]>(() => {
     if (typeof window === "undefined") {
       return [];
@@ -816,19 +774,16 @@ export default function PlanPage() {
     { value: "bourgogne", label: text.planPage.areaNames.bourgogne },
   ];
   const stopRoleLabel: Record<StopRoleKey, string> = {
-    start: language === "fr" ? text.planPage.startPick : "Start / warm-up",
-    main: language === "fr" ? text.planPage.mainPick : "Main stop",
-    end: language === "fr" ? text.planPage.followUpPick : "Optional follow-up",
+    start: text.planPage.startLabel,
+    main: text.planPage.mainLabel,
+    end: text.planPage.endLabel,
   };
   const stopRoleStage: Record<StopRoleKey, string> = {
-    start: language === "fr" ? text.planPage.startPick : "Start",
-    main: language === "fr" ? text.planPage.mainPick : "Main",
-    end: language === "fr" ? text.planPage.followUpPick : "Follow-up",
+    start: text.planPage.startPick,
+    main: text.planPage.mainPick,
+    end: text.planPage.followUpPick,
   };
 
-  const selectedMoodName = selectedMood
-    ? moodLabels[selectedMood]
-    : undefined;
   const selectedCompanionName = selectedCompanion
     ? companionLabels[selectedCompanion]
     : companionLabels.friends;
@@ -1091,6 +1046,13 @@ export default function PlanPage() {
     sharedPlanStops.length > 0 ? sharedPlanStops : planStops;
   const lockedRoles = parsedLockedRoles;
 
+  // Stable string primitives derived from arrays — used as effect deps instead of
+  // the array references themselves (which are reconstructed on every render and
+  // would otherwise cause both effects below to fire on every render, creating a
+  // cascade: trackActivity → setActivities → re-render → new array ref → repeat).
+  const effectiveStopSlugsStr = effectivePlanStops.map((s) => s.venue.slug).join(",");
+  const lockedRolesStr = lockedRoles.join(",");
+
   const applyRefinedPlan = (next: {
     stops: OutingStop[];
     locks: StopRoleKey[];
@@ -1131,7 +1093,7 @@ export default function PlanPage() {
     }
 
     setRefineFeedback(
-      formatFlowText(text.planPage.stopUpdated, { stage: stopRoleStage[roleKey].toLowerCase() }),
+      formatFlowText(text.planPage.stopUpdated, { stage: stopRoleStage[roleKey] }),
     );
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles });
   };
@@ -1153,21 +1115,6 @@ export default function PlanPage() {
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles, seed: nextSeed });
   };
 
-  const planSummaryMeta = [
-    selectedCompanionName,
-    selectedMoodName
-      ? formatFlowText(text.planPage.moodPrefix, { mood: selectedMoodName })
-      : undefined,
-    budget === "all"
-      ? text.planPage.budgetAny
-      : `Budget ${budget}`,
-    area === "any"
-      ? text.planPage.areaAny
-      : formatFlowText(text.planPage.areaPrefix, { area }),
-  ]
-    .filter(Boolean)
-    .join(" • ");
-
   const selectedAreaLabel =
     areaFilterOptions.find((option) => option.value === area)?.label ?? "Casablanca";
   const planSummary = buildOutingNarrative({
@@ -1180,13 +1127,13 @@ export default function PlanPage() {
   });
 
   useEffect(() => {
-    if (effectivePlanStops.length === 0) {
+    if (!effectiveStopSlugsStr) {
       return;
     }
 
-    const stopSignature = effectivePlanStops
-      .map((stop) => stop.venue.slug)
-      .join("-");
+    // Use the slug string directly as the stop signature — it's the same content
+    // as the join("-") but reuses the stable primitive we already derived.
+    const stopSignature = effectiveStopSlugsStr.replace(/,/g, "-");
 
     trackActivity({
       id: `${planStyle}:${area}:${mood}:${companion}:${budget}:${stopSignature}`,
@@ -1198,7 +1145,7 @@ export default function PlanPage() {
     area,
     budget,
     companion,
-    effectivePlanStops,
+    effectiveStopSlugsStr,
     location.pathname,
     location.search,
     mood,
@@ -1208,6 +1155,12 @@ export default function PlanPage() {
     trackActivity,
   ]);
 
+  // Sync the URL whenever the derived plan or filters change.
+  // Deps use stable string primitives (not array refs) so this only fires when
+  // content actually changes — not on every render.
+  // searchParams is intentionally excluded: the parsed primitives above already
+  // capture any external URL change (browser back/forward), so including
+  // searchParams would create a circular: write → searchParams changes → re-fire.
   useEffect(() => {
     const nextParams = new URLSearchParams();
     nextParams.set("with", companion);
@@ -1217,30 +1170,24 @@ export default function PlanPage() {
     nextParams.set("style", planStyle);
     nextParams.set("seed", String(refreshSeed));
 
-    if (effectivePlanStops.length > 0) {
-      nextParams.set(
-        "stops",
-        effectivePlanStops.map((stop) => stop.venue.slug).join(","),
-      );
+    if (effectiveStopSlugsStr) {
+      nextParams.set("stops", effectiveStopSlugsStr);
     }
 
-    if (lockedRoles.length > 0) {
-      nextParams.set("locks", lockedRoles.join(","));
+    if (lockedRolesStr) {
+      nextParams.set("locks", lockedRolesStr);
     }
 
-    if (nextParams.toString() !== searchParams.toString()) {
-      setSearchParams(nextParams, { replace: true });
-    }
+    setSearchParams(nextParams, { replace: true });
   }, [
     area,
     budget,
     companion,
-    effectivePlanStops,
-    lockedRoles,
+    effectiveStopSlugsStr,
+    lockedRolesStr,
     mood,
     planStyle,
     refreshSeed,
-    searchParams,
     setSearchParams,
   ]);
 
@@ -1276,6 +1223,37 @@ export default function PlanPage() {
       setShareFeedback("failed");
       window.setTimeout(() => setShareFeedback("idle"), 2200);
     }
+  };
+
+  const handleShareWhatsApp = () => {
+    const url =
+      typeof window !== "undefined"
+        ? `${window.location.origin}${buildPlanUrl({
+            withWho: companion,
+            mood,
+            budget,
+            area,
+            style: planStyle,
+            seed: refreshSeed,
+            stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
+            lockedRoles,
+          })}`
+        : buildPlanUrl({
+            withWho: companion,
+            mood,
+            budget,
+            area,
+            style: planStyle,
+            seed: refreshSeed,
+            stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
+            lockedRoles,
+          });
+    const message = formatFlowText(text.planPage.whatsAppMessage, { url });
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(message)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   const handleSaveOuting = () => {
@@ -1330,34 +1308,59 @@ export default function PlanPage() {
     return `/venues/${slug}?${params.toString()}`;
   };
 
+
   return (
     <div className="bl-plan-page">
       <HomeHeader labels={dictionary.header} />
 
       <main className="bl-plan-main">
+
+        {/* ── A. HERO ── */}
         <section className="bl-plan-hero">
-          <p className="bl-plan-eyebrow">{text.planPage.eyebrow}</p>
-          <h1 className="bl-plan-title">{text.planPage.title}</h1>
-          <p className="bl-plan-subtitle">
-            {text.planPage.subtitle}
-          </p>
-          <p className="bl-plan-current-summary">
-            {formatFlowText(text.planPage.currentPlan, { plan: planSummary })}
-          </p>
-
-          <div className="bl-plan-style-head">
-            <p className="bl-discovery-label">{text.planPage.planStyle}</p>
-            <p className="bl-plan-style-subtitle">
-              {displayPlanStyle.subtitle}
-            </p>
+          <div className="bl-plan-hero-copy">
+            <p className="bl-plan-eyebrow">{text.planPage.eyebrow}</p>
+            <h1 className="bl-plan-hero-title">
+              {language === "fr"
+                ? <>Planifie ta sortie en <em>Casablanca</em></>
+                : <>Plan your outing in <em>Casablanca</em></>
+              }
+            </h1>
+            <p className="bl-plan-hero-sub">{text.planPage.heroSubtitle}</p>
+            <div className="bl-plan-trust">
+              <span className="bl-plan-trust-item">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                {text.planPage.trustRealVenues}
+              </span>
+              <span className="bl-plan-trust-item">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                {text.planPage.trustLocalPicks}
+              </span>
+              <span className="bl-plan-trust-item">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                {text.planPage.trustBalancedRoute}
+              </span>
+            </div>
           </div>
+          <div className="bl-plan-hero-art" aria-hidden="true">
+            <span className="bl-plan-hero-sky" />
+          </div>
+        </section>
 
-          <div className="bl-plan-style-grid">
+        {/* ── B. STEP 1: VIBE PICKER ── */}
+        <section className="bl-plan-section bl-plan-section--bare">
+          <div className="bl-plan-section-head">
+            <h2 className="bl-plan-section-title">
+              <span className="bl-plan-section-num">1.</span>
+              {text.planPage.chooseVibeHeading}
+            </h2>
+            <p className="bl-plan-section-sub">{text.planPage.vibeSubtitle}</p>
+          </div>
+          <div className="bl-plan-vibes">
             {planStyleOptions.map((style) => (
               <button
                 key={style.id}
                 type="button"
-                className={`bl-plan-style-chip${planStyle === style.id ? " is-active" : ""}`}
+                className={`bl-plan-vibe${planStyle === style.id ? " is-active" : ""}`}
                 onClick={() =>
                   updatePlannerParams({
                     style: style.id,
@@ -1371,327 +1374,332 @@ export default function PlanPage() {
                   })
                 }
               >
-                <span>{displayStyles[style.id].label}</span>
-                <small>{displayStyles[style.id].subtitle}</small>
-                <small>{displayStyles[style.id].vibeLine}</small>
+                <span className="bl-plan-vibe-emoji" aria-hidden="true">{VIBE_EMOJIS[style.id]}</span>
+                <strong className="bl-plan-vibe-label">{displayStyles[style.id].label}</strong>
+                <span className="bl-plan-vibe-sub">{displayStyles[style.id].subtitle}</span>
+                <span className="bl-plan-vibe-badge">{displayStyles[style.id].badge}</span>
+                <span className="bl-plan-vibe-check" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </span>
               </button>
             ))}
           </div>
+        </section>
 
-          <div className="bl-plan-controls">
-            <div>
-              <p className="bl-discovery-label">{text.planPage.whoWith}</p>
-              <FilterChips
-                options={companionFilterOptions}
-                selectedValue={companion}
-                onSelect={(value) =>
-                  updatePlannerParams({
-                    withWho: value,
-                    seed: 0,
-                    stopSlugs: [],
-                    lockedRoles: [],
-                  })
-                }
-              />
+        {/* ── C. STEP 2: YOUR PLAN ── */}
+        <section className="bl-plan-section bl-plan-section--bare">
+          <div className="bl-plan-bar">
+            <div className="bl-plan-bar-left">
+              <h2 className="bl-plan-section-title">
+                <span className="bl-plan-section-num">2.</span>
+                {text.planPage.yourPlanHeading}
+                <span className="bl-plan-sparkle" aria-hidden="true">✦</span>
+              </h2>
+              <p className="bl-plan-section-sub">{text.planPage.planSubtitle}</p>
             </div>
-
-            <div>
-              <p className="bl-discovery-label">{text.common.mood}</p>
-              <FilterChips
-                options={moodFilterOptions}
-                selectedValue={mood}
-                onSelect={(value) =>
-                  updatePlannerParams({
-                    mood: value,
-                    seed: 0,
-                    stopSlugs: [],
-                    lockedRoles: [],
-                  })
-                }
-              />
-            </div>
-
-            <div>
-              <p className="bl-discovery-label">{dictionary.searchPage.summaryBudget}</p>
-              <FilterChips
-                options={budgetFilterOptions}
-                selectedValue={budget}
-                onSelect={(value) =>
-                  updatePlannerParams({
-                    budget: value,
-                    seed: 0,
-                    stopSlugs: [],
-                    lockedRoles: [],
-                  })
-                }
-              />
-            </div>
-
-            <div>
-              <p className="bl-discovery-label">{text.planPage.preferredArea}</p>
-              <FilterChips
-                options={areaFilterOptions}
-                selectedValue={area}
-                onSelect={(value) =>
-                  updatePlannerParams({
-                    area: value,
-                    seed: 0,
-                    stopSlugs: [],
-                    lockedRoles: [],
-                  })
-                }
-              />
-            </div>
-
-            <div className="bl-plan-actions">
+            <div className="bl-plan-bar-actions">
               <button
                 type="button"
-                className="bl-plan-secondary-btn"
-                onClick={() => {
-                  updatePlannerParams({
-                    withWho: "friends",
-                    mood: "social",
-                    budget: "$$",
-                    area: "any",
-                    style: defaultPlanStyleId,
-                    seed: 0,
-                    stopSlugs: [],
-                    lockedRoles: [],
-                  });
-                }}
-              >
-                {text.planPage.resetPlanner}
-              </button>
-
-              <button
-                type="button"
-                className="bl-plan-primary-btn"
+                className="bl-plan-btn bl-plan-btn--ghost"
                 onClick={handleRegenerateOuting}
               >
-                {text.planPage.refresh}
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M1 6.5a5.5 5.5 0 1 0 5.5-5.5A5.5 5.5 0 0 0 3 3L1 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M1 2v3h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                {text.planPage.shufflePlan}
               </button>
-
               <button
                 type="button"
-                className="bl-plan-secondary-btn"
+                className="bl-plan-btn bl-plan-btn--ghost"
                 onClick={handleCopyOutingLink}
               >
-                {text.planPage.copyLink}
+                {shareFeedback === "copied" ? text.planPage.linkCopied : text.planPage.copyLink}
               </button>
-
               <button
                 type="button"
-                className="bl-plan-primary-btn"
+                className="bl-plan-btn bl-plan-btn--wa"
+                onClick={handleShareWhatsApp}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                {text.planPage.shareWhatsApp}
+              </button>
+              <button
+                type="button"
+                className="bl-plan-btn bl-plan-btn--primary"
                 onClick={handleSaveOuting}
               >
-                {text.planPage.saveOuting}
+                {saveFeedback === "saved" ? text.planPage.outingSaved : text.planPage.saveOuting}
               </button>
             </div>
-
-            {shareFeedback !== "idle" ? (
-              <p className="bl-plan-feedback">
-                {shareFeedback === "copied"
-                  ? text.planPage.linkCopied
-                  : text.planPage.linkCopyFailed}
-              </p>
-            ) : null}
-
-            {saveFeedback === "saved" ? (
-              <p className="bl-plan-feedback">{text.planPage.outingSaved}</p>
-            ) : null}
-            {refineFeedback ? (
-              <p className="bl-plan-feedback">{refineFeedback}</p>
-            ) : null}
           </div>
-        </section>
-
-        <section className="bl-plan-results">
-          <div className="bl-plan-results-head">
-            <h2>{text.planPage.routeTitle}</h2>
-            <p>
-              {formatFlowText(text.planPage.stopsCount, {
-                count: effectivePlanStops.length,
-              })}
-            </p>
-          </div>
-
-          <p className="bl-plan-results-subtitle">
-            {displayPlanStyle.resultSubtitle}
-          </p>
-          {displayPlanStyle.explanationChips?.length ? (
-            <div className="bl-plan-results-chip-list">
-              {displayPlanStyle.explanationChips.map((chip: string) => (
-                <span
-                  key={`${selectedPlanStyle.id}-${chip}`}
-                  className="bl-plan-results-chip"
-                >
-                  {chip}
-                </span>
-              ))}
-            </div>
-          ) : null}
-          <p className="bl-plan-results-summary-meta">{planSummaryMeta}</p>
 
           {effectivePlanStops.length > 0 ? (
-            <div className="bl-plan-grid">
-              {effectivePlanStops.map((stop, index) => {
-                const roleKey =
-                  stopRoleOrder[Math.min(index, stopRoleOrder.length - 1)];
-                const isLocked = lockedRoles.includes(roleKey);
-
-                return (
-                  <article
-                    key={`${stop.role}-${stop.venue.slug}`}
-                    className="bl-plan-card"
-                  >
-                    <p className="bl-plan-stop-index">
-                      {formatFlowText(text.planPage.stopLabel, {
-                        index: index + 1,
-                      })}
-                    </p>
-                    <p className="bl-plan-stop-stage">
-                      {stopRoleStage[roleKey]}
-                    </p>
-                    <p className="bl-plan-stop-role">{stop.role}</p>
-                    <p className="bl-plan-stop-hint">{stop.roleHint}</p>
-                    <p className="bl-plan-stop-lock-state">
-                      {isLocked ? text.planPage.locked : text.planPage.unlocked}
-                    </p>
-                    <p className="bl-plan-stop-category">
-                      {stop.venue.category}
-                    </p>
-                    <h3 className="bl-plan-stop-name">{stop.venue.name}</h3>
-                    <p className="bl-plan-stop-area">📍 {stop.venue.area}</p>
-                    <p className="bl-plan-stop-description">
-                      {stop.venue.shortDescription ?? stop.venue.description}
-                    </p>
-
-                    {getBestForBadges(stop.venue, 2, language).length > 0 ? (
-                      <div className="bl-plan-stop-badges">
-                        {getBestForBadges(stop.venue, 2, language).map(
-                          (badge, badgeIndex) => (
-                            <span
-                              key={`${stop.venue.slug}-plan-badge-${badge}-${badgeIndex}`}
-                            >
-                              {badge}
-                            </span>
-                          ),
-                        )}
+            <>
+              <div className="bl-plan-route">
+                {effectivePlanStops.map((stop, index) => {
+                  const roleKey = stopRoleOrder[Math.min(index, stopRoleOrder.length - 1)];
+                  const isLocked = lockedRoles.includes(roleKey);
+                  const isLast = index === effectivePlanStops.length - 1;
+                  return (
+                    <div key={`${stop.role}-${stop.venue.slug}`} className="bl-plan-stop">
+                      <div className="bl-plan-stop-head">
+                        <span className="bl-plan-stop-num">{index + 1}</span>
+                        <span className="bl-plan-stop-role">{stopRoleLabel[roleKey]}</span>
+                        {!isLast && <span className="bl-plan-stop-line" aria-hidden="true" />}
                       </div>
-                    ) : null}
-
-                    {getVenuePersonalitySignals(stop.venue, language).length > 0 ? (
-                      <p className="bl-plan-stop-signals">
-                        {getVenuePersonalitySignals(stop.venue, language)
-                          .slice(0, 2)
-                          .join(" • ")}
-                      </p>
-                    ) : null}
-
-                    <div className="bl-plan-why-list">
-                      {[
-                        `${stopRoleStage[roleKey]} ${text.planPage.chipSuffix}`,
-                        selectedPlanStyle.label,
-                        ...explainVenueMatch(stop.venue, {
-                          budget,
-                          area,
-                          mood: selectedMood,
-                          companion: selectedCompanion,
-                        }, 3, language),
-                      ]
-                        .slice(0, 5)
-                        .map((chip, chipIndex) => (
-                          <span
-                            key={`${stop.venue.slug}-${chip}-${chipIndex}`}
-                            className="bl-plan-why-chip"
+                      <article className={`bl-plan-card${isLocked ? " is-locked" : ""}`}>
+                        <div className="bl-plan-card-media">
+                          <VenueImage
+                            src={getVenueImageSrc(stop.venue)}
+                            category={stop.venue.category}
+                            categorySlug={stop.venue.categorySlug}
+                            name={stop.venue.name}
+                            aspectRatio="4 / 3"
+                            placeholderStyle="monogram"
+                            alt={stop.venue.name}
+                          />
+                          <span className="bl-plan-card-cat">{stop.venue.category}</span>
+                          <button
+                            type="button"
+                            className={`bl-plan-lock-btn${isLocked ? " is-locked" : ""}`}
+                            onClick={() => handleToggleStopLock(roleKey)}
+                            aria-label={isLocked ? text.planPage.unlock : text.planPage.lock}
+                            title={isLocked ? text.planPage.unlock : text.planPage.lock}
                           >
-                            {chip}
-                          </span>
-                        ))}
+                            {isLocked ? (
+                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="6" width="11" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25"/><path d="M4 6V4.5a3 3 0 0 1 6 0V6" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/></svg>
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1.5" y="6" width="11" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25"/><path d="M4 6V4a3 3 0 0 1 6 0" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/></svg>
+                            )}
+                          </button>
+                        </div>
+                        <div className="bl-plan-card-body">
+                          <div className="bl-plan-card-meta">
+                            <span className="bl-plan-card-role-badge">{stopRoleLabel[roleKey]}</span>
+                            {stop.venue.priceLevel ? (
+                              <span className="bl-plan-card-price">{stop.venue.priceLevel}</span>
+                            ) : null}
+                          </div>
+                          <h3 className="bl-plan-card-name">{stop.venue.name}</h3>
+                          <p className="bl-plan-card-area">
+                            <svg width="10" height="12" viewBox="0 0 10 12" fill="none" aria-hidden="true"><path d="M5 1C2.79 1 1 2.79 1 5c0 3.5 4 7 4 7s4-3.5 4-7c0-2.21-1.79-4-4-4Z" stroke="currentColor" strokeWidth="1.1"/><circle cx="5" cy="5" r="1.3" stroke="currentColor" strokeWidth="1.1"/></svg>
+                            {stop.venue.area}
+                          </p>
+                          <p className="bl-plan-card-desc">
+                            {stop.venue.shortDescription ?? stop.venue.description}
+                          </p>
+                          {getBestForBadges(stop.venue, 3, language).length > 0 ? (
+                            <div className="bl-plan-card-tags">
+                              {getBestForBadges(stop.venue, 3, language).map((badge, badgeIndex) => (
+                                <span key={`${stop.venue.slug}-tag-${badge}-${badgeIndex}`} className="bl-plan-card-tag">
+                                  {badge}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+                          {stop.roleHint ? (
+                            <p className="bl-plan-card-reason">
+                              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M5.5 1l1.08 2.19L9 3.64l-1.75 1.7.41 2.41L5.5 6.57 3.34 7.75l.41-2.41L2 3.64l2.42-.45L5.5 1Z" stroke="currentColor" strokeWidth="0.9" strokeLinejoin="round"/></svg>
+                              {stop.roleHint}
+                            </p>
+                          ) : null}
+                        </div>
+                        <div className="bl-plan-card-foot">
+                          <button
+                            type="button"
+                            className="bl-plan-mini"
+                            onClick={() => handleReplaceStop(roleKey)}
+                            disabled={isLocked}
+                          >
+                            {text.planPage.tryAnother}
+                          </button>
+                          <button
+                            type="button"
+                            className={`bl-plan-mini bl-plan-mini--heart${isFavorite(stop.venue.slug) ? " is-active" : ""}`}
+                            onClick={() => toggleFavorite(stop.venue.slug)}
+                            aria-label={isFavorite(stop.venue.slug) ? dictionary.venueCard.removeFavorite : dictionary.venueCard.saveFavorite}
+                          >
+                            {isFavorite(stop.venue.slug) ? (
+                              <svg width="14" height="13" viewBox="0 0 14 13" fill="currentColor" aria-hidden="true"><path d="M7 12S1 8.5 1 4.5A3 3 0 0 1 7 2.5a3 3 0 0 1 6 2c0 4-6 7.5-6 7.5Z"/></svg>
+                            ) : (
+                              <svg width="14" height="13" viewBox="0 0 14 13" fill="none" aria-hidden="true"><path d="M7 12S1 8.5 1 4.5A3 3 0 0 1 7 2.5a3 3 0 0 1 6 2c0 4-6 7.5-6 7.5Z" stroke="currentColor" strokeWidth="1.2"/></svg>
+                            )}
+                          </button>
+                          <Link
+                            to={buildVenueHref(stop.venue.slug)}
+                            className="bl-plan-mini bl-plan-mini--cta"
+                          >
+                            {text.planPage.details} →
+                          </Link>
+                        </div>
+                      </article>
                     </div>
+                  );
+                })}
+              </div>
 
-                    <div className="bl-plan-stop-actions">
-                      <button
-                        type="button"
-                        className="bl-plan-stop-utility-btn"
-                        onClick={() => handleReplaceStop(roleKey)}
-                      >
-                        {text.planPage.replaceStop}
-                      </button>
-
-                      <button
-                        type="button"
-                        className={`bl-plan-stop-utility-btn${isLocked ? " is-active" : ""}`}
-                        onClick={() => handleToggleStopLock(roleKey)}
-                      >
-                        {isLocked ? text.planPage.unlock : text.planPage.lock}
-                      </button>
-
-                      <button
-                        type="button"
-                        className={`bl-plan-favorite-btn${
-                          isFavorite(stop.venue.slug) ? " is-active" : ""
-                        }`}
-                        onClick={() => toggleFavorite(stop.venue.slug)}
-                      >
-                        {isFavorite(stop.venue.slug)
-                          ? dictionary.venueCard.removeFavorite
-                          : dictionary.venueCard.saveFavorite}
-                      </button>
-
-                      <Link
-                        to={buildVenueHref(stop.venue.slug)}
-                        className="bl-plan-details-link"
-                      >
-                        {dictionary.venueCard.viewDetails}
-                      </Link>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+              {/* ── Route assurance strip ── */}
+              <div className="bl-plan-assure">
+                <div className="bl-plan-assure-item">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 2L11.09 6.26L15.73 6.97L12.36 10.25L13.18 14.89L9 12.69L4.82 14.89L5.64 10.25L2.27 6.97L6.91 6.26L9 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
+                  <div>
+                    <strong>{text.planPage.assureSmartRoute}</strong>
+                    <span>{text.planPage.assureSmartRouteDesc}</span>
+                  </div>
+                </div>
+                <div className="bl-plan-assure-item">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  <div>
+                    <strong>{text.planPage.assureBalancedPlan}</strong>
+                    <span>{text.planPage.assureBalancedPlanDesc}</span>
+                  </div>
+                </div>
+                <div className="bl-plan-assure-item">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 2c-3.87 0-7 3.13-7 7 0 3.87 3.13 7 7 7s7-3.13 7-7c0-3.87-3.13-7-7-7Zm0 2.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm0 9.5a5.5 5.5 0 0 1-4.55-2.43c.02-1.51 3.04-2.34 4.55-2.34 1.51 0 4.53.83 4.55 2.34A5.5 5.5 0 0 1 9 14Z" fill="currentColor" opacity=".85"/></svg>
+                  <div>
+                    <strong>{text.planPage.assureMadeForYou}</strong>
+                    <span>{text.planPage.assureMadeForYouDesc}</span>
+                  </div>
+                </div>
+              </div>
+            </>
           ) : (
             <div className="bl-plan-empty">
-              <h3>{text.planPage.notEnoughTitle}</h3>
-              <p>{text.planPage.notEnoughDescription}</p>
+              <p className="bl-plan-empty-title">{text.planPage.notEnoughTitle}</p>
+              <p className="bl-plan-empty-desc">{text.planPage.notEnoughDescription}</p>
             </div>
           )}
+
+          {refineFeedback ? (
+            <p className="bl-plan-feedback">{refineFeedback}</p>
+          ) : null}
+          {shareFeedback === "failed" ? (
+            <p className="bl-plan-feedback">{text.planPage.linkCopyFailed}</p>
+          ) : null}
         </section>
 
+        {/* ── D. STEP 3: CUSTOMIZE ── */}
+        <section className="bl-plan-customize-section">
+          <div className="bl-plan-customize-top">
+            <div className="bl-plan-bar-left">
+              <h2 className="bl-plan-section-title">
+                <span className="bl-plan-section-num">3.</span>
+                {text.planPage.customizeHeading}
+              </h2>
+              <p className="bl-plan-section-sub">{text.planPage.customizeSubtitle}</p>
+            </div>
+            <button
+              type="button"
+              className={`bl-plan-btn bl-plan-btn--ghost bl-plan-customize-toggle${customizeOpen ? " is-open" : ""}`}
+              onClick={() => setCustomizeOpen(!customizeOpen)}
+            >
+              {customizeOpen ? text.planPage.hideFilters : text.planPage.refine}
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="bl-plan-chevron"><path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          </div>
+          <div className={`bl-plan-customize${customizeOpen ? " is-open" : ""}`}>
+            <div className="bl-plan-customize-inner">
+              <div className="bl-plan-filter-row">
+                <span className="bl-plan-filter-label">{text.planPage.whoWith}</span>
+                <FilterChips
+                  options={companionFilterOptions}
+                  selectedValue={companion}
+                  onSelect={(value) =>
+                    updatePlannerParams({ withWho: value, seed: 0, stopSlugs: [], lockedRoles: [] })
+                  }
+                />
+              </div>
+              <div className="bl-plan-filter-row">
+                <span className="bl-plan-filter-label">{text.common.mood}</span>
+                <FilterChips
+                  options={moodFilterOptions}
+                  selectedValue={mood}
+                  onSelect={(value) =>
+                    updatePlannerParams({ mood: value, seed: 0, stopSlugs: [], lockedRoles: [] })
+                  }
+                />
+              </div>
+              <div className="bl-plan-filter-row">
+                <span className="bl-plan-filter-label">{dictionary.searchPage.summaryBudget}</span>
+                <FilterChips
+                  options={budgetFilterOptions}
+                  selectedValue={budget}
+                  onSelect={(value) =>
+                    updatePlannerParams({ budget: value, seed: 0, stopSlugs: [], lockedRoles: [] })
+                  }
+                />
+              </div>
+              <div className="bl-plan-filter-row">
+                <span className="bl-plan-filter-label">{text.planPage.preferredArea}</span>
+                <FilterChips
+                  options={areaFilterOptions}
+                  selectedValue={area}
+                  onSelect={(value) =>
+                    updatePlannerParams({ area: value, seed: 0, stopSlugs: [], lockedRoles: [] })
+                  }
+                />
+              </div>
+              <div className="bl-plan-customize-reset">
+                <button
+                  type="button"
+                  className="bl-plan-btn bl-plan-btn--ghost"
+                  onClick={() => {
+                    updatePlannerParams({
+                      withWho: "friends",
+                      mood: "social",
+                      budget: "$$",
+                      area: "any",
+                      style: defaultPlanStyleId,
+                      seed: 0,
+                      stopSlugs: [],
+                      lockedRoles: [],
+                    });
+                  }}
+                >
+                  {text.planPage.resetPlanner}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── E. SAVED OUTINGS ── */}
         <section className="bl-plan-saved">
-          <div className="bl-plan-results-head">
-            <h2>{text.planPage.savedOutings}</h2>
-            <p>
-              {formatFlowText(text.planPage.savedCount, {
-                count: savedOutings.length,
-              })}
-            </p>
+          <div className="bl-plan-saved-head">
+            <h2 className="bl-plan-saved-heading">
+              <svg width="18" height="17" viewBox="0 0 18 17" fill="none" aria-hidden="true"><path d="M9 15.5S1.5 11 1.5 5.5A4 4 0 0 1 9 2.5a4 4 0 0 1 7.5 3c0 5.5-7.5 10-7.5 10Z" stroke="currentColor" strokeWidth="1.3" fill="currentColor" fillOpacity="0.15"/></svg>
+              {text.planPage.savedOutings}
+            </h2>
+            <span className="bl-plan-saved-count">
+              {formatFlowText(text.planPage.savedCount, { count: savedOutings.length })}
+            </span>
           </div>
 
           {savedOutings.length === 0 ? (
-            <div className="bl-plan-empty">
-              <h3>{text.planPage.noSavedTitle}</h3>
-              <p>{text.planPage.noSavedDescription}</p>
+            <div className="bl-plan-saved-empty">
+              <div className="bl-plan-save-icon-mark" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21S3 16 3 9a5 5 0 0 1 9-3A5 5 0 0 1 21 9c0 7-9 12-9 12Z" stroke="currentColor" strokeWidth="1.5"/></svg>
+              </div>
+              <div>
+                <p className="bl-plan-saved-empty-title">{text.planPage.noSavedTitle}</p>
+                <p className="bl-plan-saved-empty-desc">{text.planPage.noSavedDescription}</p>
+              </div>
             </div>
           ) : (
             <div className="bl-plan-saved-list">
               {savedOutings.map((outing) => (
                 <article key={outing.id} className="bl-plan-saved-card">
-                  <p className="bl-plan-saved-title">{outing.title}</p>
-                  <p className="bl-plan-saved-meta">{outing.summary}</p>
-                  <p className="bl-plan-saved-date">
-                    {formatSavedDate(outing.createdAt)}
-                  </p>
-
-                  <div className="bl-plan-saved-stops">
-                    {outing.stops.map((stop) => (
-                      <p key={`${outing.id}-${stop.slug}-${stop.role}`}>
-                        <strong>{stop.role}:</strong> {stop.name}
-                      </p>
-                    ))}
+                  <div className="bl-plan-saved-info">
+                    <p className="bl-plan-saved-card-title">{outing.title}</p>
+                    <p className="bl-plan-saved-card-meta">{outing.summary}</p>
+                    <div className="bl-plan-saved-stops-mini">
+                      {outing.stops.map((stop) => (
+                        <span key={`${outing.id}-${stop.slug}`} className="bl-plan-saved-stop-name">
+                          {stop.name}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="bl-plan-saved-date">{formatSavedDate(outing.createdAt)}</p>
                   </div>
-
-                  <div className="bl-plan-stop-actions">
+                  <div className="bl-plan-saved-cta">
                     <Link
                       to={buildPlanUrl({
                         withWho: outing.withWho,
@@ -1703,14 +1711,13 @@ export default function PlanPage() {
                         stopSlugs: outing.stops.map((stop) => stop.slug),
                         lockedRoles: outing.lockedRoles,
                       })}
-                      className="bl-plan-details-link"
+                      className="bl-plan-btn bl-plan-btn--primary"
                     >
                       {text.planPage.openAgain}
                     </Link>
-
                     <button
                       type="button"
-                      className="bl-plan-secondary-btn"
+                      className="bl-plan-btn bl-plan-btn--ghost"
                       onClick={() => handleDeleteSavedOuting(outing.id)}
                     >
                       {text.planPage.delete}
@@ -1721,7 +1728,56 @@ export default function PlanPage() {
             </div>
           )}
         </section>
+
+        {/* ── F. BOTTOM CTA ── */}
+        <div className="bl-plan-cta">
+          <div className="bl-plan-cta-copy">
+            <span className="bl-plan-cta-spark" aria-hidden="true">✦</span>
+            <div>
+              <h3 className="bl-plan-cta-title">{text.planPage.ctaTitle}</h3>
+              <p className="bl-plan-cta-sub">{text.planPage.ctaSubtitle}</p>
+            </div>
+          </div>
+          <div className="bl-plan-cta-actions">
+            <button
+              type="button"
+              className="bl-plan-btn bl-plan-btn--ghost"
+              onClick={handleCopyOutingLink}
+            >
+              {text.planPage.copyLink}
+            </button>
+            <button
+              type="button"
+              className="bl-plan-btn bl-plan-btn--wa-solid"
+              onClick={handleShareWhatsApp}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              {text.planPage.shareWhatsApp}
+            </button>
+          </div>
+        </div>
+
       </main>
+
+      {/* ── G. MOBILE STICKY SHARE ── */}
+      <div className="bl-plan-mobile-share">
+        <button
+          type="button"
+          className="bl-plan-btn bl-plan-btn--ghost"
+          onClick={handleCopyOutingLink}
+          tabIndex={-1}
+        >
+          {text.planPage.copyLink}
+        </button>
+        <button
+          type="button"
+          className="bl-plan-btn bl-plan-btn--wa-solid"
+          onClick={handleShareWhatsApp}
+          tabIndex={-1}
+        >
+          {text.planPage.shareWhatsApp}
+        </button>
+      </div>
     </div>
   );
 }

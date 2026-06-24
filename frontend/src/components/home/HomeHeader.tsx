@@ -9,7 +9,6 @@ export type HomeHeaderProps = {
     map: string;
     admin: string;
     about: string;
-    exploreNow: string;
     languageEn: string;
     languageFr: string;
   };

@@ -92,8 +92,10 @@
   top: 0.7rem;
   right: 0.7rem;
   z-index: 4;
-  width: 2.3rem;
-  height: 2.3rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.3);
   background: color-mix(in srgb, var(--ink) 38%, transparent);
@@ -219,4 +221,33 @@
   .bl-home-venue-card .bl-venue-image {
     aspect-ratio: 16 / 11;
   }
+
+  /* Stack footer on very narrow screens so the link never gets squeezed */
+  .bl-home-venue-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .bl-home-venue-link {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* ── Dark mode overrides ── */
+[data-theme="dark"] .bl-home-venue-card {
+  /* Replace white inset highlight with a subtle surface-edge glow */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 10px 28px -18px rgba(0, 0, 0, 0.55);
+}
+[data-theme="dark"] .bl-home-venue-card:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 20px 42px -20px rgba(0, 0, 0, 0.65);
+}
+[data-theme="dark"] .bl-home-venue-favorite.is-active {
+  background: var(--surface);
+  border-color: var(--plum);
+  color: var(--terracotta);
 }

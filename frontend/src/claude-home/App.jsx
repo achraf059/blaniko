@@ -3,7 +3,7 @@ import "./data.js";
 import { Nav } from "./Nav.jsx";
 import { Hero } from "./Hero.jsx";
 import { Editorial, CompareTray } from "./Features.jsx"; // MapPreview excluded until venue coordinates are verified for v0
-import { Categories, Curated, How, FooterCTA, Foot } from "./Sections.jsx";
+import { Categories, Curated, How, AboutSection, FooterCTA, Foot } from "./Sections.jsx";
 import { useFavorites } from "../hooks/useFavorites";
 import { useCompare } from "../hooks/useCompare";
 
@@ -49,9 +49,17 @@ const App = () => {
     return () => window.removeEventListener("message", onMsg);
   }, []);
 
-  // Apply palette to :root
+  // Apply palette to :root — light mode only.
+  // All PALETTES values are light-mode colours. Calling setProperty() writes
+  // them as inline CSS custom properties on <html>, which have specificity
+  // (1,0,0,0) and override *everything* in stylesheets — including the
+  // [data-theme="dark"] variable block.  Skip in dark mode so the CSS
+  // dark-mode token overrides can take control.
   React.useEffect(() => {
     if (typeof document === "undefined") {
+      return;
+    }
+    if (document.documentElement.getAttribute("data-theme") === "dark") {
       return;
     }
 
@@ -86,6 +94,7 @@ const App = () => {
         />
         <Editorial />
         {/* <MapPreview /> — hidden for v0 until venue coordinates are verified */}
+        <AboutSection />
         <FooterCTA />
       </main>
       <Foot />

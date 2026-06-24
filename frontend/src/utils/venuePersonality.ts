@@ -1,3 +1,4 @@
+import { bestForLabels } from "../data/bestForTags";
 import { type Venue } from "../data/mockData";
 import type { AppLanguage } from "../i18n/types";
 
@@ -18,20 +19,7 @@ type VenuePersonalityInput = Pick<
 
 const labelByLanguage = {
   en: {
-    bestForLabelMap: {
-      "date-spot": "Date spot",
-      friends: "Friends",
-      "solo-coffee": "Solo coffee",
-      "work-friendly": "Work-friendly",
-      "family-friendly": "Family-friendly",
-      "budget-pick": "Budget pick",
-      "sunset-spot": "Sunset spot",
-      "late-night": "Late-night",
-      "group-activity": "Group activity",
-      active: "Active",
-      competitive: "Competitive",
-      kids: "Good for kids",
-    },
+    bestForLabelMap: bestForLabels.en,
     timeLabelMap: {
       morning: "Best in the morning",
       afternoon: "Great for afternoons",
@@ -55,20 +43,7 @@ const labelByLanguage = {
     },
   },
   fr: {
-    bestForLabelMap: {
-      "date-spot": "Idéal en duo",
-      friends: "Amis",
-      "solo-coffee": "Café en solo",
-      "work-friendly": "Adapté au travail",
-      "family-friendly": "Familial",
-      "budget-pick": "Petit budget",
-      "sunset-spot": "Spot sunset",
-      "late-night": "Tard le soir",
-      "group-activity": "Activité en groupe",
-      active: "Actif",
-      competitive: "Compétitif",
-      kids: "Pour les enfants",
-    },
+    bestForLabelMap: bestForLabels.fr,
     timeLabelMap: {
       morning: "Idéal le matin",
       afternoon: "Parfait l'après-midi",

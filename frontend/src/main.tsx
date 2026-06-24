@@ -4,15 +4,25 @@ import { BrowserRouter } from "react-router";
 import App from "./App";
 import { HashScrollHandler } from "./components/HashScrollHandler";
 import { I18nProvider } from "./i18n/I18nProvider";
+import { ThemeProvider } from "./hooks/useTheme";
+// claude-home/styles.css is imported here (before index.css and all page CSS)
+// so it always lands at a consistent, predictable position in the CSS cascade
+// regardless of which page the user navigates to first. Without this, Vite dev
+// mode injects it at an unpredictable position depending on navigation order,
+// which can cause its body/html background rules to land after index.css and
+// produce incorrect dark-mode backgrounds.
+import "./claude-home/styles.css";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <I18nProvider>
-      <BrowserRouter>
-        <HashScrollHandler />
-        <App />
-      </BrowserRouter>
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <BrowserRouter>
+          <HashScrollHandler />
+          <App />
+        </BrowserRouter>
+      </I18nProvider>
+    </ThemeProvider>
   </React.StrictMode>,
 );

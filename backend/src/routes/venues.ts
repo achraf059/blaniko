@@ -148,6 +148,25 @@ function mapVenue(row: Record<string, unknown>) {
     ? (row.best_for_tags as string[])
     : null;
 
+  // Map lat/lng from Supabase to the frontend `coordinates` field.
+  // Requires `lat` and `lng` columns (DOUBLE PRECISION, nullable) on the
+  // `venues` table. Until those columns exist and are populated, this will
+  // always be undefined and MapPage will show an empty map canvas.
+  //
+  // Supabase migration to run when ready:
+  //   ALTER TABLE venues ADD COLUMN IF NOT EXISTS lat  DOUBLE PRECISION;
+  //   ALTER TABLE venues ADD COLUMN IF NOT EXISTS lng  DOUBLE PRECISION;
+  // Casablanca bounding box: lat 33.46–33.66, lng -7.75–-7.45
+  const coordinates =
+    typeof row.lat === "number" && typeof row.lng === "number"
+      ? { lat: row.lat as number, lng: row.lng as number }
+      : undefined;
+
+  // price_level should be "$", "$$", or "$$$" in the DB.
+  // If the column is missing or null, priceLevel will be undefined and the
+  // frontend budget filter will simply not match this venue.
+  const priceLevel = row.price_level ? String(row.price_level) : undefined;
+
   return {
     id: row.id,
     externalId: row.external_id,
@@ -166,9 +185,14 @@ function mapVenue(row: Record<string, unknown>) {
       : null,
     googleMapsLink: row.google_maps_link ?? null,
     phone: row.phone ?? null,
+    website: row.website ? String(row.website) : null,
+    instagram: row.instagram ? String(row.instagram) : null,
     shortDescription,
     // description mirrors shortDescription so existing components don't break
     description: shortDescription,
+    overview:  row.overview  ? String(row.overview)  : undefined,
+    vibe:      row.vibe      ? String(row.vibe)       : undefined,
+    audience:  row.audience  ? String(row.audience)   : undefined,
     imageUrl: row.image_url ?? null,
     isActive: row.is_active,
     source: row.source,
@@ -176,6 +200,8 @@ function mapVenue(row: Record<string, unknown>) {
     bestForTags: dbTags ?? computeBestForTags(subcategory, categorySlug),
     spaceType: row.space_type ?? computeSpaceType(subcategory),
     timeOfDay: row.time_of_day ?? computeTimeOfDay(subcategory),
+    priceLevel,
+    coordinates,
   };
 }
 

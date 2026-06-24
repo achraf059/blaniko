@@ -4,10 +4,9 @@ import "./LanguageSwitcher.css";
 type LanguageSwitcherProps = {
   labelEn: string;
   labelFr: string;
-  labelAr?: string;
 };
 
-export function LanguageSwitcher({ labelEn, labelFr, labelAr = "AR" }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ labelEn, labelFr }: LanguageSwitcherProps) {
   const { language, setLanguage } = useI18n();
 
   return (
@@ -34,15 +33,6 @@ export function LanguageSwitcher({ labelEn, labelFr, labelAr = "AR" }: LanguageS
         {labelFr}
       </button>
 
-      <button
-        type="button"
-        disabled
-        aria-disabled="true"
-        title="Arabic coming soon"
-        className="bl-language-switcher-btn is-disabled"
-      >
-        {labelAr}
-      </button>
     </div>
   );
 }
