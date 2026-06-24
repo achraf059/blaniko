@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Eager: core discovery paths hit on every session — no benefit to deferring
 import HomePage from "./pages/HomePage";
@@ -31,27 +32,29 @@ function RouteLoadingFallback() {
 
 export default function App() {
   return (
-    <Suspense fallback={<RouteLoadingFallback />}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/collections" element={<CollectionsPage />} />
-        <Route path="/compare" element={<ComparePage />} />
-        <Route path="/favorites" element={<FavoritesPage />} />
-        <Route path="/guides" element={<GuidesPage />} />
-        <Route path="/guides/:slug" element={<GuideDetailPage />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/plan" element={<PlanPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/recommendations" element={<RecommendationsPage />} />
-        <Route path="/recent" element={<RecentPage />} />
-        <Route path="/areas/:slug" element={<AreaPage />} />
-        <Route path="/categories/:slug" element={<CategoryPage />} />
-        <Route path="/venues/:slug" element={<VenuePage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/partners" element={<PartnersPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/collections" element={<CollectionsPage />} />
+          <Route path="/compare" element={<ComparePage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/guides" element={<GuidesPage />} />
+          <Route path="/guides/:slug" element={<GuideDetailPage />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/plan" element={<PlanPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/recommendations" element={<RecommendationsPage />} />
+          <Route path="/recent" element={<RecentPage />} />
+          <Route path="/areas/:slug" element={<AreaPage />} />
+          <Route path="/categories/:slug" element={<CategoryPage />} />
+          <Route path="/venues/:slug" element={<VenuePage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/partners" element={<PartnersPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
