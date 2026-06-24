@@ -1138,20 +1138,20 @@ export default function PlanPage() {
     trackActivity({
       id: `${planStyle}:${area}:${mood}:${companion}:${budget}:${stopSignature}`,
       type: "outing",
-      title: `${selectedPlanStyle.label} • ${selectedAreaLabel}`,
+      title: `${displayPlanStyle.label} • ${selectedAreaLabel}`,
       href: `${location.pathname}${location.search}`,
     });
   }, [
     area,
     budget,
     companion,
+    displayPlanStyle.label,
     effectiveStopSlugsStr,
     location.pathname,
     location.search,
     mood,
     planStyle,
     selectedAreaLabel,
-    selectedPlanStyle.label,
     trackActivity,
   ]);
 
@@ -1267,7 +1267,7 @@ export default function PlanPage() {
       .join("-");
     const saved: SavedOuting = {
       id: `${now}-${stopSignature}`,
-      title: `${selectedPlanStyle.label} • ${selectedAreaLabel}`,
+      title: `${displayPlanStyle.label} • ${selectedAreaLabel}`,
       summary: planSummary,
       planStyle,
       area,
@@ -1320,10 +1320,7 @@ export default function PlanPage() {
           <div className="bl-plan-hero-copy">
             <p className="bl-plan-eyebrow">{text.planPage.eyebrow}</p>
             <h1 className="bl-plan-hero-title">
-              {language === "fr"
-                ? <>Planifie ta sortie en <em>Casablanca</em></>
-                : <>Plan your outing in <em>Casablanca</em></>
-              }
+              {text.planPage.heroTitle.split("Casablanca")[0]}<em>Casablanca</em>{text.planPage.heroTitle.split("Casablanca")[1] ?? ""}
             </h1>
             <p className="bl-plan-hero-sub">{text.planPage.heroSubtitle}</p>
             <div className="bl-plan-trust">
