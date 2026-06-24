@@ -108,9 +108,6 @@ export function getBestForBadges(
   if (audienceText.includes("family") || audienceText.includes("children")) {
     fallback.push(bestForLabelMap["family-friendly"] ?? "Family-friendly");
   }
-  if (audienceText.includes("remote") || audienceText.includes("freelancer")) {
-    fallback.push(bestForLabelMap["work-friendly"] ?? "Work-friendly");
-  }
   if ((venue.priceLevel ?? "") === "$") {
     fallback.push(bestForLabelMap["budget-pick"] ?? "Budget pick");
   }

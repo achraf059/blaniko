@@ -177,42 +177,6 @@ export const venues: Venue[] = [
     },
   },
   {
-    slug: "old-medina-food-walk",
-    name: "Old Medina Food Walk",
-    category: "Activities",
-    categorySlug: "activities",
-    area: "Old Medina, Casablanca",
-    coordinates: { lat: 33.5994, lng: -7.6177 },
-    description:
-      "Guided tasting walk through local food spots in the Old Medina.",
-    shortDescription:
-      "Guided tasting walk through local food spots in the Old Medina.",
-    overview:
-      "Old Medina Food Walk is a discovery activity built around Casablanca's street-food culture. The route mixes classic snack stops, local vendor stories, and practical context about the area. It is especially good for first-time visitors or residents who want to reconnect with old-city flavors.",
-    vibe: "Cultural, local, lively",
-    vibeSummary: "Lively cultural route through classic local flavors.",
-    audience: "Visitors, food explorers, friends",
-    priceLevel: "$",
-    bestForTags: ["budget-pick", "friends"],
-    timeOfDay: ["afternoon", "evening"],
-    energyLevel: "medium",
-    socialLevel: "high",
-    spaceType: "outdoor",
-    translations: {
-      fr: {
-        description:
-          "Balade gourmande guidée à travers les adresses street-food de l'Ancienne Médina.",
-        shortDescription:
-          "Balade gourmande guidée à travers les adresses street-food de l'Ancienne Médina.",
-        overview:
-          "Old Medina Food Walk est une activité de découverte construite autour de la culture street-food de Casablanca. Le parcours mêle arrêts snacks classiques, histoires de vendeurs locaux et contexte pratique sur le quartier. Idéal pour les premiers visiteurs ou les résidents qui veulent renouer avec les saveurs de la vieille ville.",
-        vibe: "Culturel, local, animé",
-        vibeSummary: "Parcours culturel animé à travers les saveurs locales classiques.",
-        audience: "Visiteurs, explorateurs culinaires, amis",
-      },
-    },
-  },
-  {
     slug: "pixel-arena",
     name: "Pixel Arena",
     category: "Gaming",
