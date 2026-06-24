@@ -4,6 +4,7 @@ import { FilterChips } from "../components/discovery/FilterChips";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { type Venue } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
@@ -662,6 +663,12 @@ function formatSavedDate(value: string): string {
 export default function PlanPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
+  usePageMeta(
+    language === "fr" ? "Planifier une sortie | Blaniko" : "Plan an Outing | Blaniko",
+    language === "fr"
+      ? "Créez votre plan de sortie personnalisé à Casablanca : activités, sports, soirées et plus."
+      : "Build your perfect Casablanca outing — activities, sports, gaming, evenings and more.",
+  );
   const moodLabels = getDiscoveryMoodLabel(language);
   const companionLabels = getDiscoveryCompanionLabel(language);
   const location = useLocation();

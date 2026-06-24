@@ -122,10 +122,10 @@ export default function GuidesPage() {
   const moodRef = useRef<HTMLElement>(null);
 
   usePageMeta(
-    language === "fr" ? "Guides | Blaniko" : "Guides | Blaniko",
+    language === "fr" ? "Guides de sortie | Blaniko" : "City Guides | Blaniko",
     language === "fr"
-      ? "Collections éditoriales de lieux à Casablanca"
-      : "Editorial collections of places in Casablanca",
+      ? "Guides thématiques pour vos activités, sports, gaming et sorties à Casablanca."
+      : "Curated city guides for activities, sports, gaming and outings in Casablanca.",
   );
 
   useReveal(activeFilter);
