@@ -4,6 +4,7 @@ import {
   type RecentActivityItem,
   useRecentActivity,
 } from "../hooks/useRecentActivity";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
 import "./RecentPage.css";
@@ -28,6 +29,12 @@ function formatActivityDate(value: string, language: string): string {
 export default function RecentPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
+  usePageMeta(
+    language === "fr" ? "Activité récente | Blaniko" : "Recent Activity | Blaniko",
+    language === "fr"
+      ? "Vos lieux et activités récemment consultés à Casablanca."
+      : "Your recently viewed venues and activities in Casablanca.",
+  );
   const { activities, activityCount, removeActivity, clearActivities } =
     useRecentActivity();
 

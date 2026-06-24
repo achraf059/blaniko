@@ -6,6 +6,7 @@ import { VenueCard } from "../components/home/VenueCard";
 import { getVenueDisplay } from "../data/mockData";
 import { useCollections } from "../hooks/useCollections";
 import { useFavorites } from "../hooks/useFavorites";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
@@ -14,6 +15,12 @@ import "./CollectionsPage.css";
 export default function CollectionsPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
+  usePageMeta(
+    language === "fr" ? "Mes collections | Blaniko" : "My Collections | Blaniko",
+    language === "fr"
+      ? "Consultez et gérez vos collections de lieux enregistrés à Casablanca."
+      : "View and manage your saved venue collections in Casablanca.",
+  );
   const { venuesBySlug } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const {

@@ -141,6 +141,12 @@ function readStoredRecommendationState(
 
   try {
     const parsed = JSON.parse(raw) as Partial<StoredRecommendationState>;
+
+    // Discard state from a different schema version — bump STORAGE_KEY when shape changes
+    if (parsed.version !== 1) {
+      return null;
+    }
+
     const answers = sanitizeStoredAnswers(parsed.answers, allowedValues, defaults);
 
     const stepIndex =
