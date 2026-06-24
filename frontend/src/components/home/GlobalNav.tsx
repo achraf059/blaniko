@@ -176,6 +176,8 @@ export function GlobalNav({ labels }: GlobalNavProps) {
                 <Link to="/recommendations" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navMenuRecommendations}</Link>
                 <Link to="/partners" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
                 <Link to="/privacy" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navMenuPrivacy}</Link>
+                <div className="bl-global-nav-menu-divider" />
+                <Link to="/account" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navAccount}</Link>
               </div>
             )}
           </div>
