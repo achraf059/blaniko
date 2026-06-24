@@ -214,7 +214,6 @@ router.get("/", async (req: Request, res: Response) => {
     .from("venues")
     .select("*")
     .eq("is_active", true)
-    .neq("external_id", "BLK-0037") // duplicate "Dream World" — hidden until resolved in DB
     .order("external_id", { ascending: true });
 
   if (typeof category === "string" && category.length > 0) {
@@ -247,7 +246,6 @@ router.get("/:slug", async (req: Request, res: Response) => {
     .select("*")
     .eq("slug", slug)
     .eq("is_active", true)
-    .neq("external_id", "BLK-0037")
     .single();
 
   if (error) {
