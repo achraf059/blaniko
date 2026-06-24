@@ -8,12 +8,16 @@ import React, {
 } from "react";
 
 export type Theme = "light" | "dark";
-const STORAGE_KEY = "blaniko-theme";
+const STORAGE_KEY = "blaniko:theme:v1";
+const STORAGE_KEY_LEGACY = "blaniko-theme";
 
 function getInitialTheme(): Theme {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "dark" || stored === "light") return stored;
+    // Migrate from old key for existing users.
+    const legacy = localStorage.getItem(STORAGE_KEY_LEGACY);
+    if (legacy === "dark" || legacy === "light") return legacy;
   } catch {
     // localStorage unavailable (SSR, sandboxed iframe, etc.)
   }
