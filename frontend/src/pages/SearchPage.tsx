@@ -229,9 +229,7 @@ export default function SearchPage() {
   const title = query.trim()
     ? dictionary.searchPage.titleForQuery.replace("{query}", query.trim())
     : selectedMoodValue
-      ? language === "fr"
-        ? `Sélection ambiance ${selectedMoodName}`
-        : `${selectedMoodName} mood picks`
+      ? dictionary.searchPage.moodPicksTitle.replace("{mood}", selectedMoodName ?? "")
       : dictionary.searchPage.titleDefault;
 
   const buildVenueHref = (slug: string) => {

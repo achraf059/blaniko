@@ -61,11 +61,7 @@ export default function FavoritesPage() {
                 type="button"
                 className="bl-favorites-clear-btn"
                 onClick={() => {
-                  const msg =
-                    language === "fr"
-                      ? "Supprimer tous les lieux enregistrés ? Cette action est irréversible."
-                      : "Clear all saved venues? This cannot be undone.";
-                  if (window.confirm(msg)) clearFavorites();
+                  if (window.confirm(dictionary.favoritesPage.clearConfirm)) clearFavorites();
                 }}
               >
                 {dictionary.favoritesPage.clearAll}

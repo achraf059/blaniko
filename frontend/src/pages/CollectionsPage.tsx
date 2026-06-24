@@ -143,7 +143,7 @@ export default function CollectionsPage() {
                             setEditingName(collection.name);
                           }}
                         >
-                          Rename
+                          {text.collectionsPage.rename}
                         </button>
                       ) : (
                         <button
@@ -161,7 +161,7 @@ export default function CollectionsPage() {
                         type="button"
                         onClick={() => deleteCollection(collection.id)}
                       >
-                        Delete
+                        {text.collectionsPage.delete}
                       </button>
                       <button
                         type="button"

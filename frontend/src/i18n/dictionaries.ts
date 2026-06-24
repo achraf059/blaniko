@@ -238,6 +238,7 @@ export type Dictionary = {
     eyebrow: string;
     titleDefault: string;
     titleForQuery: string;
+    moodPicksTitle: string;
     subtitle: string;
     quickFiltersLabel: string;
     budgetLabel: string;
@@ -274,6 +275,7 @@ export type Dictionary = {
     subtitle: string;
     savedLabel: string;
     clearAll: string;
+    clearConfirm: string;
     emptyTitle: string;
     emptyDescription: string;
     browseHome: string;
@@ -612,6 +614,7 @@ const en: Dictionary = {
     eyebrow: "Discovery results",
     titleDefault: "Explore matching venues",
     titleForQuery: 'Results for "{query}"',
+    moodPicksTitle: "{mood} mood picks",
     subtitle: "Refine your search with category and budget filters.",
     quickFiltersLabel: "Quick category filters",
     budgetLabel: "Budget",
@@ -649,6 +652,7 @@ const en: Dictionary = {
     subtitle: "Keep your preferred Casablanca spots in one place.",
     savedLabel: "saved",
     clearAll: "Clear all",
+    clearConfirm: "Clear all saved venues? This cannot be undone.",
     emptyTitle: "No favorites yet",
     emptyDescription: "Save places from homepage, search, or recommendations.",
     browseHome: "Browse venues",
@@ -990,6 +994,7 @@ const fr: Dictionary = {
     eyebrow: "Résultats découverte",
     titleDefault: "Explorer les lieux correspondants",
     titleForQuery: 'Résultats pour "{query}"',
+    moodPicksTitle: "Sélection ambiance {mood}",
     subtitle: "Affinez avec les filtres catégorie et budget.",
     quickFiltersLabel: "Filtres rapides",
     budgetLabel: "Budget",
@@ -1027,6 +1032,7 @@ const fr: Dictionary = {
     subtitle: "Gardez vos adresses préférées de Casablanca au même endroit.",
     savedLabel: "enregistrés",
     clearAll: "Tout effacer",
+    clearConfirm: "Supprimer tous les lieux enregistrés ? Cette action est irréversible.",
     emptyTitle: "Aucun favori pour le moment",
     emptyDescription:
       "Enregistrez des lieux depuis l'accueil, la recherche ou les recommandations.",
