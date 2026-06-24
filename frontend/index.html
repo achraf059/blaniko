@@ -6,7 +6,7 @@
     <script>
       (function () {
         try {
-          var t = localStorage.getItem('blaniko-theme');
+          var t = localStorage.getItem('blaniko:theme:v1') || localStorage.getItem('blaniko-theme');
           if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
         } catch (e) { console.warn("Blaniko theme init failed", e); }
       })();

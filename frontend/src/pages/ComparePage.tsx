@@ -119,7 +119,12 @@ export default function ComparePage() {
                     </div>
 
                     <h2 className="bl-compare-name">{venue.name}</h2>
-                    <p className="bl-compare-area">📍 {venue.area}</p>
+                    <p className="bl-compare-area">
+                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:"inline",verticalAlign:"middle",marginRight:"0.25rem",flexShrink:0}}>
+                        <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>
+                      </svg>
+                      {venue.area}
+                    </p>
 
                     {standout.length > 0 ? (
                       <div className="bl-compare-standout">

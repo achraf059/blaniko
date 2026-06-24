@@ -56,7 +56,8 @@ type StopRoleKey = "start" | "main" | "end";
 
 const stopRoleOrder: StopRoleKey[] = ["start", "main", "end"];
 
-const SAVED_OUTINGS_KEY = "blaniko_saved_outings_v1";
+const SAVED_OUTINGS_KEY = "blaniko:saved-outings:v1";
+const SAVED_OUTINGS_KEY_LEGACY = "blaniko_saved_outings_v1";
 
 const companionOptions = [
   { value: "alone", label: "Alone" },
@@ -714,7 +715,12 @@ export default function PlanPage() {
     }
 
     try {
-      const raw = window.localStorage.getItem(SAVED_OUTINGS_KEY);
+      // Read new key first; fall back to legacy key for existing users.
+      let raw = window.localStorage.getItem(SAVED_OUTINGS_KEY);
+      const migratedFromLegacy = !raw && Boolean(window.localStorage.getItem(SAVED_OUTINGS_KEY_LEGACY));
+      if (!raw) {
+        raw = window.localStorage.getItem(SAVED_OUTINGS_KEY_LEGACY);
+      }
       if (!raw) {
         return [];
       }
@@ -722,6 +728,11 @@ export default function PlanPage() {
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) {
         return [];
+      }
+
+      // Persist under new key immediately so subsequent writes use it.
+      if (migratedFromLegacy) {
+        window.localStorage.setItem(SAVED_OUTINGS_KEY, raw);
       }
 
       return parsed as SavedOuting[];
