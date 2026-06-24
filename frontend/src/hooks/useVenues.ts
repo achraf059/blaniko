@@ -30,13 +30,22 @@ export function useVenues() {
   useEffect(() => {
     let cancelled = false;
 
-    // Fast path: cache was populated (by this or another instance).
-    // Guard against the race where the cache filled between render and this
-    // effect firing — state may still show [] / isLoading: true in that case.
+    // Fast path: cache was already populated before or during this render.
+    // The lazy useState initializers handle the common case (cache filled before
+    // render). For the narrow race where cache filled between render and this
+    // effect, defer the state update via a resolved Promise so we never call
+    // setState synchronously inside an effect body.
     if (venueCache !== null) {
-      setVenues(venueCache);
-      setIsLoading(false);
-      return;
+      const snapshot = venueCache;
+      Promise.resolve(snapshot).then((data) => {
+        if (!cancelled) {
+          setVenues(data);
+          setIsLoading(false);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
     // Start a new fetch only when no request is already in flight.

@@ -222,10 +222,7 @@ export default function GuideDetailPage() {
 
   useReveal(slug);
 
-  const matchedVenues = useMemo(
-    () => (collection ? resolveEditorialCollectionVenues(collection, venues) : []),
-    [collection, venues],
-  );
+  const matchedVenues = collection ? resolveEditorialCollectionVenues(collection, venues) : [];
 
   const relatedGuides = useMemo(
     () => editorialCollections.filter((c) => c.slug !== slug).slice(0, 3),
