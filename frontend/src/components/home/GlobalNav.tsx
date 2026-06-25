@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useI18n } from "../../i18n/useI18n";
 import { useTheme } from "../../hooks/useTheme";
+import { useAuth } from "../../auth/useAuth";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import "./GlobalNav.css";
 
@@ -22,6 +23,7 @@ export function GlobalNav({ labels }: GlobalNavProps) {
   const { dictionary, language } = useI18n();
   const homeNav = dictionary.claudeHome;
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -93,6 +95,13 @@ export function GlobalNav({ labels }: GlobalNavProps) {
         <div className="bl-global-nav-actions">
           <Link to="/favorites" className="bl-global-nav-saved-pill">
             {homeNav.saved}
+          </Link>
+
+          <Link
+            to={user ? "/account" : "/login"}
+            className={`bl-global-nav-auth-pill${user ? "" : " is-guest"}`}
+          >
+            {user ? homeNav.navAccount : homeNav.navSignIn}
           </Link>
 
           <LanguageSwitcher
@@ -177,7 +186,13 @@ export function GlobalNav({ labels }: GlobalNavProps) {
                 <Link to="/partners" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
                 <Link to="/privacy" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navMenuPrivacy}</Link>
                 <div className="bl-global-nav-menu-divider" />
-                <Link to="/account" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navAccount}</Link>
+                <Link
+                  to={user ? "/account" : "/login"}
+                  className="bl-global-nav-menu-link"
+                  onClick={closeMenu}
+                >
+                  {user ? homeNav.navAccount : homeNav.navSignIn}
+                </Link>
               </div>
             )}
           </div>

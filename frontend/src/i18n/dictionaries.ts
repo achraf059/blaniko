@@ -61,6 +61,7 @@ export type Dictionary = {
     navMenuRecommendations: string;
     navMenuPrivacy: string;
     navAccount: string;
+    navSignIn: string;
     saved: string;
     joinList: string;
     arComingSoon: string;
@@ -439,6 +440,7 @@ const en: Dictionary = {
     navMenuRecommendations: "Personalized picks",
     navMenuPrivacy: "Privacy",
     navAccount: "My account",
+    navSignIn: "Sign in",
     saved: "Saved",
     joinList: "Join early",
     arComingSoon: "Arabic coming soon",
@@ -843,6 +845,7 @@ const fr: Dictionary = {
     navMenuRecommendations: "Idées personnalisées",
     navMenuPrivacy: "Confidentialité",
     navAccount: "Mon compte",
+    navSignIn: "Se connecter",
     saved: "Enregistrés",
     joinList: "Accès anticipé",
     arComingSoon: "Arabe bientôt disponible",
