@@ -50,8 +50,21 @@
   to { transform: rotate(360deg); }
 }
 
-.bl-account-email-label {
-  margin: 0 0 0.25rem;
+.bl-account-profile-list {
+  margin: 0 0 1.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bl-account-profile-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.bl-account-profile-row dt {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
@@ -60,10 +73,13 @@
   color: var(--ink-soft);
 }
 
-.bl-account-email {
-  margin: 0 0 1.75rem;
+.bl-account-profile-row dd {
+  margin: 0;
   font-size: 0.9375rem;
   color: var(--ink);
+}
+
+.bl-account-email {
   word-break: break-all;
 }
 
