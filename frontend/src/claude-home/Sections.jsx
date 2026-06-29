@@ -270,4 +270,3 @@ export const Foot = () => {
   );
 };
 
-Object.assign(window, { Categories, Curated, How, AboutSection, FooterCTA, Foot });

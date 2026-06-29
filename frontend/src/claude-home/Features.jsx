@@ -174,4 +174,3 @@ export const CompareTray = ({ items, onClear }) => {
   );
 };
 
-Object.assign(window, { Moods, MapPreview, Editorial, CompareTray });

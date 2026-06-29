@@ -34,4 +34,3 @@ export const Icon = ({ name, size = 16 }) => {
   );
 };
 
-Object.assign(window, { Icon });

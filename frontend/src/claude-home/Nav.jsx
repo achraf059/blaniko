@@ -184,4 +184,3 @@ export const Nav = ({ favoritesCount = 0 }) => {
   );
 };
 
-Object.assign(window, { Nav });
