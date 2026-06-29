@@ -135,6 +135,9 @@ export type Dictionary = {
     aboutBody: string;
     footerPrivacyLink: string;
     footerForVenues: string;
+    navThemeToLight: string;
+    navThemeToDark: string;
+    skipToMain: string;
   };
   categoryNames: Record<string, string>;
   categoryDescriptions: Record<string, string>;
@@ -521,6 +524,9 @@ const en: Dictionary = {
     aboutBody: "Blaniko is a local guide to activities, sports, gaming, outdoor spots, and family outings in Casablanca. We select venues that are genuinely worth your time — and give you tools to plan a full day, not just find a single place.",
     footerPrivacyLink: "Privacy Policy",
     footerForVenues: "For venues",
+    navThemeToLight: "Switch to light mode",
+    navThemeToDark: "Switch to dark mode",
+    skipToMain: "Skip to main content",
   },
   categoryNames: {
     activities: "Activities",
@@ -926,6 +932,9 @@ const fr: Dictionary = {
     aboutBody: "Blaniko est un guide local des activités, des sports, du gaming, des sorties en plein air et des plans en famille à Casablanca. On sélectionne des lieux qui valent vraiment le déplacement — et on vous donne les outils pour organiser une vraie sortie, pas juste trouver une adresse.",
     footerPrivacyLink: "Politique de confidentialité",
     footerForVenues: "Pour les établissements",
+    navThemeToLight: "Passer en mode clair",
+    navThemeToDark: "Passer en mode sombre",
+    skipToMain: "Aller au contenu principal",
   },
   categoryNames: {
     activities: "Activités",

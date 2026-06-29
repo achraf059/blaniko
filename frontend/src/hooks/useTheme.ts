@@ -18,6 +18,8 @@ function getInitialTheme(): Theme {
     // Migrate from old key for existing users.
     const legacy = localStorage.getItem(STORAGE_KEY_LEGACY);
     if (legacy === "dark" || legacy === "light") return legacy;
+    // No saved preference — respect OS dark-mode setting.
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
   } catch {
     // localStorage unavailable (SSR, sandboxed iframe, etc.)
   }
