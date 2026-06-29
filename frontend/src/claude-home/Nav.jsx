@@ -39,6 +39,8 @@ export const Nav = ({ favoritesCount = 0 }) => {
   const closeMenu = () => setMenuOpen(false);
 
   return (
+    <>
+    <a href="#main-content" className="skip-to-main">{homeNav.skipToMain}</a>
     <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="shell nav-inner">
         <Link
@@ -106,8 +108,8 @@ export const Nav = ({ favoritesCount = 0 }) => {
             type="button"
             className="nav-theme-toggle"
             onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={theme === "dark" ? homeNav.navThemeToLight : homeNav.navThemeToDark}
+            title={theme === "dark" ? homeNav.navThemeToLight : homeNav.navThemeToDark}
           >
             {theme === "dark" ? (
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -181,6 +183,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
         </div>
       </div>
     </nav>
+    </>
   );
 };
 

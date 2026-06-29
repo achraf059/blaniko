@@ -83,7 +83,7 @@ const App = () => {
   return (
     <>
       <Nav favoritesCount={favoriteSlugs.length} />
-      <main>
+      <main id="main-content">
         <Hero />
         <How />
         <Categories />
