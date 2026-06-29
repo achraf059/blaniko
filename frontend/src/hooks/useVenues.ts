@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { venues as mockVenues, type Venue } from "../data/mockData";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
@@ -26,6 +26,18 @@ export function useVenues() {
   const [venues, setVenues] = useState<Venue[]>(() => venueCache ?? []);
   const [isLoading, setIsLoading] = useState<boolean>(() => venueCache === null);
   const [error, setError] = useState<string | null>(null);
+  // Increment to force a re-run of the fetch effect (used by retry).
+  const [retryCount, setRetryCount] = useState(0);
+
+  const retry = useCallback(() => {
+    // Clear the module-level cache so the effect re-fetches unconditionally.
+    venueCache = null;
+    inFlightPromise = null;
+    setError(null);
+    setIsLoading(true);
+    setVenues([]);
+    setRetryCount((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -92,7 +104,7 @@ export function useVenues() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryCount]);
 
   const venuesBySlug = useMemo(() => {
     return venues.reduce<Record<string, Venue>>((acc, venue) => {
@@ -111,5 +123,6 @@ export function useVenues() {
     getVenueBySlug,
     isLoading,
     error,
+    retry,
   };
 }

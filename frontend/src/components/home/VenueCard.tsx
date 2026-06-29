@@ -149,3 +149,21 @@ export function VenueCard({
     </Link>
   );
 }
+
+/** Lightweight placeholder shown while venue data is loading. */
+export function VenueCardSkeleton() {
+  return (
+    <div className="bl-venue-card-skeleton" aria-hidden="true">
+      <div className="bl-venue-card-skeleton-image">
+        <div className="bl-skeleton-line bl-skeleton-line--image" />
+      </div>
+      <div className="bl-venue-card-skeleton-body">
+        <div className="bl-skeleton-line bl-skeleton-line--cat" />
+        <div className="bl-skeleton-line bl-skeleton-line--name" />
+        <div className="bl-skeleton-line bl-skeleton-line--area" />
+        <div className="bl-skeleton-line bl-skeleton-line--desc1" />
+        <div className="bl-skeleton-line bl-skeleton-line--desc2" />
+      </div>
+    </div>
+  );
+}

@@ -304,6 +304,8 @@ export type Dictionary = {
     savedLabel: string;
     clearAll: string;
     clearConfirm: string;
+    clearConfirmYes: string;
+    clearConfirmCancel: string;
     emptyTitle: string;
     emptyDescription: string;
     browseHome: string;
@@ -378,6 +380,7 @@ export type Dictionary = {
   };
   common: {
     apiError: string;
+    retry: string;
   };
 };
 
@@ -709,6 +712,8 @@ const en: Dictionary = {
     savedLabel: "saved",
     clearAll: "Clear all",
     clearConfirm: "Clear all saved venues? This cannot be undone.",
+    clearConfirmYes: "Yes, clear all",
+    clearConfirmCancel: "Cancel",
     emptyTitle: "No favorites yet",
     emptyDescription: "Save places from homepage, search, or recommendations.",
     browseHome: "Browse venues",
@@ -784,6 +789,7 @@ const en: Dictionary = {
   },
   common: {
     apiError: "Blaniko is having trouble loading places right now. Please try again in a moment.",
+    retry: "Try again",
   },
 };
 
@@ -1117,6 +1123,8 @@ const fr: Dictionary = {
     savedLabel: "enregistrés",
     clearAll: "Tout effacer",
     clearConfirm: "Supprimer tous les lieux enregistrés ? Cette action est irréversible.",
+    clearConfirmYes: "Oui, tout effacer",
+    clearConfirmCancel: "Annuler",
     emptyTitle: "Aucun favori pour le moment",
     emptyDescription:
       "Enregistrez des lieux depuis l'accueil, la recherche ou les recommandations.",
@@ -1195,6 +1203,7 @@ const fr: Dictionary = {
   },
   common: {
     apiError: "Blaniko rencontre un problème pour charger les lieux pour le moment. Veuillez réessayer dans un instant.",
+    retry: "Réessayer",
   },
 };
 

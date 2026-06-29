@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Link, useParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { VenueCard } from "../components/home/VenueCard";
+import { VenueCard, VenueCardSkeleton } from "../components/home/VenueCard";
 import { categories, getVenueDisplay } from "../data/mockData";
 import { getBestForTagLabel } from "../data/bestForTags";
 import { useFavorites } from "../hooks/useFavorites";
@@ -237,7 +237,7 @@ function FilterControls({ f, set, clearAll, areas, goodForOptions, language, d, 
 export default function CategoryPage() {
   const { slug } = useParams();
   const { dictionary, language } = useI18n();
-  const { venues, isLoading, error } = useVenues();
+  const { venues, isLoading, error, retry } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const d = dictionary.categoryPage;
 
@@ -344,6 +344,11 @@ export default function CategoryPage() {
         <div className="blc-shell">
           <div className="blc-main">
             <div className="bl-category-loading">{d.findingPlaces}</div>
+            <div className="blc-grid">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <VenueCardSkeleton key={i} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -357,6 +362,9 @@ export default function CategoryPage() {
         <div className="blc-shell">
           <div className="blc-main">
             <p className="bl-api-error">{dictionary.common.apiError}</p>
+            <button type="button" className="bl-retry-btn" onClick={retry}>
+              {dictionary.common.retry}
+            </button>
           </div>
         </div>
       </div>
