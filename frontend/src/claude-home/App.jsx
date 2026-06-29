@@ -28,11 +28,10 @@ const App = () => {
   const { favoriteSlugs, toggleFavorite } = useFavorites();
   const { compareSlugs, toggleCompare, clearCompare } = useCompare();
 
-  // Listen for host tweaks activation
+  // Listen for host tweaks activation (dev only)
   React.useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
+    if (!import.meta.env.DEV) return;
+    if (typeof window === "undefined") return;
 
     const onMsg = (e) => {
       if (!e.data) return;
@@ -72,7 +71,7 @@ const App = () => {
   const setTweak = (k, v) => {
     const next = { ...tweaks, [k]: v };
     setTweaks(next);
-    if (typeof window !== "undefined" && window.parent && window.parent !== window) {
+    if (import.meta.env.DEV && typeof window !== "undefined" && window.parent && window.parent !== window) {
       window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, "*");
     }
     // Re-measure scroll motion after layout changes
@@ -100,48 +99,50 @@ const App = () => {
 
       <CompareTray items={compareSlugs} onClear={clearCompare} />
 
-      <div className={`tweaks ${tweaksOpen ? "open" : ""}`}>
-        <h4>Tweaks</h4>
+      {import.meta.env.DEV && (
+        <div className={`tweaks ${tweaksOpen ? "open" : ""}`}>
+          <h4>Tweaks</h4>
 
-        <div className="group">
-          <div className="group-label">Palette</div>
-          <div className="opts">
-            {Object.keys(PALETTES).map(p => (
-              <button key={p}
-                className={`opt ${tweaks.palette === p ? "active" : ""}`}
-                onClick={() => setTweak("palette", p)}>
-                {p}
-              </button>
-            ))}
+          <div className="group">
+            <div className="group-label">Palette</div>
+            <div className="opts">
+              {Object.keys(PALETTES).map(p => (
+                <button key={p}
+                  className={`opt ${tweaks.palette === p ? "active" : ""}`}
+                  onClick={() => setTweak("palette", p)}>
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="group">
+            <div className="group-label">Casablanca cue</div>
+            <div className="opts">
+              {["off", "subtle", "bold"].map(c => (
+                <button key={c}
+                  className={`opt ${tweaks.casablancaCue === c ? "active" : ""}`}
+                  onClick={() => setTweak("casablancaCue", c)}>
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="group">
+            <div className="group-label">Hero feel</div>
+            <div className="opts">
+              {["editorial", "showcase", "calm"].map(h => (
+                <button key={h}
+                  className={`opt ${tweaks.heroStyle === h ? "active" : ""}`}
+                  onClick={() => setTweak("heroStyle", h)}>
+                  {h}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-
-        <div className="group">
-          <div className="group-label">Casablanca cue</div>
-          <div className="opts">
-            {["off", "subtle", "bold"].map(c => (
-              <button key={c}
-                className={`opt ${tweaks.casablancaCue === c ? "active" : ""}`}
-                onClick={() => setTweak("casablancaCue", c)}>
-                {c}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="group">
-          <div className="group-label">Hero feel</div>
-          <div className="opts">
-            {["editorial", "showcase", "calm"].map(h => (
-              <button key={h}
-                className={`opt ${tweaks.heroStyle === h ? "active" : ""}`}
-                onClick={() => setTweak("heroStyle", h)}>
-                {h}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
 };

@@ -119,4 +119,3 @@ export const Hero = () => {
   );
 };
 
-Object.assign(window, { Hero });

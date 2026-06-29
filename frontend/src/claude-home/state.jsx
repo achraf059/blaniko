@@ -27,4 +27,3 @@ export const useBlanikoState = () => {
   return { favorites, toggleFav, compare, toggleCmp, clearCmp };
 };
 
-Object.assign(window, { BlanikoState: useBlanikoState });
