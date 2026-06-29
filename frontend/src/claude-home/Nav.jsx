@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { Icon } from "./Icon.jsx";
 import { useI18n } from "../i18n/useI18n";
 import { useTheme } from "../hooks/useTheme";
+import { AuthContext } from "../auth/AuthProvider";
 
 // Blaniko — Homepage Nav
 // Top links are homepage scroll anchors. Product routes live in the hamburger.
@@ -11,6 +12,8 @@ export const Nav = ({ favoritesCount = 0 }) => {
   const { language, setLanguage, dictionary } = useI18n();
   const homeNav = dictionary.claudeHome;
   const { theme, toggleTheme } = useTheme();
+  const auth = React.useContext(AuthContext);
+  const user = auth?.user ?? null;
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const menuRef = React.useRef(null);
@@ -59,7 +62,8 @@ export const Nav = ({ favoritesCount = 0 }) => {
           <a href="#join">{homeNav.navContact}</a>
         </div>
 
-        <div className="nav-right">
+        <div className="nav-right-group">
+          <div className="nav-utility-group">
           <button
             className="saved-pill"
             data-empty={favoritesCount === 0}
@@ -69,6 +73,17 @@ export const Nav = ({ favoritesCount = 0 }) => {
             {homeNav.saved}
             {favoritesCount > 0 && <span className="count">{favoritesCount}</span>}
           </button>
+
+          <Link
+            to={user ? "/account" : "/login"}
+            className={`nav-auth-pill${user ? "" : " is-guest"}`}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            {user ? homeNav.navAccount : homeNav.navSignIn}
+          </Link>
 
           <div className="lang-switch">
             {["EN", "FR"].map((label) => {
@@ -149,10 +164,20 @@ export const Nav = ({ favoritesCount = 0 }) => {
                 <p className="nav-menu-section">{homeNav.navMenuMore}</p>
                 <Link to="/partners" className="nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
                 <Link to="/privacy" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMenuPrivacy}</Link>
+
+                <div className="nav-menu-divider" />
+
+                <Link
+                  to={user ? "/account" : "/login"}
+                  className="nav-menu-link"
+                  onClick={closeMenu}
+                >
+                  {user ? homeNav.navAccount : homeNav.navSignIn}
+                </Link>
               </div>
             )}
           </div>
-
+          </div>
         </div>
       </div>
     </nav>
