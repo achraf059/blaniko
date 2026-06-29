@@ -4,7 +4,7 @@ import { BudgetSelector } from "../components/discovery/BudgetSelector";
 import { FilterChips } from "../components/discovery/FilterChips";
 import { SearchBar } from "../components/discovery/SearchBar";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { VenueCard } from "../components/home/VenueCard";
+import { VenueCard, VenueCardSkeleton } from "../components/home/VenueCard";
 import { categories, getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { usePageMeta } from "../hooks/usePageMeta";
@@ -43,7 +43,7 @@ export default function SearchPage() {
       : "Search and filter activities, venues, and experiences in Casablanca.",
   );
   const navigate = useNavigate();
-  const { venues, isLoading, error } = useVenues();
+  const { venues, isLoading, error, retry } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
 
@@ -550,10 +550,18 @@ export default function SearchPage() {
             <p className="bl-search-results-count" style={{ opacity: 0.5 }}>
               {dictionary.searchPage.findingPlaces}
             </p>
+            <div className="bl-search-venues-grid">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <VenueCardSkeleton key={i} />
+              ))}
+            </div>
           </section>
         ) : error ? (
           <section className="bl-search-results">
             <p className="bl-api-error">{dictionary.common.apiError}</p>
+            <button type="button" className="bl-retry-btn" onClick={retry}>
+              {dictionary.common.retry}
+            </button>
           </section>
         ) : filteredVenues.length > 0 ? (
           <section className="bl-search-results">

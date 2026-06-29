@@ -249,7 +249,7 @@ textarea {
 /* API error message — shown when venues API is unreachable in production */
 .bl-api-error {
   max-width: 480px;
-  margin: 3rem auto;
+  margin: 3rem auto 0;
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
   background: color-mix(in srgb, var(--mist) 30%, var(--surface) 70%);
@@ -258,4 +258,24 @@ textarea {
   font-size: 0.95rem;
   line-height: 1.6;
   text-align: center;
+}
+
+.bl-retry-btn {
+  display: block;
+  margin: 1rem auto 3rem;
+  padding: 0.55rem 1.4rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-primary-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.bl-retry-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
 }

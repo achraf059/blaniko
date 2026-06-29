@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard } from "../components/home/VenueCard";
@@ -14,6 +15,7 @@ export default function FavoritesPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
   const { venues } = useVenues();
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   usePageMeta(
     language === "fr" ? "Lieux enregistrés | Blaniko" : "Saved venues | Blaniko",
@@ -57,15 +59,36 @@ export default function FavoritesPage() {
             </Link>
 
             {favoritesCount > 0 ? (
-              <button
-                type="button"
-                className="bl-favorites-clear-btn"
-                onClick={() => {
-                  if (window.confirm(dictionary.favoritesPage.clearConfirm)) clearFavorites();
-                }}
-              >
-                {dictionary.favoritesPage.clearAll}
-              </button>
+              showClearConfirm ? (
+                <span className="bl-favorites-confirm-inline" role="group" aria-label={dictionary.favoritesPage.clearConfirm}>
+                  <span className="bl-favorites-confirm-text">
+                    {dictionary.favoritesPage.clearConfirm}
+                  </span>
+                  <button
+                    type="button"
+                    className="bl-favorites-confirm-yes"
+                    onClick={() => { clearFavorites(); setShowClearConfirm(false); }}
+                    autoFocus
+                  >
+                    {dictionary.favoritesPage.clearConfirmYes}
+                  </button>
+                  <button
+                    type="button"
+                    className="bl-favorites-confirm-cancel"
+                    onClick={() => setShowClearConfirm(false)}
+                  >
+                    {dictionary.favoritesPage.clearConfirmCancel}
+                  </button>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="bl-favorites-clear-btn"
+                  onClick={() => setShowClearConfirm(true)}
+                >
+                  {dictionary.favoritesPage.clearAll}
+                </button>
+              )
             ) : null}
           </div>
         </section>

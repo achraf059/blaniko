@@ -251,3 +251,56 @@
   border-color: var(--plum);
   color: var(--terracotta);
 }
+
+/* ===== VenueCardSkeleton ===== */
+@keyframes bl-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.bl-venue-card-skeleton {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+
+.bl-venue-card-skeleton-image {
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+}
+
+.bl-venue-card-skeleton-body {
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.bl-skeleton-line {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    color-mix(in srgb, var(--color-border) 50%, var(--color-card)) 50%,
+    var(--color-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: bl-shimmer 1.4s ease-in-out infinite;
+}
+
+.bl-skeleton-line--image {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.bl-skeleton-line--cat   { height: 0.7rem; width: 35%; }
+.bl-skeleton-line--name  { height: 1rem;   width: 70%; }
+.bl-skeleton-line--area  { height: 0.7rem; width: 45%; }
+.bl-skeleton-line--desc1 { height: 0.7rem; width: 90%; }
+.bl-skeleton-line--desc2 { height: 0.7rem; width: 65%; }
