@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { useAdminApi, type AdminVenueRow, type AdminVenuePatch } from "../hooks/useAdminApi";
+import { useAdminApi, setAdminPin, clearAdminPin, hasAdminPin, type AdminVenueRow, type AdminVenuePatch } from "../hooks/useAdminApi";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import "./AdminPage.css";
@@ -12,8 +12,6 @@ import "./AdminPage.css";
 // Both should be set to the same value in your .env files.
 // If VITE_ADMIN_PIN is not set, the gate fails closed — no PIN is accepted.
 const FRONTEND_PIN = import.meta.env.VITE_ADMIN_PIN ?? "";
-const SESSION_KEY = "blaniko:admin-session";
-const PIN_SESSION_KEY = "blaniko:admin-pin";
 
 // ─── Form state ───────────────────────────────────────────────────────────────
 
@@ -107,9 +105,10 @@ export default function AdminPage() {
   const { rows, isLoading, loadError, fetchVenues, patchVenue } = useAdminApi();
 
   // ── Auth gate ────────────────────────────────────────────────────────────────
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => sessionStorage.getItem(SESSION_KEY) === "1",
-  );
+  // Initialized from the module-level PIN holder so SPA navigation (without
+  // a page refresh) restores the authenticated state. A page refresh clears
+  // the module variable and always shows the lock screen again.
+  const [isAuthenticated, setIsAuthenticated] = useState(() => hasAdminPin());
   const [pinInput, setPinInput] = useState("");
   const [pinError, setPinError] = useState(false);
 
@@ -127,11 +126,16 @@ export default function AdminPage() {
     | { type: "error"; message: string }
   >({ type: "idle" });
 
-  // Load venues after auth
+  // Load venues after auth. On 401 the hook clears the memory PIN; we also
+  // return to the lock screen so the admin can re-enter their PIN.
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchVenues();
-    }
+    if (!isAuthenticated) return;
+    void fetchVenues().then((result) => {
+      if (result === "auth_failed") {
+        setIsAuthenticated(false);
+        setPinInput("");
+      }
+    });
   }, [isAuthenticated, fetchVenues]);
 
   // ── Filtered list ────────────────────────────────────────────────────────────
@@ -235,6 +239,13 @@ export default function AdminPage() {
       setForm(rowToForm(result.row));
       setSaveStatus({ type: "success", message: `Saved to Supabase ✓ (${editingId})` });
     } else {
+      // If the server rejected our PIN, clear it and return to the lock screen.
+      if (result.message.startsWith("Incorrect PIN")) {
+        clearAdminPin();
+        setIsAuthenticated(false);
+        setPinInput("");
+        return;
+      }
       setSaveStatus({ type: "error", message: result.message });
     }
   };
@@ -268,9 +279,8 @@ export default function AdminPage() {
             onSubmit={(e) => {
               e.preventDefault();
               if (pinInput === FRONTEND_PIN) {
-                sessionStorage.setItem(SESSION_KEY, "1");
-                // Store actual PIN so the API hook can send it in x-admin-pin header
-                sessionStorage.setItem(PIN_SESSION_KEY, pinInput);
+                // Keep PIN in memory only — never written to sessionStorage or localStorage.
+                setAdminPin(pinInput);
                 setIsAuthenticated(true);
               } else {
                 setPinError(true);

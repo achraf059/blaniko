@@ -5,13 +5,31 @@
  * All writes go through the backend, which validates the PIN server-side
  * before writing to Supabase. The service role key is never exposed to the browser.
  *
- * The PIN is read from sessionStorage (set when the user passes the admin gate).
+ * The PIN is held in a module-level variable for the current page session only.
+ * It is never written to sessionStorage or localStorage.
+ * Refreshing the page clears it and requires re-authentication.
  */
 
 import { useCallback, useState } from "react";
 
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:3001";
-const PIN_SESSION_KEY = "blaniko:admin-pin";
+
+// Module-level PIN holder — lives only in JS memory for the current page session.
+// Cleared automatically on page refresh. Never written to any storage.
+let _adminPin = "";
+
+export function setAdminPin(pin: string): void {
+  _adminPin = pin;
+}
+
+export function clearAdminPin(): void {
+  _adminPin = "";
+}
+
+/** Returns true if an in-memory PIN is currently held (used to restore auth state on SPA navigation). */
+export function hasAdminPin(): boolean {
+  return _adminPin !== "";
+}
 
 // Raw Supabase row shape returned by GET /api/admin/venues
 export type AdminVenueRow = {
@@ -65,7 +83,7 @@ export type AdminVenuePatch = {
 };
 
 function getPin(): string {
-  return sessionStorage.getItem(PIN_SESSION_KEY) ?? "";
+  return _adminPin;
 }
 
 export function useAdminApi() {
@@ -73,7 +91,7 @@ export function useAdminApi() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  const fetchVenues = useCallback(async (): Promise<boolean> => {
+  const fetchVenues = useCallback(async (): Promise<true | false | "auth_failed"> => {
     setIsLoading(true);
     setLoadError(null);
     try {
@@ -83,10 +101,12 @@ export function useAdminApi() {
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         if (res.status === 401) {
+          clearAdminPin();
           setLoadError("Incorrect PIN. Reload the page and try again.");
-        } else {
-          setLoadError(`API error ${res.status}: ${body.error ?? "unknown"}`);
+          setIsLoading(false);
+          return "auth_failed";
         }
+        setLoadError(`API error ${res.status}: ${body.error ?? "unknown"}`);
         setIsLoading(false);
         return false;
       }
@@ -120,13 +140,15 @@ export function useAdminApi() {
           success?: boolean;
           venue?: AdminVenueRow;
           error?: string;
-          detail?: string;
         };
 
         if (!res.ok || !body.success) {
-          if (res.status === 401) return { ok: false, message: "Incorrect PIN — reload and log in again." };
+          if (res.status === 401) {
+            clearAdminPin();
+            return { ok: false, message: "Incorrect PIN — reload and log in again." };
+          }
           if (res.status === 404) return { ok: false, message: `Venue ${externalId} not found in Supabase.` };
-          return { ok: false, message: body.detail ?? body.error ?? `Server error ${res.status}` };
+          return { ok: false, message: body.error ?? `Server error ${res.status}` };
         }
 
         const updated = body.venue!;

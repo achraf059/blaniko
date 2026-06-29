@@ -135,7 +135,7 @@ router.patch("/venues/:externalId", async (req: Request, res: Response) => {
       return;
     }
     console.error(`Admin PATCH ${externalId} error:`, error.message);
-    res.status(500).json({ success: false, error: "server_error", detail: error.message });
+    res.status(500).json({ success: false, error: "server_error" });
     return;
   }
 
