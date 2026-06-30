@@ -78,15 +78,6 @@ export type Dictionary = {
     heroTagDateNight: string;
     heroTagWithKids: string;
     heroTagTonight: string;
-    continuationEyebrow: string;
-    continuationTitlePrefix: string;
-    continuationTitleEmphasis: string;
-    continuationTitleSuffix: string;
-    continuationRight: string;
-    continuationCardLabel: string;
-    continuationCardTitle: string;
-    continuationCardDescription: string;
-    continuationCta: string;
     categoriesEyebrow: string;
     categoriesTitlePrefix: string;
     categoriesTitleEmphasis: string;
@@ -464,18 +455,6 @@ const en: Dictionary = {
     heroTagDateNight: "Date night",
     heroTagWithKids: "With kids",
     heroTagTonight: "Tonight",
-    continuationEyebrow: "02 — Continuation",
-    continuationTitlePrefix: "A closer",
-    continuationTitleEmphasis: "look",
-    continuationTitleSuffix: "hand-picked from this week in the city.",
-    continuationRight:
-      "Weekly edits, drawn from the people, places, and small rituals that make a Saturday in Casablanca worth planning.",
-    continuationCardLabel: "This week's edit",
-    continuationCardTitle:
-      "Four ways to spend the weekend — each chosen for a different mood.",
-    continuationCardDescription:
-      "Morning swell. Afternoon clay. Evening reel. Late film. Move between them at your own pace, or take one at a time.",
-    continuationCta: "See the full edit",
     categoriesEyebrow: "Browse",
     categoriesTitlePrefix: "Every mood",
     categoriesTitleEmphasis: "has a category",
@@ -875,18 +854,6 @@ const fr: Dictionary = {
     heroTagDateNight: "Soirée en duo",
     heroTagWithKids: "Avec enfants",
     heroTagTonight: "Ce soir",
-    continuationEyebrow: "02 — Continuation",
-    continuationTitlePrefix: "Un regard",
-    continuationTitleEmphasis: "plus proche",
-    continuationTitleSuffix: "sélectionné dans l'édition de cette semaine.",
-    continuationRight:
-      "Des sélections hebdomadaires inspirées des lieux, des gens et des petits rituels qui rendent un samedi à Casablanca digne d'être planifié.",
-    continuationCardLabel: "Édition de la semaine",
-    continuationCardTitle:
-      "Quatre façons de vivre le week-end — chacune pensée pour une ambiance différente.",
-    continuationCardDescription:
-      "Vague du matin. Poterie l'après-midi. Séance du soir. Film tardif. Enchaînez-les à votre rythme, ou choisissez-en une seule.",
-    continuationCta: "Voir l'édition complète",
     categoriesEyebrow: "Explorer",
     categoriesTitlePrefix: "Chaque ambiance",
     categoriesTitleEmphasis: "a sa catégorie",
