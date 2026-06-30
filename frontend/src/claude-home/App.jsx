@@ -34,6 +34,7 @@ const App = () => {
     if (typeof window === "undefined") return;
 
     const onMsg = (e) => {
+      if (e.origin !== window.location.origin) return;
       if (!e.data) return;
       if (e.data.type === "__activate_edit_mode") setTweaksOpen(true);
       if (e.data.type === "__deactivate_edit_mode") setTweaksOpen(false);
@@ -42,7 +43,7 @@ const App = () => {
     window.addEventListener("message", onMsg);
 
     if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+      window.parent.postMessage({ type: "__edit_mode_available" }, window.location.origin);
     }
 
     return () => window.removeEventListener("message", onMsg);
@@ -72,7 +73,7 @@ const App = () => {
     const next = { ...tweaks, [k]: v };
     setTweaks(next);
     if (import.meta.env.DEV && typeof window !== "undefined" && window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, "*");
+      window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, window.location.origin);
     }
     // Re-measure scroll motion after layout changes
     if (typeof window !== "undefined") {

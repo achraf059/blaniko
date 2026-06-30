@@ -20,7 +20,7 @@ export type GlobalNavProps = {
 };
 
 export function GlobalNav({ labels }: GlobalNavProps) {
-  const { dictionary, language } = useI18n();
+  const { dictionary } = useI18n();
   const homeNav = dictionary.claudeHome;
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
@@ -114,16 +114,8 @@ export function GlobalNav({ labels }: GlobalNavProps) {
             type="button"
             className="bl-theme-toggle"
             onClick={toggleTheme}
-            aria-label={
-              theme === "dark"
-                ? language === "fr" ? "Passer en mode clair" : "Switch to light mode"
-                : language === "fr" ? "Passer en mode sombre" : "Switch to dark mode"
-            }
-            title={
-              theme === "dark"
-                ? language === "fr" ? "Passer en mode clair" : "Switch to light mode"
-                : language === "fr" ? "Passer en mode sombre" : "Switch to dark mode"
-            }
+            aria-label={theme === "dark" ? homeNav.navThemeToLight : homeNav.navThemeToDark}
+            title={theme === "dark" ? homeNav.navThemeToLight : homeNav.navThemeToDark}
           >
             {theme === "dark" ? (
               /* Sun — visible in dark mode to switch to light */

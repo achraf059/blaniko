@@ -1,5 +1,4 @@
 import "./HomePage.css";
-// @ts-expect-error Claude homepage is currently JS-first and incrementally typed.
 import ClaudeHome from "../claude-home/App.jsx";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";

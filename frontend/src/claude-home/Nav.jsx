@@ -19,7 +19,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
   const menuRef = React.useRef(null);
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
