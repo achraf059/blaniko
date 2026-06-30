@@ -534,14 +534,21 @@ export default function RecommendationsPage() {
                 <p className="bl-reco-profile-eyebrow">
                   {text.recommendationsPage.profile.eyebrow}
                 </p>
-                <h2
-                  className="bl-reco-profile-title"
-                  dangerouslySetInnerHTML={{
-                    __html: hasAnyAnswer
-                      ? text.recommendationsPage.profile.titleActive
-                      : text.recommendationsPage.profile.titleEmpty,
-                  }}
-                />
+                <h2 className="bl-reco-profile-title">
+                  {hasAnyAnswer ? (
+                    <>
+                      {text.recommendationsPage.profile.titleActivePrefix}
+                      <em>{text.recommendationsPage.profile.titleActiveEmphasis}</em>
+                      {text.recommendationsPage.profile.titleActiveSuffix}
+                    </>
+                  ) : (
+                    <>
+                      {text.recommendationsPage.profile.titleEmptyPrefix}
+                      <em>{text.recommendationsPage.profile.titleEmptyEmphasis}</em>
+                      {text.recommendationsPage.profile.titleEmptySuffix}
+                    </>
+                  )}
+                </h2>
 
                 <div
                   className="bl-reco-profile-visual"
