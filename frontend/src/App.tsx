@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { Route, Routes } from "react-router";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
@@ -32,31 +32,39 @@ function RouteLoadingFallback() {
   );
 }
 
+// Wraps a route element in its own ErrorBoundary so a crash in one route
+// does not propagate to the global boundary or affect other routes.
+function withRouteBoundary(element: ReactNode) {
+  return <ErrorBoundary>{element}</ErrorBoundary>;
+}
+
 export default function App() {
   return (
+    // Top-level boundary: last-resort catch for anything outside the Routes
+    // (e.g. a crash in the router itself or a future layout wrapper).
     <ErrorBoundary>
       <Suspense fallback={<RouteLoadingFallback />}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/collections" element={<CollectionsPage />} />
-          <Route path="/compare" element={<ComparePage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/guides" element={<GuidesPage />} />
-          <Route path="/guides/:slug" element={<GuideDetailPage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/plan" element={<PlanPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/recommendations" element={<RecommendationsPage />} />
-          <Route path="/recent" element={<RecentPage />} />
-          <Route path="/areas/:slug" element={<AreaPage />} />
-          <Route path="/categories/:slug" element={<CategoryPage />} />
-          <Route path="/venues/:slug" element={<VenuePage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/partners" element={<PartnersPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/" element={withRouteBoundary(<HomePage />)} />
+          <Route path="/admin" element={withRouteBoundary(<AdminPage />)} />
+          <Route path="/collections" element={withRouteBoundary(<CollectionsPage />)} />
+          <Route path="/compare" element={withRouteBoundary(<ComparePage />)} />
+          <Route path="/favorites" element={withRouteBoundary(<FavoritesPage />)} />
+          <Route path="/guides" element={withRouteBoundary(<GuidesPage />)} />
+          <Route path="/guides/:slug" element={withRouteBoundary(<GuideDetailPage />)} />
+          <Route path="/map" element={withRouteBoundary(<MapPage />)} />
+          <Route path="/plan" element={withRouteBoundary(<PlanPage />)} />
+          <Route path="/search" element={withRouteBoundary(<SearchPage />)} />
+          <Route path="/recommendations" element={withRouteBoundary(<RecommendationsPage />)} />
+          <Route path="/recent" element={withRouteBoundary(<RecentPage />)} />
+          <Route path="/areas/:slug" element={withRouteBoundary(<AreaPage />)} />
+          <Route path="/categories/:slug" element={withRouteBoundary(<CategoryPage />)} />
+          <Route path="/venues/:slug" element={withRouteBoundary(<VenuePage />)} />
+          <Route path="/privacy" element={withRouteBoundary(<PrivacyPage />)} />
+          <Route path="/partners" element={withRouteBoundary(<PartnersPage />)} />
+          <Route path="/login" element={withRouteBoundary(<LoginPage />)} />
+          <Route path="/account" element={withRouteBoundary(<AccountPage />)} />
+          <Route path="*" element={withRouteBoundary(<NotFoundPage />)} />
         </Routes>
       </Suspense>
     </ErrorBoundary>
