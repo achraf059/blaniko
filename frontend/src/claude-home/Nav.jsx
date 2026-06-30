@@ -169,6 +169,9 @@ export const Nav = ({ favoritesCount = 0 }) => {
 
                 <div className="nav-menu-divider" />
 
+                <Link to="/favorites" className="nav-menu-link" onClick={closeMenu}>
+                  {homeNav.saved}{favoritesCount > 0 ? ` (${favoritesCount})` : ""}
+                </Link>
                 <Link
                   to={user ? "/account" : "/login"}
                   className="nav-menu-link"
