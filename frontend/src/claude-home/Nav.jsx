@@ -56,7 +56,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
           <img src="/brand/blaniko-wordmark.png" alt="Blaniko" />
         </Link>
 
-        {/* Homepage scroll anchors — hidden below 900px via .nav-links rule */}
+        {/* Homepage scroll anchors — hidden below 1080px via .nav-links rule */}
         <div className="nav-links">
           <a href="#hero">{homeNav.navExplore}</a>
           <a href="#categories">{homeNav.navCategories}</a>

@@ -1766,9 +1766,11 @@ a { color: inherit; text-decoration: none; }
    RESPONSIVE
    ========================================================= */
 
-/* ≤ 1180px — mid-desktop: fold nav links into hamburger to avoid
-   overlap between centered links and right utility cluster */
-@media (max-width: 1180px) {
+/* ≤ 1080px — mid-desktop: fold nav links into hamburger to avoid
+   overlap between centered links and right utility cluster.
+   Links (4 items, 38px gap, ≈ 310–360px) + right utility (≈ 315px) fit
+   comfortably in the 3-col grid above this threshold. */
+@media (max-width: 1080px) {
   .nav-links { display: none; }
   .nav-inner {
     grid-template-columns: minmax(0,1fr) auto;
