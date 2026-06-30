@@ -1797,6 +1797,9 @@ a { color: inherit; text-decoration: none; }
   .map-card .left { padding: 32px; }
   .map-card .right { min-height: 260px; }
   .ed-card { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
+  /* Intentional: top-bar pills are hidden at ≤900px to keep the nav bar
+     uncluttered on mobile. Both CTAs remain accessible inside the hamburger
+     menu — Favorites via a dedicated link, Auth via the account/login link. */
   .saved-pill { display: none; }
   .nav-auth-pill { display: none; }
   /* At ≤900px revert nav-inner to flex so the controls cluster
