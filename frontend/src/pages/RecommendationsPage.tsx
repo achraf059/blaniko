@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { VenueCard } from "../components/home/VenueCard";
+import { VenueCard, VenueCardSkeleton } from "../components/home/VenueCard";
 import { usePageMeta } from "../hooks/usePageMeta";
 // NOTE: ProgressBar import removed — the questionnaire now renders its own
 // branded segmented stepper inline (see the .bl-reco-stepper block below).
@@ -48,7 +48,7 @@ export default function RecommendationsPage() {
       ? "Suggestions personnalisées | Blaniko"
       : "Personalized picks | Blaniko",
   );
-  const { venues } = useVenues();
+  const { venues, isLoading } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
   const [shareFeedback, setShareFeedback] = useState<
@@ -619,68 +619,76 @@ export default function RecommendationsPage() {
                 {text.recommendationsPage.topMatches}
               </h2>
               <div className="bl-home-venues-grid">
-                {topMatches.map(({ venue }) => {
-                  const vd = getVenueDisplay(venue, language);
-                  return (
-                    <VenueCard
-                      key={venue.slug}
-                      slug={venue.slug}
-                      category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
-                      name={venue.name}
-                      area={venue.area}
-                      description={vd.description}
-                      imageUrl={getVenueImageSrc(venue)}
-                      personality={{
-                        bestForTags: venue.bestForTags,
-                        timeOfDay: venue.timeOfDay,
-                        energyLevel: venue.energyLevel,
-                        socialLevel: venue.socialLevel,
-                        spaceType: venue.spaceType,
-                      }}
-                      href={buildVenueHref(venue.slug)}
-                      language={language}
-                      labels={dictionary.venueCard}
-                      isFeatured
-                      isFavorite={isFavorite(venue.slug)}
-                      onToggleFavorite={toggleFavorite}
-                    />
-                  );
-                })}
+                {isLoading
+                  ? Array.from({ length: 3 }, (_, i) => (
+                      <VenueCardSkeleton key={i} />
+                    ))
+                  : topMatches.map(({ venue }) => {
+                      const vd = getVenueDisplay(venue, language);
+                      return (
+                        <VenueCard
+                          key={venue.slug}
+                          slug={venue.slug}
+                          category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
+                          name={venue.name}
+                          area={venue.area}
+                          description={vd.description}
+                          imageUrl={getVenueImageSrc(venue)}
+                          personality={{
+                            bestForTags: venue.bestForTags,
+                            timeOfDay: venue.timeOfDay,
+                            energyLevel: venue.energyLevel,
+                            socialLevel: venue.socialLevel,
+                            spaceType: venue.spaceType,
+                          }}
+                          href={buildVenueHref(venue.slug)}
+                          language={language}
+                          labels={dictionary.venueCard}
+                          isFeatured
+                          isFavorite={isFavorite(venue.slug)}
+                          onToggleFavorite={toggleFavorite}
+                        />
+                      );
+                    })}
               </div>
             </section>
 
-            {alternatives.length > 0 ? (
+            {isLoading || alternatives.length > 0 ? (
               <section className="bl-reco-results-section">
                 <h2 className="bl-reco-section-title">
                   {text.recommendationsPage.alternatives}
                 </h2>
                 <div className="bl-home-venues-grid">
-                  {alternatives.map(({ venue }) => {
-                    const vd = getVenueDisplay(venue, language);
-                    return (
-                      <VenueCard
-                        key={venue.slug}
-                        slug={venue.slug}
-                        category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
-                        name={venue.name}
-                        area={venue.area}
-                        description={vd.description}
-                        imageUrl={getVenueImageSrc(venue)}
-                        personality={{
-                          bestForTags: venue.bestForTags,
-                          timeOfDay: venue.timeOfDay,
-                          energyLevel: venue.energyLevel,
-                          socialLevel: venue.socialLevel,
-                          spaceType: venue.spaceType,
-                        }}
-                        href={buildVenueHref(venue.slug)}
-                        language={language}
-                        labels={dictionary.venueCard}
-                        isFavorite={isFavorite(venue.slug)}
-                        onToggleFavorite={toggleFavorite}
-                      />
-                    );
-                  })}
+                  {isLoading
+                    ? Array.from({ length: 5 }, (_, i) => (
+                        <VenueCardSkeleton key={i} />
+                      ))
+                    : alternatives.map(({ venue }) => {
+                        const vd = getVenueDisplay(venue, language);
+                        return (
+                          <VenueCard
+                            key={venue.slug}
+                            slug={venue.slug}
+                            category={dictionary.categoryNames[venue.categorySlug] ?? venue.category}
+                            name={venue.name}
+                            area={venue.area}
+                            description={vd.description}
+                            imageUrl={getVenueImageSrc(venue)}
+                            personality={{
+                              bestForTags: venue.bestForTags,
+                              timeOfDay: venue.timeOfDay,
+                              energyLevel: venue.energyLevel,
+                              socialLevel: venue.socialLevel,
+                              spaceType: venue.spaceType,
+                            }}
+                            href={buildVenueHref(venue.slug)}
+                            language={language}
+                            labels={dictionary.venueCard}
+                            isFavorite={isFavorite(venue.slug)}
+                            onToggleFavorite={toggleFavorite}
+                          />
+                        );
+                      })}
                 </div>
               </section>
             ) : null}
