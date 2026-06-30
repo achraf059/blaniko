@@ -60,6 +60,8 @@ export function GlobalNav({ labels }: GlobalNavProps) {
   const closeMenu = () => setMenuOpen(false);
 
   return (
+    <>
+    <a href="#main-content" className="skip-to-main">{homeNav.skipToMain}</a>
     <header
       className={`bl-global-nav-header${isScrolled ? " is-scrolled" : ""}`}
     >
@@ -192,5 +194,6 @@ export function GlobalNav({ labels }: GlobalNavProps) {
         </div>
       </nav>
     </header>
+    </>
   );
 }
