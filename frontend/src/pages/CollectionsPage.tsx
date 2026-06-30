@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { VenueCard } from "../components/home/VenueCard";
+import { VenueCard, VenueCardSkeleton } from "../components/home/VenueCard";
 import { getVenueDisplay } from "../data/mockData";
 import { useCollections } from "../hooks/useCollections";
 import { useFavorites } from "../hooks/useFavorites";
@@ -21,7 +21,7 @@ export default function CollectionsPage() {
       ? "Consultez et gérez vos collections de lieux enregistrés à Casablanca."
       : "View and manage your saved venue collections in Casablanca.",
   );
-  const { venuesBySlug } = useVenues();
+  const { venuesBySlug, isLoading } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const {
     collections,
@@ -185,7 +185,14 @@ export default function CollectionsPage() {
 
                   {isExpanded ? (
                     <div className="bl-collections-card-body">
-                      {existingVenues.length > 0 ? (
+                      {isLoading && collection.venueSlugs.length > 0 ? (
+                        <div className="bl-home-venues-grid">
+                          {Array.from(
+                            { length: Math.min(collection.venueSlugs.length, 4) },
+                            (_, i) => <VenueCardSkeleton key={i} />,
+                          )}
+                        </div>
+                      ) : existingVenues.length > 0 ? (
                         <div className="bl-home-venues-grid">
                           {existingVenues.map((venue) => {
                             const vd = getVenueDisplay(venue, language);

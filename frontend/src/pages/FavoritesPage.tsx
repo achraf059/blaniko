@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { VenueCard } from "../components/home/VenueCard";
+import { VenueCard, VenueCardSkeleton } from "../components/home/VenueCard";
 import { getVenueDisplay } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { usePageMeta } from "../hooks/usePageMeta";
@@ -14,7 +14,7 @@ import "./FavoritesPage.css";
 export default function FavoritesPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
-  const { venues } = useVenues();
+  const { venues, isLoading } = useVenues();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   usePageMeta(
@@ -93,7 +93,15 @@ export default function FavoritesPage() {
           </div>
         </section>
 
-        {favoriteVenues.length > 0 ? (
+        {isLoading && favoriteSlugs.length > 0 ? (
+          <section className="bl-favorites-results">
+            <div className="bl-home-venues-grid">
+              {Array.from({ length: 6 }, (_, i) => (
+                <VenueCardSkeleton key={i} />
+              ))}
+            </div>
+          </section>
+        ) : favoriteVenues.length > 0 ? (
           <section className="bl-favorites-results">
             <div className="bl-home-venues-grid">
               {favoriteVenues.map((venue) => {

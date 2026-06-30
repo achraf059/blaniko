@@ -304,3 +304,9 @@
 .bl-skeleton-line--area  { height: 0.7rem; width: 45%; }
 .bl-skeleton-line--desc1 { height: 0.7rem; width: 90%; }
 .bl-skeleton-line--desc2 { height: 0.7rem; width: 65%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-skeleton-line {
+    animation: none;
+  }
+}
