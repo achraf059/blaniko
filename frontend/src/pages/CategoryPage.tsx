@@ -61,6 +61,7 @@ interface FeaturedCardProps {
 
 function FeaturedCard({ venue, language, isFav, onToggleFav, featuredLabel, exploreLabel }: FeaturedCardProps) {
   const imageUrl = getVenueImageSrc(venue);
+  const [imgFailed, setImgFailed] = useState(false);
   const href = `/venues/${venue.slug}?from=category`;
   const vd = getVenueDisplay(venue, language);
   const area = (venue.area?.split(",")[0] ?? "").trim();
@@ -78,8 +79,8 @@ function FeaturedCard({ venue, language, isFav, onToggleFav, featuredLabel, expl
         >
           <CIcon name={isFav ? "heartFill" : "heart"} size={14} />
         </button>
-        {imageUrl ? (
-          <img className="blc-media-img" src={imageUrl} alt={venue.name} loading="lazy" />
+        {imageUrl && !imgFailed ? (
+          <img className="blc-media-img" src={imageUrl} alt={venue.name} loading="lazy" onError={() => setImgFailed(true)} />
         ) : (
           <div className="blc-ph">
             <span className="blc-ph-mark">
@@ -492,7 +493,7 @@ export default function CategoryPage() {
                 <div className="blc-stat">
                   <span className="blc-stat-ic"><CIcon name="building" size={17} /></span>
                   <div>
-                    <p className="blc-stat-n">{categoryVenues.length}</p>
+                    <p className="blc-stat-n">{filteredGrid.length + picks.length}</p>
                     <p className="blc-stat-l">{d.results}</p>
                   </div>
                 </div>
@@ -518,9 +519,9 @@ export default function CategoryPage() {
                   {d.topPicksTitle}{" "}
                   <span className="blc-spark"><CIcon name="spark" size={14} /></span>
                 </h2>
-                <Link to="/search" className="blc-sec-link">
+                <a href="#all-venues" className="blc-sec-link">
                   {d.topPicksLink} <CIcon name="arrow" size={13} />
-                </Link>
+                </a>
               </div>
               <div className="blc-picks">
                 {picks.map((venue) => (
@@ -536,7 +537,7 @@ export default function CategoryPage() {
           ) : null}
 
           {/* ALL VENUES */}
-          <section aria-label={d.allVenuesTitle}>
+          <section aria-label={d.allVenuesTitle} id="all-venues">
             <div className="blc-sec-head">
               <h2 className="blc-sec-title">
                 {d.allVenuesTitle}{" "}

@@ -496,7 +496,8 @@
   border-radius: 8px;
   background-size: cover;
   background-position: center;
-  background-color: var(--card);
+  /* dark purple fallback — prevents a white/blank slot if an image 404s in light mode */
+  background-color: #2e1d54;
   box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset, 0 24px 50px -20px rgba(0,0,0,0.7);
 }
 .blc-hero-slat.s2 { margin-top: 4%; }
