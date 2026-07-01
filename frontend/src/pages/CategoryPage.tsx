@@ -343,8 +343,34 @@ export default function CategoryPage() {
 
   const picks = useMemo(() => {
     const withImages = categoryVenues.filter((v) => !!getVenueImageSrc(v));
+
+    // Activities: curate a diverse set — at most 1 pool/billiards, fill remaining
+    // slots from other activity types so Top Picks feel varied.
+    if (slug === "activities") {
+      const poolChip = ACTIVITIES_CHIPS.find((c) => c.key === "pool")!;
+      const otherChips = ACTIVITIES_CHIPS.filter((c) => c.key !== "pool");
+
+      const diverse: Venue[] = [];
+
+      // Allow at most 1 pool venue
+      const poolVenue = withImages.find((v) => venueMatchesSubcat(v, poolChip));
+      if (poolVenue) diverse.push(poolVenue);
+
+      // Fill remaining slots with one venue per other type
+      for (const chip of otherChips) {
+        if (diverse.length >= 3) break;
+        const match = withImages.find(
+          (v) => !diverse.includes(v) && venueMatchesSubcat(v, chip),
+        );
+        if (match) diverse.push(match);
+      }
+
+      // Use diverse set only if at least 2 distinct types were found; otherwise fall back
+      if (diverse.length >= 2) return diverse.slice(0, 3);
+    }
+
     return withImages.slice(0, 3);
-  }, [categoryVenues]);
+  }, [categoryVenues, slug]);
 
   const pickSlugs = useMemo(() => new Set(picks.map((v) => v.slug)), [picks]);
 
@@ -614,24 +640,27 @@ export default function CategoryPage() {
 
           {/* SUBCATEGORY CHIPS — only rendered for categories with a defined chip set */}
           {visibleChips.length > 0 ? (
-            <div className="blc-subcat-row" role="group" aria-label="Filter by type">
-              <button
-                type="button"
-                className={`blc-chip${f.subcat === "all" ? " active" : ""}`}
-                onClick={() => set("subcat", "all")}
-              >
-                {d.goodForAll}
-              </button>
-              {visibleChips.map((chip) => (
+            <div className="blc-subcat-wrap">
+              <span className="blc-subcat-label" aria-hidden="true">{d.subcatLabel}</span>
+              <div className="blc-subcat-row" role="group" aria-label={d.subcatLabel}>
                 <button
-                  key={chip.key}
                   type="button"
-                  className={`blc-chip${f.subcat === chip.key ? " active" : ""}`}
-                  onClick={() => set("subcat", chip.key)}
+                  className={`blc-chip${f.subcat === "all" ? " active" : ""}`}
+                  onClick={() => set("subcat", "all")}
                 >
-                  {chip.labels[language]}
+                  {d.goodForAll}
                 </button>
-              ))}
+                {visibleChips.map((chip) => (
+                  <button
+                    key={chip.key}
+                    type="button"
+                    className={`blc-chip${f.subcat === chip.key ? " active" : ""}`}
+                    onClick={() => set("subcat", chip.key)}
+                  >
+                    {chip.labels[language]}
+                  </button>
+                ))}
+              </div>
             </div>
           ) : null}
 
