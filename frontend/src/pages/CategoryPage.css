@@ -778,6 +778,30 @@
 /* list view variant */
 .blc-grid.list { grid-template-columns: 1fr; gap: 0.85rem; }
 
+/* subcategory chip row — horizontally scrollable on mobile */
+.blc-subcat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.1rem 0;
+}
+/* reset button-specific styles so .blc-chip works for both <a> and <button> */
+button.blc-chip {
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+@media (max-width: 640px) {
+  .blc-subcat-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+  }
+  .blc-subcat-row::-webkit-scrollbar { display: none; }
+}
+
 /* related categories row */
 .blc-related {
   display: flex;

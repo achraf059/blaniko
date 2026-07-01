@@ -22,6 +22,80 @@ const CATEGORY_IMAGES: Record<string, string> = {
   outdoor:    "/category-images/outdoor-escapes/category-outdoor-escapes-01.webp",
 };
 
+/* ---------- Subcategory chips ---------- */
+type SubcatChip = {
+  key: string;
+  labels: Record<AppLanguage, string>;
+  /** Lowercase keywords matched against venue text fields */
+  terms: string[];
+  /** Optional spaceType shortcut — also counts as a match */
+  spaceType?: "outdoor" | "indoor" | "mixed";
+};
+
+const ACTIVITIES_CHIPS: SubcatChip[] = [
+  {
+    key: "pool",
+    labels: { en: "Pool / Billiards", fr: "Billard" },
+    terms: ["pool", "billiards", "snooker", "billard", "pool table"],
+  },
+  {
+    key: "escape-rooms",
+    labels: { en: "Escape Rooms", fr: "Escape Games" },
+    terms: ["escape room", "escape game", "salle d'escape", "escape"],
+  },
+  {
+    key: "karting",
+    labels: { en: "Karting", fr: "Karting" },
+    terms: ["karting", "go kart", "go-kart", "kart"],
+  },
+  {
+    key: "bowling",
+    labels: { en: "Bowling", fr: "Bowling" },
+    terms: ["bowling"],
+  },
+  {
+    key: "gaming",
+    labels: { en: "Gaming", fr: "Gaming" },
+    terms: ["gaming", "arcade", "console", "esport"],
+  },
+  {
+    key: "outdoor",
+    labels: { en: "Outdoor", fr: "Plein air" },
+    terms: ["outdoor", "open-air"],
+    spaceType: "outdoor",
+  },
+  {
+    key: "family",
+    labels: { en: "Family", fr: "Famille" },
+    terms: ["family", "kids", "children", "famille", "enfants"],
+  },
+];
+
+/** Categories that expose subcategory chip rows — extend here to add chips to other pages */
+const SUBCATEGORY_CHIPS: Record<string, SubcatChip[]> = {
+  activities: ACTIVITIES_CHIPS,
+};
+
+/** Returns true if the venue matches the given subcategory chip */
+function venueMatchesSubcat(venue: Venue, chip: SubcatChip): boolean {
+  const haystack = [
+    venue.name ?? "",
+    venue.description ?? "",
+    venue.shortDescription ?? "",
+    venue.audience ?? "",
+    venue.vibe ?? "",
+    venue.overview ?? "",
+    venue.subcategory ?? "",
+    ...(venue.searchKeywords ?? []),
+  ]
+    .join(" ")
+    .toLowerCase();
+  return (
+    chip.terms.some((t) => haystack.includes(t)) ||
+    (chip.spaceType != null && venue.spaceType === chip.spaceType)
+  );
+}
+
 /* ---------- Inline icons ---------- */
 function CIcon({ name, size = 16, stroke = 1.7 }: { name: string; size?: number; stroke?: number }) {
   const p: React.SVGProps<SVGSVGElement> = {
@@ -114,10 +188,12 @@ type FilterState = {
   area: string;
   goodFor: string;
   time: string;
+  /** Subcategory chip key ("all" = no filter) */
+  subcat: string;
 };
 
 const EMPTY_FILTERS: FilterState = {
-  query: "", sort: "recommended", area: "all", goodFor: "all", time: "any",
+  query: "", sort: "recommended", area: "all", goodFor: "all", time: "any", subcat: "all",
 };
 
 /* ---------- Filter controls (sidebar + drawer) ---------- */
@@ -292,6 +368,25 @@ export default function CategoryPage() {
       .map(([t]) => t);
   }, [categoryVenues]);
 
+  /** Chips defined for this category (null = no chip row) */
+  const availableChips = SUBCATEGORY_CHIPS[slug ?? ""] ?? null;
+
+  /** Chips that have at least one matching venue — zero-match chips are hidden */
+  const visibleChips = useMemo(() => {
+    if (!availableChips) return [];
+    return availableChips.filter((chip) =>
+      categoryVenues.some((v) => venueMatchesSubcat(v, chip))
+    );
+  }, [availableChips, categoryVenues]);
+
+  /** Picks narrowed by the active subcategory chip; equals picks when chip is "all" */
+  const filteredPicks = useMemo(() => {
+    if (f.subcat === "all" || !availableChips) return picks;
+    const chip = availableChips.find((c) => c.key === f.subcat);
+    if (!chip) return picks;
+    return picks.filter((v) => venueMatchesSubcat(v, chip));
+  }, [picks, f.subcat, availableChips]);
+
   const filteredGrid = useMemo(() => {
     let result = categoryVenues.filter((v) => !pickSlugs.has(v.slug));
     if (f.query.trim()) {
@@ -311,11 +406,17 @@ export default function CategoryPage() {
         v.timeOfDay?.includes(f.time as "morning" | "afternoon" | "evening" | "late-night")
       );
     }
+    if (f.subcat !== "all" && availableChips) {
+      const chip = availableChips.find((c) => c.key === f.subcat);
+      if (chip) {
+        result = result.filter((v) => venueMatchesSubcat(v, chip));
+      }
+    }
     if (f.sort === "az") {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
     return result;
-  }, [categoryVenues, pickSlugs, f]);
+  }, [categoryVenues, pickSlugs, f, availableChips]);
 
   const collageImages = useMemo(() => {
     const coverImg = CATEGORY_IMAGES[slug ?? ""] ?? "";
@@ -493,7 +594,7 @@ export default function CategoryPage() {
                 <div className="blc-stat">
                   <span className="blc-stat-ic"><CIcon name="building" size={17} /></span>
                   <div>
-                    <p className="blc-stat-n">{filteredGrid.length + picks.length}</p>
+                    <p className="blc-stat-n">{filteredGrid.length + filteredPicks.length}</p>
                     <p className="blc-stat-l">{d.results}</p>
                   </div>
                 </div>
@@ -511,8 +612,31 @@ export default function CategoryPage() {
             ) : null}
           </section>
 
-          {/* TOP PICKS */}
-          {picks.length > 0 ? (
+          {/* SUBCATEGORY CHIPS — only rendered for categories with a defined chip set */}
+          {visibleChips.length > 0 ? (
+            <div className="blc-subcat-row" role="group" aria-label="Filter by type">
+              <button
+                type="button"
+                className={`blc-chip${f.subcat === "all" ? " active" : ""}`}
+                onClick={() => set("subcat", "all")}
+              >
+                {d.goodForAll}
+              </button>
+              {visibleChips.map((chip) => (
+                <button
+                  key={chip.key}
+                  type="button"
+                  className={`blc-chip${f.subcat === chip.key ? " active" : ""}`}
+                  onClick={() => set("subcat", chip.key)}
+                >
+                  {chip.labels[language]}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          {/* TOP PICKS — hidden entirely when a chip is active and no picks match it */}
+          {filteredPicks.length > 0 ? (
             <section aria-label={d.topPicksTitle}>
               <div className="blc-sec-head">
                 <h2 className="blc-sec-title">
@@ -524,7 +648,7 @@ export default function CategoryPage() {
                 </a>
               </div>
               <div className="blc-picks">
-                {picks.map((venue) => (
+                {filteredPicks.map((venue) => (
                   <FeaturedCard
                     key={venue.slug}
                     venue={venue} language={language}
