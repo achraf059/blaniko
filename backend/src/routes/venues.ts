@@ -234,7 +234,17 @@ router.get("/", async (req: Request, res: Response) => {
     return;
   }
 
-  res.json((data ?? []).map((row) => mapVenue(row as Record<string, unknown>)));
+  res.json(
+    (data ?? [])
+      .filter((row) => {
+        // Exclude any venue whose short_description contains internal admin wording.
+        // These rows should be cleaned up in Supabase; this guard prevents accidental
+        // exposure to users if they slip through (e.g. deletion didn't complete).
+        const desc = String(row.short_description ?? "").toLowerCase();
+        return !desc.includes("possible duplicate");
+      })
+      .map((row) => mapVenue(row as Record<string, unknown>))
+  );
 });
 
 // GET /api/venues/:slug
