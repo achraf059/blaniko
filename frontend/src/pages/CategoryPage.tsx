@@ -438,11 +438,47 @@ export default function CategoryPage() {
         result = result.filter((v) => venueMatchesSubcat(v, chip));
       }
     }
+    // Activities: diverse default ordering when no subcat chip is selected
+    if (slug === "activities" && f.subcat === "all" && f.sort !== "az" && availableChips) {
+      const poolChip = availableChips.find((c) => c.key === "pool");
+      const otherChips = availableChips.filter((c) => c.key !== "pool");
+      const assigned = new Set<string>();
+      const diverse: typeof result = [];
+      // Round-robin through non-pool chip types so first rows are varied
+      let added = true;
+      while (added) {
+        added = false;
+        for (const chip of otherChips) {
+          const match = result.find(
+            (v) => !assigned.has(v.slug) && venueMatchesSubcat(v, chip),
+          );
+          if (match) {
+            diverse.push(match);
+            assigned.add(match.slug);
+            added = true;
+          }
+        }
+      }
+      // Pool/billiards venues follow after other types
+      if (poolChip) {
+        for (const v of result) {
+          if (!assigned.has(v.slug) && venueMatchesSubcat(v, poolChip)) {
+            diverse.push(v);
+            assigned.add(v.slug);
+          }
+        }
+      }
+      // Any venues not matched by any chip go last
+      for (const v of result) {
+        if (!assigned.has(v.slug)) diverse.push(v);
+      }
+      result = diverse;
+    }
     if (f.sort === "az") {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
     return result;
-  }, [categoryVenues, pickSlugs, f, availableChips]);
+  }, [categoryVenues, pickSlugs, f, availableChips, slug]);
 
   const collageImages = useMemo(() => {
     const coverImg = CATEGORY_IMAGES[slug ?? ""] ?? "";
