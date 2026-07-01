@@ -8,7 +8,7 @@ import { useFavorites } from "../hooks/useFavorites";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
-import { getVenueImageSrc } from "../utils/venueImage";
+import { getVenueImageSrc, hasVenueImage } from "../utils/venueImage";
 import type { Venue } from "../data/mockData";
 import type { AppLanguage } from "../i18n/types";
 import "./CategoryPage.css";
@@ -342,7 +342,10 @@ export default function CategoryPage() {
   );
 
   const picks = useMemo(() => {
-    const withImages = categoryVenues.filter((v) => !!getVenueImageSrc(v));
+    // Only include venues with a confirmed real image so Top Picks never show placeholders.
+    // Falls back to all category venues if none have confirmed images.
+    const withImages = categoryVenues.filter((v) => hasVenueImage(v));
+    const pickPool = withImages.length > 0 ? withImages : categoryVenues;
 
     // Activities: curate a diverse set — at most 1 pool/billiards, fill remaining
     // slots from other activity types so Top Picks feel varied.
@@ -353,13 +356,13 @@ export default function CategoryPage() {
       const diverse: Venue[] = [];
 
       // Allow at most 1 pool venue
-      const poolVenue = withImages.find((v) => venueMatchesSubcat(v, poolChip));
+      const poolVenue = pickPool.find((v) => venueMatchesSubcat(v, poolChip));
       if (poolVenue) diverse.push(poolVenue);
 
       // Fill remaining slots with one venue per other type
       for (const chip of otherChips) {
         if (diverse.length >= 3) break;
-        const match = withImages.find(
+        const match = pickPool.find(
           (v) => !diverse.includes(v) && venueMatchesSubcat(v, chip),
         );
         if (match) diverse.push(match);
@@ -369,7 +372,7 @@ export default function CategoryPage() {
       if (diverse.length >= 2) return diverse.slice(0, 3);
     }
 
-    return withImages.slice(0, 3);
+    return pickPool.slice(0, 3);
   }, [categoryVenues, slug]);
 
   const pickSlugs = useMemo(() => new Set(picks.map((v) => v.slug)), [picks]);
@@ -438,6 +441,19 @@ export default function CategoryPage() {
         result = result.filter((v) => venueMatchesSubcat(v, chip));
       }
     }
+    // Recommended order: stable-sort so venues with confirmed real images appear before
+    // those that would show the "Photo coming soon" placeholder. Within each group
+    // (has-image / no-image) the original API order is preserved. This runs before
+    // the Activities diversity pass so the round-robin naturally picks image venues first.
+    // A–Z sort skips this step entirely.
+    if (f.sort !== "az") {
+      result = [...result].sort((a, b) => {
+        const aImg = hasVenueImage(a) ? 0 : 1;
+        const bImg = hasVenueImage(b) ? 0 : 1;
+        return aImg - bImg;
+      });
+    }
+
     // Activities: diverse default ordering when no subcat chip is selected
     if (slug === "activities" && f.subcat === "all" && f.sort !== "az" && availableChips) {
       const poolChip = availableChips.find((c) => c.key === "pool");
