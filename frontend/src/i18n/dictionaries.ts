@@ -171,6 +171,7 @@ export type Dictionary = {
     timeAfternoon: string;
     timeEvening: string;
     timeLateNight: string;
+    subcatLabel: string;
     topPicksTitle: string;
     topPicksLink: string;
     featuredBadge: string;
@@ -564,8 +565,9 @@ const en: Dictionary = {
     timeAfternoon: "Afternoon",
     timeEvening: "Evening",
     timeLateNight: "Late-night",
+    subcatLabel: "Activity type",
     topPicksTitle: "Top picks",
-    topPicksLink: "View all",
+    topPicksLink: "See all venues",
     featuredBadge: "Featured",
     allVenuesTitle: "All venues",
     showingCount: "Showing",
@@ -963,8 +965,9 @@ const fr: Dictionary = {
     timeAfternoon: "Apr\u00e8s-midi",
     timeEvening: "Soir",
     timeLateNight: "Tard le soir",
+    subcatLabel: "Type d'activit\u00e9",
     topPicksTitle: "Coups de c\u0153ur",
-    topPicksLink: "Voir tout",
+    topPicksLink: "Voir tous les lieux",
     featuredBadge: "Coup de c\u0153ur",
     allVenuesTitle: "Tous les lieux",
     showingCount: "Affichage de",
