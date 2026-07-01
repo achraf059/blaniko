@@ -526,7 +526,7 @@ const en: Dictionary = {
     family: "Kid-friendly venues and family activities.",
   },
   categoryPage: {
-    backHome: "Back to homepage",
+    backHome: "Back to categories",
     eyebrow: "Casablanca category",
     notFoundTitle: "Category not found",
     notFoundDescription:
@@ -926,7 +926,7 @@ const fr: Dictionary = {
     family: "Des lieux et activités adaptés aux familles.",
   },
   categoryPage: {
-    backHome: "Retour à l'accueil",
+    backHome: "Retour aux catégories",
     eyebrow: "Catégorie à Casablanca",
     notFoundTitle: "Catégorie introuvable",
     notFoundDescription:
