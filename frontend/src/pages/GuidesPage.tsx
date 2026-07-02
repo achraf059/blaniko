@@ -322,6 +322,7 @@ export default function GuidesPage() {
         </section>
 
         {/* ── Filter chips ──────────────────────────────────────────────── */}
+        <p className="blg-chips-label">{t.chipsLabel}</p>
         <div className="blg-filters blg-reveal" role="tablist" aria-label="Guide filters">
           <div className="blg-chips-scroll">
             {FILTER_KEYS.map((key) => (

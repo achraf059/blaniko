@@ -447,11 +447,21 @@
 .blg-badge[data-mood="featured"] { background: color-mix(in srgb, var(--blg-b-featured) 88%, #000); }
 
 /* ── Filter chips ────────────────────────────────────────────────── */
+.blg-chips-label {
+  margin: 1.6rem 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--blg-gold) 70%, var(--ink-soft));
+  opacity: 0.75;
+}
 .blg-filters {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin: 1.6rem 0 0;
+  margin: 0;
 }
 .blg-chips-scroll {
   display: flex;
