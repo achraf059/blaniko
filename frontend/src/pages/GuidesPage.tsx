@@ -272,15 +272,6 @@ export default function GuidesPage() {
               <img src="/homepage/backgrounds/hero-casablanca-full-background.webp" alt="" />
             </div>
 
-            {/* annotation */}
-            <p className="blg-annot" aria-hidden="true">
-              {t.heroAnnot}
-              <svg width="60" height="34" viewBox="0 0 60 34" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
-                <path d="M4 4c10 14 26 20 50 22" strokeDasharray="3 4" />
-                <path d="m48 20 7 6-9 3" />
-              </svg>
-            </p>
-
             {/* featured spotlight card */}
             <Link
               to={`/guides/${spotlightGuide.slug}`}
