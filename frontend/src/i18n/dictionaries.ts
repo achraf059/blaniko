@@ -531,8 +531,8 @@ const en: Dictionary = {
     notFoundTitle: "Category not found",
     notFoundDescription:
       "Sorry, we could not find this category yet. Try another one from the homepage.",
-    results: "results",
-    result: "result",
+    results: "venues",
+    result: "venue",
     findingPlaces: "Finding places\u2026",
     toExplore: "to explore",
     emptyFilterTitle: "Use it as a filter",
@@ -931,8 +931,8 @@ const fr: Dictionary = {
     notFoundTitle: "Catégorie introuvable",
     notFoundDescription:
       "Désolé, cette catégorie n'est pas encore disponible. Essayez une autre catégorie depuis l'accueil.",
-    results: "résultats",
-    result: "résultat",
+    results: "lieux",
+    result: "lieu",
     findingPlaces: "Recherche en cours\u2026",
     toExplore: "à explorer",
     emptyFilterTitle: "Utilisez-le comme filtre",
