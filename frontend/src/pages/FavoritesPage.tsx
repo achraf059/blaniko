@@ -17,9 +17,7 @@ export default function FavoritesPage() {
   const { venues, isLoading } = useVenues();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
-  usePageMeta(
-    language === "fr" ? "Lieux enregistrés | Blaniko" : "Saved venues | Blaniko",
-  );
+  usePageMeta(dictionary.favoritesPage.pageTitle);
   const {
     favoriteSlugs,
     favoritesCount,
