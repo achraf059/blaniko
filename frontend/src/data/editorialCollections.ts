@@ -227,7 +227,7 @@ export const editorialCollections: EditorialCollection[] = [
       categorySlugs: ["activities", "gaming", "sports"],
       maxItems: 6,
     },
-    image: "/homepage/hero/hero-night-out-maarif.webp",
+    image: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.webp",
     badge: { label: "Friends", mood: "friends" },
     badgeFr: { label: "Entre amis" },
     time: "2–4h",
