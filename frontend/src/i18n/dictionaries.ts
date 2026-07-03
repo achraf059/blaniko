@@ -292,6 +292,7 @@ export type Dictionary = {
     backHome: string;
   };
   favoritesPage: {
+    pageTitle: string;
     eyebrow: string;
     title: string;
     subtitle: string;
@@ -691,6 +692,7 @@ const en: Dictionary = {
     backHome: "Back to homepage",
   },
   favoritesPage: {
+    pageTitle: "Saved venues | Blaniko",
     eyebrow: "Saved places",
     title: "Your favorite venues",
     subtitle: "Keep your preferred Casablanca spots in one place.",
@@ -1093,6 +1095,7 @@ const fr: Dictionary = {
     backHome: "Retour à l'accueil",
   },
   favoritesPage: {
+    pageTitle: "Lieux enregistrés | Blaniko",
     eyebrow: "Lieux enregistrés",
     title: "Vos lieux favoris",
     subtitle: "Gardez vos adresses préférées de Casablanca au même endroit.",
