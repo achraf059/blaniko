@@ -35,12 +35,8 @@ export default function SearchPage() {
   const text = getFlowTexts(language);
   const moodLabels = getDiscoveryMoodLabel(language);
   usePageMeta(
-    language === "fr"
-      ? "Découvrir des lieux à Casablanca | Blaniko"
-      : "Discover venues in Casablanca | Blaniko",
-    language === "fr"
-      ? "Recherchez et filtrez des activités, lieux et expériences à Casablanca."
-      : "Search and filter activities, venues, and experiences in Casablanca.",
+    dictionary.searchPage.pageTitle,
+    dictionary.searchPage.pageDescription,
   );
   const navigate = useNavigate();
   const { venues, isLoading, error, retry } = useVenues();
@@ -466,7 +462,7 @@ export default function SearchPage() {
 
             <div className="bl-search-advanced-filters-grid">
               <div className="bl-search-advanced-group">
-                <p className="bl-discovery-label">Budget</p>
+                <p className="bl-discovery-label">{dictionary.searchPage.budgetLabel}</p>
                 <BudgetSelector
                   options={budgetOptions}
                   selectedValue={selectedBudget}
@@ -475,7 +471,7 @@ export default function SearchPage() {
               </div>
 
               <div className="bl-search-advanced-group">
-                <p className="bl-discovery-label">Mood</p>
+                <p className="bl-discovery-label">{text.common.mood}</p>
                 <FilterChips
                   options={moodOptions}
                   selectedValue={selectedMood || undefined}
