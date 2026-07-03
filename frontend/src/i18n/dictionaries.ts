@@ -854,7 +854,7 @@ const fr: Dictionary = {
     heroHeadlineSuffix: "à Casablanca.",
     heroSubtitle:
       "Un guide sélectionné d'activités, d'ateliers et de plans de week-end qui rendent la ville plus personnelle — choisi avec goût, mis à jour chaque semaine.",
-    heroSearchPlaceholder: "Surf, poterie, dîner rooftop…",
+    heroSearchPlaceholder: "Surf, poterie, karting…",
     heroExplore: "Explorer",
     heroTagWeekend: "Ce week-end",
     heroTagOutdoor: "En plein air",
