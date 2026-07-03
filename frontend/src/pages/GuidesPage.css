@@ -289,15 +289,24 @@
   border-radius: 22px;
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--blg-gold) 18%, var(--line));
   box-shadow: var(--blg-shadow-float);
   text-decoration: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  transition: transform 320ms var(--ease-blg), box-shadow 320ms var(--ease-blg);
+  transition: transform 320ms var(--ease-blg), box-shadow 320ms var(--ease-blg), border-color 320ms var(--ease-blg);
+  outline: none;
 }
-.blg-spotlight:hover { transform: translateY(-4px); }
+.blg-spotlight:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--blg-shadow-float), 0 0 0 2px color-mix(in srgb, var(--blg-gold) 35%, transparent);
+  border-color: color-mix(in srgb, var(--blg-gold) 55%, var(--line));
+}
+.blg-spotlight:focus-visible {
+  box-shadow: var(--blg-shadow-float), 0 0 0 3px color-mix(in srgb, var(--blg-gold) 70%, transparent);
+  border-color: color-mix(in srgb, var(--blg-gold) 65%, var(--line));
+}
 .blg-spotlight-img {
   position: absolute;
   inset: 0;
@@ -359,17 +368,25 @@
   gap: 0.5rem;
   padding: 0.6rem 1.1rem;
   border-radius: 999px;
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.28);
+  background: color-mix(in srgb, var(--blg-gold) 18%, rgba(255,255,255,0.10));
+  border: 1px solid color-mix(in srgb, var(--blg-gold) 42%, rgba(255,255,255,0.20));
   color: #fff;
   font-size: 0.82rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   white-space: nowrap;
-  transition: background 200ms var(--ease-blg), gap 200ms var(--ease-blg);
+  transition: background 200ms var(--ease-blg), border-color 200ms var(--ease-blg), gap 200ms var(--ease-blg);
 }
-.blg-spotlight:hover .blg-view-pill { background: rgba(255,255,255,0.24); gap: 0.7rem; }
+.blg-spotlight:hover .blg-view-pill {
+  background: color-mix(in srgb, var(--blg-gold) 30%, rgba(255,255,255,0.14));
+  border-color: color-mix(in srgb, var(--blg-gold) 65%, rgba(255,255,255,0.30));
+  gap: 0.7rem;
+}
+.blg-spotlight:focus-visible .blg-view-pill {
+  background: color-mix(in srgb, var(--blg-gold) 30%, rgba(255,255,255,0.14));
+  border-color: color-mix(in srgb, var(--blg-gold) 65%, rgba(255,255,255,0.30));
+}
 
 /* Peek stack */
 .blg-peeks {
