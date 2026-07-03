@@ -224,10 +224,20 @@ export default function GuideDetailPage() {
 
   const matchedVenues = collection ? resolveEditorialCollectionVenues(collection, venues) : [];
 
-  const relatedGuides = useMemo(
-    () => editorialCollections.filter((c) => c.slug !== slug).slice(0, 3),
-    [slug],
-  );
+  const relatedGuides = useMemo(() => {
+    const currentGuide = editorialCollections.find((c) => c.slug === slug);
+    const currentMoods = currentGuide?.moods ?? [];
+    return editorialCollections
+      .filter((c) => c.slug !== slug)
+      .map((c, originalIndex) => ({
+        collection: c,
+        sharedMoods: (c.moods ?? []).filter((m) => currentMoods.includes(m)).length,
+        originalIndex,
+      }))
+      .sort((a, b) => b.sharedMoods - a.sharedMoods || a.originalIndex - b.originalIndex)
+      .slice(0, 3)
+      .map((item) => item.collection);
+  }, [slug]);
 
   const badgeLabel = collection
     ? language === "fr"
