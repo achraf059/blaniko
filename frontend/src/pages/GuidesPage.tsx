@@ -226,7 +226,7 @@ export default function GuidesPage() {
             </p>
             <h1 className="blg-hero-title">
               {language === "fr" ? (
-                <>{t.title.split(" ").slice(0, 2).join(" ")} <em>{t.title.split(" ").slice(2).join(" ")}</em></>
+                <>Guides <em>de la ville</em></>
               ) : (
                 <>Curated <em>city guides</em></>
               )}
@@ -346,9 +346,11 @@ export default function GuidesPage() {
               {t.moodTitle}
               <span className="blg-title-spark" aria-hidden="true"><IconSpark /></span>
             </h2>
-            <Link to="/guides" className="blg-sec-link" onClick={() => setActiveFilter("all")}>
-              {t.viewAll} <IconArrow />
-            </Link>
+            {activeFilter !== "all" && (
+              <Link to="/guides" className="blg-sec-link" onClick={() => setActiveFilter("all")}>
+                {t.viewAll} <IconArrow />
+              </Link>
+            )}
           </div>
 
           <div className="blg-mood-outer blg-reveal">
@@ -494,7 +496,7 @@ export default function GuidesPage() {
             {HOW_STEPS.map((step, i) => (
               <div className="blg-step" key={i}>
                 <span className="blg-step-ic">{step.icon}</span>
-                <p className="blg-step-n">STEP {i + 1}</p>
+                <p className="blg-step-n">{t.stepLabel} {i + 1}</p>
                 <h3 className="blg-step-t">{step.title}</h3>
                 <p className="blg-step-s">{step.sub}</p>
               </div>

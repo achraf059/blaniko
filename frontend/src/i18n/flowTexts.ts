@@ -115,8 +115,6 @@ const byLanguage = {
     guidesPage: {
       eyebrow: "Blaniko picks",
       title: "Curated city guides",
-      subtitle:
-        "Local-first collections built to help you choose faster: date plans, budget picks, indoor activity ideas, sunset routes, and social nights.",
       editorialCollection: "Editorial collection",
       matchedVenues: "{count} matched venues",
       openGuide: "Read guide",
@@ -144,8 +142,6 @@ const byLanguage = {
       moodTitle: "Guides for every mood",
       viewAll: "View all guides",
       editorPick: "Editor's pick",
-      editorPickTitle: "Date-friendly activity ideas",
-      editorPickDesc: "Icons, history & must-sees that never go out of style.",
       exploreGuide: "Explore guide",
       spots: "spots",
       featuredCollection: "Featured collection",
@@ -153,7 +149,6 @@ const byLanguage = {
       localLoveSub: "Our favourite city picks — easy to share.",
       localLoveStat0: "5 themes",
       localLoveStat1: "Curated spots",
-      localLoveStat2: "Curated by locals",
       trendingNow: "Trending now",
       trendingTitle: "What's popular in Casablanca",
       trendingChip0: "Rooftop spots",
@@ -180,6 +175,7 @@ const byLanguage = {
       noGuidesInMood: "No guides in this mood yet",
       noGuidesInMoodSub: "Try another filter — every guide is one tap away.",
       showAllGuides: "Show all guides",
+      stepLabel: "STEP",
     },
     guideDetailPage: {
       notFoundEyebrow: "Guide not found",
@@ -652,8 +648,6 @@ const byLanguage = {
     guidesPage: {
       eyebrow: "Sélections Blaniko",
       title: "Guides de la ville sélectionnés",
-      subtitle:
-        "Des sélections locales pour choisir plus vite : plans en duo, petits budgets, idées d'activités indoor, routes sunset et soirées sociales.",
       editorialCollection: "Collection éditoriale",
       matchedVenues: "{count} lieux correspondants",
       openGuide: "Lire le guide",
@@ -681,8 +675,6 @@ const byLanguage = {
       moodTitle: "Des guides pour chaque humeur",
       viewAll: "Voir tous les guides",
       editorPick: "Choix de la rédaction",
-      editorPickTitle: "Idées d'activités en duo",
-      editorPickDesc: "Icônes, histoire & incontournables qui ne passent jamais de mode.",
       exploreGuide: "Explorer le guide",
       spots: "lieux",
       featuredCollection: "Collection en vedette",
@@ -690,7 +682,6 @@ const byLanguage = {
       localLoveSub: "Nos favoris en ville — faciles à partager.",
       localLoveStat0: "5 thèmes",
       localLoveStat1: "Lieux sélectionnés",
-      localLoveStat2: "Sélectionné par des locaux",
       trendingNow: "Tendances",
       trendingTitle: "Ce qui est populaire à Casablanca",
       trendingChip0: "Spots rooftop",
@@ -717,6 +708,7 @@ const byLanguage = {
       noGuidesInMood: "Aucun guide dans cette humeur",
       noGuidesInMoodSub: "Essayez un autre filtre — chaque guide est à portée de clic.",
       showAllGuides: "Voir tous les guides",
+      stepLabel: "ÉTAPE",
     },
     guideDetailPage: {
       notFoundEyebrow: "Guide introuvable",
