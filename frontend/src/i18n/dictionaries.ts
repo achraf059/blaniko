@@ -639,7 +639,7 @@ const en: Dictionary = {
     audience: "Audience",
     priceLevel: "Price level",
     fallbackOverview:
-      "Explore {name}, a {category} spot in {area}. Blaniko is still refining the full profile, but this page gives you the key details to decide if it fits your next outing.",
+      "Explore {name}, a {category} spot in {area}. Use the details on this page to decide if it fits your next outing.",
     fallbackVibe: "Casual",
     fallbackAudience: "General",
     fallbackPriceLevel: "$$",
@@ -1042,7 +1042,7 @@ const fr: Dictionary = {
     audience: "Public",
     priceLevel: "Niveau de prix",
     fallbackOverview:
-      "Découvrez {name}, une adresse {category} à {area}. Blaniko affine encore le profil complet, mais cette page vous donne les informations essentielles pour voir si elle correspond à votre prochaine sortie.",
+      "Découvrez {name}, une adresse {category} à {area}. Consultez les détails de cette page pour voir si elle correspond à votre prochaine sortie.",
     fallbackVibe: "Décontracté",
     fallbackAudience: "Tout public",
     fallbackPriceLevel: "$$",
