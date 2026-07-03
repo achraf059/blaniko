@@ -83,6 +83,9 @@ const byLanguage = {
         "Some compared venues are no longer available in shared data.",
     },
     collectionsPage: {
+      pageTitle: "My Collections | Blaniko",
+      pageDescription:
+        "View and manage your saved venue collections in Casablanca.",
       eyebrow: "Collections",
       title: "Saved lists",
       subtitle:
@@ -617,6 +620,9 @@ const byLanguage = {
         "Certains lieux comparés ne sont plus disponibles dans les données partagées.",
     },
     collectionsPage: {
+      pageTitle: "Mes collections | Blaniko",
+      pageDescription:
+        "Consultez et gérez vos collections de lieux enregistrés à Casablanca.",
       eyebrow: "Listes",
       title: "Listes enregistrées",
       subtitle:

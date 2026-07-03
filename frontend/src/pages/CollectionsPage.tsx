@@ -15,12 +15,7 @@ import "./CollectionsPage.css";
 export default function CollectionsPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
-  usePageMeta(
-    language === "fr" ? "Mes collections | Blaniko" : "My Collections | Blaniko",
-    language === "fr"
-      ? "Consultez et gérez vos collections de lieux enregistrés à Casablanca."
-      : "View and manage your saved venue collections in Casablanca.",
-  );
+  usePageMeta(text.collectionsPage.pageTitle, text.collectionsPage.pageDescription);
   const { venuesBySlug, isLoading } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const {
