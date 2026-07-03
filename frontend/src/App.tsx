@@ -6,18 +6,10 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import CategoryPage from "./pages/CategoryPage";
-import VenuePage from "./pages/VenuePage";
-import GuidesPage from "./pages/GuidesPage";
-import GuideDetailPage from "./pages/GuideDetailPage";
-import AreaPage from "./pages/AreaPage";
-import CollectionsPage from "./pages/CollectionsPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import RecentPage from "./pages/RecentPage";
 import PrivacyPage from "./pages/PrivacyPage";
-import PartnersPage from "./pages/PartnersPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import LoginPage from "./pages/LoginPage";
-import AccountPage from "./pages/AccountPage";
 
 // Lazy: heavy / non-critical routes — deferred until first navigation
 const PlanPage = lazy(() => import("./pages/PlanPage"));
@@ -25,6 +17,14 @@ const MapPage = lazy(() => import("./pages/MapPage"));
 const RecommendationsPage = lazy(() => import("./pages/RecommendationsPage"));
 const ComparePage = lazy(() => import("./pages/ComparePage"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
+const VenuePage = lazy(() => import("./pages/VenuePage"));
+const GuidesPage = lazy(() => import("./pages/GuidesPage"));
+const GuideDetailPage = lazy(() => import("./pages/GuideDetailPage"));
+const CollectionsPage = lazy(() => import("./pages/CollectionsPage"));
+const PartnersPage = lazy(() => import("./pages/PartnersPage"));
+const AreaPage = lazy(() => import("./pages/AreaPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
 
 function RouteLoadingFallback() {
   return (
