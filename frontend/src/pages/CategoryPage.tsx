@@ -498,7 +498,11 @@ export default function CategoryPage() {
 
   const collageImages = useMemo(() => {
     const coverImg = CATEGORY_IMAGES[slug ?? ""] ?? "";
+    // Only venues with a confirmed real image contribute slats — venues whose
+    // externalId has no matching file in public/images/venues/ return a 404 URL
+    // which renders as the solid purple fallback background. hasVenueImage guards this.
     const venueImgs = categoryVenues
+      .filter((v) => hasVenueImage(v))
       .map((v) => getVenueImageSrc(v))
       .filter((url): url is string => !!url)
       .slice(0, 4);
@@ -627,7 +631,8 @@ export default function CategoryPage() {
       </div>
 
       <div className="blc-shell">
-        {/* ---- SIDEBAR ---- */}
+        {/* ---- SIDEBAR COL — stretches to full row height so sticky works through All Venues ---- */}
+        <div className="blc-sidebar-col">
         <aside className="blc-sidebar">
           <Link to="/" className="blc-back">
             <CIcon name="back" size={14} /> {d.backHome}
@@ -646,6 +651,7 @@ export default function CategoryPage() {
             onPlanCta={() => setDrawer(false)}
           />
         </aside>
+        </div>
 
         {/* ---- MAIN ---- */}
         <main className="blc-main">
