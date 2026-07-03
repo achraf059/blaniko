@@ -450,7 +450,7 @@ const en: Dictionary = {
     heroHeadlineEmphasis: "quietly extraordinary",
     heroHeadlineSuffix: "in Casablanca.",
     heroSubtitle:
-      "A curated guide to the activities, workshops, and weekend plans that make the city feel like yours — chosen with taste, updated every week.",
+      "A curated guide to the activities, workshops, and weekend plans that make the city feel like yours — chosen with taste, regularly refreshed.",
     heroSearchPlaceholder: "Padel, escape room, karting…",
     heroExplore: "Explore",
     heroTagWeekend: "This weekend",
@@ -471,7 +471,7 @@ const en: Dictionary = {
     curatedTitleEmphasis: "picks",
     curatedTitleSuffix: "chosen with care.",
     curatedRight:
-      "Editor-curated activities, updated every Monday. No pay-to-play.",
+      "Editor-curated activities, regularly refreshed. No pay-to-play.",
     mapEyebrow: "Map",
     mapTitlePrefix: "See the city",
     mapTitleEmphasis: "as a map",
@@ -680,7 +680,7 @@ const en: Dictionary = {
     searchPlaceholder: "Search places, categories, or areas",
     searchAction: "Search",
     curatedPlaces: "curated places",
-    handpickedUpdated: "Handpicked \u00b7 updated weekly",
+    handpickedUpdated: "Handpicked \u00b7 regularly refreshed",
   },
   recommendationsPage: {
     eyebrow: "Personal recommendations",
@@ -1083,7 +1083,7 @@ const fr: Dictionary = {
     searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
     searchAction: "Rechercher",
     curatedPlaces: "lieux sélectionnés",
-    handpickedUpdated: "Sélection \u00b7 mise à jour chaque semaine",
+    handpickedUpdated: "Sélection \u00b7 régulièrement actualisé",
   },
   recommendationsPage: {
     eyebrow: "Recommandations personnalisées",
