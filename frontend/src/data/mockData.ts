@@ -394,6 +394,77 @@ export const venues: Venue[] = [
       },
     },
   },
+
+  // ─── Dev fallback stubs ────────────────────────────────────────────────────
+  // These venues exist in production Supabase (BLK slugs) and are linked from
+  // the homepage hero cards and curated picks section. The stubs below keep
+  // those links from 404-ing when the API is unavailable in dev mode and
+  // useVenues falls back to this file. Do not use these stubs for editorial
+  // content or production display.
+  {
+    slug: "padel-pro-blk-0024",
+    name: "Padel Pro",
+    category: "Sports",
+    categorySlug: "sports",
+    area: "Ain Diab, Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "tahiti-beach-club-blk-0040",
+    name: "Tahiti Beach Club",
+    category: "Outdoor",
+    categorySlug: "outdoor",
+    area: "Corniche, Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "sindibad-karting-blk-0020",
+    name: "Sindibad Karting",
+    category: "Activities",
+    categorySlug: "activities",
+    area: "Ain Diab, Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "house-of-gaming-blk-0046",
+    name: "House of Gaming",
+    category: "Gaming",
+    categorySlug: "gaming",
+    area: "Hay El Ward, Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "l-eden-beach-club-blk-0039",
+    name: "L'Eden Beach Club",
+    category: "Outdoor",
+    categorySlug: "outdoor",
+    area: "Corniche, Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "the-doorz-escape-room-blk-0016",
+    name: "The Doorz Escape Room",
+    category: "Activities",
+    categorySlug: "activities",
+    area: "Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "astropool-lounge-blk-0001",
+    name: "Astropool Lounge",
+    category: "Activities",
+    categorySlug: "activities",
+    area: "Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
+  {
+    slug: "parc-sindibad-blk-0028",
+    name: "Parc Sindibad",
+    category: "Family",
+    categorySlug: "family",
+    area: "Ain Diab, Casablanca",
+    description: "Dev fallback venue — real data served from API in production.",
+  },
 ];
 
 export const featuredVenueSlugs = [
