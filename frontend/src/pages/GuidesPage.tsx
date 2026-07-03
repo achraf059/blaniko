@@ -107,7 +107,7 @@ function useReveal(dep: string | number) {
 
 // ── Filter definitions ────────────────────────────────────────────────────────
 
-const FILTER_KEYS = ["all", "date", "budget", "indoor", "outdoor", "family", "friends", "sunset", "weekend"] as const;
+const FILTER_KEYS = ["all", "date", "budget", "indoor", "outdoor", "friends", "sunset", "weekend"] as const;
 type FilterKey = typeof FILTER_KEYS[number];
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -168,7 +168,6 @@ export default function GuidesPage() {
     budget: t.filterBudget,
     indoor: t.filterIndoor,
     outdoor: t.filterOutdoor,
-    family: t.filterFamily,
     friends: t.filterFriends,
     sunset: t.filterSunset,
     weekend: t.filterWeekend,
@@ -180,14 +179,14 @@ export default function GuidesPage() {
     return editorialCollections.filter((c) => (c.moods ?? []).includes(activeFilter));
   }, [activeFilter]);
 
-  // Guide row: shows all (or filtered) guides excluding the editor's pick
+  // Guide row: shows all (or filtered) guides excluding the editor's pick and the hero spotlight
   const moodGuides = useMemo(
-    () => filteredGuides.filter((c) => c.slug !== editorGuide.slug),
-    [filteredGuides, editorGuide.slug],
+    () => filteredGuides.filter((c) => c.slug !== editorGuide.slug && c.slug !== spotlightGuide.slug),
+    [filteredGuides, editorGuide.slug, spotlightGuide.slug],
   );
 
-  // Love strip links to date-friendly guide
-  const loveGuide = editorialCollections[0];
+  // Love strip links to date-friendly guide (explicit slug lookup, not array index)
+  const loveGuide = editorialCollections.find((c) => c.slug === "date-friendly-activity-ideas") ?? editorialCollections[0];
 
   const TRUST = [
     { title: t.trust0title, sub: t.trust0sub, icon: <IconPin /> },
