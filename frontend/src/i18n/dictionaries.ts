@@ -255,6 +255,8 @@ export type Dictionary = {
     actionContactSoon: string;
   };
   searchPage: {
+    pageTitle: string;
+    pageDescription: string;
     eyebrow: string;
     titleDefault: string;
     titleForQuery: string;
@@ -651,6 +653,8 @@ const en: Dictionary = {
     actionContactSoon: "Contact details coming soon",
   },
   searchPage: {
+    pageTitle: "Discover venues in Casablanca | Blaniko",
+    pageDescription: "Search and filter activities, venues, and experiences in Casablanca.",
     eyebrow: "Discovery results",
     titleDefault: "Explore matching venues",
     titleForQuery: 'Results for "{query}"',
@@ -1051,6 +1055,8 @@ const fr: Dictionary = {
     actionContactSoon: "Coordonnées bientôt disponibles",
   },
   searchPage: {
+    pageTitle: "Découvrir des lieux à Casablanca | Blaniko",
+    pageDescription: "Recherchez et filtrez des activités, lieux et expériences à Casablanca.",
     eyebrow: "Résultats découverte",
     titleDefault: "Explorer les lieux correspondants",
     titleForQuery: 'Résultats pour "{query}"',
