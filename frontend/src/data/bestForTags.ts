@@ -13,7 +13,6 @@ import type { AppLanguage } from "../i18n/types";
 export type BestForTag =
   | "date-spot"
   | "friends"
-  | "solo-coffee"
   | "work-friendly"
   | "family-friendly"
   | "budget-pick"
@@ -28,7 +27,6 @@ export const bestForLabels: Record<AppLanguage, Record<BestForTag, string>> = {
   en: {
     "date-spot":      "Date spot",
     friends:          "Friends",
-    "solo-coffee":    "Solo coffee",
     "work-friendly":  "Work-friendly",
     "family-friendly":"Family-friendly",
     "budget-pick":    "Budget pick",
@@ -42,7 +40,6 @@ export const bestForLabels: Record<AppLanguage, Record<BestForTag, string>> = {
   fr: {
     "date-spot":      "Idéal en duo",
     friends:          "Amis",
-    "solo-coffee":    "Café en solo",
     "work-friendly":  "Adapté au travail",
     "family-friendly":"Familial",
     "budget-pick":    "Petit budget",
