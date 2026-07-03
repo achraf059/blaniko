@@ -79,10 +79,13 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01", "cv11";
-  overflow-x: hidden;
+  /* overflow-x is set on body only (below) — setting it on html turns html into the
+     scroll container and breaks position:sticky globally. Body-only lets it propagate
+     to the viewport, so the viewport stays the scroll ancestor for sticky elements. */
 }
 
 body {
+  overflow-x: hidden; /* prevent horizontal bleed; on body only — see note above */
   min-height: 100vh;
   min-height: 100dvh; /* dynamic viewport height — avoids mobile browser chrome overlap */
   background:
