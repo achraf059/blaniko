@@ -1,9 +1,16 @@
-/* ── PlanPage.css ─ Blaniko Plan — matched to Claude Design reference ── */
+/* ── PlanPage.css ─ Blaniko Plan — gold-and-purple theme ── */
 
-/* Local tokens (WhatsApp — not in global set) */
+/* Local tokens (WhatsApp — not in global set, plus gold accent system) */
 .bl-plan-page {
   --whatsapp: #1fa855;
   --whatsapp-deep: #14823f;
+
+  /* gold accent — mirrors Category/Guides palette */
+  --gold:        var(--accent);
+  --gold-soft:   color-mix(in srgb, var(--accent) 70%, transparent);
+  --gold-border: color-mix(in srgb, var(--accent) 35%, var(--line));
+  --gold-shadow: color-mix(in srgb, var(--accent) 65%, transparent);
+
   min-height: 100vh;
   min-height: 100dvh;
   background: transparent;
@@ -11,6 +18,11 @@
 }
 [data-theme="dark"] .bl-plan-page {
   background: var(--bg);
+}
+
+/* Light-mode gold softening — keeps sufficient contrast on white surfaces */
+[data-theme="light"] .bl-plan-page {
+  --gold-border: color-mix(in srgb, var(--accent) 28%, var(--line));
 }
 
 /* ── PAGE SHELL ── */
@@ -33,7 +45,7 @@
     color-mix(in srgb, var(--mist) 70%, var(--color-surface)) 0%,
     color-mix(in srgb, var(--color-surface) 80%, var(--mist)) 100%
   );
-  border: 1px solid var(--line);
+  border: 1px solid var(--gold-border);
   box-shadow: var(--shadow-section);
   padding: 2.6rem 2.8rem;
   margin-bottom: 2.6rem;
@@ -56,7 +68,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: var(--plum);
+  color: var(--gold);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -72,9 +84,13 @@
   color: var(--ink);
 }
 
+/* Gold gradient emphasis on city name — mirrors Guides .blg-hero-title em */
 .bl-plan-hero-title em {
   font-style: italic;
-  color: var(--plum-deep);
+  background: linear-gradient(92deg, var(--gold), color-mix(in srgb, var(--gold) 60%, var(--plum-deep)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .bl-plan-hero-sub {
@@ -102,7 +118,7 @@
 }
 
 .bl-plan-trust-item svg {
-  color: var(--plum);
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -183,10 +199,11 @@
   flex-wrap: wrap;
 }
 
+/* Gold section numbers — mirrors Category/Guides style */
 .bl-plan-section-num {
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-weight: 500;
-  color: var(--heather);
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -197,8 +214,9 @@
   line-height: 1.5;
 }
 
+/* Gold sparkle/spark icon accent */
 .bl-plan-sparkle {
-  color: var(--plum);
+  color: var(--gold);
   vertical-align: 0.06em;
   font-size: 0.85em;
 }
@@ -247,17 +265,40 @@
               background 180ms ease;
 }
 
+/* Hover: restrained gold border */
 .bl-plan-vibe:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
-  border-color: color-mix(in srgb, var(--plum) 40%, var(--line));
+  border-color: color-mix(in srgb, var(--gold) 40%, var(--line));
 }
 
+/* Focus-visible: gold ring */
+.bl-plan-vibe:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: var(--shadow-card-hover), 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent);
+}
+
+/* Selected: dark purple card with subtle gold tint and border */
 .bl-plan-vibe.is-active {
-  background: linear-gradient(160deg, var(--plum-deep), color-mix(in srgb, var(--plum-deep) 78%, #000));
-  border-color: var(--plum-deep);
-  box-shadow: 0 18px 38px -20px color-mix(in srgb, var(--plum-deep) 70%, transparent);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--gold) 9%, #1c1138),
+    #1c1138 80%
+  );
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 28%, transparent),
+              0 18px 38px -20px color-mix(in srgb, var(--gold) 40%, transparent);
   transform: translateY(-2px);
+}
+
+[data-theme="light"] .bl-plan-vibe.is-active {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--gold) 10%, #2a1c44),
+    #2a1c44 80%
+  );
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
 }
 
 .bl-plan-vibe-emoji {
@@ -286,9 +327,10 @@
 }
 
 .bl-plan-vibe.is-active .bl-plan-vibe-sub {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.72);
 }
 
+/* Category label badge — gold accent on selected */
 .bl-plan-vibe-badge {
   margin-top: auto;
   align-self: flex-start;
@@ -304,10 +346,12 @@
 }
 
 .bl-plan-vibe.is-active .bl-plan-vibe-badge {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
+  background: color-mix(in srgb, var(--gold) 16%, transparent);
+  color: var(--gold);
+  border: 1px solid color-mix(in srgb, var(--gold) 32%, transparent);
 }
 
+/* Gold check indicator on selected card */
 .bl-plan-vibe-check {
   position: absolute;
   top: 0.85rem;
@@ -317,8 +361,8 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #fff;
-  color: var(--plum-deep);
+  background: var(--gold);
+  color: #1f1326;
   opacity: 0;
   transform: scale(0.6);
   transition: opacity 180ms ease, transform 180ms ease;
@@ -371,12 +415,13 @@
 }
 
 .bl-plan-btn:hover {
-  border-color: var(--plum);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
   transform: translateY(-1px);
 }
 
+/* Icon color inside ghost buttons */
 .bl-plan-btn svg {
-  color: var(--plum);
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -384,19 +429,25 @@
   /* inherits defaults */
 }
 
+/* Primary action — gold with dark readable text */
 .bl-plan-btn--primary {
-  background: var(--plum-deep);
-  border-color: var(--plum-deep);
-  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    color-mix(in srgb, var(--gold) 72%, var(--plum-deep))
+  );
+  border-color: transparent;
+  color: #1f1326;
+  box-shadow: 0 10px 24px -12px var(--gold-shadow);
 }
 
 .bl-plan-btn--primary svg {
-  color: #fff;
+  color: #1f1326;
 }
 
 .bl-plan-btn--primary:hover {
-  background: color-mix(in srgb, var(--plum-deep) 86%, #000);
-  box-shadow: 0 14px 30px -16px color-mix(in srgb, var(--plum-deep) 70%, transparent);
+  box-shadow: 0 16px 32px -12px var(--gold-shadow);
+  border-color: transparent;
 }
 
 .bl-plan-btn--wa {
@@ -451,6 +502,7 @@
   margin-bottom: 0.7rem;
 }
 
+/* Gold route step circles — dark readable text */
 .bl-plan-stop-num {
   width: 30px;
   height: 30px;
@@ -458,28 +510,30 @@
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  background: var(--plum-deep);
-  color: #fff;
+  background: var(--gold);
+  color: #1f1326;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: 0 0 0 4px var(--bg);
 }
 
+/* Gold connector line */
+.bl-plan-stop-line {
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed color-mix(in srgb, var(--gold) 38%, transparent);
+  margin-left: 0.2rem;
+}
+
+/* Gold-tinted role labels (START, MAIN STOP, TO FINISH) */
 .bl-plan-stop-role {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.64rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--ink-soft);
-}
-
-.bl-plan-stop-line {
-  flex: 1;
-  height: 0;
-  border-top: 2px dashed color-mix(in srgb, var(--plum) 38%, transparent);
-  margin-left: 0.2rem;
+  color: var(--gold);
 }
 
 /* ── PLAN CARD ── */
@@ -501,11 +555,13 @@
 .bl-plan-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
+  border-color: var(--gold-border);
 }
 
+/* Locked card — gold border accent */
 .bl-plan-card.is-locked {
-  border-color: var(--plum);
-  box-shadow: 0 0 0 1.5px var(--plum), var(--shadow-card);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--gold) 45%, transparent), var(--shadow-card);
 }
 
 /* Override VenueImage border-radius inside card */
@@ -559,9 +615,10 @@
   background: var(--color-surface);
 }
 
+/* Locked state — gold badge */
 .bl-plan-lock-btn.is-locked {
-  background: var(--plum-deep);
-  color: #fff;
+  background: var(--gold);
+  color: #1f1326;
 }
 
 .bl-plan-card-body {
@@ -578,13 +635,14 @@
   gap: 0.5rem;
 }
 
+/* Gold role labels */
 .bl-plan-card-role-badge {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.64rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--plum-deep);
+  color: var(--gold);
 }
 
 .bl-plan-card-price {
@@ -693,7 +751,7 @@
 }
 
 .bl-plan-mini:hover {
-  border-color: var(--plum);
+  border-color: color-mix(in srgb, var(--gold) 50%, transparent);
   color: var(--ink);
 }
 
@@ -702,8 +760,9 @@
   cursor: not-allowed;
 }
 
+/* Gold icon in mini controls */
 .bl-plan-mini svg {
-  color: var(--plum);
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -725,7 +784,7 @@
   margin-left: auto;
   border: none;
   background: none;
-  color: var(--plum-deep);
+  color: var(--gold);
 }
 
 .bl-plan-mini--cta:hover {
@@ -734,12 +793,16 @@
   color: var(--ink);
 }
 
+.bl-plan-mini--cta svg {
+  color: inherit;
+}
+
 /* ── FEEDBACK / EMPTY ── */
 .bl-plan-feedback {
   margin: 0.6rem 0 0;
   font-size: 0.79rem;
   font-weight: 600;
-  color: var(--plum-deep);
+  color: var(--gold);
 }
 
 .bl-plan-empty {
@@ -782,8 +845,9 @@
   align-items: flex-start;
 }
 
+/* Gold assurance icons */
 .bl-plan-assure-item > svg {
-  color: var(--plum);
+  color: var(--gold);
   flex-shrink: 0;
   margin-top: 0.1rem;
 }
@@ -839,8 +903,9 @@
   gap: 0.4rem;
 }
 
+/* Gold section number inside customize header */
 .bl-plan-customize-top .bl-plan-section-num {
-  color: var(--heather);
+  color: var(--gold);
   font-weight: 500;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-size: inherit;
@@ -851,6 +916,7 @@
   font-size: 0.86rem;
 }
 
+/* Gold accent on Refine/expand toggle */
 .bl-plan-customize-toggle {
   display: inline-flex;
   align-items: center;
@@ -869,7 +935,7 @@
 }
 
 .bl-plan-customize-toggle:hover {
-  border-color: var(--plum);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
   color: var(--ink);
 }
 
@@ -952,8 +1018,9 @@
   gap: 0.5rem;
 }
 
+/* Gold accent on saved heading icon */
 .bl-plan-saved-heading svg {
-  color: var(--plum-deep);
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -961,7 +1028,7 @@
   border: 1px solid var(--line);
   border-radius: 9999px;
   background: var(--color-surface);
-  color: var(--plum-deep);
+  color: var(--gold);
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.68rem;
   font-weight: 700;
@@ -980,14 +1047,16 @@
   background: color-mix(in srgb, var(--mist) 22%, var(--color-surface));
 }
 
+/* Gold accent on empty-state icon mark */
 .bl-plan-save-icon-mark {
   width: 52px;
   height: 52px;
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--mist) 60%, var(--color-surface));
-  color: var(--plum);
+  background: color-mix(in srgb, var(--gold) 12%, var(--color-surface));
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -1091,10 +1160,10 @@
   flex-wrap: wrap;
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--mist) 64%, var(--color-surface)),
+    color-mix(in srgb, var(--gold) 10%, color-mix(in srgb, var(--mist) 64%, var(--color-surface))),
     color-mix(in srgb, var(--color-surface) 86%, var(--mist))
   );
-  border: 1px solid var(--line);
+  border: 1px solid var(--gold-border);
 }
 
 .bl-plan-cta-copy {
@@ -1105,8 +1174,9 @@
   min-width: 14rem;
 }
 
+/* Gold spark in CTA */
 .bl-plan-cta-spark {
-  color: var(--plum);
+  color: var(--gold);
   margin-top: 0.2rem;
   flex-shrink: 0;
   font-size: 1.1rem;
@@ -1308,9 +1378,10 @@
 /* Hierarchy: page bg (#0f0920) < section (#18112c) < card (#221740) < active */
 [data-theme="dark"] .bl-plan-hero {
   background: linear-gradient(150deg,
-    color-mix(in srgb, var(--mist) 55%, var(--color-card)) 0%,
+    color-mix(in srgb, var(--gold) 6%, color-mix(in srgb, var(--mist) 55%, var(--color-card))) 0%,
     var(--color-card) 100%
   );
+  border-color: color-mix(in srgb, var(--gold) 22%, var(--line));
 }
 
 /* Bare sections (vibe picker, plan route) stay transparent — their child
@@ -1323,12 +1394,37 @@
   background: var(--color-card);      /* elevated card layer */
 }
 
+/* Dark selected vibe: deep purple + gold tint and border */
 [data-theme="dark"] .bl-plan-vibe.is-active {
-  background: linear-gradient(160deg, var(--plum-deep), color-mix(in srgb, var(--plum-deep) 78%, #000));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--gold) 10%, #1c1138),
+    #1c1138 80%
+  );
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 28%, transparent),
+              0 18px 38px -20px color-mix(in srgb, var(--gold) 40%, transparent);
 }
 
 [data-theme="dark"] .bl-plan-card {
   background: var(--color-card);      /* elevated card layer */
+}
+
+/* Dark locked card — gold border */
+[data-theme="dark"] .bl-plan-card.is-locked {
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--gold) 40%, transparent), var(--shadow-card);
+}
+
+/* Dark lock btn locked: gold */
+[data-theme="dark"] .bl-plan-lock-btn.is-locked {
+  background: var(--gold);
+  color: #1f1326;
+}
+
+/* Dark stop num: ensure bg ring against dark page */
+[data-theme="dark"] .bl-plan-stop-num {
+  box-shadow: 0 0 0 4px var(--bg);
 }
 
 [data-theme="dark"] .bl-plan-assure {
@@ -1349,15 +1445,12 @@
 
 [data-theme="dark"] .bl-plan-cta {
   background: linear-gradient(135deg,
-    color-mix(in srgb, var(--mist) 45%, var(--color-card)),
+    color-mix(in srgb, var(--gold) 8%, color-mix(in srgb, var(--mist) 45%, var(--color-card))),
     var(--color-card)
   );
+  border-color: color-mix(in srgb, var(--gold) 22%, var(--line));
 }
 
 [data-theme="dark"] .bl-plan-mobile-share {
   background: color-mix(in srgb, var(--color-surface) 94%, transparent);
-}
-
-[data-theme="dark"] .bl-plan-stop-num {
-  box-shadow: 0 0 0 4px var(--bg);
 }
