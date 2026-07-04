@@ -224,6 +224,7 @@
   min-height: 384px;
   display: flex;
   align-items: center;
+  overflow: clip; /* prevent peek stack from triggering horizontal scroll; clip does not create a scroll container */
 }
 .blg-hero-route {
   position: absolute;
@@ -528,10 +529,10 @@
 .blg-mood { margin-top: 2.6rem; }
 .blg-mood-outer { position: relative; }
 
-/* 6-column: editor pick (1.1×) + 5 guide cards */
+/* flex row: editor pick (flex 1.1) + N guide cards — adapts to item count */
 .blg-mood-row {
-  display: grid;
-  grid-template-columns: 1.1fr repeat(5, 1fr);
+  display: flex;
+  align-items: stretch;
   gap: 1.4rem;
   min-height: 370px;
   overflow: visible;
@@ -549,6 +550,9 @@
   flex-direction: column;
   justify-content: flex-end;
   text-decoration: none;
+  flex: 1.1 1 0; /* slightly wider than a regular card when used in flex row */
+  min-width: 0;
+  max-width: 460px; /* allows natural 443px at 1720px with 3 regular cards; caps to 460px with 1–2 filtered cards */
   transition: transform 300ms var(--ease-blg), box-shadow 300ms var(--ease-blg), border-color 300ms var(--ease-blg);
 }
 .blg-editor:hover {
@@ -624,6 +628,9 @@
   border: 1px solid var(--line);
   box-shadow: var(--shadow-card);
   text-decoration: none;
+  flex: 1 1 0; /* equal share of remaining space in flex row */
+  min-width: 0;
+  max-width: 420px; /* allows natural 403px at 1720px with 3 regular cards; caps to 420px with 1–2 filtered cards */
   transition: transform 280ms var(--ease-blg), box-shadow 280ms var(--ease-blg), border-color 280ms var(--ease-blg);
 }
 .blg-gcard:hover {
@@ -934,7 +941,7 @@
     color-mix(in srgb, var(--plum) 14%, var(--blg-panel)) 70%,
     var(--blg-panel)
   );
-  padding: 2.4rem 2.6rem;
+  padding: 2.4rem max(2.6rem, calc(50% - 380px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -984,7 +991,7 @@
 @media (max-width: 1180px) {
   .blg-hero { grid-template-columns: 1fr; gap: 1.6rem; }
   .blg-hero-right { min-height: 360px; }
-  .blg-mood-row { grid-template-columns: 1.1fr repeat(3, 1fr); }
+  .blg-mood-row { display: grid; grid-template-columns: 1.1fr repeat(3, 1fr); }
   .blg-mood-row .blg-gcard:nth-child(n+5) { display: none; }
 }
 @media (max-width: 860px) {
