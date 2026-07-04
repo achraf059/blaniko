@@ -39,7 +39,7 @@
 
 /* ── Centred content column ────────────────────────────────────────────────── */
 .blm-main {
-  width: min(1280px, 94vw);
+  width: min(1720px, 95vw);
   margin: 0 auto;
   padding: 1.6rem 0 4.5rem;
 }
