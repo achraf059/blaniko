@@ -189,7 +189,7 @@ export const editorialCollections: EditorialCollection[] = [
       areaIncludes: ["ain diab", "marina"],
       maxItems: 6,
     },
-    image: "/homepage/hero/hero-rooftop-sundowner.webp",
+    image: "/picks-images/slow-morning-corniche/pick-slow-morning-corniche-01.webp",
     badge: { label: "Sunset", mood: "sunset" },
     badgeFr: { label: "Coucher de soleil" },
     time: "1–2h",
