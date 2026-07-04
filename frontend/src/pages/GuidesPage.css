@@ -8,6 +8,12 @@
 .bl-guides-page {
   min-height: 100dvh;
 
+  /* Full-viewport background — prevents a different-shade gutter beside .blg-main */
+  background:
+    radial-gradient(1200px 620px at 86% -10%, var(--blg-glow), transparent 60%),
+    radial-gradient(960px 560px at -8% 6%, color-mix(in srgb, var(--mist) 72%, transparent), transparent 56%);
+  background-attachment: fixed;
+
   /* Dark-mode local tokens */
   --blg-panel: var(--surface);
   --blg-card: var(--color-card, var(--surface));
@@ -45,12 +51,8 @@
   --blg-b-friends: oklch(0.52 0.15 300);
 }
 
-/* ── Page background (radial glow) ──────────────────────────────── */
+/* ── Content container (background lives on .bl-guides-page) ────── */
 .blg-main {
-  background:
-    radial-gradient(1200px 620px at 86% -10%, var(--blg-glow), transparent 60%),
-    radial-gradient(960px 560px at -8% 6%, color-mix(in srgb, var(--mist) 72%, transparent), transparent 56%);
-  background-attachment: fixed;
   width: min(1720px, 95vw);
   margin: 0 auto;
   padding-bottom: 5rem;
@@ -112,7 +114,7 @@
   align-items: center;
   padding: 1.4rem 0 0.4rem;
 }
-.blg-hero-left { min-width: 0; }
+.blg-hero-left { min-width: 0; padding-inline-start: 1.5rem; }
 
 .blg-hero-title {
   margin: 0.9rem 0 0;
@@ -1010,6 +1012,7 @@
 @media (max-width: 560px) {
   .blg-main { width: 100%; padding: 0 0 4rem; }
   .blg-hero { padding: 1rem 1.1rem 0; }
+  .blg-hero-left { padding-inline-start: 0; }
   .blg-filters { padding: 0 1.1rem; }
   .blg-mood, .blg-strips, .blg-how, .blg-plan { padding: 0 1.1rem; }
   .blg-mood-outer { padding-left: 1.1rem; }
