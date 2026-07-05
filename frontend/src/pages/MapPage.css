@@ -5,6 +5,12 @@
 
 /* ── Root page wrapper ─────────────────────────────────────────────────────── */
 .bl-map-page {
+  /* gold accent — matches Category / Guides / Plan palette */
+  --gold:        var(--accent);
+  --gold-soft:   color-mix(in srgb, var(--accent) 70%, transparent);
+  --gold-border: color-mix(in srgb, var(--accent) 35%, var(--line));
+  --gold-shadow: color-mix(in srgb, var(--accent) 65%, transparent);
+
   min-height: 100vh;
   min-height: 100dvh;
   background: transparent;
@@ -13,13 +19,18 @@
   background: var(--bg);
 }
 
+/* Light-mode: softer gold borders keep sufficient contrast on white surfaces */
+[data-theme="light"] .bl-map-page {
+  --gold-border: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
 /* ── Dark mode: component elevation hierarchy ── */
 /* page bg (#0f0920) < discovery panel (#18112c) < cards/mapcard (#221740) */
 [data-theme="dark"] .blm-discovery {
   background:
     radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--mist) 38%, transparent), transparent 55%),
     linear-gradient(180deg, color-mix(in srgb, var(--mist) 20%, var(--color-surface)), var(--color-surface));
-  border-color: var(--line);
+  border-color: var(--gold-border);
 }
 [data-theme="dark"] .blm-mapcard,
 [data-theme="dark"] .blm-preview,
@@ -28,7 +39,8 @@
 }
 [data-theme="dark"] .blm-vcard.is-active {
   background: color-mix(in srgb, var(--mist) 28%, var(--color-card));
-  border-color: var(--plum);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 22%, transparent), var(--shadow-card-hover);
 }
 [data-theme="dark"] .blm-morebtn,
 [data-theme="dark"] .blm-sort,
@@ -48,7 +60,7 @@
    GEOGRAPHIC DISCOVERY PANEL  (compact, two-column)
    ============================================================ */
 .blm-discovery {
-  border: 1px solid var(--line);
+  border: 1px solid var(--gold-border);
   border-radius: 26px;
   background:
     radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--mist) 60%, transparent), transparent 55%),
@@ -69,7 +81,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: var(--gold);
 }
 
 .blm-intro-title {
@@ -106,7 +118,7 @@
   color: var(--ink-soft);
 }
 .blm-intro-tip svg {
-  color: var(--plum);
+  color: var(--gold);
   flex-shrink: 0;
   margin-top: 1px;
   opacity: 0.7;
@@ -157,16 +169,16 @@
   cursor: pointer;
   transition: border-color 160ms var(--ease), color 160ms var(--ease), background 160ms var(--ease);
 }
-.blm-morebtn:hover { border-color: var(--plum); color: var(--plum-deep); }
+.blm-morebtn:hover { border-color: color-mix(in srgb, var(--gold) 55%, transparent); color: var(--ink); }
 .blm-morebtn.is-open,
 .blm-morebtn.has-active {
-  background: color-mix(in srgb, var(--plum) 12%, var(--surface));
-  border-color: var(--plum);
-  color: var(--plum-deep);
+  background: color-mix(in srgb, var(--gold) 10%, var(--surface));
+  border-color: color-mix(in srgb, var(--gold) 50%, transparent);
+  color: var(--ink);
 }
 .blm-morebtn .blm-chevron { transition: transform 200ms var(--ease); }
 .blm-morebtn.is-open .blm-chevron { transform: rotate(90deg); }
-.blm-adv-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--plum); }
+.blm-adv-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--gold); }
 
 /* Clear-all link */
 .blm-clear {
@@ -178,7 +190,7 @@
   padding: 0.4rem 0.2rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--plum-deep);
+  color: var(--gold);
   cursor: pointer;
   transition: color 160ms var(--ease);
 }
@@ -198,6 +210,73 @@
 @keyframes blmAdvIn {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scoped chip / search-button gold overrides ───────────────────────────── */
+/* Overrides global SearchPage.css chip styles inside the Map discovery panel. */
+/* Scoping under .blm-discovery keeps these isolated from SearchPage.          */
+
+.blm-discovery .bl-discovery-chip:hover {
+  border-color: color-mix(in srgb, var(--gold) 50%, var(--line));
+  color: var(--ink);
+  background: color-mix(in srgb, var(--gold) 6%, var(--surface));
+}
+.blm-discovery .bl-discovery-chip.is-selected {
+  background: color-mix(in srgb, var(--gold) 12%, #1c1138);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  color: var(--gold);
+}
+.blm-discovery .bl-discovery-chip:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent);
+}
+
+.blm-discovery .bl-discovery-budget-item:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+}
+.blm-discovery .bl-discovery-budget-item.is-selected {
+  background: color-mix(in srgb, var(--gold) 12%, #1c1138);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  color: var(--gold);
+}
+
+/* Search button → gold gradient, dark readable text */
+.blm-discovery .bl-discovery-search-button {
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    color-mix(in srgb, var(--gold) 72%, var(--plum-deep))
+  );
+  color: #1f1326;
+  box-shadow: 0 8px 22px -10px var(--gold-shadow);
+  transition: filter 200ms var(--ease), transform 200ms var(--ease), box-shadow 200ms var(--ease);
+}
+.blm-discovery .bl-discovery-search-button:hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px -10px var(--gold-shadow);
+}
+
+/* Override dark-mode global chip treatment (higher specificity: attribute + 2 classes) */
+[data-theme="dark"] .blm-discovery .bl-discovery-chip.is-selected {
+  background: color-mix(in srgb, var(--gold) 10%, #1c1138);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  color: var(--gold);
+}
+[data-theme="dark"] .blm-discovery .bl-discovery-budget-item.is-selected {
+  background: color-mix(in srgb, var(--gold) 10%, #1c1138);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  color: var(--gold);
+}
+[data-theme="dark"] .blm-discovery .bl-discovery-search-button {
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    color-mix(in srgb, var(--gold) 72%, var(--plum-deep))
+  );
+  color: #1f1326;
 }
 
 /* ============================================================
@@ -235,9 +314,9 @@
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--plum-deep);
+  color: var(--ink-soft);
   background: color-mix(in srgb, var(--mist) 42%, var(--surface));
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-soft);
   border-radius: 999px;
   padding: 0.24rem 0.65rem;
   white-space: nowrap;
@@ -270,7 +349,7 @@
 /* ── Map centrepiece card ── */
 .blm-mapcard {
   position: relative;
-  border: 1px solid var(--line);
+  border: 1px solid var(--gold-border);
   border-radius: 24px;
   background: var(--surface);
   box-shadow: var(--shadow-card-hover);
@@ -314,8 +393,8 @@
   cursor: pointer;
   transition: border-color 160ms var(--ease), transform 160ms var(--ease);
 }
-.blm-map-float:hover { border-color: var(--plum); transform: translateY(-1px); }
-.blm-map-float svg { color: var(--plum); }
+.blm-map-float:hover { border-color: color-mix(in srgb, var(--gold) 55%, transparent); transform: translateY(-1px); }
+.blm-map-float svg { color: var(--gold); }
 
 /* Empty state when 0 venues match filters */
 .blm-map-empty {
@@ -355,7 +434,7 @@
   justify-content: center;
   background: var(--surface);
   border: 1px solid var(--line);
-  color: var(--plum);
+  color: var(--gold);
   box-shadow: var(--shadow-card);
   margin-bottom: 0.2rem;
 }
@@ -415,8 +494,8 @@
   align-items: center;
   justify-content: center;
   background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--plum);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
   box-shadow: var(--shadow-card);
   margin-bottom: 0.1rem;
   flex-shrink: 0;
@@ -444,7 +523,7 @@
   color: var(--ink-soft);
   font-size: 0.85rem;
 }
-.blm-list-loading svg { color: var(--plum); }
+.blm-list-loading svg { color: var(--gold); }
 
 /* ============================================================
    SELECTED VENUE PREVIEW  (mini card below map)
@@ -455,7 +534,7 @@
   grid-template-columns: 132px 1fr auto;
   gap: 1.1rem;
   align-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid var(--gold-border);
   border-radius: 20px;
   background: var(--surface);
   box-shadow: var(--shadow-card);
@@ -488,7 +567,7 @@
   z-index: 3;
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--plum-deep) 82%, transparent);
+  background: color-mix(in srgb, var(--gold) 72%, #000);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   font-family: var(--font-mono);
@@ -496,7 +575,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #fff;
+  color: #1f1326;
 }
 
 .blm-preview-body { min-width: 0; }
@@ -507,7 +586,7 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: var(--ink-soft);
 }
 .blm-preview-name {
   margin: 0.28rem 0 0;
@@ -526,7 +605,7 @@
   font-size: 0.68rem;
   color: var(--ink-soft);
 }
-.blm-preview-area svg { color: var(--plum); }
+.blm-preview-area svg { color: var(--ink-soft); }
 .blm-preview-desc {
   margin: 0.55rem 0 0;
   font-size: 0.85rem;
@@ -551,7 +630,7 @@
   align-items: stretch;
 }
 
-/* Primary CTA — dark fill */
+/* Primary CTA — gold gradient */
 .blm-cta {
   display: inline-flex;
   align-items: center;
@@ -560,16 +639,17 @@
   padding: 0.65rem 1.15rem;
   border-radius: 999px;
   border: none;
-  background: var(--ink);
-  color: var(--cream);
+  background: linear-gradient(135deg, var(--gold), color-mix(in srgb, var(--gold) 72%, var(--plum-deep)));
+  color: #1f1326;
   font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  transition: background 200ms var(--ease), transform 200ms var(--ease);
+  box-shadow: 0 8px 22px -10px var(--gold-shadow);
+  transition: filter 200ms var(--ease), transform 200ms var(--ease), box-shadow 200ms var(--ease);
 }
-.blm-cta:hover { background: var(--plum-deep); transform: translateY(-1px); }
+.blm-cta:hover { filter: brightness(0.92); transform: translateY(-1px); box-shadow: 0 12px 28px -10px var(--gold-shadow); }
 
 /* Secondary icon button — outlined */
 .blm-icon-btn {
@@ -588,10 +668,10 @@
   cursor: pointer;
   transition: border-color 160ms var(--ease), color 160ms var(--ease);
 }
-.blm-icon-btn:hover { border-color: var(--plum); color: var(--plum-deep); }
+.blm-icon-btn:hover { border-color: color-mix(in srgb, var(--gold) 55%, transparent); color: var(--ink); }
 .blm-icon-btn.is-active {
-  border-color: var(--plum);
-  background: color-mix(in srgb, var(--plum) 12%, var(--surface));
+  border-color: var(--terracotta);
+  background: color-mix(in srgb, var(--terracotta) 12%, var(--surface));
   color: var(--terracotta);
 }
 
@@ -650,12 +730,12 @@
 }
 .blm-vcard:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--plum) 36%, var(--line));
+  border-color: color-mix(in srgb, var(--gold) 36%, var(--line));
   box-shadow: var(--shadow-card-hover);
 }
 .blm-vcard.is-active {
-  border-color: var(--plum);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--plum) 30%, transparent), var(--shadow-card-hover);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 28%, transparent), var(--shadow-card-hover);
   background: color-mix(in srgb, var(--mist) 22%, var(--surface));
 }
 
@@ -685,7 +765,7 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: var(--ink-soft);
 }
 .blm-vsel {
   display: inline-flex;
@@ -696,9 +776,9 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--plum-deep);
-  background: color-mix(in srgb, var(--plum) 14%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--plum) 32%, var(--line));
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--gold) 28%, var(--line));
   border-radius: 999px;
   padding: 0.14rem 0.45rem;
 }
@@ -720,7 +800,7 @@
   font-size: 0.65rem;
   color: var(--ink-soft);
 }
-.blm-varea svg { color: var(--plum); flex-shrink: 0; }
+.blm-varea svg { color: var(--ink-soft); flex-shrink: 0; }
 .blm-vtags {
   margin-top: 0.5rem;
   display: flex;
@@ -747,12 +827,12 @@
   padding: 0.1rem;
   font-size: 0.74rem;
   font-weight: 600;
-  color: var(--plum-deep);
+  color: var(--ink-soft);
   cursor: pointer;
-  transition: gap 180ms var(--ease);
+  transition: gap 180ms var(--ease), color 160ms var(--ease);
 }
-.blm-vshow:hover { gap: 0.5rem; }
-.blm-vshow svg { color: var(--plum); }
+.blm-vshow:hover { gap: 0.5rem; color: var(--ink); }
+.blm-vshow svg { color: var(--ink-soft); }
 
 .blm-vfav {
   width: 2rem;
@@ -771,7 +851,7 @@
     border-color 160ms var(--ease),
     background 160ms var(--ease);
 }
-.blm-vfav:hover { border-color: var(--plum); color: var(--terracotta); }
+.blm-vfav:hover { border-color: color-mix(in srgb, var(--gold) 50%, transparent); color: var(--terracotta); }
 .blm-vfav.is-active {
   border-color: var(--terracotta);
   background: color-mix(in srgb, var(--terracotta) 12%, var(--surface));
@@ -788,7 +868,7 @@
   text-decoration: none;
   transition: color 160ms var(--ease), gap 180ms var(--ease);
 }
-.blm-vlink:hover { color: var(--plum-deep); gap: 0.45rem; }
+.blm-vlink:hover { color: var(--ink); gap: 0.45rem; }
 
 /* ── Small tag/badge pill ── */
 .blm-tag {
@@ -802,7 +882,7 @@
   font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: var(--plum-deep);
+  color: var(--ink-soft);
   white-space: nowrap;
 }
 
