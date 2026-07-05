@@ -50,9 +50,9 @@
   justify-content: space-between;
   gap: 2rem;
   width: 100%;
-  max-width: min(1360px, 92vw);
+  max-width: min(1480px, 94vw);
   min-height: 4.5rem;
-  padding: 0.75rem 0;
+  padding: 1.375rem 0;
   box-sizing: border-box;
 }
 
@@ -72,7 +72,7 @@
 .bl-global-nav-links {
   display: none;
   align-items: center;
-  gap: 1.75rem;
+  gap: 2.375rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -80,14 +80,14 @@
 
 .bl-global-nav-link {
   text-decoration: none;
-  color: var(--ink-soft);
-  font-size: 0.875rem;
+  color: #fff;
+  font-size: 0.9375rem;
   font-weight: 500;
   transition: color 200ms var(--ease);
 }
 
 .bl-global-nav-link:hover {
-  color: var(--ink);
+  color: #fff;
 }
 
 .bl-global-nav-link-admin {
@@ -108,10 +108,10 @@
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--surface);
-  padding: 0.45rem 1rem;
-  font-size: 0.8rem;
+  padding: 6px 14px;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: #fff;
   white-space: nowrap;
   transition:
     background-color 200ms var(--ease),
@@ -122,20 +122,21 @@
 .bl-global-nav-saved-pill:hover {
   background: color-mix(in srgb, var(--mist) 40%, var(--surface));
   border-color: color-mix(in srgb, var(--plum) 30%, var(--line));
-  color: var(--ink);
+  color: #fff;
 }
 
 .bl-global-nav-auth-pill {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   text-decoration: none;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--surface);
-  padding: 0.45rem 1rem;
-  font-size: 0.8rem;
+  padding: 5px 12px;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: #fff;
   white-space: nowrap;
   transition:
     background-color 200ms var(--ease),
@@ -146,14 +147,24 @@
 /* "Sign in" variant — subtle plum tint to read as a soft CTA */
 .bl-global-nav-auth-pill.is-guest {
   border-color: color-mix(in srgb, var(--plum) 35%, var(--line));
-  color: var(--plum-deep);
+  color: #fff;
 }
 
 .bl-global-nav-auth-pill:hover,
 .bl-global-nav-auth-pill.is-guest:hover {
   background: color-mix(in srgb, var(--plum) 8%, var(--surface));
   border-color: var(--plum);
-  color: var(--plum-deep);
+  color: #fff;
+}
+
+/* ── Language-switcher text — white inside nav context ─────── */
+/* Overrides LanguageSwitcher.css which uses --color-muted / --color-primary-dark */
+.bl-global-nav .bl-language-switcher-btn {
+  color: #fff;
+  padding: 4px 8px;
+}
+.bl-global-nav .bl-language-switcher-btn.is-active {
+  color: #fff;
 }
 
 /* ── Hamburger button ───────────────────────────────────────── */
@@ -165,8 +176,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 0.5rem;
   border: 1px solid var(--line);
   background: transparent;
@@ -230,7 +241,7 @@
   margin: 0.35rem 0.6rem;
 }
 
-/* Mobile-only section inside hamburger (top links hidden from bar at <1024px) */
+/* Mobile-only section inside hamburger (top links hidden from bar at <1080px) */
 .bl-global-nav-menu-mobile-nav {
   display: block;
 }
@@ -268,8 +279,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   border: 1px solid var(--line);
   background: transparent;
@@ -310,9 +321,30 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1080px) {
+  /* 3-column grid mirrors the homepage shell layout:
+     [logo 1fr] [center links auto] [actions 1fr]
+     minmax(0, 1fr) lets the side columns collapse so actions
+     never clip the center links at mid-width desktops. */
+  .bl-global-nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .bl-global-nav-brand {
+    justify-self: start;
+    min-width: 0;
+  }
+
   .bl-global-nav-links {
     display: inline-flex;
+    justify-self: center;
+  }
+
+  .bl-global-nav-actions {
+    justify-self: end;
+    min-width: 0;
   }
 
   /* Desktop: top links visible in bar — hide them from inside the hamburger */
