@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { useI18n } from "../../i18n/useI18n";
 import { useTheme } from "../../hooks/useTheme";
 import { useAuth } from "../../auth/useAuth";
@@ -70,27 +70,41 @@ export function GlobalNav({ labels }: GlobalNavProps) {
           <img src="/brand/blaniko-wordmark.png" alt="Blaniko" className="bl-global-nav-wordmark" />
         </Link>
 
-        {/* Desktop nav links — hidden below 1024px */}
+        {/* Desktop nav links — hidden below 1080px */}
         <ul className="bl-global-nav-links">
           <li>
-            <Link to="/categories/activities" className="bl-global-nav-link">
+            <NavLink
+              to="/categories"
+              end={false}
+              className={({ isActive }) => `bl-global-nav-link${isActive ? " is-active" : ""}`}
+            >
               {homeNav.navCategories}
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link to="/guides" className="bl-global-nav-link">
+            <NavLink
+              to="/guides"
+              end={false}
+              className={({ isActive }) => `bl-global-nav-link${isActive ? " is-active" : ""}`}
+            >
               {homeNav.navGuides}
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link to="/plan" className="bl-global-nav-link">
+            <NavLink
+              to="/plan"
+              className={({ isActive }) => `bl-global-nav-link${isActive ? " is-active" : ""}`}
+            >
               {homeNav.navPlan}
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link to="/map" className="bl-global-nav-link">
+            <NavLink
+              to="/map"
+              className={({ isActive }) => `bl-global-nav-link${isActive ? " is-active" : ""}`}
+            >
               {homeNav.navMap}
-            </Link>
+            </NavLink>
           </li>
         </ul>
 
@@ -164,12 +178,9 @@ export function GlobalNav({ labels }: GlobalNavProps) {
 
             {menuOpen && (
               <div className="bl-global-nav-menu-panel">
-                <Link to="/search" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navSearch}</Link>
-
                 {/* Mobile-only: top links hidden from bar at <1024px */}
                 <div className="bl-global-nav-menu-mobile-nav">
-                  <div className="bl-global-nav-menu-divider" />
-                  <Link to="/categories/activities" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navCategories}</Link>
+                  <Link to="/categories" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navCategories}</Link>
                   <Link to="/guides" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navGuides}</Link>
                   <Link to="/plan" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navPlan}</Link>
                   <Link to="/map" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navMap}</Link>

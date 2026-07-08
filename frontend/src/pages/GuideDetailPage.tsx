@@ -266,7 +266,7 @@ export default function GuideDetailPage() {
               <Link to="/guides" className="blg-btn-ghost">
                 {text.guideDetailPage.backToGuides}
               </Link>
-              <Link to="/search" className="blg-btn-ghost">
+              <Link to="/categories" className="blg-btn-ghost">
                 {text.guideDetailPage.exploreVenues}
               </Link>
             </div>
@@ -334,7 +334,7 @@ export default function GuideDetailPage() {
           <aside className="blg-rail blg-reveal">
             <p className="blg-rail-h">{text.guideDetailPage.nextLabel}</p>
             <Link
-              to={display.cta?.href ?? "/search"}
+              to={display.cta?.href ?? "/categories"}
               className="blg-rail-btn primary"
             >
               <IconCompass /> {text.guideDetailPage.openVenues}
@@ -362,7 +362,7 @@ export default function GuideDetailPage() {
               <p style={{ color: "var(--ink-soft)", margin: "0 0 1rem" }}>
                 {text.guideDetailPage.noVenuesDescription}
               </p>
-              <Link to="/search" className="blg-btn-ghost" style={{ display: "inline-flex" }}>
+              <Link to="/categories" className="blg-btn-ghost" style={{ display: "inline-flex" }}>
                 {text.guideDetailPage.openSearch}
               </Link>
             </div>

@@ -78,7 +78,7 @@ export const editorialCollections: EditorialCollection[] = [
     moods: ["date", "outdoor", "sunset"],
     cta: {
       label: "Browse date-friendly ideas",
-      href: "/search?bestFor=date-spot",
+      href: "/categories?bestFor=date-spot",
     },
     translations: {
       fr: {
@@ -120,7 +120,7 @@ export const editorialCollections: EditorialCollection[] = [
     moods: ["budget", "outdoor", "friends", "weekend"],
     cta: {
       label: "Search low-budget ideas",
-      href: "/search?budget=low",
+      href: "/categories",
     },
     translations: {
       fr: {
@@ -160,7 +160,7 @@ export const editorialCollections: EditorialCollection[] = [
     moods: ["indoor", "friends", "weekend"],
     cta: {
       label: "Browse indoor picks",
-      href: "/search?category=activities",
+      href: "/categories/activities",
     },
     translations: {
       fr: {
@@ -198,7 +198,7 @@ export const editorialCollections: EditorialCollection[] = [
     moods: ["sunset", "outdoor", "date"],
     cta: {
       label: "Browse sunset ideas",
-      href: "/search?bestFor=sunset-spot",
+      href: "/categories?bestFor=sunset-spot",
     },
     translations: {
       fr: {
@@ -236,7 +236,7 @@ export const editorialCollections: EditorialCollection[] = [
     moods: ["friends", "indoor", "weekend"],
     cta: {
       label: "Browse group ideas",
-      href: "/search?bestFor=friends",
+      href: "/categories?bestFor=friends",
     },
     translations: {
       fr: {

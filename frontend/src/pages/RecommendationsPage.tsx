@@ -358,22 +358,13 @@ export default function RecommendationsPage() {
   };
 
   const browseAllResults = () => {
-    const params = new URLSearchParams();
-
+    // Route to the appropriate category page or the unified /categories page.
+    // mood and budget have no direct equivalent on CategoryPage; they are dropped.
     if (answers.category) {
-      params.set("category", answers.category);
+      navigate(`/categories/${answers.category}`);
+      return;
     }
-
-    if (answers.vibe) {
-      params.set("mood", answers.vibe);
-    }
-
-    if (answers.budget && answers.budget !== "all") {
-      params.set("budget", answers.budget);
-    }
-
-    const suffix = params.toString();
-    navigate(suffix ? `/search?${suffix}` : "/search");
+    navigate("/categories");
   };
 
   const browseMapResults = () => {

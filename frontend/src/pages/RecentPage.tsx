@@ -72,7 +72,7 @@ export default function RecentPage() {
             <h2>{text.recentPage.emptyTitle}</h2>
             <p>{text.recentPage.emptyDescription}</p>
             <div className="bl-recent-empty-actions">
-              <Link to="/search">{text.recentPage.goSearch}</Link>
+              <Link to="/categories">{text.recentPage.goSearch}</Link>
               <Link to="/guides">{text.recentPage.browseGuides}</Link>
               <Link to="/plan">{text.recentPage.planOuting}</Link>
             </div>

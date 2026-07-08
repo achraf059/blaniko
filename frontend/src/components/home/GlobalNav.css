@@ -79,6 +79,7 @@
 }
 
 .bl-global-nav-link {
+  position: relative;
   text-decoration: none;
   color: #fff;
   font-size: 0.9375rem;
@@ -88,6 +89,32 @@
 
 .bl-global-nav-link:hover {
   color: #fff;
+}
+
+/* Gold underline beneath the active nav link */
+.bl-global-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 180ms var(--ease);
+  pointer-events: none;
+}
+
+.bl-global-nav-link.is-active::after {
+  width: 100%;
+}
+
+/* Keyboard focus ring — preserved above the underline layer */
+.bl-global-nav-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .bl-global-nav-link-admin {
