@@ -1217,7 +1217,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: color-mix(in srgb, var(--accent) 70%, transparent); /* muted gold — was var(--plum) */
   margin-bottom: 16px;
 }
 .ed-card h3 {
@@ -1229,7 +1229,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--ink);
   margin: 0;
 }
-.ed-card h3 em { font-style: italic; color: var(--plum); font-variation-settings: "SOFT" 100, "WONK" 1; }
+.ed-card h3 em { font-style: italic; color: var(--accent); font-variation-settings: "SOFT" 100, "WONK" 1; } /* "without the planning." — was var(--plum) */
 .ed-card p {
   margin-top: 14px;
   color: var(--ink-soft);
@@ -1248,7 +1248,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); /* subtle gold border — was var(--line) */
   background: color-mix(in srgb, var(--surface) 82%, var(--mist) 18%);
   font-family: var(--font-mono);
   font-size: 10px;
@@ -1264,8 +1264,8 @@ a { color: inherit; text-decoration: none; }
   gap: 8px;
   padding: 10px 22px;
   border-radius: 999px;
-  background: var(--plum);
-  color: #fff;
+  background: var(--accent); /* Blaniko gold — was var(--plum) */
+  color: #3A2566; /* dark purple for contrast on gold — was #fff */
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -1275,7 +1275,7 @@ a { color: inherit; text-decoration: none; }
   transition: background 200ms var(--ease), gap 200ms var(--ease);
 }
 .ed-card .ed-cta:hover {
-  background: var(--plum-deep);
+  background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); /* slightly darker gold hover */
   gap: 12px;
 }
 
@@ -1325,6 +1325,15 @@ a { color: inherit; text-decoration: none; }
 }
 /* "picks" in Curated heading */
 .curated .section-head h2 em { color: var(--accent); }
+
+/* ── About section: gold eyebrow + "We help you find it." emphasis ─── */
+.about-section .section-head .eyebrow {
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.about-section .section-head .eyebrow::before {
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
+}
+.about-section .section-head h2 em { color: var(--accent); }
 
 .section-head h2 {
   font-family: var(--font-display);
@@ -1658,7 +1667,7 @@ a { color: inherit; text-decoration: none; }
 }
 .footer-cta h3 em {
   font-style: italic;
-  color: var(--heather);
+  color: var(--accent); /* Blaniko gold — was var(--heather) */
   font-variation-settings: "SOFT" 100, "WONK" 1;
 }
 .footer-cta-subtitle {
@@ -1678,8 +1687,8 @@ a { color: inherit; text-decoration: none; }
   transition: border-color 250ms var(--ease), box-shadow 250ms var(--ease);
 }
 .footer-cta .email:focus-within {
-  border-color: rgba(184, 164, 214, 0.6);
-  box-shadow: 0 0 0 3px rgba(184, 164, 214, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent); /* gold focus border — was heather */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); /* gold focus ring */
 }
 .footer-cta .email input {
   flex: 1;
@@ -1691,8 +1700,8 @@ a { color: inherit; text-decoration: none; }
 }
 .footer-cta .email input::placeholder { color: rgba(250, 247, 252, 0.45); }
 .footer-cta .email button {
-  background: var(--bg);
-  color: var(--plum-deep);
+  background: var(--accent); /* Blaniko gold — was var(--bg) */
+  color: #3A2566; /* dark purple for contrast on gold — was var(--plum-deep) */
   padding: 11px 22px;
   border-radius: 100px;
   font-weight: 600;
@@ -1701,7 +1710,7 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
   transition: background 200ms var(--ease), transform 200ms var(--ease);
 }
-.footer-cta .email button:hover { background: #fff; transform: translateY(-1px); }
+.footer-cta .email button:hover { background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); transform: translateY(-1px); }
 .footer-cta .email button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 .footer-cta .small-note {
   margin-top: 12px;
@@ -1713,6 +1722,9 @@ a { color: inherit; text-decoration: none; }
 .footer-cta .small-note.error {
   color: rgba(255, 175, 155, 0.92);
   font-weight: 500;
+}
+.footer-privacy-note-link:hover {
+  color: color-mix(in srgb, var(--accent) 80%, transparent); /* muted gold on hover only */
 }
 
 /* Success state */
@@ -1750,7 +1762,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-mono); letter-spacing: 0.04em;
 }
 .foot-links { display: flex; gap: 24px; }
-.foot-links a:hover { color: var(--ink); }
+.foot-links a:hover { color: color-mix(in srgb, var(--accent) 78%, transparent); } /* muted gold on hover — was var(--ink) */
 
 /* =========================================================
    REVEAL ON SCROLL
@@ -2168,7 +2180,7 @@ a { color: inherit; text-decoration: none; }
   color: #ede8ff;
 }
 [data-theme="dark"] .footer-cta h3 em {
-  color: #cba8f0;
+  color: var(--accent); /* gold — was #cba8f0 heather; footer panel always dark so --accent is readable */
 }
 [data-theme="dark"] .footer-cta .email input {
   color: #ede8ff;
