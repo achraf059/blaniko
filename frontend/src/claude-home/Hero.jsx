@@ -19,12 +19,12 @@ export const Hero = () => {
     { label: dictionary.claudeHome.heroTagTonight,  icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> },
   ];
   const tagLinks = {
-    [dictionary.claudeHome.heroTagWeekend]:  "/search",
-    [dictionary.claudeHome.heroTagOutdoor]:  "/search?category=outdoor",
-    [dictionary.claudeHome.heroTagUnder200]: "/search?budget=$",
-    [dictionary.claudeHome.heroTagDateNight]:"/search?bestFor=date-spot",
-    [dictionary.claudeHome.heroTagWithKids]: "/search?category=family",
-    [dictionary.claudeHome.heroTagTonight]:  "/search?mood=social",
+    [dictionary.claudeHome.heroTagWeekend]:  "/categories",
+    [dictionary.claudeHome.heroTagOutdoor]:  "/categories/outdoor",
+    [dictionary.claudeHome.heroTagUnder200]: "/categories",
+    [dictionary.claudeHome.heroTagDateNight]:"/categories?bestFor=date-spot",
+    [dictionary.claudeHome.heroTagWithKids]: "/categories/family",
+    [dictionary.claudeHome.heroTagTonight]:  "/categories",
   };
 
   const handleSearch = () => {
@@ -33,7 +33,7 @@ export const Hero = () => {
       params.set("q", query.trim());
     }
     const suffix = params.toString();
-    navigate(suffix ? `/search?${suffix}` : "/search");
+    navigate(suffix ? `/categories?${suffix}` : "/categories");
   };
   return (
     <section className="hero shell" id="hero">
@@ -82,7 +82,7 @@ export const Hero = () => {
 
       <div className="hero-tags reveal in" style={{ transitionDelay: "360ms" }}>
         {tags.map(({ label, icon }) => (
-          <button key={label} className="tag" onClick={() => navigate(tagLinks[label] ?? "/search")}>
+          <button key={label} className="tag" onClick={() => navigate(tagLinks[label] ?? "/categories")}>
             {icon}
             {label}
           </button>

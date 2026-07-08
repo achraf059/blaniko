@@ -80,7 +80,7 @@ export default function VenuePage() {
                   : from === "map"
                     ? withContext("/map")
                     : from === "search"
-                      ? withContext("/search")
+                      ? withContext("/categories")
                       : from === "recommendations"
                         ? withContext("/recommendations")
                         : from === "plan"

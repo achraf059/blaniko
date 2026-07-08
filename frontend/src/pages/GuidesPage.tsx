@@ -471,12 +471,12 @@ export default function GuidesPage() {
                     key={i}
                     type="button"
                     className="blg-trend-chip"
-                    onClick={() => navigate(`/search?q=${encodeURIComponent(chip)}`)}
+                    onClick={() => navigate(`/categories?q=${encodeURIComponent(chip)}`)}
                   >
                     {chip}
                   </button>
                 ))}
-                <Link to="/search" className="blg-trend-all">
+                <Link to="/categories" className="blg-trend-all">
                   {t.viewAllShort} <IconArrow />
                 </Link>
               </div>

@@ -61,7 +61,7 @@ export default function ComparePage() {
             <h2>{text.comparePage.emptyTitle}</h2>
             <p>{text.comparePage.emptyDescription}</p>
             <div className="bl-compare-empty-links">
-              <Link to="/search">{text.comparePage.goSearch}</Link>
+              <Link to="/categories">{text.comparePage.goSearch}</Link>
               <Link to="/favorites">{text.comparePage.openFavorites}</Link>
             </div>
           </section>

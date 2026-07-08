@@ -85,7 +85,7 @@ export default function CollectionsPage() {
             <h2>{text.collectionsPage.emptyTitle}</h2>
             <p>{text.collectionsPage.emptyDescription}</p>
             <div className="bl-collections-empty-links">
-              <Link to="/search">{text.collectionsPage.browseSearch}</Link>
+              <Link to="/categories">{text.collectionsPage.browseSearch}</Link>
               <Link to="/favorites">{text.collectionsPage.openFavorites}</Link>
             </div>
           </section>

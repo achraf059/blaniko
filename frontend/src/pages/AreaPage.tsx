@@ -125,7 +125,7 @@ export default function AreaPage() {
 
             <div className="bl-area-actions">
               <Link
-                to={`/search?q=${encodeURIComponent(area.name)}`}
+                to={`/categories?q=${encodeURIComponent(area.name)}`}
                 className="bl-area-action-link"
               >
                 {formatFlowText(text.areaPage.browsePlacesIn, { area: area.name })}

@@ -26,7 +26,7 @@ export default function NotFoundPage() {
             <Link to="/" className="bl-notfound-btn-primary">
               {dictionary.notFoundPage.backToHome}
             </Link>
-            <Link to="/search" className="bl-notfound-btn-secondary">
+            <Link to="/categories" className="bl-notfound-btn-secondary">
               {dictionary.notFoundPage.browseVenues}
             </Link>
           </div>

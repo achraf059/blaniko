@@ -31,6 +31,7 @@ import {
 import { getBestForBadges } from "../utils/venuePersonality";
 import { getVenueImageSrc } from "../utils/venueImage";
 import "./MapPage.css";
+import "./SearchPage.css"; // discovery component base styles (bl-discovery-*) used by the map panel
 
 type MappedVenue = Venue & {
   coordinates: {

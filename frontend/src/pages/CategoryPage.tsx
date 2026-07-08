@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useSearchParams } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import { VenueCard, VenueCardSkeleton } from "../components/home/VenueCard";
 import { categories, getVenueDisplay } from "../data/mockData";
@@ -309,6 +309,40 @@ function FilterControls({ f, set, clearAll, areas, goodForOptions, language, d, 
 }
 
 /* ============================================================
+   Category navigation tabs
+   ============================================================ */
+const NAV_CATEGORIES = ["activities", "sports", "gaming", "outdoor", "family"] as const;
+
+interface CategoryTabsProps {
+  activeSlug: string | undefined;
+  categoryNames: Record<string, string>;
+}
+
+function CategoryTabs({ activeSlug, categoryNames }: CategoryTabsProps) {
+  return (
+    <nav className="blc-cattabs" aria-label="Browse categories">
+      <Link
+        to="/categories"
+        className={`blc-cattab${!activeSlug ? " active" : ""}`}
+        aria-current={!activeSlug ? "page" : undefined}
+      >
+        {categoryNames["all"] ?? "All"}
+      </Link>
+      {NAV_CATEGORIES.map((slug) => (
+        <Link
+          key={slug}
+          to={`/categories/${slug}`}
+          className={`blc-cattab${activeSlug === slug ? " active" : ""}`}
+          aria-current={activeSlug === slug ? "page" : undefined}
+        >
+          {categoryNames[slug] ?? slug}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+/* ============================================================
    Main component
    ============================================================ */
 export default function CategoryPage() {
@@ -318,27 +352,48 @@ export default function CategoryPage() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const d = dictionary.categoryPage;
 
+  /** True when rendering /categories (no slug) — show all venues */
+  const isAllMode = slug === undefined;
+
+  /* ---- Read URL params to seed filter state (used by /search redirect) ---- */
+  const [searchParams] = useSearchParams();
+  const qFromUrl = searchParams.get("q") ?? "";
+  const areaFromUrl = searchParams.get("area") ?? "";
+  // Accept both ?goodFor= and ?bestFor= (bestFor is the SearchPage param name)
+  const goodForFromUrl = searchParams.get("goodFor") ?? searchParams.get("bestFor") ?? "all";
+  const timeFromUrl = searchParams.get("time") ?? "any";
+
   /* ---- All hooks must come before any conditional return ---- */
-  const [f, setF] = useState<FilterState>(EMPTY_FILTERS);
+  const [f, setF] = useState<FilterState>({
+    query: qFromUrl,
+    sort: "recommended",
+    area: areaFromUrl || "all",
+    goodFor: goodForFromUrl || "all",
+    time: timeFromUrl || "any",
+    subcat: "all",
+  });
   const [view, setView] = useState<"grid" | "list">("grid");
   const [drawer, setDrawer] = useState(false);
 
   const set = useCallback(<K extends keyof FilterState>(k: K, v: FilterState[K]) => {
     setF((prev) => ({ ...prev, [k]: v }));
   }, []);
-  const clearAll = useCallback(() => setF(EMPTY_FILTERS), []);
+  const clearAll = useCallback(() => setF({ ...EMPTY_FILTERS }), []);
 
   const category = categories.find((item) => item.slug === slug);
+  const heroKey = isAllMode ? "all" : (category?.slug ?? "");
   usePageMeta(
-    category
-      ? `${dictionary.categoryNames[category.slug] ?? category.name} in Casablanca | Blaniko`
-      : "Category | Blaniko",
-    category?.description,
+    isAllMode
+      ? `Discover Casablanca | Blaniko`
+      : category
+        ? `${dictionary.categoryNames[category.slug] ?? category.name} in Casablanca | Blaniko`
+        : "Category | Blaniko",
+    isAllMode ? undefined : category?.description,
   );
 
   const categoryVenues = useMemo(
-    () => venues.filter((v) => v.categorySlug === slug),
-    [venues, slug],
+    () => isAllMode ? venues : venues.filter((v) => v.categorySlug === slug),
+    [venues, slug, isAllMode],
   );
 
   const picks = useMemo(() => {
@@ -346,6 +401,9 @@ export default function CategoryPage() {
     // Falls back to all category venues if none have confirmed images.
     const withImages = categoryVenues.filter((v) => hasVenueImage(v));
     const pickPool = withImages.length > 0 ? withImages : categoryVenues;
+
+    // All-mode: take top 3 venues across all categories (image-prioritised)
+    if (isAllMode) return pickPool.slice(0, 3);
 
     // Activities: curate a diverse set — at most 1 pool/billiards, fill remaining
     // slots from other activity types so Top Picks feel varied.
@@ -373,7 +431,7 @@ export default function CategoryPage() {
     }
 
     return pickPool.slice(0, 3);
-  }, [categoryVenues, slug]);
+  }, [categoryVenues, slug, isAllMode]);
 
   const pickSlugs = useMemo(() => new Set(picks.map((v) => v.slug)), [picks]);
 
@@ -510,14 +568,14 @@ export default function CategoryPage() {
   }, [categoryVenues, slug]);
 
   const otherCategories = useMemo(
-    () => categories.filter((c) => c.slug !== slug),
-    [slug],
+    () => isAllMode ? [] : categories.filter((c) => c.slug !== slug),
+    [slug, isAllMode],
   );
 
   /* ---- Audience redirect map ---- */
   const audienceFilterRedirect: Record<string, { href: string; title: string; desc: string; cta: string }> = {
-    couples: { href: "/search?bestFor=date-spot", title: d.couplesRedirectTitle, desc: d.couplesRedirectDesc, cta: d.couplesCta },
-    friends: { href: "/search?bestFor=friends",   title: d.friendsRedirectTitle,  desc: d.friendsRedirectDesc,  cta: d.friendsCta  },
+    couples: { href: "/categories?bestFor=date-spot", title: d.couplesRedirectTitle, desc: d.couplesRedirectDesc, cta: d.couplesCta },
+    friends: { href: "/categories?bestFor=friends",   title: d.friendsRedirectTitle,  desc: d.friendsRedirectDesc,  cta: d.friendsCta  },
   };
 
   /* ---- Early returns (loading / error / not found) ---- */
@@ -555,14 +613,14 @@ export default function CategoryPage() {
     );
   }
 
-  if (!category) {
+  if (!isAllMode && !category) {
     return (
       <div className="bl-category-page">
         <HomeHeader labels={dictionary.header} />
         <div className="blc-shell">
           <div className="blc-main">
             <div className="bl-category-not-found">
-              <Link to="/" className="bl-category-back-link">← {d.backHome}</Link>
+              <Link to="/categories" className="bl-category-back-link">← {d.backHome}</Link>
               <h1 className="bl-category-not-found-title">{d.notFoundTitle}</h1>
               <p className="bl-category-not-found-description">{d.notFoundDescription}</p>
             </div>
@@ -572,8 +630,8 @@ export default function CategoryPage() {
     );
   }
 
-  /* ---- Empty / audience redirect state ---- */
-  if (categoryVenues.length === 0) {
+  /* ---- Empty / audience redirect state (category routes only) ---- */
+  if (!isAllMode && categoryVenues.length === 0) {
     const audienceRedirect = slug ? audienceFilterRedirect[slug] : undefined;
     return (
       <div className="bl-category-page">
@@ -595,11 +653,11 @@ export default function CategoryPage() {
                 <h2 className="bl-category-empty-title">{d.emptyComingSoonTitle}</h2>
                 <p className="bl-category-empty-desc">
                   {d.emptyComingSoonDescBefore}{" "}
-                  {dictionary.categoryNames[category.slug] ?? category.name}{" "}
+                  {category ? (dictionary.categoryNames[category.slug] ?? category.name) : ""}{" "}
                   {d.emptyComingSoonDescAfter}
                 </p>
                 <div className="bl-category-empty-actions">
-                  <Link to="/search" className="bl-category-empty-cta">{d.browseAll}</Link>
+                  <Link to="/categories" className="bl-category-empty-cta">{d.browseAll}</Link>
                 </div>
               </div>
             )}
@@ -613,6 +671,11 @@ export default function CategoryPage() {
   return (
     <div className="bl-category-page">
       <HomeHeader labels={dictionary.header} />
+
+      {/* Category navigation tabs */}
+      <div className="blc-cattabs-wrap">
+        <CategoryTabs activeSlug={slug} categoryNames={dictionary.categoryNames} />
+      </div>
 
       {/* mobile filter bar */}
       <div className="blc-filterbar">
@@ -635,7 +698,7 @@ export default function CategoryPage() {
         <div className="blc-sidebar-col">
         <aside className="blc-sidebar">
           <Link to="/" className="blc-back">
-            <CIcon name="back" size={14} /> {d.backHome}
+            <CIcon name="back" size={14} /> {dictionary.claudeHome.navExplore}
           </Link>
           <div>
             <p className="blc-side-eyebrow">{d.sidebarEyebrow}</p>
@@ -663,7 +726,7 @@ export default function CategoryPage() {
                 <CIcon name="spark" size={11} /> {d.eyebrow}
               </p>
               <h1 className="blc-hero-title">
-                {dictionary.categoryNames[category.slug] ?? category.name}
+                {dictionary.categoryNames[heroKey] ?? (category?.name ?? dictionary.categoryNames["all"])}
               </h1>
               <svg
                 className="blc-hero-squiggle" width="88" height="9" viewBox="0 0 92 9"
@@ -672,7 +735,7 @@ export default function CategoryPage() {
                 <path d="M2 5c5-5 10-5 15 0s10 5 15 0 10-5 15 0 10 5 15 0 10-5 15 0" />
               </svg>
               <p className="blc-hero-desc">
-                {dictionary.categoryDescriptions[category.slug] ?? category.description}
+                {dictionary.categoryDescriptions[heroKey] ?? (category?.description ?? dictionary.categoryDescriptions["all"])}
               </p>
               <div className="blc-hero-stats">
                 <div className="blc-stat">
