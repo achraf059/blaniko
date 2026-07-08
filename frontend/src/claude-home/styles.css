@@ -167,6 +167,25 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-links a { transition: color 200ms var(--ease); position: relative; }
 .nav-links a:hover { color: var(--ink); }
+
+/* Gold active-section underline — matches inner-page GlobalNav treatment */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 180ms var(--ease);
+  pointer-events: none;
+}
+.nav-links a.nav-link-active::after {
+  width: 100%;
+}
+
 /* Right column: utility group left, auth-pill separated by a fixed 16px gap */
 .nav-right-group {
   display: flex;
