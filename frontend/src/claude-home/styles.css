@@ -1316,6 +1316,16 @@ a { color: inherit; text-decoration: none; }
 /* "has a category" in Browse heading */
 .categories .section-head h2 em { color: var(--accent); }
 
+/* ── Picks section: gold eyebrow + "picks" heading emphasis ─── */
+.curated .section-head .eyebrow {
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.curated .section-head .eyebrow::before {
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
+}
+/* "picks" in Curated heading */
+.curated .section-head h2 em { color: var(--accent); }
+
 .section-head h2 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -1472,7 +1482,11 @@ a { color: inherit; text-decoration: none; }
 }
 .cur-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 60px -28px rgba(61,41,102,0.35);
+  box-shadow: 0 30px 60px -28px rgba(61,41,102,0.35), 0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent); /* subtle gold ring */
+}
+.cur-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent); /* gold focus ring for keyboard nav */
 }
 .cur-card.wide { aspect-ratio: 3/2.6; }
 .cur-card .cur-img {
@@ -1501,15 +1515,15 @@ a { color: inherit; text-decoration: none; }
 }
 .cur-card .chip {
   padding: 5px 10px;
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--accent) 16%, transparent); /* muted gold tint — was rgba(255,255,255,0.18) */
   backdrop-filter: blur(10px);
   border-radius: 100px;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: color-mix(in srgb, var(--accent) 90%, transparent); /* warm gold text — was #fff */
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); /* subtle gold border — was rgba(255,255,255,0.22) */
 }
 .cur-card .cur-title {
   font-family: var(--font-display);
