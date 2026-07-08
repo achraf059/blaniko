@@ -1279,7 +1279,7 @@ a { color: inherit; text-decoration: none; }
    CATEGORIES
    ========================================================= */
 .categories {
-  padding: 100px 0 60px;
+  padding: 72px 0 60px; /* top reduced from 100px — tightens gap from HOW section */
   border-top: 1px solid var(--line-soft);
 }
 .section-head {
@@ -1297,6 +1297,21 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 10px;
 }
 .section-head .eyebrow::before { content: ""; width: 18px; height: 1px; background: var(--plum); }
+
+/* ── How + Browse sections: gold eyebrow + heading emphasis ─── */
+.how .section-head .eyebrow,
+.categories .section-head .eyebrow {
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.how .section-head .eyebrow::before,
+.categories .section-head .eyebrow::before {
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
+}
+/* "see what's real" in How heading */
+.how .section-head h2 em { color: var(--accent); }
+/* "has a category" in Browse heading */
+.categories .section-head h2 em { color: var(--accent); }
+
 .section-head h2 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -1330,27 +1345,27 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 4px;
   padding: 16px 36px;
-  border: 1px solid var(--heather);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); /* gold border — was var(--heather) */
   border-radius: 40px;
-  background: var(--mist);
+  background: var(--accent); /* Blaniko gold — was var(--mist) */
   text-decoration: none;
   transition: background 200ms var(--ease), border-color 200ms var(--ease), transform 200ms var(--ease);
 }
 .cat-quiz-cta-pill:hover {
-  background: var(--heather);
-  border-color: var(--plum);
+  background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); /* slightly darker gold hover */
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
   transform: translateY(-2px);
 }
 .cat-quiz-cta-prompt {
   font-size: 12px;
-  color: var(--ink-soft);
+  color: #3A2566; /* dark purple on gold bg — was var(--ink-soft) */
   font-family: var(--font-sans);
   letter-spacing: 0.01em;
 }
 .cat-quiz-cta-action {
   font-size: 15px;
   font-weight: 600;
-  color: var(--plum);
+  color: #3A2566; /* dark purple on gold bg — was var(--plum) */
   font-family: var(--font-sans);
 }
 .cat {
@@ -1360,7 +1375,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--ink);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 300ms var(--ease), box-shadow 300ms var(--ease);
+  transition: transform 300ms var(--ease), box-shadow 300ms var(--ease), border-color 300ms var(--ease);
   overflow: hidden;
   min-height: 220px;
   display: flex; flex-direction: column; justify-content: flex-end;
@@ -1387,6 +1402,7 @@ a { color: inherit; text-decoration: none; }
 .cat:hover {
   transform: translateY(-4px);
   box-shadow: 0 24px 48px -20px rgba(30, 10, 60, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent); /* subtle gold hover accent */
 }
 .cat:hover .cat-bg { transform: scale(1.06); }
 .cat:hover::after {
@@ -1520,7 +1536,7 @@ a { color: inherit; text-decoration: none; }
    HOW IT WORKS
    ========================================================= */
 .how {
-  padding: 80px 0;
+  padding: 80px 0 48px; /* bottom reduced from 80px — tightens gap to BROWSE section */
   border-top: 1px solid var(--line-soft);
 }
 .how-grid {
@@ -1533,7 +1549,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-display);
   font-size: 64px;
   font-style: italic;
-  color: var(--heather);
+  color: color-mix(in srgb, var(--accent) 55%, transparent); /* muted gold — was var(--heather) */
   line-height: 1;
   font-variation-settings: "SOFT" 100, "WONK" 1;
   margin-bottom: 16px;
