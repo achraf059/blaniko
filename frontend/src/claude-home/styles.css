@@ -502,16 +502,16 @@ a { color: inherit; text-decoration: none; }
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(180, 160, 224, 0.9);
+  color: color-mix(in srgb, var(--accent) 70%, transparent); /* muted gold — adapts via --accent dark-mode token */
   display: flex; align-items: center; gap: 10px;
   margin-bottom: 26px;
 }
 .hero-eyebrow::before {
-  content: ""; width: 26px; height: 1px; background: #B8A4D6;
+  content: ""; width: 26px; height: 1px; background: color-mix(in srgb, var(--accent) 58%, transparent);
 }
 .coastline {
   display: inline-flex; align-items: center; gap: 6px;
-  color: #B8A4D6; /* fixed — not var(--heather) which darkens in dark mode */
+  color: color-mix(in srgb, var(--accent) 72%, transparent); /* muted gold — fixed, adapts via --accent dark-mode token */
 }
 
 .hero-headline {
@@ -527,7 +527,7 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-headline em {
   font-style: italic;
-  color: #AE97E0; /* --hero-lav: FIXED — never var(--heather) which darkens in dark mode */
+  color: var(--accent); /* Blaniko gold — adapts via --accent token (#D9B382 light / #ddb978 dark) */
   font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
   display: inline-block;
   white-space: nowrap;
@@ -572,7 +572,7 @@ a { color: inherit; text-decoration: none; }
   transition: border-color 250ms var(--ease), box-shadow 250ms var(--ease);
 }
 .hero-search:focus-within {
-  border-color: rgba(245, 240, 232, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   box-shadow: 0 20px 60px -24px rgba(10, 5, 25, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 .hero-search svg { flex-shrink: 0; color: rgba(244, 238, 230, 0.7); }
@@ -586,7 +586,7 @@ a { color: inherit; text-decoration: none; }
   padding: 0 16px;
 }
 .hero-search input::placeholder { color: rgba(244, 238, 230, 0.6); }
-.hero-search .divider { width: 1px; height: 26px; background: rgba(245, 240, 232, 0.18); flex-shrink: 0; }
+.hero-search .divider { width: 1px; height: 26px; background: color-mix(in srgb, var(--accent) 30%, transparent); flex-shrink: 0; }
 .hero-search .where {
   display: flex; align-items: center; gap: 6px;
   padding: 0 18px;
@@ -596,11 +596,15 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
   flex-shrink: 0;
 }
+.hero-search .where svg {
+  color: color-mix(in srgb, var(--accent) 85%, transparent); /* gold pin icon */
+  flex-shrink: 0;
+}
 .hero-search button.go {
   height: 48px;
   padding: 0 22px;
   border-radius: 100px;
-  background: #D3C7ED;
+  background: var(--accent); /* Blaniko gold — was lavender #D3C7ED */
   color: #3A2566;
   font-size: 14px;
   font-weight: 600;
@@ -608,7 +612,7 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 8px;
   flex-shrink: 0;
 }
-.hero-search button.go:hover { background: #c4b4e6; transform: translateY(-1px); }
+.hero-search button.go:hover { background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); transform: translateY(-1px); }
 .hero-search button.go:active { transform: scale(0.98); }
 
 .hero-tags {
@@ -634,14 +638,14 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-tags .tag:hover {
   background: rgba(28, 18, 42, 0.46);
-  border-color: rgba(245, 240, 232, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent); /* subtle gold hover border */
   color: #fff;
   transform: translateY(-1px);
 }
 /* Icon inside chip */
 .hero-tags .tag svg {
   flex-shrink: 0;
-  color: rgba(244, 238, 230, 0.78);
+  color: color-mix(in srgb, var(--accent) 70%, transparent); /* muted gold icons */
 }
 
 /* Dark mode: slightly stronger overlay to maintain legibility on darker UI */
@@ -1926,22 +1930,22 @@ a { color: inherit; text-decoration: none; }
       );
   }
 
-  /* Eyebrow — light palette on dark overlay */
+  /* Eyebrow — muted gold on dark overlay */
   .hero-eyebrow {
     margin-bottom: 24px;
-    color: rgba(245, 240, 232, 0.64);
+    color: color-mix(in srgb, var(--accent) 72%, transparent);
   }
-  .hero-eyebrow::before { background: var(--heather); }
-  .coastline { color: var(--heather); }
+  .hero-eyebrow::before { background: color-mix(in srgb, var(--accent) 62%, transparent); }
+  .coastline { color: color-mix(in srgb, var(--accent) 80%, transparent); }
 
   /* Headline — ivory white, subtle dark shadow for depth (not ivory glow) */
   .hero-headline {
     color: rgba(245, 240, 232, 0.97);
     text-shadow: 0 1px 10px rgba(31, 21, 48, 0.38);
   }
-  /* Italic emphasis — fixed lavender reads well on dark purple vignette */
+  /* Italic emphasis — Blaniko gold reads well on dark purple vignette */
   .hero-headline em {
-    color: #AE97E0; /* fixed hero-lav token */
+    color: var(--accent); /* Blaniko gold — consistent with desktop */
     font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
   }
 
