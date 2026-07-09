@@ -16,13 +16,46 @@ export const Nav = ({ favoritesCount = 0 }) => {
   const user = auth?.user ?? null;
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState("hero");
   const menuRef = React.useRef(null);
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      // Bottom-of-page fallback: #join is too short to cross the observer band
+      // before the page hits its scroll limit, so force it active at the bottom.
+      if (
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 20
+      ) {
+        setActiveSection("join");
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Scroll-spy: highlight the nav link whose section is in the viewport band.
+  // rootMargin "-40% 0px -55% 0px" = a 5%-wide trigger zone at ~40% from top.
+  // The bottom-of-page scroll check above handles #join when it can't reach that band.
+  React.useEffect(() => {
+    const SECTIONS = ["hero", "categories", "picks", "join"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    SECTIONS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   React.useEffect(() => {
@@ -58,10 +91,10 @@ export const Nav = ({ favoritesCount = 0 }) => {
 
         {/* Homepage scroll anchors — hidden below 1080px via .nav-links rule */}
         <div className="nav-links">
-          <a href="#hero">{homeNav.navExplore}</a>
-          <a href="#categories">{homeNav.navCategories}</a>
-          <a href="#picks">{homeNav.navCurated}</a>
-          <a href="#join">{homeNav.navContact}</a>
+          <a href="#hero" className={activeSection === "hero" ? "nav-link-active" : ""}>{homeNav.navExplore}</a>
+          <a href="#categories" className={activeSection === "categories" ? "nav-link-active" : ""}>{homeNav.navCategories}</a>
+          <a href="#picks" className={activeSection === "picks" ? "nav-link-active" : ""}>{homeNav.navCurated}</a>
+          <a href="#join" className={activeSection === "join" ? "nav-link-active" : ""}>{homeNav.navContact}</a>
         </div>
 
         <div className="nav-right-group">

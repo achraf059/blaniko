@@ -167,6 +167,25 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-links a { transition: color 200ms var(--ease); position: relative; }
 .nav-links a:hover { color: var(--ink); }
+
+/* Gold active-section underline — matches inner-page GlobalNav treatment */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 180ms var(--ease);
+  pointer-events: none;
+}
+.nav-links a.nav-link-active::after {
+  width: 100%;
+}
+
 /* Right column: utility group left, auth-pill separated by a fixed 16px gap */
 .nav-right-group {
   display: flex;
@@ -483,16 +502,16 @@ a { color: inherit; text-decoration: none; }
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(180, 160, 224, 0.9);
+  color: color-mix(in srgb, var(--accent) 70%, transparent); /* muted gold — adapts via --accent dark-mode token */
   display: flex; align-items: center; gap: 10px;
   margin-bottom: 26px;
 }
 .hero-eyebrow::before {
-  content: ""; width: 26px; height: 1px; background: #B8A4D6;
+  content: ""; width: 26px; height: 1px; background: color-mix(in srgb, var(--accent) 58%, transparent);
 }
 .coastline {
   display: inline-flex; align-items: center; gap: 6px;
-  color: #B8A4D6; /* fixed — not var(--heather) which darkens in dark mode */
+  color: color-mix(in srgb, var(--accent) 72%, transparent); /* muted gold — fixed, adapts via --accent dark-mode token */
 }
 
 .hero-headline {
@@ -508,7 +527,7 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-headline em {
   font-style: italic;
-  color: #AE97E0; /* --hero-lav: FIXED — never var(--heather) which darkens in dark mode */
+  color: var(--accent); /* Blaniko gold — adapts via --accent token (#D9B382 light / #ddb978 dark) */
   font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
   display: inline-block;
   white-space: nowrap;
@@ -553,7 +572,7 @@ a { color: inherit; text-decoration: none; }
   transition: border-color 250ms var(--ease), box-shadow 250ms var(--ease);
 }
 .hero-search:focus-within {
-  border-color: rgba(245, 240, 232, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   box-shadow: 0 20px 60px -24px rgba(10, 5, 25, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 .hero-search svg { flex-shrink: 0; color: rgba(244, 238, 230, 0.7); }
@@ -567,7 +586,7 @@ a { color: inherit; text-decoration: none; }
   padding: 0 16px;
 }
 .hero-search input::placeholder { color: rgba(244, 238, 230, 0.6); }
-.hero-search .divider { width: 1px; height: 26px; background: rgba(245, 240, 232, 0.18); flex-shrink: 0; }
+.hero-search .divider { width: 1px; height: 26px; background: color-mix(in srgb, var(--accent) 30%, transparent); flex-shrink: 0; }
 .hero-search .where {
   display: flex; align-items: center; gap: 6px;
   padding: 0 18px;
@@ -577,11 +596,15 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
   flex-shrink: 0;
 }
+.hero-search .where svg {
+  color: color-mix(in srgb, var(--accent) 85%, transparent); /* gold pin icon */
+  flex-shrink: 0;
+}
 .hero-search button.go {
   height: 48px;
   padding: 0 22px;
   border-radius: 100px;
-  background: #D3C7ED;
+  background: var(--accent); /* Blaniko gold — was lavender #D3C7ED */
   color: #3A2566;
   font-size: 14px;
   font-weight: 600;
@@ -589,7 +612,7 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 8px;
   flex-shrink: 0;
 }
-.hero-search button.go:hover { background: #c4b4e6; transform: translateY(-1px); }
+.hero-search button.go:hover { background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); transform: translateY(-1px); }
 .hero-search button.go:active { transform: scale(0.98); }
 
 .hero-tags {
@@ -615,14 +638,14 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-tags .tag:hover {
   background: rgba(28, 18, 42, 0.46);
-  border-color: rgba(245, 240, 232, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent); /* subtle gold hover border */
   color: #fff;
   transform: translateY(-1px);
 }
 /* Icon inside chip */
 .hero-tags .tag svg {
   flex-shrink: 0;
-  color: rgba(244, 238, 230, 0.78);
+  color: color-mix(in srgb, var(--accent) 70%, transparent); /* muted gold icons */
 }
 
 /* Dark mode: slightly stronger overlay to maintain legibility on darker UI */
@@ -1194,7 +1217,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: color-mix(in srgb, var(--accent) 70%, transparent); /* muted gold — was var(--plum) */
   margin-bottom: 16px;
 }
 .ed-card h3 {
@@ -1206,7 +1229,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--ink);
   margin: 0;
 }
-.ed-card h3 em { font-style: italic; color: var(--plum); font-variation-settings: "SOFT" 100, "WONK" 1; }
+.ed-card h3 em { font-style: italic; color: var(--accent); font-variation-settings: "SOFT" 100, "WONK" 1; } /* "without the planning." — was var(--plum) */
 .ed-card p {
   margin-top: 14px;
   color: var(--ink-soft);
@@ -1225,7 +1248,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); /* subtle gold border — was var(--line) */
   background: color-mix(in srgb, var(--surface) 82%, var(--mist) 18%);
   font-family: var(--font-mono);
   font-size: 10px;
@@ -1241,8 +1264,8 @@ a { color: inherit; text-decoration: none; }
   gap: 8px;
   padding: 10px 22px;
   border-radius: 999px;
-  background: var(--plum);
-  color: #fff;
+  background: var(--accent); /* Blaniko gold — was var(--plum) */
+  color: #3A2566; /* dark purple for contrast on gold — was #fff */
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -1252,7 +1275,7 @@ a { color: inherit; text-decoration: none; }
   transition: background 200ms var(--ease), gap 200ms var(--ease);
 }
 .ed-card .ed-cta:hover {
-  background: var(--plum-deep);
+  background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); /* slightly darker gold hover */
   gap: 12px;
 }
 
@@ -1260,7 +1283,7 @@ a { color: inherit; text-decoration: none; }
    CATEGORIES
    ========================================================= */
 .categories {
-  padding: 100px 0 60px;
+  padding: 72px 0 60px; /* top reduced from 100px — tightens gap from HOW section */
   border-top: 1px solid var(--line-soft);
 }
 .section-head {
@@ -1278,6 +1301,40 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 10px;
 }
 .section-head .eyebrow::before { content: ""; width: 18px; height: 1px; background: var(--plum); }
+
+/* ── How + Browse sections: gold eyebrow + heading emphasis ─── */
+.how .section-head .eyebrow,
+.categories .section-head .eyebrow {
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.how .section-head .eyebrow::before,
+.categories .section-head .eyebrow::before {
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
+}
+/* "see what's real" in How heading */
+.how .section-head h2 em { color: var(--accent); }
+/* "has a category" in Browse heading */
+.categories .section-head h2 em { color: var(--accent); }
+
+/* ── Picks section: gold eyebrow + "picks" heading emphasis ─── */
+.curated .section-head .eyebrow {
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.curated .section-head .eyebrow::before {
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
+}
+/* "picks" in Curated heading */
+.curated .section-head h2 em { color: var(--accent); }
+
+/* ── About section: gold eyebrow + "We help you find it." emphasis ─── */
+.about-section .section-head .eyebrow {
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.about-section .section-head .eyebrow::before {
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
+}
+.about-section .section-head h2 em { color: var(--accent); }
+
 .section-head h2 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -1311,27 +1368,27 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 4px;
   padding: 16px 36px;
-  border: 1px solid var(--heather);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); /* gold border — was var(--heather) */
   border-radius: 40px;
-  background: var(--mist);
+  background: var(--accent); /* Blaniko gold — was var(--mist) */
   text-decoration: none;
   transition: background 200ms var(--ease), border-color 200ms var(--ease), transform 200ms var(--ease);
 }
 .cat-quiz-cta-pill:hover {
-  background: var(--heather);
-  border-color: var(--plum);
+  background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); /* slightly darker gold hover */
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
   transform: translateY(-2px);
 }
 .cat-quiz-cta-prompt {
   font-size: 12px;
-  color: var(--ink-soft);
+  color: #3A2566; /* dark purple on gold bg — was var(--ink-soft) */
   font-family: var(--font-sans);
   letter-spacing: 0.01em;
 }
 .cat-quiz-cta-action {
   font-size: 15px;
   font-weight: 600;
-  color: var(--plum);
+  color: #3A2566; /* dark purple on gold bg — was var(--plum) */
   font-family: var(--font-sans);
 }
 .cat {
@@ -1341,7 +1398,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--ink);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 300ms var(--ease), box-shadow 300ms var(--ease);
+  transition: transform 300ms var(--ease), box-shadow 300ms var(--ease), border-color 300ms var(--ease);
   overflow: hidden;
   min-height: 220px;
   display: flex; flex-direction: column; justify-content: flex-end;
@@ -1368,6 +1425,7 @@ a { color: inherit; text-decoration: none; }
 .cat:hover {
   transform: translateY(-4px);
   box-shadow: 0 24px 48px -20px rgba(30, 10, 60, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent); /* subtle gold hover accent */
 }
 .cat:hover .cat-bg { transform: scale(1.06); }
 .cat:hover::after {
@@ -1433,7 +1491,11 @@ a { color: inherit; text-decoration: none; }
 }
 .cur-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 60px -28px rgba(61,41,102,0.35);
+  box-shadow: 0 30px 60px -28px rgba(61,41,102,0.35), 0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent); /* subtle gold ring */
+}
+.cur-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent); /* gold focus ring for keyboard nav */
 }
 .cur-card.wide { aspect-ratio: 3/2.6; }
 .cur-card .cur-img {
@@ -1462,15 +1524,15 @@ a { color: inherit; text-decoration: none; }
 }
 .cur-card .chip {
   padding: 5px 10px;
-  background: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, var(--accent) 16%, transparent); /* muted gold tint — was rgba(255,255,255,0.18) */
   backdrop-filter: blur(10px);
   border-radius: 100px;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: color-mix(in srgb, var(--accent) 90%, transparent); /* warm gold text — was #fff */
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); /* subtle gold border — was rgba(255,255,255,0.22) */
 }
 .cur-card .cur-title {
   font-family: var(--font-display);
@@ -1501,7 +1563,7 @@ a { color: inherit; text-decoration: none; }
    HOW IT WORKS
    ========================================================= */
 .how {
-  padding: 80px 0;
+  padding: 80px 0 48px; /* bottom reduced from 80px — tightens gap to BROWSE section */
   border-top: 1px solid var(--line-soft);
 }
 .how-grid {
@@ -1514,7 +1576,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-display);
   font-size: 64px;
   font-style: italic;
-  color: var(--heather);
+  color: color-mix(in srgb, var(--accent) 55%, transparent); /* muted gold — was var(--heather) */
   line-height: 1;
   font-variation-settings: "SOFT" 100, "WONK" 1;
   margin-bottom: 16px;
@@ -1605,7 +1667,7 @@ a { color: inherit; text-decoration: none; }
 }
 .footer-cta h3 em {
   font-style: italic;
-  color: var(--heather);
+  color: var(--accent); /* Blaniko gold — was var(--heather) */
   font-variation-settings: "SOFT" 100, "WONK" 1;
 }
 .footer-cta-subtitle {
@@ -1625,8 +1687,8 @@ a { color: inherit; text-decoration: none; }
   transition: border-color 250ms var(--ease), box-shadow 250ms var(--ease);
 }
 .footer-cta .email:focus-within {
-  border-color: rgba(184, 164, 214, 0.6);
-  box-shadow: 0 0 0 3px rgba(184, 164, 214, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent); /* gold focus border — was heather */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); /* gold focus ring */
 }
 .footer-cta .email input {
   flex: 1;
@@ -1638,8 +1700,8 @@ a { color: inherit; text-decoration: none; }
 }
 .footer-cta .email input::placeholder { color: rgba(250, 247, 252, 0.45); }
 .footer-cta .email button {
-  background: var(--bg);
-  color: var(--plum-deep);
+  background: var(--accent); /* Blaniko gold — was var(--bg) */
+  color: #3A2566; /* dark purple for contrast on gold — was var(--plum-deep) */
   padding: 11px 22px;
   border-radius: 100px;
   font-weight: 600;
@@ -1648,7 +1710,7 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
   transition: background 200ms var(--ease), transform 200ms var(--ease);
 }
-.footer-cta .email button:hover { background: #fff; transform: translateY(-1px); }
+.footer-cta .email button:hover { background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); transform: translateY(-1px); }
 .footer-cta .email button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 .footer-cta .small-note {
   margin-top: 12px;
@@ -1660,6 +1722,9 @@ a { color: inherit; text-decoration: none; }
 .footer-cta .small-note.error {
   color: rgba(255, 175, 155, 0.92);
   font-weight: 500;
+}
+.footer-privacy-note-link:hover {
+  color: color-mix(in srgb, var(--accent) 80%, transparent); /* muted gold on hover only */
 }
 
 /* Success state */
@@ -1697,7 +1762,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-mono); letter-spacing: 0.04em;
 }
 .foot-links { display: flex; gap: 24px; }
-.foot-links a:hover { color: var(--ink); }
+.foot-links a:hover { color: color-mix(in srgb, var(--accent) 78%, transparent); } /* muted gold on hover — was var(--ink) */
 
 /* =========================================================
    REVEAL ON SCROLL
@@ -1891,22 +1956,22 @@ a { color: inherit; text-decoration: none; }
       );
   }
 
-  /* Eyebrow — light palette on dark overlay */
+  /* Eyebrow — muted gold on dark overlay */
   .hero-eyebrow {
     margin-bottom: 24px;
-    color: rgba(245, 240, 232, 0.64);
+    color: color-mix(in srgb, var(--accent) 72%, transparent);
   }
-  .hero-eyebrow::before { background: var(--heather); }
-  .coastline { color: var(--heather); }
+  .hero-eyebrow::before { background: color-mix(in srgb, var(--accent) 62%, transparent); }
+  .coastline { color: color-mix(in srgb, var(--accent) 80%, transparent); }
 
   /* Headline — ivory white, subtle dark shadow for depth (not ivory glow) */
   .hero-headline {
     color: rgba(245, 240, 232, 0.97);
     text-shadow: 0 1px 10px rgba(31, 21, 48, 0.38);
   }
-  /* Italic emphasis — fixed lavender reads well on dark purple vignette */
+  /* Italic emphasis — Blaniko gold reads well on dark purple vignette */
   .hero-headline em {
-    color: #AE97E0; /* fixed hero-lav token */
+    color: var(--accent); /* Blaniko gold — consistent with desktop */
     font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
   }
 
@@ -2115,7 +2180,7 @@ a { color: inherit; text-decoration: none; }
   color: #ede8ff;
 }
 [data-theme="dark"] .footer-cta h3 em {
-  color: #cba8f0;
+  color: var(--accent); /* gold — was #cba8f0 heather; footer panel always dark so --accent is readable */
 }
 [data-theme="dark"] .footer-cta .email input {
   color: #ede8ff;
