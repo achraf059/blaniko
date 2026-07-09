@@ -33,7 +33,6 @@
   font-family: var(--font-mono);
   letter-spacing: 0.03em;
   margin-bottom: 0;
-  opacity: 0.65;
 }
 
 .bl-privacy-body {
@@ -63,17 +62,21 @@
   max-width: 62ch;
 }
 
-/* Footer privacy note link */
-.footer-privacy-note-link {
+/* Inline mailto link inside the removal section */
+.bl-privacy-email-link {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
-  opacity: 0.8;
-  transition: opacity 150ms;
 }
 
-.footer-privacy-note-link:hover {
-  opacity: 1;
+.bl-privacy-email-link:hover {
+  color: var(--plum);
+}
+
+.bl-privacy-email-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 @media (max-width: 600px) {

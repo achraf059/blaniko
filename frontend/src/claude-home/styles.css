@@ -1723,7 +1723,16 @@ a { color: inherit; text-decoration: none; }
   color: rgba(255, 175, 155, 0.92);
   font-weight: 500;
 }
+.footer-privacy-note-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 0.8;
+  transition: opacity 150ms;
+}
+
 .footer-privacy-note-link:hover {
+  opacity: 1;
   color: color-mix(in srgb, var(--accent) 80%, transparent); /* muted gold on hover only */
 }
 
