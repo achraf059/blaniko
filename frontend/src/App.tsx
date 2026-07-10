@@ -7,11 +7,11 @@ import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import RecentPage from "./pages/RecentPage";
-import PrivacyPage from "./pages/PrivacyPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 // Lazy: heavy / non-critical routes — deferred until first navigation
 const PlanPage = lazy(() => import("./pages/PlanPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const MapPage = lazy(() => import("./pages/MapPage"));
 const RecommendationsPage = lazy(() => import("./pages/RecommendationsPage"));
 const ComparePage = lazy(() => import("./pages/ComparePage"));
