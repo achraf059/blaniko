@@ -15,24 +15,58 @@ export default function PrivacyPage() {
     p.metaDescription,
   );
 
+  const emailLink = (
+    <a href={`mailto:${CONTACT_EMAIL}`} className="bl-privacy-email-link">
+      {CONTACT_EMAIL}
+    </a>
+  );
+
   const sections = [
-    { id: "what-we-collect",     title: p.collectTitle,  body: <>{p.collectBody}</> },
-    { id: "how-we-use-data",     title: p.useTitle,      body: <>{p.useBody}</> },
-    { id: "browser-storage",     title: p.cookiesTitle,  body: <>{p.cookiesBody}</> },
     {
-      id: "removing-your-data",
-      title: p.removalTitle,
-      body: (
-        <>
-          {p.removalBodyBefore}
-          <a href={`mailto:${CONTACT_EMAIL}`} className="bl-privacy-email-link">
-            {CONTACT_EMAIL}
-          </a>
-          {p.removalBodyAfter}
-        </>
-      ),
+      id: "information-we-collect",
+      title: p.collectTitle,
+      body: <p>{p.collectBody}</p>,
     },
-    { id: "policy-changes",      title: p.changesTitle,  body: <>{p.changesBody}</> },
+    {
+      id: "how-we-use-information",
+      title: p.useTitle,
+      body: <p>{p.useBody}</p>,
+    },
+    {
+      id: "browser-storage",
+      title: p.storageTitle,
+      body: <p>{p.storageBody}</p>,
+    },
+    {
+      id: "service-providers",
+      title: p.providersTitle,
+      body: <p>{p.providersBody}</p>,
+    },
+    {
+      id: "retention-and-deletion",
+      title: p.retentionTitle,
+      body: <p>{p.retentionBodyBefore}{emailLink}{p.retentionBodyAfter}</p>,
+    },
+    {
+      id: "security",
+      title: p.securityTitle,
+      body: <p>{p.securityBody}</p>,
+    },
+    {
+      id: "children",
+      title: p.childrenTitle,
+      body: <p>{p.childrenBody}</p>,
+    },
+    {
+      id: "policy-changes",
+      title: p.changesTitle,
+      body: <p>{p.changesBody}</p>,
+    },
+    {
+      id: "contact-us",
+      title: p.contactTitle,
+      body: <p>{p.contactBodyBefore}{emailLink}{p.contactBodyAfter}</p>,
+    },
   ];
 
   return (
@@ -48,7 +82,7 @@ export default function PrivacyPage() {
           {sections.map(({ id, title, body }) => (
             <div key={id} id={id} className="bl-privacy-section">
               <h2>{title}</h2>
-              <p>{body}</p>
+              {body}
             </div>
           ))}
         </div>

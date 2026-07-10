@@ -502,19 +502,46 @@ const byLanguage = {
     privacyPage: {
       eyebrow: "Privacy",
       title: "Privacy at Blaniko",
-      metaDescription: "Learn how Blaniko handles account information, saved venues, browser storage, waitlist submissions, and contact requests.",
-      lastUpdated: "Last updated: June 2026",
-      collectTitle: "What we collect",
-      collectBody: "The only personal data we collect is your email address, and only if you choose to join our waitlist. No account is needed to browse Blaniko.",
-      useTitle: "How we use your email",
-      useBody: "Your email is used only to send Blaniko updates — new venues, launch news, and early access invitations. We do not sell, share, or rent it to anyone.",
-      cookiesTitle: "Cookies and tracking",
-      cookiesBody: "Blaniko does not currently use analytics or advertising tools. We only use technical cookies to keep the site working correctly, such as remembering your language preference. No personal data is stored in these cookies.",
-      removalTitle: "Removing your email",
-      removalBodyBefore: "To remove your email from our list at any time, send a request to ",
-      removalBodyAfter: ". We will remove it within 48 hours.",
-      changesTitle: "Changes to this page",
-      changesBody: "If we change how we handle your data, we will update this page. The last update date is shown at the top.",
+      metaDescription: "Learn how Blaniko handles your information, including account data, saved venues, browser storage, and contact submissions.",
+      lastUpdated: "Last updated: July 2026",
+
+      // 1 — information-we-collect
+      collectTitle: "Information we collect",
+      collectBody: "You can browse Blaniko's public venue pages without creating an account and without providing any personal information. If you create an account, we store your email address and account credentials managed by our authentication provider, along with profile details such as your language and theme preference. If you sign up for the waitlist, we collect your email address and basic metadata about the submission. If you submit a venue or partnership request through the For Venues page, we collect the contact details you provide, which may include your name, email address, phone number, role, and a message.",
+
+      // 2 — how-we-use-information
+      useTitle: "How we use information",
+      useBody: "Information you provide is used to operate and improve Blaniko: to maintain your account and sync saved venues and preferences across devices, to respond to venue and partnership requests, and to send waitlist updates when requested. Server-side logs may record basic technical information to help diagnose errors and maintain reliability. Public form submissions are subject to rate limits to reduce misuse.",
+
+      // 3 — browser-storage
+      storageTitle: "Browser storage and cookies",
+      storageBody: "Blaniko stores interface preferences in your browser using localStorage rather than cookies. This includes your theme and language choice, recently viewed items, and interface state such as venues you are comparing or have saved as a guest. If you are signed in, your theme, language, and saved venues are also linked to your account so they can be restored on other devices. Browser storage is not transmitted to Blaniko unless associated with a signed-in account. You can clear it at any time from your browser settings.",
+
+      // 4 — service-providers
+      providersTitle: "Service providers and sharing",
+      providersBody: "Blaniko relies on a small number of service providers to operate: Supabase for account authentication and database storage, Netlify for hosting the website, and OpenStreetMap via Leaflet for the interactive map. Map tile requests go directly to OpenStreetMap's servers and are governed by their privacy policy. Blaniko does not sell personal information. Information is shared with service providers only as necessary to operate the service.",
+
+      // 5 — retention-and-deletion (contains email link)
+      retentionTitle: "Data retention and deletion",
+      retentionBodyBefore: "Account data is kept for as long as your account is active. Waitlist entries are kept until you request removal. Venue and partnership submissions are retained as long as needed to review and respond to the request. Browser storage remains on your device until you clear it. To request deletion of your account or stored data, removal from the waitlist, or correction of submitted information, contact us at ",
+      retentionBodyAfter: ".",
+
+      // 6 — security
+      securityTitle: "Security",
+      securityBody: "We apply reasonable technical and organizational measures to help protect the information we hold. No online service can guarantee absolute security, and we encourage you to take care when sharing personal information online.",
+
+      // 7 — children
+      childrenTitle: "Children",
+      childrenBody: "Blaniko is not intentionally designed to collect personal information from young children. If you believe we have received information about a child and would like it removed, please contact us.",
+
+      // 8 — policy-changes
+      changesTitle: "Changes to this policy",
+      changesBody: "We may update this policy from time to time. When we do, the date shown at the top of this page will change. Continued use of Blaniko after a change means you have seen the revised policy.",
+
+      // 9 — contact-us (contains email link)
+      contactTitle: "Contact us",
+      contactBodyBefore: "For questions about this policy, to request deletion of your data, or to correct information you submitted, contact us at ",
+      contactBodyAfter: ".",
     },
     partnersPage: {
       eyebrow: "For venue owners",
@@ -1039,19 +1066,46 @@ const byLanguage = {
     privacyPage: {
       eyebrow: "Confidentialité",
       title: "Confidentialité chez Blaniko",
-      metaDescription: "Découvrez comment Blaniko traite les informations de compte, les lieux enregistrés, le stockage du navigateur, les inscriptions à la liste d'attente et les demandes de contact.",
-      lastUpdated: "Dernière mise à jour : juin 2026",
-      collectTitle: "Ce que nous collectons",
-      collectBody: "La seule donnée personnelle que nous collectons est votre adresse e-mail, et uniquement si vous choisissez de rejoindre notre liste d'attente. Aucun compte n'est nécessaire pour utiliser Blaniko.",
-      useTitle: "Comment nous utilisons votre e-mail",
-      useBody: "Votre e-mail sert uniquement à vous envoyer des nouvelles de Blaniko — nouvelles adresses, actualités de lancement et invitations à l'accès anticipé. Nous ne le vendons, ne le partageons ni ne le louons à personne.",
-      cookiesTitle: "Cookies et traçage",
-      cookiesBody: "Blaniko n'utilise actuellement aucun outil d'analyse ou de publicité. Nous utilisons uniquement des cookies techniques pour le bon fonctionnement du site, comme la mémorisation de votre préférence de langue. Aucune donnée personnelle n'est stockée dans ces cookies.",
-      removalTitle: "Supprimer votre e-mail",
-      removalBodyBefore: "Pour retirer votre e-mail de notre liste à tout moment, contactez-nous à ",
-      removalBodyAfter: ". Nous le supprimerons dans les 48 heures.",
-      changesTitle: "Modifications de cette page",
-      changesBody: "Si nous modifions la gestion de vos données, nous mettrons cette page à jour. La date de dernière modification est indiquée en haut.",
+      metaDescription: "Découvrez comment Blaniko traite vos informations, notamment les données de compte, les lieux enregistrés, le stockage navigateur et les soumissions de contact.",
+      lastUpdated: "Dernière mise à jour : juillet 2026",
+
+      // 1 — information-we-collect
+      collectTitle: "Informations que nous collectons",
+      collectBody: "Vous pouvez consulter les pages publiques de Blaniko sans créer de compte ni fournir d'informations personnelles. Si vous créez un compte, nous conservons votre adresse e-mail et les identifiants de compte gérés par notre prestataire d'authentification, ainsi que des informations de profil comme votre langue et votre thème préférés. Si vous vous inscrivez à la liste d'attente, nous collectons votre adresse e-mail et des métadonnées basiques sur la soumission. Si vous soumettez une demande de partenariat via la page Pour les établissements, nous collectons les coordonnées que vous fournissez, notamment votre nom, adresse e-mail, numéro de téléphone, rôle et message.",
+
+      // 2 — how-we-use-information
+      useTitle: "Comment nous utilisons ces informations",
+      useBody: "Les informations que vous fournissez sont utilisées pour faire fonctionner et améliorer Blaniko : gérer votre compte et synchroniser vos lieux enregistrés et préférences entre appareils, répondre aux demandes de partenariat, et vous envoyer des actualités si vous vous êtes inscrit à la liste d'attente. Des journaux techniques côté serveur peuvent enregistrer des informations de base pour diagnostiquer des erreurs et assurer la fiabilité du service. Les soumissions de formulaires publics sont soumises à des limites de débit pour limiter les abus.",
+
+      // 3 — browser-storage
+      storageTitle: "Stockage navigateur et cookies",
+      storageBody: "Blaniko enregistre vos préférences d'interface dans votre navigateur via le stockage local (localStorage) plutôt que des cookies. Cela comprend votre thème, votre langue, vos éléments récemment consultés et l'état de l'interface comme les lieux que vous comparez ou avez enregistrés en tant que visiteur non connecté. Si vous êtes connecté, votre thème, votre langue et vos lieux enregistrés sont également associés à votre compte pour être restaurés sur d'autres appareils. Le stockage local n'est pas transmis à Blaniko sauf s'il est associé à un compte connecté. Vous pouvez l'effacer à tout moment depuis les paramètres de votre navigateur.",
+
+      // 4 — service-providers
+      providersTitle: "Prestataires de services et partage",
+      providersBody: "Blaniko s'appuie sur un nombre limité de prestataires pour fonctionner : Supabase pour l'authentification des comptes et le stockage des données, Netlify pour l'hébergement du site, et OpenStreetMap via Leaflet pour la carte interactive. Les tuiles cartographiques sont chargées directement depuis les serveurs d'OpenStreetMap et sont soumises à leur politique de confidentialité. Blaniko ne vend pas d'informations personnelles. Vos données ne sont partagées avec des prestataires que dans la mesure nécessaire pour faire fonctionner le service.",
+
+      // 5 — retention-and-deletion (contains email link)
+      retentionTitle: "Conservation des données et suppression",
+      retentionBodyBefore: "Les données de compte sont conservées tant que votre compte est actif. Les inscriptions à la liste d'attente sont conservées jusqu'à demande de suppression. Les demandes de partenariat sont conservées le temps nécessaire à leur examen et traitement. Le stockage local reste sur votre appareil jusqu'à ce que vous le supprimiez. Pour demander la suppression de votre compte ou de vos données, votre retrait de la liste d'attente, ou la correction d'informations soumises, contactez-nous à ",
+      retentionBodyAfter: ".",
+
+      // 6 — security
+      securityTitle: "Sécurité",
+      securityBody: "Nous appliquons des mesures techniques et organisationnelles raisonnables pour protéger les informations que nous détenons. Aucun service en ligne ne peut garantir une sécurité absolue, et nous vous encourageons à faire preuve de prudence lorsque vous partagez des informations personnelles en ligne.",
+
+      // 7 — children
+      childrenTitle: "Mineurs",
+      childrenBody: "Blaniko n'est pas conçu pour collecter intentionnellement des informations personnelles auprès de jeunes enfants. Si vous pensez que nous avons reçu des informations concernant un enfant et souhaitez qu'elles soient supprimées, veuillez nous contacter.",
+
+      // 8 — policy-changes
+      changesTitle: "Modifications de cette politique",
+      changesBody: "Nous pouvons mettre à jour cette politique de temps à autre. Lorsque c'est le cas, la date affichée en haut de cette page sera modifiée. La poursuite de l'utilisation de Blaniko après une mise à jour vaut acceptation de la politique révisée.",
+
+      // 9 — contact-us (contains email link)
+      contactTitle: "Nous contacter",
+      contactBodyBefore: "Pour toute question relative à cette politique, pour demander la suppression de vos données, ou pour corriger des informations soumises, contactez-nous à ",
+      contactBodyAfter: ".",
     },
     partnersPage: {
       eyebrow: "Pour les propriétaires",
