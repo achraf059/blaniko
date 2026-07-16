@@ -428,7 +428,7 @@ const en: Dictionary = {
   claudeHome: {
     navExplore: "Home",
     navCategories: "Categories",
-    navCurated: "Curated picks",
+    navCurated: "Top picks",
     navMap: "Map",
     navSearch: "Explore",
     navGuides: "Guides",
