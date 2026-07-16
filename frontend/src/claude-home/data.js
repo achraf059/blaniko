@@ -44,14 +44,14 @@ const localizedHomeData = {
           "Browse by how you're feeling — quiet morning, social evening, something active, something new.",
       },
       {
-        title: "See what's real.",
+        title: "See the useful details.",
         description:
-          "Every pick shows the real price, the real duration, and what makes it worth going — before you commit.",
+          "Each pick brings together the practical details we have — location, vibe, and what makes it worth considering — before you decide.",
       },
       {
-        title: "Save or share.",
+        title: "Save for later.",
         description:
-          "Save what interests you. Share with whoever you're going with. Come back when the moment is right.",
+          "Keep the venues that interest you, compare your options, and come back when the moment is right.",
       },
     ],
     continuationSlots: ["Slot 01", "Slot 02", "Slot 03", "Slot 04"],
@@ -112,14 +112,14 @@ const localizedHomeData = {
           "Parcourez selon votre envie — matin calme, soirée sociale, quelque chose d'actif ou de nouveau.",
       },
       {
-        title: "Voyez ce qui est réel.",
+        title: "Voyez les détails utiles.",
         description:
-          "Chaque sélection indique le vrai prix, la vraie durée et ce qui vaut le déplacement — avant de vous décider.",
+          "Chaque sélection rassemble les informations pratiques disponibles — lieu, ambiance et raisons d'y aller — pour vous aider à décider.",
       },
       {
-        title: "Enregistrez ou partagez.",
+        title: "Gardez pour plus tard.",
         description:
-          "Sauvegardez ce qui vous intéresse. Partagez avec ceux qui vous accompagnent. Revenez quand le moment est venu.",
+          "Enregistrez les lieux qui vous intéressent, comparez vos options et revenez-y au bon moment.",
       },
     ],
     continuationSlots: ["Bloc 01", "Bloc 02", "Bloc 03", "Bloc 04"],
