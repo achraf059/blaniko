@@ -85,7 +85,6 @@ export const Curated = ({ favorites, toggleFav }) => {
         <div className="cur-body">
           <div className="cur-title">{a.title}</div>
           <div className="cur-meta">
-            <span>{a.price}</span>
             <span>{a.duration}</span>
           </div>
         </div>
