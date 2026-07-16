@@ -494,7 +494,7 @@ const en: Dictionary = {
     editorialTitleSuffix: "",
     editorialDescription:
       "A cosy indoor idea for families, couples, or friends — start with a film, then keep the evening simple nearby.",
-    editorialRead: "Explore the guide",
+    editorialRead: "Explore guides",
     compareLabel: "Compare",
     compareSelected: "{count} activities selected",
     compareClear: "Clear",
@@ -899,7 +899,7 @@ const fr: Dictionary = {
     editorialTitleSuffix: "",
     editorialDescription:
       "Une idée cosy en intérieur pour les familles, les couples ou les amis — un film d'abord, la suite vient naturellement.",
-    editorialRead: "Explorer le guide",
+    editorialRead: "Explorer les guides",
     compareLabel: "Comparer",
     compareSelected: "{count} activités sélectionnées",
     compareClear: "Effacer",
