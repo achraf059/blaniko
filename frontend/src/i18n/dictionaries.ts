@@ -135,6 +135,7 @@ export type Dictionary = {
   categoryPage: {
     backHome: string;
     eyebrow: string;
+    allVenuesEyebrow: string;
     notFoundTitle: string;
     notFoundDescription: string;
     results: string;
@@ -176,7 +177,9 @@ export type Dictionary = {
     topPicksLink: string;
     featuredBadge: string;
     allVenuesTitle: string;
+    moreVenuesTitle: string;
     showingCount: string;
+    showingMoreCount: string;
     noVenuesTitle: string;
     noVenuesSub: string;
     clearFilters: string;
@@ -520,7 +523,7 @@ const en: Dictionary = {
     gaming: "Gaming",
     outdoor: "Outdoor",
     family: "Family",
-    all: "All Venues",
+    all: "All venues",
   },
   categoryDescriptions: {
     activities: "Experiences to break your routine and explore Casablanca.",
@@ -533,6 +536,7 @@ const en: Dictionary = {
   categoryPage: {
     backHome: "Back to categories",
     eyebrow: "Casablanca category",
+    allVenuesEyebrow: "Casablanca guide",
     notFoundTitle: "Category not found",
     notFoundDescription:
       "Sorry, we could not find this category yet. Try another one from the homepage.",
@@ -575,7 +579,9 @@ const en: Dictionary = {
     topPicksLink: "See all venues",
     featuredBadge: "Featured",
     allVenuesTitle: "All venues",
+    moreVenuesTitle: "More venues",
     showingCount: "Showing",
+    showingMoreCount: "Showing {count} more venues",
     noVenuesTitle: "No venues match those filters",
     noVenuesSub: "Try widening your search or clearing a filter.",
     clearFilters: "Clear filters",
@@ -938,6 +944,7 @@ const fr: Dictionary = {
   categoryPage: {
     backHome: "Retour aux catégories",
     eyebrow: "Catégorie à Casablanca",
+    allVenuesEyebrow: "Guide Casablanca",
     notFoundTitle: "Catégorie introuvable",
     notFoundDescription:
       "Désolé, cette catégorie n'est pas encore disponible. Essayez une autre catégorie depuis l'accueil.",
@@ -980,7 +987,9 @@ const fr: Dictionary = {
     topPicksLink: "Voir tous les lieux",
     featuredBadge: "Coup de c\u0153ur",
     allVenuesTitle: "Tous les lieux",
+    moreVenuesTitle: "Plus de lieux",
     showingCount: "Affichage de",
+    showingMoreCount: "{count} lieux supplémentaires",
     noVenuesTitle: "Aucun lieu ne correspond",
     noVenuesSub: "Essayez d\u2019\u00e9largir votre recherche ou de supprimer un filtre.",
     clearFilters: "Effacer les filtres",

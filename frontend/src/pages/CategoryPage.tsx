@@ -402,8 +402,34 @@ export default function CategoryPage() {
     const withImages = categoryVenues.filter((v) => hasVenueImage(v));
     const pickPool = withImages.length > 0 ? withImages : categoryVenues;
 
-    // All-mode: take top 3 venues across all categories (image-prioritised)
-    if (isAllMode) return pickPool.slice(0, 3);
+    // All-mode: pick one venue from each of the primary category groups, preferring
+    // non-pool activities so the Top Picks section shows Blaniko's full range.
+    if (isAllMode) {
+      const poolChip = ACTIVITIES_CHIPS.find((c) => c.key === "pool")!;
+      const categoryOrder = ["sports", "gaming", "outdoor", "family", "activities"];
+      const seen = new Set<string>();
+      const diverse: Venue[] = [];
+
+      // One from each category group — skip pool/billiards for the activities slot
+      for (const cat of categoryOrder) {
+        if (diverse.length >= 3) break;
+        const match = pickPool.find(
+          (v) =>
+            !seen.has(v.slug) &&
+            v.categorySlug === cat &&
+            (cat !== "activities" || !venueMatchesSubcat(v, poolChip)),
+        );
+        if (match) { diverse.push(match); seen.add(match.slug); }
+      }
+
+      // Fill any remaining slots with any image venue (allows pool if nothing else exists)
+      for (const v of pickPool) {
+        if (diverse.length >= 3) break;
+        if (!seen.has(v.slug)) { diverse.push(v); seen.add(v.slug); }
+      }
+
+      return diverse.slice(0, 3);
+    }
 
     // Activities: curate a diverse set — at most 1 pool/billiards, fill remaining
     // slots from other activity types so Top Picks feel varied.
@@ -512,6 +538,51 @@ export default function CategoryPage() {
       });
     }
 
+    // All-mode: diverse default ordering — round-robin through category groups so the
+    // first visible rows show Blaniko's full range, not a wall of pool/billiards venues.
+    // Pool/billiards follows after other activity types. A-Z and active filters skip this.
+    if (isAllMode && f.subcat === "all" && f.sort !== "az" &&
+        !f.query.trim() && f.area === "all" && f.goodFor === "all" && f.time === "any") {
+      const poolChip = ACTIVITIES_CHIPS.find((c) => c.key === "pool")!;
+      const categoryOrder = ["sports", "gaming", "outdoor", "family", "activities"];
+      const assigned = new Set<string>();
+      const diverse: typeof result = [];
+
+      // Round-robin through categories, skipping pool for the activities slots
+      let added = true;
+      while (added) {
+        added = false;
+        for (const cat of categoryOrder) {
+          const match = result.find(
+            (v) =>
+              !assigned.has(v.slug) &&
+              v.categorySlug === cat &&
+              (cat !== "activities" || !venueMatchesSubcat(v, poolChip)),
+          );
+          if (match) {
+            diverse.push(match);
+            assigned.add(match.slug);
+            added = true;
+          }
+        }
+      }
+
+      // Pool/billiards venues follow after all other activity types
+      for (const v of result) {
+        if (!assigned.has(v.slug) && venueMatchesSubcat(v, poolChip)) {
+          diverse.push(v);
+          assigned.add(v.slug);
+        }
+      }
+
+      // Any unmatched venues (e.g. no category keywords) go last
+      for (const v of result) {
+        if (!assigned.has(v.slug)) diverse.push(v);
+      }
+
+      result = diverse;
+    }
+
     // Activities: diverse default ordering when no subcat chip is selected
     if (slug === "activities" && f.subcat === "all" && f.sort !== "az" && availableChips) {
       const poolChip = availableChips.find((c) => c.key === "pool");
@@ -552,7 +623,7 @@ export default function CategoryPage() {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
     return result;
-  }, [categoryVenues, pickSlugs, f, availableChips, slug]);
+  }, [categoryVenues, pickSlugs, f, availableChips, slug, isAllMode]);
 
   const collageImages = useMemo(() => {
     const coverImg = CATEGORY_IMAGES[slug ?? ""] ?? "";
@@ -723,7 +794,7 @@ export default function CategoryPage() {
           <section className="blc-hero">
             <div className="blc-hero-body">
               <p className="blc-hero-eyebrow">
-                <CIcon name="spark" size={11} /> {d.eyebrow}
+                <CIcon name="spark" size={11} /> {isAllMode ? d.allVenuesEyebrow : d.eyebrow}
               </p>
               <h1 className="blc-hero-title">
                 {dictionary.categoryNames[heroKey] ?? (category?.name ?? dictionary.categoryNames["all"])}
@@ -811,15 +882,17 @@ export default function CategoryPage() {
           ) : null}
 
           {/* ALL VENUES */}
-          <section aria-label={d.allVenuesTitle} id="all-venues">
+          <section aria-label={isAllMode ? d.moreVenuesTitle : d.allVenuesTitle} id="all-venues">
             <div className="blc-sec-head">
               <h2 className="blc-sec-title">
-                {d.allVenuesTitle}{" "}
-                <span className="blc-count">({filteredGrid.length})</span>
+                {isAllMode ? d.moreVenuesTitle : d.allVenuesTitle}{" "}
+                {!isAllMode && <span className="blc-count">({filteredGrid.length})</span>}
               </h2>
               <div className="blc-sec-right">
                 <span className="blc-showing">
-                  {d.showingCount} {filteredGrid.length} {filteredGrid.length === 1 ? d.result : d.results}
+                  {isAllMode
+                    ? d.showingMoreCount.replace("{count}", String(filteredGrid.length))
+                    : `${d.showingCount} ${filteredGrid.length} ${filteredGrid.length === 1 ? d.result : d.results}`}
                 </span>
                 <div className="blc-viewtoggle" role="group" aria-label="View">
                   <button className={view === "grid" ? "active" : ""} aria-label={d.gridView} onClick={() => setView("grid")}>
