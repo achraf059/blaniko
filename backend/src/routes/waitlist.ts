@@ -19,10 +19,41 @@ router.post("/", async (req: Request<object, object, WaitlistBody>, res: Respons
     return;
   }
 
+  if (email.length > 254) {
+    res.status(400).json({ success: false, error: "email_too_long" });
+    return;
+  }
+
+  const rawSource = typeof source === "string" ? source : "homepage_footer";
+  if (rawSource !== "homepage_footer") {
+    res.status(400).json({ success: false, error: "invalid_source" });
+    return;
+  }
+  if (rawSource.length > 50) {
+    res.status(400).json({ success: false, error: "source_too_long" });
+    return;
+  }
+
+  const rawLanguage = typeof language === "string" ? language : "en";
+  if (rawLanguage !== "en" && rawLanguage !== "fr") {
+    res.status(400).json({ success: false, error: "invalid_language" });
+    return;
+  }
+  if (rawLanguage.length > 10) {
+    res.status(400).json({ success: false, error: "language_too_long" });
+    return;
+  }
+
+  const rawPage = typeof page === "string" ? page : "/";
+  if (rawPage.length > 200) {
+    res.status(400).json({ success: false, error: "page_too_long" });
+    return;
+  }
+
   const normalizedEmail = email.toLowerCase().trim();
-  const safeSource = typeof source === "string" ? source : "homepage_footer";
-  const safeLanguage = typeof language === "string" ? language : "en";
-  const safePage = typeof page === "string" ? page : "/";
+  const safeSource = rawSource;
+  const safeLanguage = rawLanguage;
+  const safePage = rawPage;
 
   const { error } = await supabase.from("waitlist_emails").insert({
     email: normalizedEmail,
