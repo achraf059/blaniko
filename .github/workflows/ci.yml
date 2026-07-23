@@ -15,6 +15,9 @@ on:
 jobs:
   build-and-check:
     runs-on: ubuntu-latest
+    env:
+      # Compile-only value. Deployments must provide the real production API URL.
+      VITE_API_URL: https://api.example.invalid
 
     steps:
       - name: Checkout code
