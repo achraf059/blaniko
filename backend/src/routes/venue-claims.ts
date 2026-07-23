@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import isEmail from "validator/lib/isEmail";
+import isURL from "validator/lib/isURL";
 import { supabase } from "../lib/supabase";
 
 const router = Router();
@@ -38,8 +39,23 @@ router.post("/", async (req: Request<object, object, VenueClaimBody>, res: Respo
     return;
   }
 
+  if (typeof venue_slug === "string" && venue_slug.length > 100) {
+    res.status(400).json({ success: false, error: "venue_slug_too_long" });
+    return;
+  }
+
+  if (typeof venue_name === "string" && venue_name.length > 150) {
+    res.status(400).json({ success: false, error: "venue_name_too_long" });
+    return;
+  }
+
   if (typeof contact_name !== "string" || !contact_name.trim()) {
     res.status(400).json({ success: false, error: "missing_name" });
+    return;
+  }
+
+  if (contact_name.length > 100) {
+    res.status(400).json({ success: false, error: "contact_name_too_long" });
     return;
   }
 
@@ -48,8 +64,61 @@ router.post("/", async (req: Request<object, object, VenueClaimBody>, res: Respo
     return;
   }
 
+  if (contact_email.length > 254) {
+    res.status(400).json({ success: false, error: "contact_email_too_long" });
+    return;
+  }
+
+  if (typeof contact_whatsapp === "string" && contact_whatsapp.trim()) {
+    if (contact_whatsapp.length > 30) {
+      res.status(400).json({ success: false, error: "contact_whatsapp_too_long" });
+      return;
+    }
+    if (!/^\+?\d[\d\s\-().]{6,}$/.test(contact_whatsapp.trim())) {
+      res.status(400).json({ success: false, error: "invalid_whatsapp" });
+      return;
+    }
+  }
+
+  if (typeof role_at_venue === "string" && role_at_venue.length > 100) {
+    res.status(400).json({ success: false, error: "role_at_venue_too_long" });
+    return;
+  }
+
   if (typeof message !== "string" || !message.trim()) {
     res.status(400).json({ success: false, error: "missing_message" });
+    return;
+  }
+
+  if (message.length > 2000) {
+    res.status(400).json({ success: false, error: "message_too_long" });
+    return;
+  }
+
+  if (typeof official_website === "string" && official_website.trim()) {
+    if (official_website.length > 500) {
+      res.status(400).json({ success: false, error: "official_website_too_long" });
+      return;
+    }
+    if (!isURL(official_website.trim(), { require_protocol: true, protocols: ["http", "https"] })) {
+      res.status(400).json({ success: false, error: "invalid_official_website" });
+      return;
+    }
+  }
+
+  if (typeof instagram === "string" && instagram.length > 100) {
+    res.status(400).json({ success: false, error: "instagram_too_long" });
+    return;
+  }
+
+  const rawLanguage = typeof language === "string" ? language : "en";
+  if (rawLanguage !== "en" && rawLanguage !== "fr") {
+    res.status(400).json({ success: false, error: "invalid_language" });
+    return;
+  }
+
+  if (rawLanguage.length > 10) {
+    res.status(400).json({ success: false, error: "language_too_long" });
     return;
   }
 
@@ -66,7 +135,7 @@ router.post("/", async (req: Request<object, object, VenueClaimBody>, res: Respo
     message: message.trim(),
     official_website: str(official_website),
     instagram: str(instagram),
-    language: typeof language === "string" ? language : "en",
+    language: rawLanguage,
   });
 
   if (error) {
