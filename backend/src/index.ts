@@ -7,6 +7,7 @@ import venuesRouter from "./routes/venues";
 import adminRouter from "./routes/admin";
 import venueClaimsRouter from "./routes/venue-claims";
 import { publicFormLimiter } from "./middleware/publicFormLimiter";
+import { adminLimiter } from "./middleware/adminLimiter";
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
@@ -65,7 +66,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 
 app.use("/api/waitlist", publicFormLimiter, waitlistRouter);
 app.use("/api/venues", venuesRouter);
-app.use("/api/admin", adminRouter);
+app.use("/api/admin", adminLimiter, adminRouter);
 app.use("/api/venue-claims", publicFormLimiter, venueClaimsRouter);
 
 app.listen(PORT, () => {
