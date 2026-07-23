@@ -378,6 +378,8 @@ export type Dictionary = {
   };
   common: {
     apiError: string;
+    apiOffline: string;
+    apiTimeout: string;
     retry: string;
   };
 };
@@ -784,6 +786,8 @@ const en: Dictionary = {
   },
   common: {
     apiError: "Blaniko is having trouble loading places right now. Please try again in a moment.",
+    apiOffline: "You appear to be offline. Check your connection and try again.",
+    apiTimeout: "Loading places took too long. Please try again.",
     retry: "Try again",
   },
 };
@@ -1195,6 +1199,8 @@ const fr: Dictionary = {
   },
   common: {
     apiError: "Blaniko rencontre un problème pour charger les lieux pour le moment. Veuillez réessayer dans un instant.",
+    apiOffline: "Vous semblez être hors ligne. Vérifiez votre connexion et réessayez.",
+    apiTimeout: "Le chargement des lieux a pris trop de temps. Veuillez réessayer.",
     retry: "Réessayer",
   },
 };

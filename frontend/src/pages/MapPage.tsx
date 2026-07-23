@@ -111,7 +111,7 @@ export default function MapPage() {
   usePageMeta(
     language === "fr" ? "Carte | Blaniko" : "Map | Blaniko",
   );
-  const { venues, isLoading, error } = useVenues();
+  const { venues, isLoading, error, retry } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const queryFromUrl = searchParams.get("q") ?? "";
@@ -515,7 +515,16 @@ export default function MapPage() {
                     </svg>
                   </span>
                   <h3>{dictionary.mapPage.errorTitle}</h3>
-                  <p>{dictionary.mapPage.errorDescription}</p>
+                  <p>
+                    {error === "offline"
+                      ? dictionary.common.apiOffline
+                      : error === "timeout"
+                        ? dictionary.common.apiTimeout
+                        : dictionary.mapPage.errorDescription}
+                  </p>
+                  <button type="button" className="blm-cta" onClick={retry}>
+                    {dictionary.common.retry}
+                  </button>
                 </div>
               ) : mapVenues.length > 0 ? (
                 /* ── Map with pins ── */

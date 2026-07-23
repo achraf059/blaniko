@@ -669,12 +669,19 @@ export default function CategoryPage() {
   }
 
   if (error) {
+    const errorMessage =
+      error === "offline"
+        ? dictionary.common.apiOffline
+        : error === "timeout"
+          ? dictionary.common.apiTimeout
+          : dictionary.common.apiError;
+
     return (
       <div className="bl-category-page">
         <HomeHeader labels={dictionary.header} />
         <div className="blc-shell">
           <div className="blc-main">
-            <p className="bl-api-error">{dictionary.common.apiError}</p>
+            <p className="bl-api-error">{errorMessage}</p>
             <button type="button" className="bl-retry-btn" onClick={retry}>
               {dictionary.common.retry}
             </button>

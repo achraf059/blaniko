@@ -1,7 +1,66 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { venues as mockVenues, type Venue } from "../data/mockData";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+const API_URL = (
+  import.meta.env.VITE_API_URL ??
+  (import.meta.env.DEV ? "http://localhost:3001" : "")
+).replace(/\/+$/, "");
+const VENUE_REQUEST_TIMEOUT_MS = 10_000;
+
+export type VenueLoadError = "offline" | "server" | "timeout";
+
+class VenueRequestError extends Error {
+  kind: VenueLoadError;
+
+  constructor(kind: VenueLoadError, message: string) {
+    super(message);
+    this.name = "VenueRequestError";
+    this.kind = kind;
+  }
+}
+
+async function fetchVenues(): Promise<Venue[]> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(
+    () => controller.abort(),
+    VENUE_REQUEST_TIMEOUT_MS,
+  );
+
+  try {
+    const response = await fetch(`${API_URL}/api/venues`, {
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new VenueRequestError(
+        "server",
+        `Venue API returned HTTP ${response.status}`,
+      );
+    }
+
+    return (await response.json()) as Venue[];
+  } catch (error: unknown) {
+    if (error instanceof VenueRequestError) {
+      throw error;
+    }
+
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new VenueRequestError(
+        "timeout",
+        `Venue API did not respond within ${VENUE_REQUEST_TIMEOUT_MS}ms`,
+      );
+    }
+
+    const isOffline =
+      typeof navigator !== "undefined" && navigator.onLine === false;
+    throw new VenueRequestError(
+      isOffline ? "offline" : "server",
+      error instanceof Error ? error.message : "Venue API request failed",
+    );
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
 
 // ─── Module-level cache ────────────────────────────────────────────────────────
 //
@@ -25,7 +84,7 @@ export function useVenues() {
   // the very first render, no useEffect needed).
   const [venues, setVenues] = useState<Venue[]>(() => venueCache ?? []);
   const [isLoading, setIsLoading] = useState<boolean>(() => venueCache === null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<VenueLoadError | null>(null);
   // Increment to force a re-run of the fetch effect (used by retry).
   const [retryCount, setRetryCount] = useState(0);
 
@@ -62,11 +121,7 @@ export function useVenues() {
 
     // Start a new fetch only when no request is already in flight.
     if (!inFlightPromise) {
-      inFlightPromise = fetch(`${API_URL}/api/venues`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json() as Promise<Venue[]>;
-        })
+      inFlightPromise = fetchVenues()
         .then((data) => {
           venueCache = data;       // populate cache for all future mounts
           inFlightPromise = null;  // allow a retry if needed later
@@ -94,10 +149,14 @@ export function useVenues() {
         setVenues(data);
         setIsLoading(false);
       })
-      .catch(() => {
+      .catch((requestError: unknown) => {
         if (cancelled) return;
         setVenues([]);
-        setError("api_error");
+        setError(
+          requestError instanceof VenueRequestError
+            ? requestError.kind
+            : "server",
+        );
         setIsLoading(false);
       });
 

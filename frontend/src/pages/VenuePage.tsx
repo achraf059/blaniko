@@ -30,7 +30,7 @@ export default function VenuePage() {
   const text = getFlowTexts(language);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
-  const { venues, getVenueBySlug, isLoading } = useVenues();
+  const { venues, getVenueBySlug, isLoading, error, retry } = useVenues();
 
   const from = searchParams.get("from");
   const categoryFromQuery = searchParams.get("category");
@@ -144,6 +144,31 @@ export default function VenuePage() {
           <div className="bl-venue-content">
             <section className="bl-venue-not-found">
               <p style={{ opacity: 0.5 }}>{dictionary.venuePage.loading}</p>
+            </section>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    const errorMessage =
+      error === "offline"
+        ? dictionary.common.apiOffline
+        : error === "timeout"
+          ? dictionary.common.apiTimeout
+          : dictionary.common.apiError;
+
+    return (
+      <div className="bl-venue-page">
+        <HomeHeader labels={dictionary.header} />
+        <main className="bl-venue-main">
+          <div className="bl-venue-content">
+            <section className="bl-venue-not-found" role="alert">
+              <p className="bl-venue-not-found-description">{errorMessage}</p>
+              <button type="button" className="bl-retry-btn" onClick={retry}>
+                {dictionary.common.retry}
+              </button>
             </section>
           </div>
         </main>
