@@ -189,7 +189,6 @@ export const Nav = ({ favoritesCount = 0 }) => {
               <div className="nav-menu-panel">
                 <p className="nav-menu-section">{homeNav.navMenuExploreBlaniko}</p>
                 <Link to="/plan" className="nav-menu-link" onClick={closeMenu}>{homeNav.navPlan}</Link>
-                <Link to="/map" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMap}</Link>
                 <Link to="/categories" className="nav-menu-link" onClick={closeMenu}>{homeNav.navCategories}</Link>
                 <Link to="/guides" className="nav-menu-link" onClick={closeMenu}>{homeNav.navGuides}</Link>
                 <Link to="/recommendations" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMenuRecommendations}</Link>
@@ -197,6 +196,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
                 <div className="nav-menu-divider" />
 
                 <p className="nav-menu-section">{homeNav.navMenuMore}</p>
+                <Link to="/map" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMap}</Link>
                 <Link to="/partners" className="nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
                 <Link to="/privacy" className="nav-menu-link" onClick={closeMenu}>{homeNav.navMenuPrivacy}</Link>
 

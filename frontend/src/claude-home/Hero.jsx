@@ -26,12 +26,12 @@ export const Hero = () => {
   };
 
   const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (query.trim()) {
-      params.set("q", query.trim());
+    const trimmed = query.trim();
+    if (trimmed) {
+      navigate(`/categories?q=${encodeURIComponent(trimmed)}`);
+    } else {
+      navigate("/recommendations");
     }
-    const suffix = params.toString();
-    navigate(suffix ? `/categories?${suffix}` : "/categories");
   };
   return (
     <section className="hero shell" id="hero">
@@ -73,7 +73,7 @@ export const Hero = () => {
           Casablanca
         </div>
         <button className="go" onClick={handleSearch}>
-          {dictionary.claudeHome.heroExplore}
+          {dictionary.claudeHome.heroStartPlanning}
           <Icon name="arrow" size={14} />
         </button>
       </div>

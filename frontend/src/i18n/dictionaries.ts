@@ -72,6 +72,7 @@ export type Dictionary = {
     heroSubtitle: string;
     heroSearchPlaceholder: string;
     heroExplore: string;
+    heroStartPlanning: string;
     heroTagWeekend: string;
     heroTagOutdoor: string;
     heroTagUnder200: string;
@@ -455,7 +456,8 @@ const en: Dictionary = {
     heroSubtitle:
       "A curated selection of activities, venues, and experiences — handpicked to help you make the most of Casablanca, whatever the weekend brings.",
     heroSearchPlaceholder: "Try padel, escape rooms, or family activities",
-    heroExplore: "Start planning",
+    heroExplore: "Explore all guides",
+    heroStartPlanning: "Start Planning",
     heroTagWeekend: "Weekend ideas",
     heroTagOutdoor: "Outdoor",
     heroTagUnder200: "Budget-friendly",
@@ -863,7 +865,8 @@ const fr: Dictionary = {
     heroSubtitle:
       "Une sélection soignée d'activités, de lieux et d'expériences — choisie avec goût pour vous aider à profiter pleinement de Casablanca, quel que soit le week-end.",
     heroSearchPlaceholder: "Essayez padel, escape rooms ou activités en famille",
-    heroExplore: "Explorer",
+    heroExplore: "Explorer tous les guides",
+    heroStartPlanning: "Planifier ma sortie",
     heroTagWeekend: "Idées week-end",
     heroTagOutdoor: "En plein air",
     heroTagUnder200: "Petit budget",
