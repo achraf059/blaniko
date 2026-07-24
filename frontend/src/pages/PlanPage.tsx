@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router";
 import { FilterChips } from "../components/discovery/FilterChips";
 import { HomeHeader } from "../components/home/HomeHeader";
+import { OutingQuiz } from "../components/plan/OutingQuiz";
 import { type Venue } from "../data/mockData";
 import { useFavorites } from "../hooks/useFavorites";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
+import { type QuizAnswers } from "../hooks/recommendationState";
 import { useI18n } from "../i18n/useI18n";
 import type { AppLanguage } from "../i18n/types";
 import { formatFlowText, getFlowTexts, getPlanStyleDisplay } from "../i18n/flowTexts";
@@ -566,6 +568,25 @@ function getPlanStyleById(id: PlanStyleId): PlanStyleConfig {
   );
 }
 
+// Maps the 5 quiz answers from OutingQuiz onto a PlanStyleId.
+// Priority: specific companion+area combos → companion → budget → default.
+function mapQuizAnswersToStyle(answers: QuizAnswers): PlanStyleId {
+  const { companion, category, budget, area, vibe } = answers;
+
+  // Partner in Ain Diab → sunset coastal route
+  if (companion === "partner" && area === "ain diab") return "sunset-plan";
+  // Partner elsewhere → date night
+  if (companion === "partner" || vibe === "romantic") return "date-night";
+  // Family companion or family category
+  if (companion === "family" || category === "family") return "family-afternoon";
+  // Solo
+  if (companion === "alone") return "chill-solo-reset";
+  // Budget-first
+  if (budget === "$") return "under-100-mad";
+  // Friends + sports/gaming → friends hangout (default social)
+  return "friends-hangout";
+}
+
 function buildOutingNarrative(options: {
   style: PlanStyleConfig;
   areaLabel: string;
@@ -681,6 +702,32 @@ export default function PlanPage() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // Show the quiz when this is a fresh /plan visit with no pre-loaded plan.
+  // `stops` being present means the user opened a shared link or a saved outing —
+  // those skip the quiz and go straight to the plan view.
+  // `quizDone` is set by handleQuizComplete once the user finishes the quiz.
+  const showQuiz =
+    !searchParams.has("quizDone") && !searchParams.has("stops");
+
+  const handleQuizComplete = (answers: QuizAnswers) => {
+    // Map quiz vocabulary → PlanPage vocabulary:
+    //   vibe  → mood  (same value set: chill/social/active/romantic/family-friendly)
+    //   companion → with  (same value set: alone/friends/family/partner)
+    //   budget → budget  (same: all/$/$$/$$$ )
+    //   area → area  (quiz subset of PlanPage area list — all values are valid)
+    //   category is consumed by mapQuizAnswersToStyle; no direct PlanPage param
+    const derivedStyle = mapQuizAnswersToStyle(answers);
+    const nextParams = new URLSearchParams();
+    nextParams.set("quizDone", "1");
+    nextParams.set("with", answers.companion);
+    nextParams.set("mood", answers.vibe);
+    nextParams.set("budget", answers.budget === "all" ? "$$" : answers.budget);
+    nextParams.set("area", answers.area || "any");
+    nextParams.set("style", derivedStyle);
+    nextParams.set("seed", "0");
+    setSearchParams(nextParams, { replace: true });
+  };
 
   const companion = parseCompanion(searchParams.get("with"));
   const mood = parseMood(searchParams.get("mood"));
@@ -1184,6 +1231,11 @@ export default function PlanPage() {
   // capture any external URL change (browser back/forward), so including
   // searchParams would create a circular: write → searchParams changes → re-fire.
   useEffect(() => {
+    // Do not touch the URL while the quiz is active. Writing plan params
+    // (especially `stops`) during the quiz phase would flip showQuiz to false
+    // and skip straight to the generated plan before the user finishes.
+    if (showQuiz) return;
+
     const nextParams = new URLSearchParams();
     nextParams.set("with", companion);
     nextParams.set("mood", mood);
@@ -1202,6 +1254,7 @@ export default function PlanPage() {
 
     setSearchParams(nextParams, { replace: true });
   }, [
+    showQuiz,
     area,
     budget,
     companion,
@@ -1336,6 +1389,10 @@ export default function PlanPage() {
       <HomeHeader labels={dictionary.header} />
 
       <main className="bl-plan-main">
+        {showQuiz ? (
+          <OutingQuiz onComplete={handleQuizComplete} />
+        ) : (
+        <>
 
         {/* ── A. HERO ── */}
         <section className="bl-plan-hero">
@@ -1781,10 +1838,12 @@ export default function PlanPage() {
           </div>
         </div>
 
+        </>
+        )}
       </main>
 
       {/* ── G. MOBILE STICKY SHARE ── */}
-      <div className="bl-plan-mobile-share">
+      {!showQuiz && <div className="bl-plan-mobile-share">
         <button
           type="button"
           className="bl-plan-btn bl-plan-btn--ghost"
@@ -1801,7 +1860,7 @@ export default function PlanPage() {
         >
           {text.planPage.shareWhatsApp}
         </button>
-      </div>
+      </div>}
     </div>
   );
 }
