@@ -5,7 +5,6 @@ import {
   buildAllowedAnswerValues,
   buildRecommendationSearchParams,
   clearRecommendationStateStorage,
-  createDefaultQuizAnswers,
   hydrateRecommendationState,
   persistRecommendationState,
   type QuizAnswers,
@@ -116,8 +115,8 @@ export function OutingQuiz({ onComplete }: OutingQuizProps) {
         totalSteps: questions.length,
         allowedValues: allowedAnswerValues,
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     // searchParams intentionally excluded — only used for initial hydration
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [allowedAnswerValues, questions],
   );
 
