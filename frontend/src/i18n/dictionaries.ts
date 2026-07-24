@@ -455,7 +455,7 @@ const en: Dictionary = {
     heroSubtitle:
       "A curated selection of activities, venues, and experiences — handpicked to help you make the most of Casablanca, whatever the weekend brings.",
     heroSearchPlaceholder: "Try padel, escape rooms, or family activities",
-    heroExplore: "Explore",
+    heroExplore: "Start planning",
     heroTagWeekend: "Weekend ideas",
     heroTagOutdoor: "Outdoor",
     heroTagUnder200: "Budget-friendly",
