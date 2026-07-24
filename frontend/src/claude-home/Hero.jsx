@@ -30,7 +30,7 @@ export const Hero = () => {
     if (trimmed) {
       navigate(`/categories?q=${encodeURIComponent(trimmed)}`);
     } else {
-      navigate("/recommendations");
+      navigate("/plan");
     }
   };
   return (
