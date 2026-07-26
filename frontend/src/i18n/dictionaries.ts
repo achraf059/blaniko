@@ -54,7 +54,7 @@ export type Dictionary = {
     navGuides: string;
     navPlan: string;
     navForVenues: string;
-    navContact: string;
+    navAbout: string;
     navMenuExploreBlaniko: string;
     navMenuCategories: string;
     navMenuMore: string;
@@ -443,7 +443,7 @@ const en: Dictionary = {
     navGuides: "Guides",
     navPlan: "Plan",
     navForVenues: "For venues",
-    navContact: "Contact",
+    navAbout: "About",
     navMenuExploreBlaniko: "Explore Blaniko",
     navMenuCategories: "Categories",
     navMenuMore: "More",
@@ -857,7 +857,7 @@ const fr: Dictionary = {
     navGuides: "Guides",
     navPlan: "Plan",
     navForVenues: "Pour les établissements",
-    navContact: "Contact",
+    navAbout: "À propos",
     navMenuExploreBlaniko: "Explorer Blaniko",
     navMenuCategories: "Catégories",
     navMenuMore: "Plus",
