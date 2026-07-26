@@ -73,6 +73,7 @@ export type Dictionary = {
     heroSearchPlaceholder: string;
     heroExplore: string;
     heroStartPlanning: string;
+    heroTryPlanner: string;
     heroTagWeekend: string;
     heroTagOutdoor: string;
     heroTagUnder200: string;
@@ -450,14 +451,15 @@ const en: Dictionary = {
     joinList: "Join the list",
     arComingSoon: "Arabic coming soon",
     heroEyebrowCity: "Casablanca · MA",
-    heroHeadlinePrefix: "Your guide to",
-    heroHeadlineEmphasis: "unforgettable experiences",
+    heroHeadlinePrefix: "Discover",
+    heroHeadlineEmphasis: "curated experiences",
     heroHeadlineSuffix: "in Casablanca.",
     heroSubtitle:
-      "A curated selection of activities, venues, and experiences — handpicked to help you make the most of Casablanca, whatever the weekend brings.",
+      "Explore activities, venues, and local experiences — carefully selected by Blaniko to help you make the most of your city.",
     heroSearchPlaceholder: "Try padel, escape rooms, or family activities",
     heroExplore: "Explore all guides",
-    heroStartPlanning: "Start Planning",
+    heroStartPlanning: "Explore Experiences",
+    heroTryPlanner: "Try the Smart Planner",
     heroTagWeekend: "Weekend ideas",
     heroTagOutdoor: "Outdoor",
     heroTagUnder200: "Budget-friendly",
@@ -470,7 +472,7 @@ const en: Dictionary = {
     categoriesRight:
       "Choose a category to start exploring — or jump between moods.",
     categoriesNotSurePrompt: "Not sure what to do?",
-    categoriesNotSureCta: "Get personalized picks →",
+    categoriesNotSureCta: "Try the Smart Planner →",
     curatedEyebrow: "Picks",
     curatedTitlePrefix: "Top",
     curatedTitleEmphasis: "picks",
@@ -859,14 +861,15 @@ const fr: Dictionary = {
     joinList: "Rejoindre la liste",
     arComingSoon: "Arabe bientôt disponible",
     heroEyebrowCity: "Casablanca · MA",
-    heroHeadlinePrefix: "Votre guide pour",
-    heroHeadlineEmphasis: "des expériences uniques",
+    heroHeadlinePrefix: "Découvrez",
+    heroHeadlineEmphasis: "des expériences sélectionnées",
     heroHeadlineSuffix: "à Casablanca.",
     heroSubtitle:
-      "Une sélection soignée d'activités, de lieux et d'expériences — choisie avec goût pour vous aider à profiter pleinement de Casablanca, quel que soit le week-end.",
+      "Explorez des activités, des lieux et des expériences locales — soigneusement sélectionnées par Blaniko pour profiter pleinement de votre ville.",
     heroSearchPlaceholder: "Essayez padel, escape rooms ou activités en famille",
     heroExplore: "Explorer tous les guides",
-    heroStartPlanning: "Planifier ma sortie",
+    heroStartPlanning: "Explorer les expériences",
+    heroTryPlanner: "Essayer le planificateur",
     heroTagWeekend: "Idées week-end",
     heroTagOutdoor: "En plein air",
     heroTagUnder200: "Petit budget",
@@ -879,7 +882,7 @@ const fr: Dictionary = {
     categoriesRight:
       "Choisissez une catégorie pour commencer — ou passez d'une ambiance à l'autre.",
     categoriesNotSurePrompt: "Vous ne savez pas quoi faire ?",
-    categoriesNotSureCta: "Obtenir des idées personnalisées →",
+    categoriesNotSureCta: "Essayer le planificateur →",
     curatedEyebrow: "Sélection",
     curatedTitlePrefix: "Nos meilleures",
     curatedTitleEmphasis: "idées",
