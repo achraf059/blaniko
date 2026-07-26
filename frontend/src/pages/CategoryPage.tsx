@@ -925,7 +925,7 @@ export default function CategoryPage() {
                         socialLevel: venue.socialLevel,
                         spaceType: venue.spaceType,
                       }}
-                      href={`/venues/${venue.slug}?from=category&category=${slug}`}
+                      href={`/venues/${venue.slug}?from=category${slug ? `&category=${slug}` : ""}`}
                       isFavorite={isFavorite(venue.slug)}
                       onToggleFavorite={toggleFavorite}
                       language={language}
