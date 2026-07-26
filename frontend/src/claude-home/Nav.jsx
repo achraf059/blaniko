@@ -188,7 +188,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
             {menuOpen && (
               <div className="nav-menu-panel">
                 <p className="nav-menu-section">{homeNav.navMenuExploreBlaniko}</p>
-                <Link to="/categories" className="nav-menu-link" onClick={closeMenu}>{homeNav.navCategories}</Link>
+                <Link to="/categories" className="nav-menu-link" onClick={closeMenu}>{homeNav.navSearch}</Link>
                 <Link to="/guides" className="nav-menu-link" onClick={closeMenu}>{homeNav.navGuides}</Link>
 
                 <div className="nav-menu-divider" />
