@@ -73,7 +73,6 @@ export type Dictionary = {
     heroSearchPlaceholder: string;
     heroExplore: string;
     heroStartPlanning: string;
-    heroTryPlanner: string;
     heroTagWeekend: string;
     heroTagOutdoor: string;
     heroTagUnder200: string;
@@ -461,10 +460,9 @@ const en: Dictionary = {
     heroHeadlineSuffix: "in Casablanca.",
     heroSubtitle:
       "Find places, activities, and experiences that match what you're looking for.",
-    heroSearchPlaceholder: "Try padel, escape rooms, or family activities",
+    heroSearchPlaceholder: "Search activities or venues",
     heroExplore: "Explore all guides",
     heroStartPlanning: "Explore Experiences",
-    heroTryPlanner: "Try the Smart Planner",
     heroTagWeekend: "Weekend ideas",
     heroTagOutdoor: "Outdoor",
     heroTagUnder200: "Budget-friendly",
@@ -519,7 +517,7 @@ const en: Dictionary = {
     aboutEyebrow: "About Blaniko",
     aboutTitlePrefix: "Casablanca has more to do than you think.",
     aboutTitleEmphasis: "We help you find it.",
-    aboutBody: "Blaniko is a local guide to activities, sports, games, outdoor experiences, and family outings in Casablanca. We bring together carefully selected ideas, useful details, and honest information to help you discover what the city has to offer.",
+    aboutBody: "Blaniko is a local guide to activities, sports, games, outdoor experiences, and family outings in Casablanca. We bring together carefully selected ideas, useful details, and clear information to help you discover what the city has to offer.",
     footerPrivacyLink: "Privacy Policy",
     footerForVenues: "For venues",
     navThemeToLight: "Switch to light mode",
@@ -876,10 +874,9 @@ const fr: Dictionary = {
     heroHeadlineSuffix: "à Casablanca.",
     heroSubtitle:
       "Trouvez des lieux, des activités et des expériences qui correspondent à ce que vous cherchez.",
-    heroSearchPlaceholder: "Essayez padel, escape rooms ou activités en famille",
+    heroSearchPlaceholder: "Rechercher des activités ou des lieux",
     heroExplore: "Explorer tous les guides",
     heroStartPlanning: "Explorer les expériences",
-    heroTryPlanner: "Essayer le planificateur",
     heroTagWeekend: "Idées week-end",
     heroTagOutdoor: "En plein air",
     heroTagUnder200: "Petit budget",
@@ -934,7 +931,7 @@ const fr: Dictionary = {
     aboutEyebrow: "À propos",
     aboutTitlePrefix: "Casablanca a bien plus à offrir que vous ne croyez.",
     aboutTitleEmphasis: "On est là pour ça.",
-    aboutBody: "Blaniko est un guide local d'activités, de sports, de jeux, d'expériences en plein air et de sorties en famille à Casablanca. Nous rassemblons des idées soigneusement sélectionnées, des détails utiles et des informations fiables pour vous aider à découvrir ce que la ville a à offrir.",
+    aboutBody: "Blaniko est un guide local des activités, sports, jeux, expériences en plein air et sorties en famille à Casablanca. Nous réunissons des idées soigneusement sélectionnées, des détails utiles et des informations claires pour vous aider à découvrir ce que la ville a à offrir.",
     footerPrivacyLink: "Politique de confidentialité",
     footerForVenues: "Pour les établissements",
     navThemeToLight: "Passer en mode clair",
