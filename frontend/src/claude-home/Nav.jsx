@@ -22,13 +22,13 @@ export const Nav = ({ favoritesCount = 0 }) => {
   React.useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8);
-      // Bottom-of-page fallback: #join is too short to cross the observer band
+      // Bottom-of-page fallback: #about is too short to cross the observer band
       // before the page hits its scroll limit, so force it active at the bottom.
       if (
         window.scrollY + window.innerHeight >=
         document.documentElement.scrollHeight - 20
       ) {
-        setActiveSection("join");
+        setActiveSection("about");
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -38,9 +38,9 @@ export const Nav = ({ favoritesCount = 0 }) => {
 
   // Scroll-spy: highlight the nav link whose section is in the viewport band.
   // rootMargin "-40% 0px -55% 0px" = a 5%-wide trigger zone at ~40% from top.
-  // The bottom-of-page scroll check above handles #join when it can't reach that band.
+  // The bottom-of-page scroll check above handles #about when it can't reach that band.
   React.useEffect(() => {
-    const SECTIONS = ["hero", "categories", "picks", "join"];
+    const SECTIONS = ["hero", "categories", "picks", "about"];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -94,7 +94,7 @@ export const Nav = ({ favoritesCount = 0 }) => {
           <a href="#hero" className={activeSection === "hero" ? "nav-link-active" : ""}>{homeNav.navExplore}</a>
           <a href="#categories" className={activeSection === "categories" ? "nav-link-active" : ""}>{homeNav.navCategories}</a>
           <a href="#picks" className={activeSection === "picks" ? "nav-link-active" : ""}>{homeNav.navCurated}</a>
-          <a href="#join" className={activeSection === "join" ? "nav-link-active" : ""}>{homeNav.navContact}</a>
+          <a href="#about" className={activeSection === "about" ? "nav-link-active" : ""}>{homeNav.navAbout}</a>
         </div>
 
         <div className="nav-right-group">
