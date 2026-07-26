@@ -1402,6 +1402,7 @@ export default function PlanPage() {
               {text.planPage.heroTitle.split("Casablanca")[0]}<em>Casablanca</em>{text.planPage.heroTitle.split("Casablanca")[1] ?? ""}
             </h1>
             <p className="bl-plan-hero-sub">{text.planPage.heroSubtitle}</p>
+            <p className="bl-plan-preview-note">{text.planPage.previewNote}</p>
             <div className="bl-plan-trust">
               <span className="bl-plan-trust-item">
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>

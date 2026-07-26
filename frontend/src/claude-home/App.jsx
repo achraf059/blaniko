@@ -86,12 +86,12 @@ const App = () => {
       <Nav favoritesCount={favoriteSlugs.length} />
       <main id="main-content">
         <Hero />
-        <How />
         <Categories />
         <Curated
           favorites={favoriteSlugs}
           toggleFav={toggleFavorite}
         />
+        <How />
         <Editorial />
         <AboutSection />
         <FooterCTA />
