@@ -615,6 +615,35 @@ a { color: inherit; text-decoration: none; }
 .hero-search button.go:hover { background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); transform: translateY(-1px); }
 .hero-search button.go:active { transform: scale(0.98); }
 
+.hero-secondary-cta {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+.hero-planner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: rgba(244, 238, 230, 0.7);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+.hero-planner-link:hover {
+  color: var(--accent);
+}
+[data-theme="dark"] .hero-planner-link {
+  color: rgba(244, 238, 230, 0.6);
+}
+[data-theme="dark"] .hero-planner-link:hover {
+  color: var(--accent);
+}
+
 .hero-tags {
   margin-top: 22px;
   display: flex; gap: 10px; flex-wrap: wrap;

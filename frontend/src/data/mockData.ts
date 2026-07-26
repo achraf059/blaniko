@@ -43,6 +43,10 @@ export type Venue = {
   };
   translations?: Partial<Record<Exclude<AppLanguage, "en">, VenueTranslation>>;
 
+  // Trust / verification
+  verificationStatus?: "collected" | "confirmed" | "verified";
+  lastUpdated?: string;
+
   // Fields sourced from the Supabase venues table (v0 seed data)
   externalId?: string;
   subcategory?: string;
@@ -125,6 +129,8 @@ export const venues: Venue[] = [
     energyLevel: "high",
     socialLevel: "high",
     spaceType: "outdoor",
+    verificationStatus: "verified",
+    lastUpdated: "2026-07-15",
     translations: {
       fr: {
         description:
@@ -198,6 +204,8 @@ export const venues: Venue[] = [
     energyLevel: "high",
     socialLevel: "high",
     spaceType: "indoor",
+    verificationStatus: "confirmed",
+    lastUpdated: "2026-06-20",
     translations: {
       fr: {
         description:

@@ -101,6 +101,18 @@
   max-width: 26rem;
 }
 
+.bl-plan-preview-note {
+  margin: 0.75rem 0 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--plum) 8%, var(--surface) 92%);
+  border: 1px solid var(--line-soft);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 26rem;
+}
+
 .bl-plan-trust {
   display: flex;
   flex-wrap: wrap;

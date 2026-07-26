@@ -43,7 +43,7 @@ export const Categories = () => {
         ))}
       </div>
       <div className="cat-quiz-cta">
-        <Link to="/recommendations" className="cat-quiz-cta-pill">
+        <Link to="/plan" className="cat-quiz-cta-pill">
           <span className="cat-quiz-cta-prompt">{dictionary.claudeHome.categoriesNotSurePrompt}</span>
           <span className="cat-quiz-cta-action">{dictionary.claudeHome.categoriesNotSureCta}</span>
         </Link>

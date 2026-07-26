@@ -245,6 +245,38 @@ export default function VenuePage() {
         <div className="bl-venue-content">
           <p className="bl-venue-short-description">{shortDescription}</p>
 
+          {/* Trust / verification indicator */}
+          <div className="bl-venue-trust-badge" data-status={venue.verificationStatus ?? "collected"}>
+            <span className="bl-venue-trust-icon" aria-hidden="true">
+              {venue.verificationStatus === "verified" ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>
+              ) : venue.verificationStatus === "confirmed" ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              )}
+            </span>
+            <span className="bl-venue-trust-text">
+              <span className="bl-venue-trust-label">
+                {venue.verificationStatus === "verified"
+                  ? dictionary.venuePage.trustVerified
+                  : venue.verificationStatus === "confirmed"
+                    ? dictionary.venuePage.trustConfirmed
+                    : dictionary.venuePage.trustCollected}
+              </span>
+              {(!venue.verificationStatus || venue.verificationStatus === "collected") && (
+                <span className="bl-venue-trust-sub">
+                  {dictionary.venuePage.trustCollectedSub}
+                </span>
+              )}
+              {venue.lastUpdated && (
+                <span className="bl-venue-trust-date">
+                  {dictionary.venuePage.trustLastUpdated}: {new Date(venue.lastUpdated).toLocaleDateString(language === "fr" ? "fr-FR" : "en-US", { month: "short", year: "numeric" })}
+                </span>
+              )}
+            </span>
+          </div>
+
           {/* Contextual why-chips (only shown when navigated from search/plan) */}
           {whyThisPlace.length > 0 ? (
             <div className="bl-venue-context-chips">

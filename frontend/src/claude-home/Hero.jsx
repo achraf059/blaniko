@@ -30,7 +30,7 @@ export const Hero = () => {
     if (trimmed) {
       navigate(`/categories?q=${encodeURIComponent(trimmed)}`);
     } else {
-      navigate("/plan");
+      navigate("/categories");
     }
   };
   return (
@@ -75,6 +75,13 @@ export const Hero = () => {
         <button className="go" onClick={handleSearch}>
           {dictionary.claudeHome.heroStartPlanning}
           <Icon name="arrow" size={14} />
+        </button>
+      </div>
+
+      <div className="hero-secondary-cta reveal in" style={{ transitionDelay: "300ms" }}>
+        <button className="hero-planner-link" onClick={() => navigate("/plan")}>
+          {dictionary.claudeHome.heroTryPlanner}
+          <Icon name="arrow" size={12} />
         </button>
       </div>
 

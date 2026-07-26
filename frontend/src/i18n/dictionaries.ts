@@ -73,6 +73,7 @@ export type Dictionary = {
     heroSearchPlaceholder: string;
     heroExplore: string;
     heroStartPlanning: string;
+    heroTryPlanner: string;
     heroTagWeekend: string;
     heroTagOutdoor: string;
     heroTagUnder200: string;
@@ -257,6 +258,11 @@ export type Dictionary = {
     actionWebsite: string;
     actionInstagram: string;
     actionContactSoon: string;
+    trustCollected: string;
+    trustCollectedSub: string;
+    trustConfirmed: string;
+    trustVerified: string;
+    trustLastUpdated: string;
   };
   searchPage: {
     pageTitle: string;
@@ -450,14 +456,15 @@ const en: Dictionary = {
     joinList: "Join the list",
     arComingSoon: "Arabic coming soon",
     heroEyebrowCity: "Casablanca · MA",
-    heroHeadlinePrefix: "Your guide to",
-    heroHeadlineEmphasis: "unforgettable experiences",
+    heroHeadlinePrefix: "Discover",
+    heroHeadlineEmphasis: "amazing experiences",
     heroHeadlineSuffix: "in Casablanca.",
     heroSubtitle:
-      "A curated selection of activities, venues, and experiences — handpicked to help you make the most of Casablanca, whatever the weekend brings.",
+      "Find places, activities, and experiences that match what you're looking for.",
     heroSearchPlaceholder: "Try padel, escape rooms, or family activities",
     heroExplore: "Explore all guides",
-    heroStartPlanning: "Start Planning",
+    heroStartPlanning: "Explore Experiences",
+    heroTryPlanner: "Try the Smart Planner",
     heroTagWeekend: "Weekend ideas",
     heroTagOutdoor: "Outdoor",
     heroTagUnder200: "Budget-friendly",
@@ -470,7 +477,7 @@ const en: Dictionary = {
     categoriesRight:
       "Choose a category to start exploring — or jump between moods.",
     categoriesNotSurePrompt: "Not sure what to do?",
-    categoriesNotSureCta: "Get personalized picks →",
+    categoriesNotSureCta: "Try the Smart Planner →",
     curatedEyebrow: "Picks",
     curatedTitlePrefix: "Top",
     curatedTitleEmphasis: "picks",
@@ -512,7 +519,7 @@ const en: Dictionary = {
     aboutEyebrow: "About Blaniko",
     aboutTitlePrefix: "Casablanca has more to do than you think.",
     aboutTitleEmphasis: "We help you find it.",
-    aboutBody: "Blaniko is a local guide to activities, sports, games, outdoor activities, and family outings in Casablanca. We bring together activity ideas, useful details, and planning tools so you can plan more than just one stop.",
+    aboutBody: "Blaniko is a local guide to activities, sports, games, outdoor experiences, and family outings in Casablanca. We bring together carefully selected ideas, useful details, and honest information to help you discover what the city has to offer.",
     footerPrivacyLink: "Privacy Policy",
     footerForVenues: "For venues",
     navThemeToLight: "Switch to light mode",
@@ -588,9 +595,9 @@ const en: Dictionary = {
     noVenuesSub: "Try widening your search or clearing a filter.",
     clearFilters: "Clear filters",
     exploreMore: "Explore more",
-    planCtaTitle: "Build your outing plan",
-    planCtaSub: "Save venues you like, then turn them into a plan to share with friends.",
-    planCtaBtn: "Start planning",
+    planCtaTitle: "Try the Smart Planner",
+    planCtaSub: "Preview Blaniko's planning experience — pick a vibe and get a ready-to-go outing route.",
+    planCtaBtn: "Try it out",
     filtersBtn: "Filters",
     gridView: "Grid view",
     listView: "List view",
@@ -662,6 +669,11 @@ const en: Dictionary = {
     actionWebsite: "Website",
     actionInstagram: "Instagram",
     actionContactSoon: "Contact details coming soon",
+    trustCollected: "Blaniko profile",
+    trustCollectedSub: "Information collected from public sources",
+    trustConfirmed: "Venue confirmed",
+    trustVerified: "Blaniko verified",
+    trustLastUpdated: "Last updated",
   },
   searchPage: {
     pageTitle: "Discover venues in Casablanca | Blaniko",
@@ -859,14 +871,15 @@ const fr: Dictionary = {
     joinList: "Rejoindre la liste",
     arComingSoon: "Arabe bientôt disponible",
     heroEyebrowCity: "Casablanca · MA",
-    heroHeadlinePrefix: "Votre guide pour",
-    heroHeadlineEmphasis: "des expériences uniques",
+    heroHeadlinePrefix: "Découvrez",
+    heroHeadlineEmphasis: "des expériences incroyables",
     heroHeadlineSuffix: "à Casablanca.",
     heroSubtitle:
-      "Une sélection soignée d'activités, de lieux et d'expériences — choisie avec goût pour vous aider à profiter pleinement de Casablanca, quel que soit le week-end.",
+      "Trouvez des lieux, des activités et des expériences qui correspondent à ce que vous cherchez.",
     heroSearchPlaceholder: "Essayez padel, escape rooms ou activités en famille",
     heroExplore: "Explorer tous les guides",
-    heroStartPlanning: "Planifier ma sortie",
+    heroStartPlanning: "Explorer les expériences",
+    heroTryPlanner: "Essayer le planificateur",
     heroTagWeekend: "Idées week-end",
     heroTagOutdoor: "En plein air",
     heroTagUnder200: "Petit budget",
@@ -879,7 +892,7 @@ const fr: Dictionary = {
     categoriesRight:
       "Choisissez une catégorie pour commencer — ou passez d'une ambiance à l'autre.",
     categoriesNotSurePrompt: "Vous ne savez pas quoi faire ?",
-    categoriesNotSureCta: "Obtenir des idées personnalisées →",
+    categoriesNotSureCta: "Essayer le planificateur →",
     curatedEyebrow: "Sélection",
     curatedTitlePrefix: "Nos meilleures",
     curatedTitleEmphasis: "idées",
@@ -921,7 +934,7 @@ const fr: Dictionary = {
     aboutEyebrow: "À propos",
     aboutTitlePrefix: "Casablanca a bien plus à offrir que vous ne croyez.",
     aboutTitleEmphasis: "On est là pour ça.",
-    aboutBody: "Blaniko est un guide local d'activités, de sports, de jeux, d'activités en plein air et de sorties en famille à Casablanca. Nous rassemblons des idées de sorties, des détails utiles et des outils de planification pour vous aider à organiser plus qu'une seule adresse.",
+    aboutBody: "Blaniko est un guide local d'activités, de sports, de jeux, d'expériences en plein air et de sorties en famille à Casablanca. Nous rassemblons des idées soigneusement sélectionnées, des détails utiles et des informations fiables pour vous aider à découvrir ce que la ville a à offrir.",
     footerPrivacyLink: "Politique de confidentialité",
     footerForVenues: "Pour les établissements",
     navThemeToLight: "Passer en mode clair",
@@ -997,9 +1010,9 @@ const fr: Dictionary = {
     noVenuesSub: "Essayez d\u2019\u00e9largir votre recherche ou de supprimer un filtre.",
     clearFilters: "Effacer les filtres",
     exploreMore: "Explorer plus",
-    planCtaTitle: "Créez votre plan de sortie",
-    planCtaSub: "Enregistrez les lieux qui vous plaisent, puis transformez-les en plan à partager avec vos amis.",
-    planCtaBtn: "Commencer \u00e0 planifier",
+    planCtaTitle: "Essayer le planificateur",
+    planCtaSub: "Découvrez l'expérience de planification Blaniko — choisissez une ambiance et obtenez un parcours de sortie prêt à l'emploi.",
+    planCtaBtn: "Essayer",
     filtersBtn: "Filtres",
     gridView: "Vue grille",
     listView: "Vue liste",
@@ -1071,6 +1084,11 @@ const fr: Dictionary = {
     actionWebsite: "Site web",
     actionInstagram: "Instagram",
     actionContactSoon: "Coordonnées bientôt disponibles",
+    trustCollected: "Profil Blaniko",
+    trustCollectedSub: "Informations collectées à partir de sources publiques",
+    trustConfirmed: "Confirmé par l'établissement",
+    trustVerified: "Vérifié par Blaniko",
+    trustLastUpdated: "Dernière mise à jour",
   },
   searchPage: {
     pageTitle: "Découvrir des lieux à Casablanca | Blaniko",
