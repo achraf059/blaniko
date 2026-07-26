@@ -78,13 +78,6 @@ export const Hero = () => {
         </button>
       </div>
 
-      <div className="hero-secondary-cta reveal in" style={{ transitionDelay: "300ms" }}>
-        <button className="hero-planner-link" onClick={() => navigate("/plan")}>
-          {dictionary.claudeHome.heroTryPlanner}
-          <Icon name="arrow" size={12} />
-        </button>
-      </div>
-
       <div className="hero-tags reveal in" style={{ transitionDelay: "360ms" }}>
         {tags.map(({ label, icon }) => (
           <button key={label} className="tag" onClick={() => navigate(tagLinks[label] ?? "/categories")}>
