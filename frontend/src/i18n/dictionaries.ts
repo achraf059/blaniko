@@ -258,6 +258,11 @@ export type Dictionary = {
     actionWebsite: string;
     actionInstagram: string;
     actionContactSoon: string;
+    trustCollected: string;
+    trustCollectedSub: string;
+    trustConfirmed: string;
+    trustVerified: string;
+    trustLastUpdated: string;
   };
   searchPage: {
     pageTitle: string;
@@ -664,6 +669,11 @@ const en: Dictionary = {
     actionWebsite: "Website",
     actionInstagram: "Instagram",
     actionContactSoon: "Contact details coming soon",
+    trustCollected: "Blaniko profile",
+    trustCollectedSub: "Information collected from public sources",
+    trustConfirmed: "Venue confirmed",
+    trustVerified: "Blaniko verified",
+    trustLastUpdated: "Last updated",
   },
   searchPage: {
     pageTitle: "Discover venues in Casablanca | Blaniko",
@@ -1074,6 +1084,11 @@ const fr: Dictionary = {
     actionWebsite: "Site web",
     actionInstagram: "Instagram",
     actionContactSoon: "Coordonnées bientôt disponibles",
+    trustCollected: "Profil Blaniko",
+    trustCollectedSub: "Informations collectées à partir de sources publiques",
+    trustConfirmed: "Confirmé par l'établissement",
+    trustVerified: "Vérifié par Blaniko",
+    trustLastUpdated: "Dernière mise à jour",
   },
   searchPage: {
     pageTitle: "Découvrir des lieux à Casablanca | Blaniko",
