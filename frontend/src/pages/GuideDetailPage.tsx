@@ -67,13 +67,6 @@ function IconCompass() {
     </svg>
   );
 }
-function IconPlan() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 4v16M4 9h5M14 8h3M14 12h3M14 16h3" />
-    </svg>
-  );
-}
 function IconLayers() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -339,9 +332,6 @@ export default function GuideDetailPage() {
               className="blg-rail-btn primary"
             >
               <IconCompass /> {text.guideDetailPage.openVenues}
-            </Link>
-            <Link to="/plan" className="blg-rail-btn">
-              <IconPlan /> {text.guideDetailPage.createPlan}
             </Link>
             <Link to="/guides" className="blg-rail-btn">
               <IconLayers /> {text.guideDetailPage.moreGuides}
