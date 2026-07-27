@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { HomeHeader } from "../components/home/HomeHeader";
 import {
   editorialCollections,
@@ -51,34 +51,6 @@ function IconSpark() {
     </svg>
   );
 }
-function IconBookmark() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M6 4h12v16l-6-4-6 4V4Z" />
-    </svg>
-  );
-}
-function IconCompass() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" /><path d="m15.5 8.5-2 5-5 2 2-5z" />
-    </svg>
-  );
-}
-function IconSun() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-    </svg>
-  );
-}
-function IconTrend() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M3 17 9 11l4 4 8-8" /><path d="M21 7v5h-5" />
-    </svg>
-  );
-}
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
 
@@ -118,7 +90,6 @@ export default function GuidesPage() {
   const text = getFlowTexts(language);
   const t = text.guidesPage;
   const { venues } = useVenues();
-  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const moodRef = useRef<HTMLElement>(null);
 
@@ -186,26 +157,6 @@ export default function GuidesPage() {
     [filteredGuides, editorGuide.slug, spotlightGuide.slug],
   );
 
-  // Love strip links to date-friendly guide (explicit slug lookup, not array index)
-  const loveGuide = editorialCollections.find((c) => c.slug === "date-friendly-activity-ideas") ?? editorialCollections[0];
-
-  const TRUST = [
-    { title: t.trust0title, sub: t.trust0sub, icon: <IconPin /> },
-    { title: t.trust1title, sub: t.trust1sub, icon: <IconCompass /> },
-    { title: t.trust2title, sub: t.trust2sub, icon: <IconSun /> },
-  ];
-
-  const TRENDING_CHIPS = [
-    t.trendingChip0, t.trendingChip1, t.trendingChip2, t.trendingChip3, t.trendingChip4,
-  ];
-
-  const HOW_STEPS = [
-    { title: t.howStep0title, sub: t.howStep0sub, icon: <IconSpark /> },
-    { title: t.howStep1title, sub: t.howStep1sub, icon: <IconCompass /> },
-    { title: t.howStep2title, sub: t.howStep2sub, icon: <IconSun /> },
-    { title: t.howStep3title, sub: t.howStep3sub, icon: <IconBookmark /> },
-  ];
-
   const badgeLabel = (c: typeof editorialCollections[0]) =>
     language === "fr" && c.badgeFr ? c.badgeFr.label : c.badge?.label ?? "";
 
@@ -227,9 +178,9 @@ export default function GuidesPage() {
             </p>
             <h1 className="blg-hero-title">
               {language === "fr" ? (
-                <>Guides <em>de la ville</em></>
+                <>Guides de Casablanca <em>pour toutes les envies.</em></>
               ) : (
-                <>Curated <em>city guides</em></>
+                <>Casablanca guides <em>for every mood.</em></>
               )}
             </h1>
             <p className="blg-hero-lede">{t.heroLede}</p>
@@ -241,20 +192,6 @@ export default function GuidesPage() {
               >
                 {t.heroExplore} <IconArrow />
               </button>
-              <Link to="/favorites" className="blg-btn-ghost">
-                <IconBookmark /> {t.heroBrowse}
-              </Link>
-            </div>
-            <div className="blg-trust">
-              {TRUST.map((item, i) => (
-                <div className="blg-trust-item" key={i}>
-                  <span className="blg-trust-ic">{item.icon}</span>
-                  <div>
-                    <p className="blg-trust-t">{item.title}</p>
-                    <p className="blg-trust-s">{item.sub}</p>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -439,82 +376,6 @@ export default function GuidesPage() {
               </button>
             </div>
           )}
-        </section>
-
-        {/* ── Bottom editorial strips ───────────────────────────────────── */}
-        <section className="blg-strips blg-reveal">
-          {/* Local love strip */}
-          <Link to={`/guides/${loveGuide.slug}`} className="blg-strip blg-strip--love">
-            <img className="blg-strip-img" src="/homepage/backgrounds/hero-casablanca-full-background.webp" alt="" />
-            <span className="blg-strip-scrim" aria-hidden="true" />
-            <div className="blg-strip-inner">
-              <p className="blg-eyebrow">{t.featuredCollection}</p>
-              <h3 className="blg-strip-title">{t.localLoveTitle}</h3>
-              <p className="blg-strip-sub">{t.localLoveSub}</p>
-              <div className="blg-strip-stats">
-                <span className="blg-meta"><IconCompass /> {t.localLoveStat0}</span>
-                <span className="blg-meta"><IconPin /> {t.localLoveStat1}</span>
-              </div>
-            </div>
-          </Link>
-
-          {/* Trending strip */}
-          <div className="blg-strip blg-strip--trend">
-            <span className="blg-trend-ic" aria-hidden="true"><IconTrend /></span>
-            <div>
-              <p className="blg-eyebrow">
-                {t.trendingNow} <span aria-hidden="true"><IconSpark /></span>
-              </p>
-              <h3 className="blg-strip-title">{t.trendingTitle}</h3>
-              <div className="blg-trend-chips">
-                {TRENDING_CHIPS.map((chip, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className="blg-trend-chip"
-                    onClick={() => navigate(`/categories?q=${encodeURIComponent(chip)}`)}
-                  >
-                    {chip}
-                  </button>
-                ))}
-                <Link to="/categories" className="blg-trend-all">
-                  {t.viewAllShort} <IconArrow />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── How Blaniko guides work ───────────────────────────────────── */}
-        <section className="blg-how blg-reveal">
-          <div className="blg-how-head">
-            <div>
-              <p className="blg-eyebrow"><IconCompass /> {t.howSub}</p>
-              <h2 className="blg-how-title">{t.howTitle}</h2>
-            </div>
-          </div>
-          <div className="blg-how-steps">
-            {HOW_STEPS.map((step, i) => (
-              <div className="blg-step" key={i}>
-                <span className="blg-step-ic">{step.icon}</span>
-                <p className="blg-step-n">{t.stepLabel} {i + 1}</p>
-                <h3 className="blg-step-t">{step.title}</h3>
-                <p className="blg-step-s">{step.sub}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Build your perfect outing CTA ────────────────────────────── */}
-        <section className="blg-plan blg-reveal">
-          <div className="blg-plan-body">
-            <p className="blg-eyebrow"><IconSpark /> {t.planEyebrow}</p>
-            <h2 className="blg-plan-title">{t.planTitle}</h2>
-            <p className="blg-plan-desc">{t.planDesc}</p>
-          </div>
-          <Link to="/plan" className="blg-btn-gold blg-plan-btn">
-            {t.planButton} <IconArrow />
-          </Link>
         </section>
 
       </main>
