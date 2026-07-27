@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { Link } from "react-router";
 import type { Venue } from "../../data/mockData";
 import { VenueImage } from "../home/VenueImage";
 import { getVenueImageSrc } from "../../utils/venueImage";
@@ -160,9 +161,9 @@ export function LeafletMap({
                   </svg>
                   {primaryArea}
                 </p>
-                <a href={buildVenueHref(venue.slug)} className="blm-pop-link">
+                <Link to={buildVenueHref(venue.slug)} className="blm-pop-link">
                   {viewDetailsLabel} →
-                </a>
+                </Link>
               </div>
             </Popup>
           </Marker>
