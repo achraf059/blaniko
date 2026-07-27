@@ -15,6 +15,7 @@ import { useRecentActivity } from "../hooks/useRecentActivity";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { formatFlowText, getFlowTexts } from "../i18n/flowTexts";
+import PublicFooter from "../components/PublicFooter";
 import "./AreaPage.css";
 
 export default function AreaPage() {
@@ -192,6 +193,8 @@ export default function AreaPage() {
           )}
         </section>
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

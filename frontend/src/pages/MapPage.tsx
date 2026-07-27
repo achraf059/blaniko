@@ -30,6 +30,7 @@ import {
 } from "../utils/discoveryFilters";
 import { getBestForBadges } from "../utils/venuePersonality";
 import { getVenueImageSrc } from "../utils/venueImage";
+import PublicFooter from "../components/PublicFooter";
 import "./MapPage.css";
 import "./SearchPage.css"; // discovery component base styles (bl-discovery-*) used by the map panel
 
@@ -787,6 +788,8 @@ export default function MapPage() {
 
         </div>
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

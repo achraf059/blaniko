@@ -19,6 +19,7 @@ import type { AppLanguage } from "../i18n/types";
 import { getBestForBadges } from "../utils/venuePersonality";
 import { getVenueImageSrc } from "../utils/venueImage";
 import { VenueImage } from "../components/home/VenueImage";
+import PublicFooter from "../components/PublicFooter";
 import "./GuidesPage.css";
 import "./GuideDetailPage.css";
 
@@ -470,6 +471,8 @@ export default function GuideDetailPage() {
           </section>
         ) : null}
       </div>
+
+      <PublicFooter />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
+import PublicFooter from "../components/PublicFooter";
 import "./PrivacyPage.css";
 
 const CONTACT_EMAIL = "blaniko.admin@gmail.com";
@@ -87,6 +88,8 @@ export default function PrivacyPage() {
           ))}
         </div>
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

@@ -382,6 +382,13 @@ export type Dictionary = {
     errLatitudeRange: string;
     errLongitudeRange: string;
   };
+  publicFooter: {
+    tagline: string;
+    forVenues: string;
+    about: string;
+    privacy: string;
+    madeIn: string;
+  };
   common: {
     apiError: string;
     retry: string;
@@ -793,6 +800,13 @@ const en: Dictionary = {
     errCoordsBothRequired: "Both latitude and longitude are required together.",
     errLatitudeRange: "Latitude must be between -90 and 90.",
     errLongitudeRange: "Longitude must be between -180 and 180.",
+  },
+  publicFooter: {
+    tagline: "Discover Casablanca, one place at a time.",
+    forVenues: "For venues",
+    about: "About",
+    privacy: "Privacy Policy",
+    madeIn: "© 2026 Blaniko · Made in Casablanca",
   },
   common: {
     apiError: "Blaniko is having trouble loading places right now. Please try again in a moment.",
@@ -1210,6 +1224,13 @@ const fr: Dictionary = {
     errCoordsBothRequired: "Latitude et longitude sont requises ensemble.",
     errLatitudeRange: "La latitude doit être entre -90 et 90.",
     errLongitudeRange: "La longitude doit être entre -180 et 180.",
+  },
+  publicFooter: {
+    tagline: "Découvrez Casablanca, un lieu à la fois.",
+    forVenues: "Pour les établissements",
+    about: "À propos",
+    privacy: "Politique de confidentialité",
+    madeIn: "© 2026 Blaniko · Fait à Casablanca",
   },
   common: {
     apiError: "Blaniko rencontre un problème pour charger les lieux pour le moment. Veuillez réessayer dans un instant.",
