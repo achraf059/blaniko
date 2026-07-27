@@ -20,6 +20,7 @@ import {
 import { rankVenueAlternatives } from "../utils/venueAlternatives";
 import { getVenuePersonalitySection } from "../utils/venuePersonality";
 import { getVenueImageSrc } from "../utils/venueImage";
+import PublicFooter from "../components/PublicFooter";
 import "./VenuePage.css";
 
 export default function VenuePage() {
@@ -600,6 +601,8 @@ export default function VenuePage() {
           </section>
         ) : null}
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

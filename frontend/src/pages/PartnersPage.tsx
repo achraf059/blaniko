@@ -4,6 +4,7 @@ import { HomeHeader } from "../components/home/HomeHeader";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
+import PublicFooter from "../components/PublicFooter";
 import "./PartnersPage.css";
 
 type ClaimType = "claim" | "listing";
@@ -299,6 +300,8 @@ export default function PartnersPage() {
           )}
         </div>
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

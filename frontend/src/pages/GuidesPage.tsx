@@ -10,6 +10,7 @@ import { useVenues } from "../hooks/useVenues";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
+import PublicFooter from "../components/PublicFooter";
 import "./GuidesPage.css";
 
 // ── Icon helpers ──────────────────────────────────────────────────────────────
@@ -517,6 +518,8 @@ export default function GuidesPage() {
         </section>
 
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

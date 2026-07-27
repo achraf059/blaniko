@@ -9,6 +9,7 @@ import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getFlowTexts } from "../i18n/flowTexts";
 import { getVenueImageSrc } from "../utils/venueImage";
+import PublicFooter from "../components/PublicFooter";
 import "./FavoritesPage.css";
 
 export default function FavoritesPage() {
@@ -144,6 +145,8 @@ export default function FavoritesPage() {
           </section>
         )}
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

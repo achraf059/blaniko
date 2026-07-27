@@ -9,6 +9,7 @@ import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getVenueImageSrc, hasVenueImage } from "../utils/venueImage";
+import PublicFooter from "../components/PublicFooter";
 import type { Venue } from "../data/mockData";
 import type { AppLanguage } from "../i18n/types";
 import "./CategoryPage.css";
@@ -975,6 +976,8 @@ export default function CategoryPage() {
           onPlanCta={() => setDrawer(false)}
         />
       </aside>
+
+      <PublicFooter />
     </div>
   );
 }
