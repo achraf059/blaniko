@@ -132,15 +132,25 @@ export default function MapPage() {
     : "all";
   const moodFromUrl = isDiscoveryMood(moodFromUrlRaw) ? moodFromUrlRaw : "";
 
+  // query needs local state for submit-based typing; sync from URL on back/forward
   const [query, setQuery] = useState(queryFromUrl);
-  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
-  const [selectedMood, setSelectedMood] = useState(moodFromUrl);
-  const [selectedBudget, setSelectedBudget] = useState(budgetFromUrl);
-  const [selectedBestFor, setSelectedBestFor] = useState(bestForFromUrl);
-  const [selectedTimeOfDay, setSelectedTimeOfDay] = useState(timeOfDayFromUrl);
-  const [selectedEnergyLevel, setSelectedEnergyLevel] = useState(energyFromUrl);
-  const [selectedSpaceType, setSelectedSpaceType] = useState(spaceFromUrl);
-  const [selectedSocialLevel, setSelectedSocialLevel] = useState(socialFromUrl);
+  const [prevQueryFromUrl, setPrevQueryFromUrl] = useState(queryFromUrl);
+  if (queryFromUrl !== prevQueryFromUrl) {
+    setPrevQueryFromUrl(queryFromUrl);
+    setQuery(queryFromUrl);
+  }
+
+  // All other filters derive directly from URL — no local state needed.
+  // Browser back/forward updates searchParams, which re-derives these values.
+  const selectedCategory = categoryFromUrl;
+  const selectedMood = moodFromUrl;
+  const selectedBudget = budgetFromUrl;
+  const selectedBestFor = bestForFromUrl;
+  const selectedTimeOfDay = timeOfDayFromUrl;
+  const selectedEnergyLevel = energyFromUrl;
+  const selectedSpaceType = spaceFromUrl;
+  const selectedSocialLevel = socialFromUrl;
+
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [showAdv, setShowAdv] = useState(false);
 
@@ -264,28 +274,20 @@ export default function MapPage() {
     return `/venues/${slug}?${params.toString()}`;
   };
 
-  const filteredVenues = useMemo(
-    () =>
-      filterVenuesBySmartDiscovery(venues, {
-        query,
-        category: selectedCategory,
-        mood: selectedMood,
-        budget: selectedBudget,
-        area: selectedArea,
-        bestFor: selectedBestFor,
-        timeOfDay: selectedTimeOfDay,
-        energyLevel: selectedEnergyLevel,
-        spaceType: selectedSpaceType,
-        socialLevel: selectedSocialLevel,
-      }),
-    [
-      query, selectedCategory, selectedMood, selectedBudget, selectedArea,
-      selectedBestFor, selectedTimeOfDay, selectedEnergyLevel, selectedSpaceType,
-      selectedSocialLevel, venues,
-    ],
-  );
+  const filteredVenues = filterVenuesBySmartDiscovery(venues, {
+    query,
+    category: selectedCategory,
+    mood: selectedMood,
+    budget: selectedBudget,
+    area: selectedArea,
+    bestFor: selectedBestFor,
+    timeOfDay: selectedTimeOfDay,
+    energyLevel: selectedEnergyLevel,
+    spaceType: selectedSpaceType,
+    socialLevel: selectedSocialLevel,
+  });
 
-  const mapVenues = useMemo(() => toMappedVenues(filteredVenues), [filteredVenues]);
+  const mapVenues = toMappedVenues(filteredVenues);
 
   const activeSlug =
     selectedSlug && mapVenues.some((venue) => venue.slug === selectedSlug)
@@ -298,16 +300,13 @@ export default function MapPage() {
 
   const handleCategorySelect = (slug: string) => {
     const next = selectedCategory === slug ? "" : slug;
-    setSelectedCategory(next);
     navigate(buildUrl({ category: next }));
   };
   const handleMoodSelect = (mood: string) => {
     const next = selectedMood === mood ? "" : mood;
-    setSelectedMood(next);
     navigate(buildUrl({ mood: next }));
   };
   const handleBudgetSelect = (value: string) => {
-    setSelectedBudget(value);
     navigate(buildUrl({ budget: value }));
   };
   const handleAreaSelect = (value: string) => {
@@ -315,40 +314,27 @@ export default function MapPage() {
   };
   const handleBestForSelect = (value: string) => {
     const next = selectedBestFor === value ? "" : value;
-    setSelectedBestFor(next);
     navigate(buildUrl({ bestFor: next }));
   };
   const handleTimeOfDaySelect = (value: string) => {
     const next = selectedTimeOfDay === value ? "" : value;
-    setSelectedTimeOfDay(next);
     navigate(buildUrl({ timeOfDay: next }));
   };
   const handleEnergySelect = (value: string) => {
     const next = selectedEnergyLevel === value ? "" : value;
-    setSelectedEnergyLevel(next);
     navigate(buildUrl({ energyLevel: next }));
   };
   const handleSpaceSelect = (value: string) => {
     const next = selectedSpaceType === value ? "" : value;
-    setSelectedSpaceType(next);
     navigate(buildUrl({ spaceType: next }));
   };
   const handleSocialSelect = (value: string) => {
     const next = selectedSocialLevel === value ? "" : value;
-    setSelectedSocialLevel(next);
     navigate(buildUrl({ socialLevel: next }));
   };
 
   const clearFilters = () => {
     setQuery("");
-    setSelectedCategory("");
-    setSelectedMood("");
-    setSelectedBudget("all");
-    setSelectedBestFor("");
-    setSelectedTimeOfDay("");
-    setSelectedEnergyLevel("");
-    setSelectedSpaceType("");
-    setSelectedSocialLevel("");
     navigate("/map");
   };
 
@@ -492,7 +478,7 @@ export default function MapPage() {
               <span className="blm-count">
                 {isLoading
                   ? "—"
-                  : <>{filteredVenues.length}&thinsp;{dictionary.mapPage.venues}</>}
+                  : <>{mapVenues.length}&thinsp;{dictionary.mapPage.venues}</>}
               </span>
             </div>
 
