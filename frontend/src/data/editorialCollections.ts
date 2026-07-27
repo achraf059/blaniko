@@ -119,7 +119,7 @@ export const editorialCollections: EditorialCollection[] = [
     levelFr: "Facile",
     moods: ["budget", "outdoor", "friends", "weekend"],
     cta: {
-      label: "Search low-budget ideas",
+      label: "Browse more venues",
       href: "/categories",
     },
     translations: {
@@ -132,7 +132,7 @@ export const editorialCollections: EditorialCollection[] = [
           "Économique ne veut pas dire ennuyeux. Casablanca offre de nombreux plans abordables qui restent sociaux, locaux et mémorables.",
         theme: { budget: "Faible" },
         explanationChips: ["Petit budget", "Casual", "Facile à répéter"],
-        cta: { label: "Chercher des idées abordables" },
+        cta: { label: "Découvrir plus de lieux" },
       },
     },
   },
