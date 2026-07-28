@@ -1,17 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { useAdminApi, setAdminPin, clearAdminPin, hasAdminPin, type AdminVenueRow, type AdminVenuePatch } from "../hooks/useAdminApi";
+import { useAdminApi, adminLogin, adminLogout, adminCheckSession, type AdminVenueRow, type AdminVenuePatch, type LoginResult } from "../hooks/useAdminApi";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useI18n } from "../i18n/useI18n";
 import "./AdminPage.css";
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-// VITE_ADMIN_PIN controls the frontend UI gate only.
-// ADMIN_PIN (server-side) protects real Supabase writes.
-// Both should be set to the same value in your .env files.
-// If VITE_ADMIN_PIN is not set, the gate fails closed — no PIN is accepted.
-const FRONTEND_PIN = import.meta.env.VITE_ADMIN_PIN ?? "";
 
 // ─── Form state ───────────────────────────────────────────────────────────────
 
@@ -29,9 +21,9 @@ type AdminFormState = {
   isActive: boolean;
   // Descriptions
   shortDescription: string;
-  overview: string;   // no DB column yet — shown as read-only note
-  vibe: string;       // no DB column yet — shown as read-only note
-  audience: string;   // no DB column yet — shown as read-only note
+  overview: string;
+  vibe: string;
+  audience: string;
   // Contact / location
   address: string;
   googleMapsLink: string;
@@ -105,12 +97,27 @@ export default function AdminPage() {
   const { rows, isLoading, loadError, fetchVenues, patchVenue } = useAdminApi();
 
   // ── Auth gate ────────────────────────────────────────────────────────────────
-  // Initialized from the module-level PIN holder so SPA navigation (without
-  // a page refresh) restores the authenticated state. A page refresh clears
-  // the module variable and always shows the lock screen again.
-  const [isAuthenticated, setIsAuthenticated] = useState(() => hasAdminPin());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [pinInput, setPinInput] = useState("");
-  const [pinError, setPinError] = useState(false);
+  const [loginError, setLoginError] = useState<LoginResult | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [sessionError, setSessionError] = useState(false);
+
+  // On mount, check if a valid session cookie already exists
+  useEffect(() => {
+    void adminCheckSession().then((result) => {
+      if (result === "authenticated") {
+        setIsAuthenticated(true);
+      }
+      // "error" (429, network) → keep isAuthenticated as-is (don't force logout)
+      // "unauthenticated" → leave isAuthenticated false (initial state)
+      if (result === "error" && !isCheckingSession) {
+        setSessionError(true);
+      }
+      setIsCheckingSession(false);
+    });
+  }, []);
 
   // ── List state ───────────────────────────────────────────────────────────────
   const [searchTerm, setSearchTerm] = useState("");
@@ -126,8 +133,7 @@ export default function AdminPage() {
     | { type: "error"; message: string }
   >({ type: "idle" });
 
-  // Load venues after auth. On 401 the hook clears the memory PIN; we also
-  // return to the lock screen so the admin can re-enter their PIN.
+  // Load venues after auth. On 401 the hook returns "auth_failed"; return to login.
   useEffect(() => {
     if (!isAuthenticated) return;
     void fetchVenues().then((result) => {
@@ -150,6 +156,29 @@ export default function AdminPage() {
   }, [rows, searchTerm, filterActive]);
 
   // ── Handlers ─────────────────────────────────────────────────────────────────
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError(null);
+    setSessionError(false);
+    setIsLoggingIn(true);
+    const result = await adminLogin(pinInput);
+    setIsLoggingIn(false);
+    setPinInput("");
+    if (result === "success") {
+      setIsAuthenticated(true);
+    } else {
+      setLoginError(result);
+    }
+  };
+
+  const handleLogout = async () => {
+    await adminLogout();
+    setIsAuthenticated(false);
+    setEditingId(null);
+    setForm(emptyForm());
+    setSaveStatus({ type: "idle" });
+  };
 
   const startEdit = (row: AdminVenueRow) => {
     setEditingId(row.external_id);
@@ -237,11 +266,10 @@ export default function AdminPage() {
     if (result.ok) {
       // Refresh form from the updated row returned by the server
       setForm(rowToForm(result.row));
-      setSaveStatus({ type: "success", message: `Saved to Supabase ✓ (${editingId})` });
+      setSaveStatus({ type: "success", message: `Saved to Supabase (${editingId})` });
     } else {
-      // If the server rejected our PIN, clear it and return to the lock screen.
-      if (result.message.startsWith("Incorrect PIN")) {
-        clearAdminPin();
+      // If the session expired, return to the lock screen.
+      if (result.message.includes("Session expired")) {
         setIsAuthenticated(false);
         setPinInput("");
         return;
@@ -250,60 +278,65 @@ export default function AdminPage() {
     }
   };
 
+  // ── Loading state while checking session ──────────────────────────────────────
+
+  if (isCheckingSession) {
+    return (
+      <div className="bl-admin-page">
+        <HomeHeader labels={dictionary.header} />
+        <main className="bl-admin-gate-main">
+          <div className="bl-admin-gate-form">
+            <p className="bl-admin-gate-eyebrow">Admin</p>
+            <h1 className="bl-admin-gate-title">Checking session...</h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   // ── Auth gate render ──────────────────────────────────────────────────────────
 
   if (!isAuthenticated) {
-    if (!FRONTEND_PIN) {
-      return (
-        <div className="bl-admin-page">
-          <HomeHeader labels={dictionary.header} />
-          <main className="bl-admin-gate-main">
-            <div className="bl-admin-gate-form">
-              <p className="bl-admin-gate-eyebrow">Admin</p>
-              <h1 className="bl-admin-gate-title">Admin access is not configured.</h1>
-              <p className="bl-admin-gate-desc">
-                Set the VITE_ADMIN_PIN environment variable and rebuild to enable access.
-              </p>
-            </div>
-          </main>
-        </div>
-      );
-    }
-
     return (
       <div className="bl-admin-page">
         <HomeHeader labels={dictionary.header} />
         <main className="bl-admin-gate-main">
           <form
             className="bl-admin-gate-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (pinInput === FRONTEND_PIN) {
-                // Keep PIN in memory only — never written to sessionStorage or localStorage.
-                setAdminPin(pinInput);
-                setIsAuthenticated(true);
-              } else {
-                setPinError(true);
-                setPinInput("");
-              }
-            }}
+            onSubmit={handleLogin}
           >
             <p className="bl-admin-gate-eyebrow">Admin</p>
             <h1 className="bl-admin-gate-title">Restricted area</h1>
             <p className="bl-admin-gate-desc">Enter the admin PIN to continue.</p>
+            {sessionError ? (
+              <p className="bl-admin-gate-error">
+                Could not reach the server. Please try again.
+              </p>
+            ) : null}
             <input
               type="password"
               value={pinInput}
-              onChange={(e) => { setPinInput(e.target.value); setPinError(false); }}
+              onChange={(e) => { setPinInput(e.target.value); setLoginError(null); }}
               placeholder="PIN"
-              className={`bl-admin-gate-input${pinError ? " is-error" : ""}`}
+              className={`bl-admin-gate-input${loginError ? " is-error" : ""}`}
               autoFocus
               autoComplete="current-password"
+              disabled={isLoggingIn}
             />
-            {pinError ? (
-              <p className="bl-admin-gate-error">Incorrect PIN. Try again.</p>
+            {loginError === "invalid" ? (
+              <p className="bl-admin-gate-error">Invalid credentials</p>
+            ) : loginError === "rate_limited" ? (
+              <p className="bl-admin-gate-error">
+                Too many attempts. Please wait and try again.
+              </p>
+            ) : loginError === "error" ? (
+              <p className="bl-admin-gate-error">
+                Could not reach the server. Please try again.
+              </p>
             ) : null}
-            <button type="submit" className="bl-admin-gate-btn">Continue →</button>
+            <button type="submit" className="bl-admin-gate-btn" disabled={isLoggingIn}>
+              {isLoggingIn ? "Verifying..." : "Continue \u2192"}
+            </button>
           </form>
         </main>
       </div>
@@ -323,9 +356,17 @@ export default function AdminPage() {
           <p className="bl-admin-subtitle">
             {dictionary.adminPage.subtitle}
           </p>
+          <button
+            type="button"
+            className="bl-admin-secondary-btn"
+            onClick={handleLogout}
+            style={{ marginTop: "0.5rem" }}
+          >
+            Log out
+          </button>
           {loadError ? (
             <p className="bl-admin-api-error">
-              ⚠ API error: {loadError}
+              API error: {loadError}
             </p>
           ) : null}
         </section>
@@ -335,7 +376,7 @@ export default function AdminPage() {
           <div className="bl-admin-list-card">
             <div className="bl-admin-list-head">
               <h2>
-                {isLoading ? "Loading…" : `${rows.length} venues`}
+                {isLoading ? "Loading\u2026" : `${rows.length} venues`}
               </h2>
               <button
                 type="button"
@@ -351,7 +392,7 @@ export default function AdminPage() {
               <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search name, category, neighborhood…"
+                placeholder="Search name, category, neighborhood\u2026"
                 className="bl-admin-input"
               />
               <select
@@ -381,7 +422,7 @@ export default function AdminPage() {
                         ) : null}
                       </p>
                       <p className="bl-admin-list-meta">
-                        {row.external_id} · {row.subcategory ?? row.category} · {row.neighborhood ?? "—"}
+                        {row.external_id} · {row.subcategory ?? row.category} · {row.neighborhood ?? "\u2014"}
                       </p>
                     </div>
                     <button
@@ -642,7 +683,7 @@ export default function AdminPage() {
                     onClick={handleSave}
                     disabled={isSaving}
                   >
-                    {isSaving ? "Saving…" : "Save to Supabase"}
+                    {isSaving ? "Saving\u2026" : "Save to Supabase"}
                   </button>
                 </div>
               </>

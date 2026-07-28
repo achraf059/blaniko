@@ -2,34 +2,106 @@
  * useAdminApi
  *
  * Manages admin venue operations via the backend admin API.
- * All writes go through the backend, which validates the PIN server-side
- * before writing to Supabase. The service role key is never exposed to the browser.
+ * Authentication is handled via HttpOnly session cookies set by the backend.
+ * The PIN is never stored in the frontend — it is sent once to the login
+ * endpoint, validated server-side, and a session cookie is returned.
  *
- * The PIN is held in a module-level variable for the current page session only.
- * It is never written to sessionStorage or localStorage.
- * Refreshing the page clears it and requires re-authentication.
+ * A CSRF token is returned on login and session check, held in memory only
+ * (never in localStorage, sessionStorage, cookies, or URLs), and sent via
+ * the X-CSRF-Token header on all state-changing requests.
  */
 
 import { useCallback, useState } from "react";
 
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:3001";
 
-// Module-level PIN holder — lives only in JS memory for the current page session.
-// Cleared automatically on page refresh. Never written to any storage.
-let _adminPin = "";
+// ─── CSRF token — held in JS memory only ─────────────────────────────────────
+let _csrfToken = "";
 
-export function setAdminPin(pin: string): void {
-  _adminPin = pin;
+function setCsrfToken(token: string): void {
+  _csrfToken = token;
 }
 
-export function clearAdminPin(): void {
-  _adminPin = "";
+function clearCsrfToken(): void {
+  _csrfToken = "";
 }
 
-/** Returns true if an in-memory PIN is currently held (used to restore auth state on SPA navigation). */
-export function hasAdminPin(): boolean {
-  return _adminPin !== "";
+function getCsrfToken(): string {
+  return _csrfToken;
 }
+
+// ─── Auth helpers ────────────────────────────────────────────────────────────
+
+export type LoginResult = "success" | "invalid" | "rate_limited" | "error";
+
+/** Send PIN to backend. Returns a discriminated result so the caller
+ *  can show an appropriate message for each failure mode. */
+export async function adminLogin(pin: string): Promise<LoginResult> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/auth/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pin }),
+    });
+    if (res.status === 429) return "rate_limited";
+    if (!res.ok) return "invalid";
+    const body = (await res.json().catch(() => ({}))) as {
+      success?: boolean;
+      csrfToken?: string;
+    };
+    if (body.success && body.csrfToken) {
+      setCsrfToken(body.csrfToken);
+      return "success";
+    }
+    return "invalid";
+  } catch {
+    return "error";
+  }
+}
+
+export type SessionCheckResult = "authenticated" | "unauthenticated" | "error";
+
+/** Check whether an active admin session exists (cookie-based).
+ *  Returns "error" for transient failures (429, network) so the caller
+ *  can distinguish "definitely not logged in" from "couldn't reach server". */
+export async function adminCheckSession(): Promise<SessionCheckResult> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/auth/session`, {
+      credentials: "include",
+    });
+    // Transient server errors — do NOT treat as "unauthenticated"
+    if (res.status === 429 || res.status >= 500) return "error";
+    if (!res.ok) return "unauthenticated";
+    const body = (await res.json().catch(() => ({}))) as {
+      authenticated?: boolean;
+      csrfToken?: string;
+    };
+    if (body.authenticated && body.csrfToken) {
+      setCsrfToken(body.csrfToken);
+      return "authenticated";
+    }
+    return body.authenticated === true ? "authenticated" : "unauthenticated";
+  } catch {
+    return "error";
+  }
+}
+
+/** Log out — clears the session cookie server-side. */
+export async function adminLogout(): Promise<void> {
+  try {
+    await fetch(`${API_URL}/api/admin/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "X-CSRF-Token": getCsrfToken() },
+    });
+  } catch {
+    // Best-effort — cookie will expire anyway
+  }
+  clearCsrfToken();
+}
+
+// ─── Types ───────────────────────────────────────────────────────────────────
 
 // Raw Supabase row shape returned by GET /api/admin/venues
 export type AdminVenueRow = {
@@ -82,9 +154,7 @@ export type AdminVenuePatch = {
   audience?: string | null;
 };
 
-function getPin(): string {
-  return _adminPin;
-}
+// ─── Hook ────────────────────────────────────────────────────────────────────
 
 export function useAdminApi() {
   const [rows, setRows] = useState<AdminVenueRow[]>([]);
@@ -96,13 +166,13 @@ export function useAdminApi() {
     setLoadError(null);
     try {
       const res = await fetch(`${API_URL}/api/admin/venues`, {
-        headers: { "x-admin-pin": getPin() },
+        credentials: "include",
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         if (res.status === 401) {
-          clearAdminPin();
-          setLoadError("Incorrect PIN. Reload the page and try again.");
+          clearCsrfToken();
+          setLoadError("Session expired. Please log in again.");
           setIsLoading(false);
           return "auth_failed";
         }
@@ -129,9 +199,10 @@ export function useAdminApi() {
       try {
         const res = await fetch(`${API_URL}/api/admin/venues/${externalId}`, {
           method: "PATCH",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            "x-admin-pin": getPin(),
+            "X-CSRF-Token": getCsrfToken(),
           },
           body: JSON.stringify(fields),
         });
@@ -144,8 +215,11 @@ export function useAdminApi() {
 
         if (!res.ok || !body.success) {
           if (res.status === 401) {
-            clearAdminPin();
-            return { ok: false, message: "Incorrect PIN — reload and log in again." };
+            clearCsrfToken();
+            return { ok: false, message: "Session expired — please log in again." };
+          }
+          if (res.status === 403) {
+            return { ok: false, message: "Request rejected — please reload and try again." };
           }
           if (res.status === 404) return { ok: false, message: `Venue ${externalId} not found in Supabase.` };
           return { ok: false, message: body.error ?? `Server error ${res.status}` };

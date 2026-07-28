@@ -4,7 +4,7 @@ import { adminAuth } from "../middleware/adminAuth";
 
 const router = Router();
 
-// All admin routes require the PIN header
+// All admin routes require a valid session cookie
 router.use(adminAuth);
 
 // ─── Allowed PATCH fields ─────────────────────────────────────────────────────
