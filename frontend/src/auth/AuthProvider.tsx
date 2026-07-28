@@ -13,7 +13,7 @@ export type AuthContextValue = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  /** True when VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are present. */
+  /** True when VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are present. */
   isConfigured: boolean;
   authError: string | null;
   /** Resolves to an error message on failure, or null on success. */
