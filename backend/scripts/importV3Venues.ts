@@ -5,7 +5,7 @@
  *
  * Modes:
  *   --dry-run        Validate the payload and print a summary (no DB operations)
- *   --confirm-replace Actually call the replace_venues_v3 RPC (NOT for this task)
+ *   --confirm-replace Actually call the replace_venues_v3 RPC (production replacement)
  *
  * Usage:
  *   tsx scripts/importV3Venues.ts --dry-run
@@ -15,6 +15,7 @@
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
+import { supabase } from "../src/lib/supabase";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -341,14 +342,267 @@ async function main() {
     return;
   }
 
-  // ─── Live replacement (NOT for this task) ──────────────────────────────────
+  // ─── Live replacement ──────────────────────────────────────────────────────
 
   if (isConfirmReplace) {
-    console.log("\n⚠  LIVE REPLACEMENT is not enabled in this task.");
-    console.log("   The --confirm-replace mode will call the replace_venues_v3 RPC");
-    console.log("   after the migration has been applied to production.");
-    console.log("   This is a future step — not part of the current implementation.");
-    process.exit(0);
+    // Step 3: Supabase service-role client already imported at top level.
+
+    // Step 4: Read current production venues BEFORE replacement.
+    console.log("\nReading current production venues...");
+    const { data: currentVenues, error: readError } = await supabase
+      .from("venues")
+      .select("*");
+
+    if (readError) {
+      console.error(`\nERROR: Failed to read current venues: ${readError.message}`);
+      process.exit(1);
+    }
+
+    if (!currentVenues || currentVenues.length !== 47) {
+      console.error(`\nERROR: Expected exactly 47 current venues, found ${currentVenues?.length ?? 0}`);
+      console.error("This is a re-run guard. The replacement may have already been applied.");
+      console.error("ABORTING — RPC was NOT called.");
+      process.exit(1);
+    }
+
+    console.log(`  ✓ Found exactly ${currentVenues.length} current venues`);
+
+    // Verify legacy-state identities
+    const legacyChecks: Array<{ id: string; expectedName: string }> = [
+      { id: "BLK-0001", expectedName: "Astropool Lounge" },
+      { id: "BLK-0026", expectedName: "OASIS SPORTS CITY" },
+      { id: "BLK-0049", expectedName: "Basket Atlantic hank" },
+    ];
+
+    for (const check of legacyChecks) {
+      const venue = currentVenues.find((v: { external_id: string }) => v.external_id === check.id);
+      if (!venue) {
+        console.error(`\nERROR: Legacy identity check failed — ${check.id} not found in current venues`);
+        console.error("ABORTING — RPC was NOT called.");
+        process.exit(1);
+      }
+      if (venue.name !== check.expectedName) {
+        console.error(`\nERROR: Legacy identity check failed — ${check.id} name is '${venue.name}', expected '${check.expectedName}'`);
+        console.error("Database may already be migrated.");
+        console.error("ABORTING — RPC was NOT called.");
+        process.exit(1);
+      }
+      console.log(`  ✓ ${check.id} = ${check.expectedName}`);
+    }
+
+    // Step 5: Create backup of all 47 venue rows.
+    const backupDir = path.resolve(__dirname, "..", "backups");
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const backupFilename = `pre-v3-venues-${timestamp}.json`;
+    const backupPath = path.join(backupDir, backupFilename);
+
+    fs.writeFileSync(backupPath, JSON.stringify(currentVenues, null, 2), "utf-8");
+
+    // Verify backup by reading it back
+    const backupRaw = fs.readFileSync(backupPath, "utf-8");
+    const backupParsed = JSON.parse(backupRaw);
+    if (!Array.isArray(backupParsed) || backupParsed.length !== 47) {
+      console.error(`\nERROR: Backup verification failed — expected 47 rows, parsed ${Array.isArray(backupParsed) ? backupParsed.length : "non-array"}`);
+      console.error("ABORTING — RPC was NOT called.");
+      process.exit(1);
+    }
+
+    console.log(`  ✓ Backup written and verified: ${backupPath}`);
+
+    // Step 6: Record pre-replacement dependent-data counts.
+    const { count: favCountPre, error: favErr } = await supabase
+      .from("user_favorites")
+      .select("*", { count: "exact", head: true });
+
+    if (favErr) {
+      console.error(`\nERROR: Failed to count user_favorites: ${favErr.message}`);
+      process.exit(1);
+    }
+
+    const { count: claimsCountPre, error: claimsErr } = await supabase
+      .from("venue_claims")
+      .select("*", { count: "exact", head: true });
+
+    if (claimsErr) {
+      console.error(`\nERROR: Failed to count venue_claims: ${claimsErr.message}`);
+      process.exit(1);
+    }
+
+    console.log(`  ✓ Pre-replacement user_favorites: ${favCountPre}`);
+    console.log(`  ✓ Pre-replacement venue_claims: ${claimsCountPre}`);
+
+    // Step 7: Final warning.
+    console.log(`\n${"=".repeat(60)}`);
+    console.log("⚠  About to atomically replace 47 production venues with 99 V3 venues.");
+    console.log(`${"=".repeat(60)}`);
+
+    // Step 8: Call the RPC.
+    console.log("\nCalling replace_venues_v3 RPC...");
+    const { error: rpcError } = await supabase.rpc("replace_venues_v3", {
+      payload: venues,
+    });
+
+    // Step 9: Handle RPC failure.
+    if (rpcError) {
+      console.error(`\n${"!".repeat(60)}`);
+      console.error("REPLACEMENT FAILED — DATABASE TRANSACTION ROLLED BACK");
+      console.error(`Error: ${rpcError.message}`);
+      if (rpcError.details) console.error(`Details: ${rpcError.details}`);
+      if (rpcError.hint) console.error(`Hint: ${rpcError.hint}`);
+      console.error(`${"!".repeat(60)}`);
+      process.exit(1);
+    }
+
+    console.log("  ✓ RPC returned success");
+
+    // Step 10: Post-flight validation.
+    console.log("\nRunning post-flight validation...");
+    const postFlightErrors: string[] = [];
+
+    const { data: newVenues, error: postReadErr } = await supabase
+      .from("venues")
+      .select("*");
+
+    if (postReadErr) {
+      console.error(`\nERROR: Post-flight read failed: ${postReadErr.message}`);
+      process.exit(1);
+    }
+
+    // venues count = 99
+    if (!newVenues || newVenues.length !== 99) {
+      postFlightErrors.push(`Venue count: expected 99, got ${newVenues?.length ?? 0}`);
+    }
+
+    if (newVenues && newVenues.length > 0) {
+      const postIds = new Set(newVenues.map((v: { external_id: string }) => v.external_id));
+
+      // Exact ID set
+      for (const expected of EXPECTED_IDS) {
+        if (!postIds.has(expected)) postFlightErrors.push(`Missing ID: ${expected}`);
+      }
+      for (const actual of postIds) {
+        if (!EXPECTED_IDS.has(actual)) postFlightErrors.push(`Unexpected ID: ${actual}`);
+      }
+
+      // BLK-0037 absent
+      if (postIds.has("BLK-0037")) postFlightErrors.push("BLK-0037 should be absent");
+
+      // BLK-0038 identity
+      const post38 = newVenues.find((v: { external_id: string }) => v.external_id === "BLK-0038");
+      if (!post38 || post38.name !== "OASIS SPORTS CITY") {
+        postFlightErrors.push(`BLK-0038: expected 'OASIS SPORTS CITY', got '${post38?.name}'`);
+      }
+
+      // BLK-0100 identity
+      const post100 = newVenues.find((v: { external_id: string }) => v.external_id === "BLK-0100");
+      const expectedName100 = "LE M SPA \u2013 Hammam & Massage Spa Casablanca";
+      if (!post100 || post100.name !== expectedName100) {
+        postFlightErrors.push(`BLK-0100: expected '${expectedName100}', got '${post100?.name}'`);
+      }
+
+      // 99 unique external IDs
+      if (postIds.size !== 99) postFlightErrors.push(`Unique external IDs: expected 99, got ${postIds.size}`);
+
+      // 99 unique slugs
+      const postSlugs = new Set(newVenues.map((v: { slug: string }) => v.slug));
+      if (postSlugs.size !== 99) postFlightErrors.push(`Unique slugs: expected 99, got ${postSlugs.size}`);
+
+      // 0 null contact_information
+      const nullContacts = newVenues.filter((v: { contact_information: string | null }) => v.contact_information === null).length;
+      if (nullContacts !== 0) postFlightErrors.push(`Null contact_information: expected 0, got ${nullContacts}`);
+
+      // exactly 4 contact_information == "Unknown"
+      const unknownContacts = newVenues.filter((v: { contact_information: string }) => v.contact_information === "Unknown");
+      if (unknownContacts.length !== 4) {
+        postFlightErrors.push(`Unknown contacts: expected 4, got ${unknownContacts.length}`);
+      }
+
+      // Unknown IDs exact
+      const actualUnknownIds = new Set(unknownContacts.map((v: { external_id: string }) => v.external_id));
+      for (const uid of UNKNOWN_CONTACT_IDS) {
+        if (!actualUnknownIds.has(uid)) postFlightErrors.push(`Expected Unknown contact for ${uid}`);
+      }
+
+      // price/price_details/price_level all null
+      const priceNonNull = newVenues.filter((v: { price: unknown }) => v.price !== null).length;
+      if (priceNonNull !== 0) postFlightErrors.push(`price non-null: expected 0, got ${priceNonNull}`);
+
+      const priceDetailsNonNull = newVenues.filter((v: { price_details: unknown }) => v.price_details !== null).length;
+      if (priceDetailsNonNull !== 0) postFlightErrors.push(`price_details non-null: expected 0, got ${priceDetailsNonNull}`);
+
+      const priceLevelNonNull = newVenues.filter((v: { price_level: unknown }) => v.price_level !== null).length;
+      if (priceLevelNonNull !== 0) postFlightErrors.push(`price_level non-null: expected 0, got ${priceLevelNonNull}`);
+
+      // lat/lng all null
+      const latNonNull = newVenues.filter((v: { lat: unknown }) => v.lat !== null).length;
+      if (latNonNull !== 0) postFlightErrors.push(`lat non-null: expected 0, got ${latNonNull}`);
+
+      const lngNonNull = newVenues.filter((v: { lng: unknown }) => v.lng !== null).length;
+      if (lngNonNull !== 0) postFlightErrors.push(`lng non-null: expected 0, got ${lngNonNull}`);
+
+      // all is_active = true
+      const inactiveCount = newVenues.filter((v: { is_active: boolean }) => v.is_active !== true).length;
+      if (inactiveCount !== 0) postFlightErrors.push(`Inactive venues: expected 0, got ${inactiveCount}`);
+
+      // all source = "v3_import"
+      const wrongSource = newVenues.filter((v: { source: string }) => v.source !== "v3_import").length;
+      if (wrongSource !== 0) postFlightErrors.push(`Venues with wrong source: expected 0, got ${wrongSource}`);
+
+      // all research_status = "Verified"
+      const wrongResearch = newVenues.filter((v: { research_status: string }) => v.research_status !== "Verified").length;
+      if (wrongResearch !== 0) postFlightErrors.push(`Venues with wrong research_status: expected 0, got ${wrongResearch}`);
+
+      // all verification_level = "publicly_researched"
+      const wrongVerification = newVenues.filter((v: { verification_level: string }) => v.verification_level !== "publicly_researched").length;
+      if (wrongVerification !== 0) postFlightErrors.push(`Venues with wrong verification_level: expected 0, got ${wrongVerification}`);
+    }
+
+    // user_favorites = 0
+    const { count: favCountPost, error: favErrPost } = await supabase
+      .from("user_favorites")
+      .select("*", { count: "exact", head: true });
+
+    if (favErrPost) {
+      postFlightErrors.push(`Failed to count post user_favorites: ${favErrPost.message}`);
+    } else if (favCountPost !== 0) {
+      postFlightErrors.push(`Post user_favorites: expected 0, got ${favCountPost}`);
+    }
+
+    // venue_claims must equal pre-replacement count
+    const { count: claimsCountPost, error: claimsErrPost } = await supabase
+      .from("venue_claims")
+      .select("*", { count: "exact", head: true });
+
+    if (claimsErrPost) {
+      postFlightErrors.push(`Failed to count post venue_claims: ${claimsErrPost.message}`);
+    } else if (claimsCountPost !== claimsCountPre) {
+      postFlightErrors.push(`Post venue_claims: expected ${claimsCountPre} (pre-replacement), got ${claimsCountPost}`);
+    }
+
+    // Step 11: Handle post-flight failures.
+    if (postFlightErrors.length > 0) {
+      console.error(`\n${"!".repeat(60)}`);
+      console.error("POST-FLIGHT VALIDATION FAILED");
+      console.error(`${"!".repeat(60)}`);
+      for (const e of postFlightErrors) {
+        console.error(`  ✗ ${e}`);
+      }
+      console.error(`\nBackup available at: ${backupPath}`);
+      console.error("Manual recovery may be required.");
+      process.exit(1);
+    }
+
+    // Step 12: Success.
+    console.log(`\n${"=".repeat(60)}`);
+    console.log("V3 PRODUCTION REPLACEMENT COMPLETE");
+    console.log("47 legacy venues → 99 authoritative V3 venues");
+    console.log("All post-flight checks passed.");
+    console.log(`Backup: ${backupPath}`);
+    console.log(`${"=".repeat(60)}`);
   }
 }
 
