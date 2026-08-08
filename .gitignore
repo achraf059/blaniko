@@ -60,3 +60,6 @@ claude-design-combined-export 2/
 
 # Local backups
 backups/
+
+# Generated venue data payloads
+scripts/v3_venues_payload.json

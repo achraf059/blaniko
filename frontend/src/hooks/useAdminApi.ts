@@ -130,6 +130,28 @@ export type AdminVenueRow = {
   source: string | null;
   created_at: string;
   updated_at: string;
+  // V3 canonical fields (present after migration + import)
+  additional_experiences?: string[] | null;
+  location_text?: string | null;
+  google_maps_url?: string | null;
+  contact_information?: string | null;
+  audience_tags?: string[] | null;
+  experience_description?: string | null;
+  atmosphere_tags?: string[] | null;
+  indoor_outdoor?: string | null;
+  facebook?: string | null;
+  opening_hours_raw?: string | null;
+  booking_method?: string[] | null;
+  booking_link?: string | null;
+  research_status?: string | null;
+  verification_level?: string | null;
+  last_verified_date?: string | null;
+  verified_by?: string | null;
+  price?: string | null;
+  price_details?: string | null;
+  best_for_tags?: string[] | null;
+  space_type?: string | null;
+  time_of_day?: string[] | null;
 };
 
 // Fields accepted by PATCH /api/admin/venues/:externalId (camelCase)
@@ -152,6 +174,25 @@ export type AdminVenuePatch = {
   overview?: string | null;
   vibe?: string | null;
   audience?: string | null;
+  // V3 canonical fields
+  locationText?: string | null;
+  googleMapsUrl?: string | null;
+  contactInformation?: string | null;
+  experienceDescription?: string | null;
+  indoorOutdoor?: string | null;
+  facebook?: string | null;
+  openingHoursRaw?: string | null;
+  bookingLink?: string | null;
+  researchStatus?: string | null;
+  verificationLevel?: string | null;
+  verifiedBy?: string | null;
+  // Array fields
+  audienceTags?: string[] | null;
+  atmosphereTags?: string[] | null;
+  additionalExperiences?: string[] | null;
+  bookingMethod?: string[] | null;
+  bestForTags?: string[] | null;
+  timeOfDay?: string[] | null;
 };
 
 // ─── Hook ────────────────────────────────────────────────────────────────────

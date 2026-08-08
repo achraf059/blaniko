@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 const router = Router();
 
 // Maps a DB category + subcategory to the frontend categorySlug used for routing.
+// Supports both old V0 categories and new V3 canonical 8-category system.
 function toCategorySlug(category: string, subcategory: string | null): string {
   const subcategoryMap: Record<string, string> = {
     // Physical / group activities → activities
@@ -27,6 +28,38 @@ function toCategorySlug(category: string, subcategory: string | null): string {
     // Family / kids → family
     "indoor play": "family",
     "theme park": "family",
+    // V3 subcategories
+    "billiard lounge": "activities",
+    "billiards lounge": "activities",
+    "pool lounge": "activities",
+    "paintball arena": "activities",
+    "paintball": "activities",
+    "trampoline park": "activities",
+    "go-karting": "activities",
+    "gaming cafe": "gaming",
+    "gaming center": "gaming",
+    "vr experience": "gaming",
+    "vr gaming": "gaming",
+    "football center": "sports",
+    "padel club": "sports",
+    "sports complex": "sports",
+    "surf school": "sports",
+    "jet ski": "outdoor",
+    "beach resort": "outdoor",
+    "water park": "outdoor",
+    "aqua park": "outdoor",
+    "kids entertainment": "family",
+    "kids café": "family",
+    "kids cafe": "family",
+    "family entertainment": "family",
+    "indoor playground": "family",
+    "art studio": "activities",
+    "pottery studio": "activities",
+    "cooking class": "activities",
+    "spa": "wellness",
+    "hammam": "wellness",
+    "massage": "wellness",
+    "yoga studio": "wellness",
   };
 
   const categoryMap: Record<string, string> = {
@@ -34,6 +67,15 @@ function toCategorySlug(category: string, subcategory: string | null): string {
     sports: "sports",
     "amusement park": "family",
     "pool / beach club": "outdoor",
+    // V3 canonical categories
+    "indoor games": "activities",
+    "entertainment": "activities",
+    "arts & creative": "activities",
+    "gaming": "gaming",
+    "sports experiences": "sports",
+    "water & beach activities": "outdoor",
+    "family & kids": "family",
+    "wellness & relaxation": "wellness",
   };
 
   if (subcategory) {
@@ -167,6 +209,17 @@ function mapVenue(row: Record<string, unknown>) {
   // frontend budget filter will simply not match this venue.
   const priceLevel = row.price_level ? String(row.price_level) : undefined;
 
+  // V3 canonical fields with fallbacks to old fields
+  const audienceTags = Array.isArray(row.audience_tags) && (row.audience_tags as string[]).length > 0
+    ? (row.audience_tags as string[])
+    : undefined;
+  const atmosphereTags = Array.isArray(row.atmosphere_tags) && (row.atmosphere_tags as string[]).length > 0
+    ? (row.atmosphere_tags as string[])
+    : undefined;
+  const additionalExperiences = Array.isArray(row.additional_experiences) && (row.additional_experiences as string[]).length > 0
+    ? (row.additional_experiences as string[])
+    : undefined;
+
   return {
     id: row.id,
     externalId: row.external_id,
@@ -202,6 +255,24 @@ function mapVenue(row: Record<string, unknown>) {
     timeOfDay: row.time_of_day ?? computeTimeOfDay(subcategory),
     priceLevel,
     coordinates,
+    // V3 canonical fields (present after V3 import, undefined for old data)
+    audienceTags,
+    atmosphereTags,
+    additionalExperiences,
+    experienceDescription: row.experience_description ? String(row.experience_description) : undefined,
+    openingHoursRaw: row.opening_hours_raw ? String(row.opening_hours_raw) : undefined,
+    facebook: row.facebook ? String(row.facebook) : undefined,
+    bookingMethod: Array.isArray(row.booking_method) ? (row.booking_method as string[]) : undefined,
+    bookingLink: row.booking_link ? String(row.booking_link) : undefined,
+    indoorOutdoor: row.indoor_outdoor ? String(row.indoor_outdoor) : undefined,
+    locationText: row.location_text ? String(row.location_text) : undefined,
+    googleMapsUrl: row.google_maps_url ? String(row.google_maps_url) : undefined,
+    contactInformation: row.contact_information ? String(row.contact_information) : undefined,
+    // Trust / verification
+    researchStatus: row.research_status ? String(row.research_status) : undefined,
+    verificationLevel: row.verification_level ? String(row.verification_level) : undefined,
+    lastVerifiedDate: row.last_verified_date ? String(row.last_verified_date) : undefined,
+    verifiedBy: row.verified_by ? String(row.verified_by) : undefined,
   };
 }
 

@@ -1,18 +1,27 @@
 /**
- * updateVenueData.ts
- *
- * One-time data enrichment script for Blaniko venues.
- * Fills in missing price_level and lat/lng based on subcategory / neighborhood.
- *
- * Usage:
- *   Dry run (prints what would change, no writes):
- *     tsx scripts/updateVenueData.ts --dry-run
- *
- *   Real update:
- *     tsx scripts/updateVenueData.ts
- *
- * Run from the backend/ directory so dotenv finds backend/.env
+ * ╔══════════════════════════════════════════════════════════════════════════╗
+ * ║  DEPRECATED — DO NOT USE                                              ║
+ * ║                                                                        ║
+ * ║  This script was used for V0/V1 data enrichment (price_level, coords). ║
+ * ║  It infers values that conflict with the V3 canonical dataset.          ║
+ * ║  Running this against V3 data will corrupt production venues.           ║
+ * ║                                                                        ║
+ * ║  Use instead: scripts/importV3Venues.ts                                ║
+ * ╚══════════════════════════════════════════════════════════════════════════╝
  */
+
+console.error("╔══════════════════════════════════════════════════════════════════╗");
+console.error("║  DEPRECATED — DO NOT USE                                       ║");
+console.error("║                                                                 ║");
+console.error("║  This script infers price_level and coordinates from heuristics ║");
+console.error("║  that are incompatible with the V3 canonical dataset.           ║");
+console.error("║  Running this will corrupt production venue data.               ║");
+console.error("║                                                                 ║");
+console.error("║  Use: tsx scripts/importV3Venues.ts --dry-run                   ║");
+console.error("╚══════════════════════════════════════════════════════════════════╝");
+process.exit(1);
+
+// ─── Original code below (unreachable) ───────────────────────────────────────
 
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";

@@ -60,6 +60,24 @@ export type Venue = {
   imageUrl?: string;
   isActive?: boolean;
   source?: string;
+
+  // V3 canonical fields (present after V3 import)
+  audienceTags?: string[];
+  atmosphereTags?: string[];
+  additionalExperiences?: string[];
+  experienceDescription?: string;
+  openingHoursRaw?: string;
+  facebook?: string;
+  bookingMethod?: string[];
+  bookingLink?: string;
+  indoorOutdoor?: string;
+  locationText?: string;
+  googleMapsUrl?: string;
+  contactInformation?: string;
+  researchStatus?: string;
+  verificationLevel?: string;
+  lastVerifiedDate?: string;
+  verifiedBy?: string;
 };
 
 export function getVenueDisplay(
