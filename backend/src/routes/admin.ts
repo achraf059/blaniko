@@ -29,6 +29,28 @@ const PATCHABLE: Record<string, string> = {
   overview:         "overview",
   vibe:             "vibe",
   audience:         "audience",
+  // V3 canonical fields
+  locationText:           "location_text",
+  googleMapsUrl:          "google_maps_url",
+  contactInformation:     "contact_information",
+  experienceDescription:  "experience_description",
+  indoorOutdoor:          "indoor_outdoor",
+  facebook:               "facebook",
+  openingHoursRaw:        "opening_hours_raw",
+  bookingLink:            "booking_link",
+  researchStatus:         "research_status",
+  verificationLevel:      "verification_level",
+  verifiedBy:             "verified_by",
+};
+
+// Fields that are TEXT[] arrays in the DB — need special handling
+const ARRAY_PATCHABLE: Record<string, string> = {
+  audienceTags:           "audience_tags",
+  atmosphereTags:         "atmosphere_tags",
+  additionalExperiences:  "additional_experiences",
+  bookingMethod:          "booking_method",
+  bestForTags:            "best_for_tags",
+  timeOfDay:              "time_of_day",
 };
 
 // ─── GET /api/admin/venues ────────────────────────────────────────────────────
@@ -106,11 +128,36 @@ router.patch("/venues/:externalId", async (req: Request, res: Response) => {
       continue;
     }
 
+    // Enum field: indoor_outdoor
+    if (camel === "indoorOutdoor") {
+      const allowed = ["Indoor", "Outdoor", "Indoor / Outdoor"];
+      if (val !== null && val !== "" && !allowed.includes(String(val))) {
+        res.status(400).json({ success: false, error: "invalid_indoor_outdoor" });
+        return;
+      }
+      patch[snake] = val || null;
+      continue;
+    }
+
     // All other string fields
     if (typeof val === "string") {
       patch[snake] = val.trim() === "" ? null : val.trim();
     } else {
       patch[snake] = null;
+    }
+  }
+
+  // Handle array fields
+  for (const [camel, snake] of Object.entries(ARRAY_PATCHABLE)) {
+    if (!(camel in input)) continue;
+    const val = input[camel];
+    if (val === null || val === undefined) {
+      patch[snake] = null;
+    } else if (Array.isArray(val)) {
+      patch[snake] = val.map((item) => String(item).trim()).filter((s) => s.length > 0);
+    } else {
+      res.status(400).json({ success: false, error: `invalid_${camel}_must_be_array` });
+      return;
     }
   }
 
