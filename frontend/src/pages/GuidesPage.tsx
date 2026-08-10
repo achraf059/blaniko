@@ -84,6 +84,12 @@ function useReveal(dep: string | number) {
 const FILTER_KEYS = ["all", "date", "indoor", "outdoor", "friends", "sunset", "weekend"] as const;
 type FilterKey = typeof FILTER_KEYS[number];
 
+// Collections excluded from every public Guides surface (hero, list, filters, peek stack).
+// - under-100-mad: budget-based, excluded until verified V3 prices exist.
+// - sunset-places: area-based (areaIncludes), resolves to 0 venues under current V3
+//   structured location data (all venue.area === "Casablanca").
+const EXCLUDED_GUIDE_SLUGS: ReadonlySet<string> = new Set(["under-100-mad", "sunset-places"]);
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function GuidesPage() {
@@ -103,9 +109,13 @@ export default function GuidesPage() {
 
   useReveal(activeFilter);
 
-  // The spotlight guide is always the "sunset-places" guide (best hero imagery)
+  // Featured/hero guide. Previously hard-pinned to "sunset-places", but that guide
+  // is area-based (areaIncludes) and resolves to 0 venues under current V3 structured
+  // location data (all venue.area === "Casablanca"), so it is excluded from public
+  // Guides surfaces. Featured now uses an active, category-based guide that resolves
+  // correctly. See EXCLUDED_GUIDE_SLUGS below.
   const spotlightGuide = useMemo(
-    () => editorialCollections.find((c) => c.slug === "sunset-places") ?? editorialCollections[0],
+    () => editorialCollections.find((c) => c.slug === "casual-plans-with-friends") ?? editorialCollections[0],
     [],
   );
   const spotlightDisplay = useMemo(
@@ -117,13 +127,12 @@ export default function GuidesPage() {
     [spotlightGuide, venues],
   );
 
-  // Peek cards: 3 other guides used as background stack
-  // V3 price safety: exclude the budget-based "under-100-mad" collection from public
-  // display until verified prices exist (matches the activeCollections exclusion below).
+  // Peek cards: up to 3 other guides used as background stack.
+  // Excludes the spotlight and any collection hidden from public display.
   const peekGuides = useMemo(
     () =>
       editorialCollections
-        .filter((c) => c.slug !== spotlightGuide.slug && c.slug !== "under-100-mad")
+        .filter((c) => c.slug !== spotlightGuide.slug && !EXCLUDED_GUIDE_SLUGS.has(c.slug))
         .slice(0, 3),
     [spotlightGuide],
   );
@@ -150,9 +159,9 @@ export default function GuidesPage() {
     weekend: t.filterWeekend,
   };
 
-  // V3 price safety: exclude budget-based collections until verified prices exist.
+  // Publicly displayed collections (drives the list, filters and mood row).
   const activeCollections = useMemo(
-    () => editorialCollections.filter((c) => c.slug !== "under-100-mad"),
+    () => editorialCollections.filter((c) => !EXCLUDED_GUIDE_SLUGS.has(c.slug)),
     [],
   );
 
