@@ -320,12 +320,13 @@ function venueMatchesRule(venue: Venue, rule: EditorialSelectionRule): boolean {
     return false;
   }
 
-  if (rule.priceLevels?.length) {
-    const level = (venue.priceLevel ?? "").trim();
-    if (!rule.priceLevels.includes(level)) {
-      return false;
-    }
-  }
+  // V3 price safety: priceLevels filtering disabled until verified prices exist.
+  // if (rule.priceLevels?.length) {
+  //   const level = (venue.priceLevel ?? "").trim();
+  //   if (!rule.priceLevels.includes(level)) {
+  //     return false;
+  //   }
+  // }
 
   if (rule.areaIncludes?.length) {
     const normalizedArea = normalize(venue.area);

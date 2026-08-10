@@ -394,21 +394,11 @@ function rankVenue(
 ): number {
   let score = 0;
   const styleWeighting = options.style?.weighting;
-  const budgetWeight = styleWeighting?.budget ?? 1;
   const moodWeight = styleWeighting?.mood ?? 1;
   const areaWeight = styleWeighting?.area ?? 1;
 
-  if (options.budget === "all") {
-    score += 1;
-  } else if (venue.priceLevel === options.budget) {
-    score += 3 * budgetWeight;
-  } else if (
-    options.style?.budgetStrict &&
-    options.budget === "$" &&
-    venue.priceLevel !== "$"
-  ) {
-    score -= 4;
-  }
+  // V3 price safety: budget scoring disabled until verified prices exist.
+  score += 1;
 
   if (
     options.area !== "any" &&
@@ -437,9 +427,10 @@ function rankVenue(
       score += 2;
     }
 
-    if (style.preferredPriceLevels?.includes(venue.priceLevel ?? "")) {
-      score += 2;
-    }
+    // V3 price safety: preferredPriceLevels disabled until verified prices exist.
+    // if (style.preferredPriceLevels?.includes(venue.priceLevel ?? "")) {
+    //   score += 2;
+    // }
 
     if (
       style.preferredAreas?.some((preferredArea) =>
@@ -484,10 +475,13 @@ function parseMood(value: string | null): string {
     : "social";
 }
 
+// V3 price safety: default budget is "all" (never "$$") and the parsed value is
+// behaviorally ignored by ranking until verified prices exist. Old $/$$/$$$ URLs
+// stay parseable for backwards compatibility but have no scoring effect.
 function parseBudget(value: string | null): string {
   return budgetOptions.some((option) => option.value === value)
     ? (value as string)
-    : "$$";
+    : "all";
 }
 
 function parseArea(value: string | null): string {
@@ -496,7 +490,11 @@ function parseArea(value: string | null): string {
     : "any";
 }
 
+// V3 price safety: "under-100-mad" excluded from selectable styles until verified prices exist.
+const disabledPlanStyles: ReadonlySet<string> = new Set(["under-100-mad"]);
+
 function parsePlanStyle(value: string | null): PlanStyleId {
+  if (value && disabledPlanStyles.has(value)) return defaultPlanStyleId;
   return planStyleOptions.some((style) => style.id === value)
     ? (value as PlanStyleId)
     : defaultPlanStyleId;
@@ -546,7 +544,7 @@ function buildPlanUrl(options: {
   const params = new URLSearchParams();
   params.set("with", options.withWho);
   params.set("mood", options.mood);
-  params.set("budget", options.budget);
+  // V3 price safety: budget is not propagated into generated plan URLs until verified prices exist.
   params.set("area", options.area);
   params.set("style", options.style);
   params.set("seed", String(options.seed));
@@ -571,7 +569,7 @@ function getPlanStyleById(id: PlanStyleId): PlanStyleConfig {
 // Maps the 5 quiz answers from OutingQuiz onto a PlanStyleId.
 // Priority: specific companion+area combos → companion → budget → default.
 function mapQuizAnswersToStyle(answers: QuizAnswers): PlanStyleId {
-  const { companion, category, budget, area, vibe } = answers;
+  const { companion, category, area, vibe } = answers;
 
   // Partner in Ain Diab → sunset coastal route
   if (companion === "partner" && area === "ain diab") return "sunset-plan";
@@ -581,8 +579,8 @@ function mapQuizAnswersToStyle(answers: QuizAnswers): PlanStyleId {
   if (companion === "family" || category === "family") return "family-afternoon";
   // Solo
   if (companion === "alone") return "chill-solo-reset";
-  // Budget-first
-  if (budget === "$") return "under-100-mad";
+  // V3 price safety: budget-first style disabled until verified prices exist.
+  // if (budget === "$") return "under-100-mad";
   // Friends + sports/gaming → friends hangout (default social)
   return "friends-hangout";
 }
@@ -597,43 +595,41 @@ function buildOutingNarrative(options: {
 }): string {
   const text = getFlowTexts(options.language);
   const display = getPlanStyleDisplay(options.language, options.style.id);
-  const budgetMap = text.planPage.budgetText;
-  const budgetKey = options.budget as keyof typeof budgetMap;
-  const budgetText = budgetMap[budgetKey] ?? budgetMap.default;
+  // V3 price safety: strip the budget parenthetical from narrative templates entirely
+  // (rather than substituting an empty string, which would leave an ugly "()" artifact)
+  // until verified prices exist.
+  const stripBudget = (template: string) => template.replace(" ({budget})", "");
 
   const startHint = options.stops[0]?.roleHint.toLowerCase() ?? display.roleHints.start.toLowerCase();
   const mainHint = options.stops[1]?.roleHint.toLowerCase() ?? display.roleHints.main.toLowerCase();
   const endHint = options.stops[2]?.roleHint.toLowerCase() ?? display.roleHints.end.toLowerCase();
 
   if (options.stops.length >= 3) {
-    return formatFlowText(text.planPage.narrative3Stops, {
+    return formatFlowText(stripBudget(text.planPage.narrative3Stops), {
       pace: display.summaryTone.pace,
       area: options.areaLabel,
       companion: options.companionLabel.toLowerCase(),
       start: startHint,
       main: mainHint,
       end: endHint,
-      budget: budgetText,
     });
   }
 
   if (options.stops.length === 2) {
-    return formatFlowText(text.planPage.narrative2Stops, {
+    return formatFlowText(stripBudget(text.planPage.narrative2Stops), {
       pace: display.summaryTone.pace,
       area: options.areaLabel,
       companion: options.companionLabel.toLowerCase(),
       start: startHint,
       main: mainHint,
-      budget: budgetText,
     });
   }
 
-  return formatFlowText(text.planPage.narrative1Stop, {
+  return formatFlowText(stripBudget(text.planPage.narrative1Stop), {
     pace: display.summaryTone.pace,
     area: options.areaLabel,
     companion: options.companionLabel.toLowerCase(),
     moment: display.summaryTone.moment,
-    budget: budgetText,
   });
 }
 
@@ -666,13 +662,14 @@ function rankVenueForRole(
     score += 2;
   }
 
-  if (
-    options.style.budgetStrict &&
-    options.budget === "$" &&
-    venue.priceLevel !== "$"
-  ) {
-    score -= role === "main" ? 5 : 3;
-  }
+  // V3 price safety: budgetStrict penalty disabled until verified prices exist.
+  // if (
+  //   options.style.budgetStrict &&
+  //   options.budget === "$" &&
+  //   venue.priceLevel !== "$"
+  // ) {
+  //   score -= role === "main" ? 5 : 3;
+  // }
 
   return score;
 }
@@ -722,7 +719,8 @@ export default function PlanPage() {
     nextParams.set("quizDone", "1");
     nextParams.set("with", answers.companion);
     nextParams.set("mood", answers.vibe);
-    nextParams.set("budget", answers.budget === "all" ? "$$" : answers.budget);
+    // V3 price safety: budget is not written into the URL from quiz answers, and the old
+    // "all" → "$$" fallback is removed, until verified prices exist.
     nextParams.set("area", answers.area || "any");
     nextParams.set("style", derivedStyle);
     nextParams.set("seed", "0");
@@ -990,7 +988,6 @@ export default function PlanPage() {
   }) => {
     const withWhoValue = overrides.withWho ?? companion;
     const moodValue = overrides.mood ?? mood;
-    const budgetValue = overrides.budget ?? budget;
     const areaValue = overrides.area ?? area;
     const styleValue = overrides.style ?? planStyle;
     const seedValue = overrides.seed ?? refreshSeed;
@@ -999,7 +996,7 @@ export default function PlanPage() {
     const nextParams = new URLSearchParams();
     nextParams.set("with", withWhoValue);
     nextParams.set("mood", moodValue);
-    nextParams.set("budget", budgetValue);
+    // V3 price safety: budget is not written into the URL until verified prices exist.
     nextParams.set("area", areaValue);
     nextParams.set("style", styleValue);
     nextParams.set("seed", String(seedValue));
@@ -1239,7 +1236,7 @@ export default function PlanPage() {
     const nextParams = new URLSearchParams();
     nextParams.set("with", companion);
     nextParams.set("mood", mood);
-    nextParams.set("budget", budget);
+    // V3 price safety: budget is not written into the URL until verified prices exist.
     nextParams.set("area", area);
     nextParams.set("style", planStyle);
     nextParams.set("seed", String(refreshSeed));
@@ -1377,7 +1374,7 @@ export default function PlanPage() {
     params.set("from", "plan");
     params.set("with", companion);
     params.set("mood", mood);
-    params.set("budget", budget);
+    // V3 price safety: budget is not propagated to venue links until verified prices exist.
     params.set("area", area);
     params.set("style", planStyle);
     return `/venues/${slug}?${params.toString()}`;
@@ -1433,7 +1430,7 @@ export default function PlanPage() {
             <p className="bl-plan-section-sub">{text.planPage.vibeSubtitle}</p>
           </div>
           <div className="bl-plan-vibes">
-            {planStyleOptions.map((style) => (
+            {planStyleOptions.filter((style) => !disabledPlanStyles.has(style.id)).map((style) => (
               <button
                 key={style.id}
                 type="button"
@@ -1698,7 +1695,8 @@ export default function PlanPage() {
                   }
                 />
               </div>
-              <div className="bl-plan-filter-row">
+              {/* V3 price safety: budget filter hidden until verified prices exist */}
+              <div className="bl-plan-filter-row" style={{ display: "none" }}>
                 <span className="bl-plan-filter-label">{dictionary.searchPage.summaryBudget}</span>
                 <FilterChips
                   options={budgetFilterOptions}

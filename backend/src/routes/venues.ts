@@ -106,7 +106,7 @@ function computeBestForTags(subcategory: string | null, categorySlug: string): s
   if (sub === "padel")                  return ["friends", "active", "competitive"];
   if (sub === "football")               return ["friends", "active", "competitive"];
   if (sub === "basketball")             return ["friends", "active"];
-  if (sub === "outdoor amusement")      return ["family-friendly", "kids", "budget-pick"];
+  if (sub === "outdoor amusement")      return ["family-friendly", "kids"];
   if (sub === "indoor play")            return ["family-friendly", "kids"];
   if (sub === "theme park")             return ["family-friendly", "kids", "active"];
   if (sub.includes("beach club"))       return ["friends", "date-spot", "sunset-spot"];
@@ -114,7 +114,7 @@ function computeBestForTags(subcategory: string | null, categorySlug: string): s
   if (categorySlug === "sports")        return ["friends", "active"];
   if (categorySlug === "gaming")        return ["friends", "late-night"];
   if (categorySlug === "family")        return ["family-friendly", "kids"];
-  if (categorySlug === "outdoor")       return ["friends", "budget-pick"];
+  if (categorySlug === "outdoor")       return ["friends"];
   return ["friends", "group-activity"];
 }
 

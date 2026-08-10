@@ -108,9 +108,10 @@ export function getBestForBadges(
   if (audienceText.includes("family") || audienceText.includes("children")) {
     fallback.push(bestForLabelMap["family-friendly"] ?? "Family-friendly");
   }
-  if ((venue.priceLevel ?? "") === "$") {
-    fallback.push(bestForLabelMap["budget-pick"] ?? "Budget pick");
-  }
+  // V3 price safety: budget-pick personality tag disabled until verified prices exist.
+  // if ((venue.priceLevel ?? "") === "$") {
+  //   fallback.push(bestForLabelMap["budget-pick"] ?? "Budget pick");
+  // }
 
   return fallback.slice(0, max);
 }

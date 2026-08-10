@@ -234,13 +234,14 @@ export function explainVenueMatch(
     );
   }
 
-  if (context.budget && context.budget !== "all" && venue.priceLevel === context.budget) {
-    reasons.push(
-      language === "fr"
-        ? `Dans votre budget ${context.budget}`
-        : `In your ${context.budget} budget`,
-    );
-  }
+  // V3 price safety: budget match insight disabled until verified prices exist.
+  // if (context.budget && context.budget !== "all" && venue.priceLevel === context.budget) {
+  //   reasons.push(
+  //     language === "fr"
+  //       ? `Dans votre budget ${context.budget}`
+  //       : `In your ${context.budget} budget`,
+  //   );
+  // }
 
   if (context.area && context.area !== "any") {
     const areaToken = normalizeText(context.area);
@@ -293,9 +294,10 @@ export function explainVenueMatch(
     reasons.push(language === "fr" ? `Idéal pour ${venue.audience}` : `Best for ${venue.audience}`);
   }
 
-  if (reasons.length <= 2 && venue.priceLevel) {
-    reasons.push(language === "fr" ? `Prix ${venue.priceLevel}` : `Price ${venue.priceLevel}`);
-  }
+  // V3 price safety: price chip disabled until verified prices exist.
+  // if (reasons.length <= 2 && venue.priceLevel) {
+  //   reasons.push(language === "fr" ? `Prix ${venue.priceLevel}` : `Price ${venue.priceLevel}`);
+  // }
 
   if (reasons.length <= 2) {
     reasons.push(

@@ -190,8 +190,7 @@ export default function VenuePage() {
       .replace("{area}", venue.area);
   const vibe = vd.vibe ?? dictionary.venuePage.fallbackVibe;
   const audience = vd.audience ?? dictionary.venuePage.fallbackAudience;
-  const priceLevel =
-    venue.priceLevel ?? dictionary.venuePage.fallbackPriceLevel;
+  const priceLevel = venue.priceLevel ?? null;
   const isVenueFavorite = isFavorite(venue.slug);
   const whyThisPlace = explainVenueMatch(
     venue,
@@ -376,10 +375,12 @@ export default function VenuePage() {
                     <span className="bl-venue-fact-label">{dictionary.venuePage.audience}</span>
                     <span className="bl-venue-fact-value">{audience}</span>
                   </div>
-                  <div className="bl-venue-fact-item">
-                    <span className="bl-venue-fact-label">{dictionary.venuePage.priceLevel}</span>
-                    <span className="bl-venue-fact-value">{priceLevel}</span>
-                  </div>
+                  {priceLevel ? (
+                    <div className="bl-venue-fact-item">
+                      <span className="bl-venue-fact-label">{dictionary.venuePage.priceLevel}</span>
+                      <span className="bl-venue-fact-value">{priceLevel}</span>
+                    </div>
+                  ) : null}
                 </div>
               </section>
 
@@ -517,12 +518,14 @@ export default function VenuePage() {
                 <div className="bl-venue-action-divider" />
 
                 <div className="bl-venue-action-meta">
-                  <div className="bl-venue-action-meta-row">
-                    <span className="bl-venue-action-meta-label">
-                      {dictionary.venuePage.priceLevel}
-                    </span>
-                    <span className="bl-venue-action-meta-value">{priceLevel}</span>
-                  </div>
+                  {priceLevel ? (
+                    <div className="bl-venue-action-meta-row">
+                      <span className="bl-venue-action-meta-label">
+                        {dictionary.venuePage.priceLevel}
+                      </span>
+                      <span className="bl-venue-action-meta-value">{priceLevel}</span>
+                    </div>
+                  ) : null}
                   <div className="bl-venue-action-meta-row">
                     <span className="bl-venue-action-meta-label">
                       {dictionary.venuePage.vibe}

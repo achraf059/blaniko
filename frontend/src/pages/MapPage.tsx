@@ -235,7 +235,6 @@ export default function MapPage() {
     const nextQuery = overrides?.query ?? query;
     const nextCategory = overrides?.category ?? selectedCategory;
     const nextMood = overrides?.mood ?? selectedMood;
-    const nextBudget = overrides?.budget ?? selectedBudget;
     const nextArea = overrides?.area ?? selectedArea;
     const nextBestFor = overrides?.bestFor ?? selectedBestFor;
     const nextTimeOfDay = overrides?.timeOfDay ?? selectedTimeOfDay;
@@ -246,7 +245,7 @@ export default function MapPage() {
     if (nextQuery.trim()) params.set("q", nextQuery.trim());
     if (nextCategory) params.set("category", nextCategory);
     if (nextMood) params.set("mood", nextMood);
-    if (nextBudget !== "all") params.set("budget", nextBudget);
+    // V3 price safety: budget is not propagated into generated map URLs until verified prices exist.
     if (nextArea) params.set("area", nextArea);
     if (nextBestFor) params.set("bestFor", nextBestFor);
     if (nextTimeOfDay) params.set("time", nextTimeOfDay);
@@ -263,7 +262,7 @@ export default function MapPage() {
     params.set("from", "map");
     if (selectedCategory) params.set("category", selectedCategory);
     if (selectedMood) params.set("mood", selectedMood);
-    if (selectedBudget) params.set("budget", selectedBudget);
+    // V3 price safety: budget is not propagated to venue links until verified prices exist.
     if (selectedArea) params.set("area", selectedArea);
     if (selectedBestFor) params.set("bestFor", selectedBestFor);
     if (selectedTimeOfDay) params.set("time", selectedTimeOfDay);
@@ -413,7 +412,7 @@ export default function MapPage() {
               </button>
 
               <div className="blm-foot-right">
-                <div className="blm-foot-budget">
+                <div className="blm-foot-budget" style={{ display: "none" }}>
                   <p className="blm-filter-label">{dictionary.mapPage.budgetLabel}</p>
                   <BudgetSelector
                     options={budgetOptions}

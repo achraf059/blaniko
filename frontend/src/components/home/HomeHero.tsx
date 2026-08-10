@@ -254,7 +254,8 @@ export function HomeHero({
               </div>
 
               <div className="bl-discovery-bottom-row">
-                <div>
+                {/* V3 price safety: budget selector hidden until verified prices exist */}
+                <div style={{ display: "none" }}>
                   <p className="bl-discovery-label">{texts.budgetLabel}</p>
                   <BudgetSelector
                     options={budgetOptions}

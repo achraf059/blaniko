@@ -46,7 +46,7 @@ function emptyForm(): AdminFormState {
     subcategory: "",
     neighborhood: "",
     area: "",
-    priceLevel: "$$",
+    priceLevel: "",
     isActive: true,
     shortDescription: "",
     overview: "",
@@ -72,7 +72,7 @@ function rowToForm(row: AdminVenueRow): AdminFormState {
     subcategory: row.subcategory ?? "",
     neighborhood: row.neighborhood ?? "",
     area: row.neighborhood ?? row.region ?? "",
-    priceLevel: row.price_level ?? "$$",
+    priceLevel: row.price_level ?? "",
     isActive: row.is_active ?? true,
     shortDescription: row.short_description ?? "",
     overview: row.overview ?? "",
@@ -507,6 +507,7 @@ export default function AdminPage() {
                       onChange={(e) => handleChange("priceLevel", e.target.value)}
                       className="bl-admin-select"
                     >
+                      <option value="">— Unknown —</option>
                       <option value="$">$</option>
                       <option value="$$">$$</option>
                       <option value="$$$">$$$</option>

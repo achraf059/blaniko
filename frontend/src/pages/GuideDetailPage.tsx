@@ -190,7 +190,13 @@ export default function GuideDetailPage() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
 
-  const collection = getEditorialCollectionBySlug(slug);
+  // V3 price safety: the budget-based "under-100-mad" guide is not publicly resolvable
+  // until verified prices exist, so /guides/under-100-mad falls through to the not-found view.
+  const resolvedCollection = getEditorialCollectionBySlug(slug);
+  const collection =
+    resolvedCollection && resolvedCollection.slug !== "under-100-mad"
+      ? resolvedCollection
+      : undefined;
   const display = collection ? getCollectionDisplay(collection, language) : null;
 
   usePageMeta(
@@ -221,8 +227,9 @@ export default function GuideDetailPage() {
   const relatedGuides = useMemo(() => {
     const currentGuide = editorialCollections.find((c) => c.slug === slug);
     const currentMoods = currentGuide?.moods ?? [];
+    // V3 price safety: exclude the budget-based "under-100-mad" guide from related cards.
     return editorialCollections
-      .filter((c) => c.slug !== slug)
+      .filter((c) => c.slug !== slug && c.slug !== "under-100-mad")
       .map((c, originalIndex) => ({
         collection: c,
         sharedMoods: (c.moods ?? []).filter((m) => currentMoods.includes(m)).length,

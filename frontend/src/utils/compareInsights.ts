@@ -15,21 +15,13 @@ export type CompareInsights = {
   standoutByVenue: Record<string, string[]>;
 };
 
-function budgetScore(value: string | undefined): number | undefined {
-  if (value === "$") {
-    return 1;
-  }
-
-  if (value === "$$") {
-    return 2;
-  }
-
-  if (value === "$$$") {
-    return 3;
-  }
-
-  return undefined;
-}
+// V3 price safety: budgetScore disabled until verified prices exist.
+// function budgetScore(value: string | undefined): number | undefined {
+//   if (value === "$") return 1;
+//   if (value === "$$") return 2;
+//   if (value === "$$$") return 3;
+//   return undefined;
+// }
 
 function socialScore(value: Venue["socialLevel"]): number {
   if (value === "high") {
@@ -181,19 +173,20 @@ export function buildCompareInsights(
   const callouts: CompareCallout[] = [];
   const standoutByVenue: Record<string, string[]> = {};
 
-  const cheapest = getUniqueWinner(
-    venues.map((venue) => ({ venue, value: budgetScore(venue.priceLevel) })),
-    "min"
-  );
-  if (cheapest) {
-    insightChips.push(isFr ? "Le plus budget-friendly" : "Most budget-friendly");
-    callouts.push({
-      label: isFr ? "Meilleur choix budget" : "Best budget pick",
-      venueSlug: cheapest.slug,
-      venueName: cheapest.name,
-    });
-    addStandout(standoutByVenue, cheapest.slug, isFr ? "Meilleur budget" : "Best budget");
-  }
+  // V3 price safety: budget comparison disabled until verified prices exist.
+  // const cheapest = getUniqueWinner(
+  //   venues.map((venue) => ({ venue, value: budgetScore(venue.priceLevel) })),
+  //   "min"
+  // );
+  // if (cheapest) {
+  //   insightChips.push(isFr ? "Le plus budget-friendly" : "Most budget-friendly");
+  //   callouts.push({
+  //     label: isFr ? "Meilleur choix budget" : "Best budget pick",
+  //     venueSlug: cheapest.slug,
+  //     venueName: cheapest.name,
+  //   });
+  //   addStandout(standoutByVenue, cheapest.slug, isFr ? "Meilleur budget" : "Best budget");
+  // }
 
   const mostSocial = getUniqueWinner(
     venues.map((venue) => ({ venue, value: socialScore(venue.socialLevel) })),

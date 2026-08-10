@@ -57,17 +57,8 @@ export function OutingQuiz({ onComplete }: OutingQuizProps) {
           { value: "family", label: text.recommendationsPage.optionFamily },
         ],
       },
-      {
-        id: "budget",
-        title: text.recommendationsPage.qBudget,
-        stepLabel: text.recommendationsPage.profile.rowBudget,
-        options: [
-          { value: "all", label: text.common.all },
-          { value: "$", label: "$" },
-          { value: "$$", label: "$$" },
-          { value: "$$$", label: "$$$" },
-        ],
-      },
+      // V3 price safety: budget question removed until verified prices exist.
+      // Budget answer defaults to "all" via createDefaultQuizAnswers().
       {
         id: "area",
         title: text.recommendationsPage.qArea,
