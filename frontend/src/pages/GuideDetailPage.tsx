@@ -181,6 +181,12 @@ function RelatedGuideCard({
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// Collections hidden from public Guides surfaces. Navigating to one directly falls
+// through to the not-found view, and they never appear as related cards.
+// - under-100-mad: budget-based, not resolvable until verified V3 prices exist.
+// - sunset-places: area-based, resolves to 0 venues under current V3 location data.
+const HIDDEN_GUIDE_SLUGS = ["under-100-mad", "sunset-places"];
+
 export default function GuideDetailPage() {
   const { dictionary, language } = useI18n();
   const text = getFlowTexts(language);
@@ -190,11 +196,9 @@ export default function GuideDetailPage() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
 
-  // V3 price safety: the budget-based "under-100-mad" guide is not publicly resolvable
-  // until verified prices exist, so /guides/under-100-mad falls through to the not-found view.
   const resolvedCollection = getEditorialCollectionBySlug(slug);
   const collection =
-    resolvedCollection && resolvedCollection.slug !== "under-100-mad"
+    resolvedCollection && !HIDDEN_GUIDE_SLUGS.includes(resolvedCollection.slug)
       ? resolvedCollection
       : undefined;
   const display = collection ? getCollectionDisplay(collection, language) : null;
@@ -227,9 +231,9 @@ export default function GuideDetailPage() {
   const relatedGuides = useMemo(() => {
     const currentGuide = editorialCollections.find((c) => c.slug === slug);
     const currentMoods = currentGuide?.moods ?? [];
-    // V3 price safety: exclude the budget-based "under-100-mad" guide from related cards.
+    // Exclude collections hidden from public Guides surfaces from related cards.
     return editorialCollections
-      .filter((c) => c.slug !== slug && c.slug !== "under-100-mad")
+      .filter((c) => c.slug !== slug && !HIDDEN_GUIDE_SLUGS.includes(c.slug))
       .map((c, originalIndex) => ({
         collection: c,
         sharedMoods: (c.moods ?? []).filter((m) => currentMoods.includes(m)).length,

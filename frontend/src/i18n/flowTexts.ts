@@ -119,7 +119,7 @@ const byLanguage = {
       matchedVenues: "{count} matched venues",
       openGuide: "Read guide",
       heroLede:
-        "Explore date ideas, affordable activities, indoor plans, sunset spots, and outings with friends.",
+        "Explore date ideas, indoor plans, sunset spots, and outings with friends.",
       heroExplore: "Explore all guides",
       chipsLabel: "Choose a mood",
       filterAll: "All guides",
@@ -646,7 +646,7 @@ const byLanguage = {
       matchedVenues: "{count} lieux correspondants",
       openGuide: "Lire le guide",
       heroLede:
-        "Découvrez des idées de sorties en amoureux, des activités abordables, des plans en intérieur, des lieux pour admirer le coucher du soleil et des sorties entre amis.",
+        "Découvrez des idées de sorties en amoureux, des plans en intérieur, des lieux pour admirer le coucher du soleil et des sorties entre amis.",
       heroExplore: "Explorer tous les guides",
       chipsLabel: "Choisissez une ambiance",
       filterAll: "Tous les guides",
