@@ -80,7 +80,8 @@ function useReveal(dep: string | number) {
 
 // ── Filter definitions ────────────────────────────────────────────────────────
 
-const FILTER_KEYS = ["all", "date", "budget", "indoor", "outdoor", "friends", "sunset", "weekend"] as const;
+// V3 price safety: "budget" filter removed until verified prices exist.
+const FILTER_KEYS = ["all", "date", "indoor", "outdoor", "friends", "sunset", "weekend"] as const;
 type FilterKey = typeof FILTER_KEYS[number];
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -117,8 +118,13 @@ export default function GuidesPage() {
   );
 
   // Peek cards: 3 other guides used as background stack
+  // V3 price safety: exclude the budget-based "under-100-mad" collection from public
+  // display until verified prices exist (matches the activeCollections exclusion below).
   const peekGuides = useMemo(
-    () => editorialCollections.filter((c) => c.slug !== spotlightGuide.slug).slice(0, 3),
+    () =>
+      editorialCollections
+        .filter((c) => c.slug !== spotlightGuide.slug && c.slug !== "under-100-mad")
+        .slice(0, 3),
     [spotlightGuide],
   );
 
@@ -137,7 +143,6 @@ export default function GuidesPage() {
   const filterLabels: Record<FilterKey, string> = {
     all: t.filterAll,
     date: t.filterDate,
-    budget: t.filterBudget,
     indoor: t.filterIndoor,
     outdoor: t.filterOutdoor,
     friends: t.filterFriends,
@@ -145,11 +150,17 @@ export default function GuidesPage() {
     weekend: t.filterWeekend,
   };
 
+  // V3 price safety: exclude budget-based collections until verified prices exist.
+  const activeCollections = useMemo(
+    () => editorialCollections.filter((c) => c.slug !== "under-100-mad"),
+    [],
+  );
+
   // Filtered guide list
   const filteredGuides = useMemo(() => {
-    if (activeFilter === "all") return editorialCollections;
-    return editorialCollections.filter((c) => (c.moods ?? []).includes(activeFilter));
-  }, [activeFilter]);
+    if (activeFilter === "all") return activeCollections;
+    return activeCollections.filter((c) => (c.moods ?? []).includes(activeFilter));
+  }, [activeFilter, activeCollections]);
 
   // Guide row: shows all (or filtered) guides excluding the editor's pick and the hero spotlight
   const moodGuides = useMemo(

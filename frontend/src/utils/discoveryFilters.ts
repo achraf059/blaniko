@@ -304,9 +304,9 @@ const fallbackSuggestions: Record<string, SearchSuggestion[]> = {
     { label: "Activities", category: "activities" },
   ],
   cheap: [
-    { label: "Budget pick", bestFor: "budget-pick" },
     { label: "Sports", category: "sports" },
     { label: "Activities", category: "activities" },
+    { label: "Outdoor", category: "outdoor" },
   ],
   date: [
     { label: "Date spot", bestFor: "date-spot" },
@@ -409,9 +409,10 @@ export function filterVenuesBySmartDiscovery(
       return false;
     }
 
-    if (filters.budget !== "all" && venue.priceLevel !== filters.budget) {
-      return false;
-    }
+    // V3 price safety: budget filtering disabled until verified prices exist.
+    // if (filters.budget !== "all" && venue.priceLevel !== filters.budget) {
+    //   return false;
+    // }
 
     if (filters.area && toSlug(getPrimaryArea(venue.area)) !== filters.area) {
       return false;

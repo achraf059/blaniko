@@ -131,10 +131,11 @@ export function rankVenueAlternatives(
         reasons.push(r.sameCategory);
       }
 
-      if (venue.priceLevel && venue.priceLevel === currentVenue.priceLevel) {
-        score += 2;
-        reasons.push(r.sameBudget(venue.priceLevel));
-      }
+      // V3 price safety: sameBudget comparison disabled until verified prices exist.
+      // if (venue.priceLevel && venue.priceLevel === currentVenue.priceLevel) {
+      //   score += 2;
+      //   reasons.push(r.sameBudget(venue.priceLevel));
+      // }
 
       const venueBestFor = (venue.bestForTags ?? [])
         .map((tag) => tag.trim())
