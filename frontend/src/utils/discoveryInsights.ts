@@ -153,9 +153,11 @@ export function getVenueSearchText(venue: Venue): string {
   );
 }
 
-function getPrimaryArea(venue: Venue): string {
-  return venue.area.split(",")[0]?.trim() ?? venue.area;
-}
+// V3 area safety: dormant helper for the disabled area insights above. Restore with
+// verified venue neighborhoods.
+// function getPrimaryArea(venue: Venue): string {
+//   return venue.area.split(",")[0]?.trim() ?? venue.area;
+// }
 
 function uniqueReasons(reasons: string[]): string[] {
   const seen = new Set<string>();
@@ -243,16 +245,19 @@ export function explainVenueMatch(
   //   );
   // }
 
-  if (context.area && context.area !== "any") {
-    const areaToken = normalizeText(context.area);
-    if (areaToken && normalizeText(venue.area).includes(areaToken)) {
-      reasons.push(
-        language === "fr"
-          ? `Dans ${getPrimaryArea(venue)}`
-          : `In ${getPrimaryArea(venue)}`,
-      );
-    }
-  }
+  // V3 area safety: the "In {area}" reason is disabled until verified venue
+  // neighborhoods exist. Every venue resolves to "Casablanca", so this could only ever
+  // produce a meaningless city-wide match. Dormant logic preserved.
+  // if (context.area && context.area !== "any") {
+  //   const areaToken = normalizeText(context.area);
+  //   if (areaToken && normalizeText(venue.area).includes(areaToken)) {
+  //     reasons.push(
+  //       language === "fr"
+  //         ? `Dans ${getPrimaryArea(venue)}`
+  //         : `In ${getPrimaryArea(venue)}`,
+  //     );
+  //   }
+  // }
 
   if (context.mood && venueMatchesMood(venue, context.mood)) {
     const hasMoodKeyword = moodKeywordMap[context.mood].some((keyword) =>
@@ -299,13 +304,16 @@ export function explainVenueMatch(
   //   reasons.push(language === "fr" ? `Prix ${venue.priceLevel}` : `Price ${venue.priceLevel}`);
   // }
 
-  if (reasons.length <= 2) {
-    reasons.push(
-      language === "fr"
-        ? `Quartier ${getPrimaryArea(venue)}`
-        : `Area ${getPrimaryArea(venue)}`,
-    );
-  }
+  // V3 area safety: the "Area {area}" fallback chip is disabled until verified venue
+  // neighborhoods exist. It resolved to "Area Casablanca" for every venue — a
+  // meaningless, non-discriminating reason. Dormant logic preserved.
+  // if (reasons.length <= 2) {
+  //   reasons.push(
+  //     language === "fr"
+  //       ? `Quartier ${getPrimaryArea(venue)}`
+  //       : `Area ${getPrimaryArea(venue)}`,
+  //   );
+  // }
 
   return uniqueReasons(reasons).slice(0, maxReasons);
 }

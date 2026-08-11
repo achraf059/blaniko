@@ -434,8 +434,11 @@ export default function MapPage() {
             {/* Advanced filters drawer */}
             {showAdv ? (
               <div className="blm-advanced">
+                {/* V3 area safety: area filter hidden until verified venue neighborhoods
+                    exist. getAreaOptions() currently yields a single "Casablanca" option,
+                    so this filter would present false precision. Dormant control preserved. */}
                 {areaOptions.length > 0 ? (
-                  <div className="blm-filter-block">
+                  <div className="blm-filter-block" style={{ display: "none" }}>
                     <p className="blm-filter-label">{text.common.area}</p>
                     <FilterChips options={areaOptions} selectedValue={selectedArea || undefined} onSelect={handleAreaSelect} />
                   </div>

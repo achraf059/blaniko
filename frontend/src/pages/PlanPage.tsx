@@ -395,17 +395,21 @@ function rankVenue(
   let score = 0;
   const styleWeighting = options.style?.weighting;
   const moodWeight = styleWeighting?.mood ?? 1;
-  const areaWeight = styleWeighting?.area ?? 1;
 
   // V3 price safety: budget scoring disabled until verified prices exist.
   score += 1;
 
-  if (
-    options.area !== "any" &&
-    venue.area.toLowerCase().includes(options.area)
-  ) {
-    score += 3 * areaWeight;
-  }
+  // V3 area safety: neighborhood-level area scoring is disabled until verified venue
+  // neighborhoods exist. Every V3 venue resolves to "Casablanca", so this boost could
+  // never differentiate real areas (Maârif / Ain Diab / …) and choosing an area does
+  // not change ranking. The dormant scoring is preserved below for later restoration.
+  // const areaWeight = styleWeighting?.area ?? 1;
+  // if (
+  //   options.area !== "any" &&
+  //   venue.area.toLowerCase().includes(options.area)
+  // ) {
+  //   score += 3 * areaWeight;
+  // }
 
   if (options.mood && venueMatchesMood(venue, options.mood)) {
     score += 3 * moodWeight;
@@ -432,13 +436,15 @@ function rankVenue(
     //   score += 2;
     // }
 
-    if (
-      style.preferredAreas?.some((preferredArea) =>
-        venue.area.toLowerCase().includes(preferredArea.toLowerCase()),
-      )
-    ) {
-      score += 2;
-    }
+    // V3 area safety: preferredAreas bonuses disabled until verified venue neighborhoods
+    // exist (every venue resolves to "Casablanca"). Dormant config preserved on the style.
+    // if (
+    //   style.preferredAreas?.some((preferredArea) =>
+    //     venue.area.toLowerCase().includes(preferredArea.toLowerCase()),
+    //   )
+    // ) {
+    //   score += 2;
+    // }
 
     if (style.keywordBoosts?.length) {
       const text =
@@ -545,7 +551,8 @@ function buildPlanUrl(options: {
   params.set("with", options.withWho);
   params.set("mood", options.mood);
   // V3 price safety: budget is not propagated into generated plan URLs until verified prices exist.
-  params.set("area", options.area);
+  // V3 area safety: area is not propagated into generated plan URLs while neighborhood
+  // personalization is off (it has no effect on results). Old area= URLs stay parseable.
   params.set("style", options.style);
   params.set("seed", String(options.seed));
 
@@ -712,7 +719,7 @@ export default function PlanPage() {
     //   vibe  → mood  (same value set: chill/social/active/romantic/family-friendly)
     //   companion → with  (same value set: alone/friends/family/partner)
     //   budget → budget  (same: all/$/$$/$$$ )
-    //   area → area  (quiz subset of PlanPage area list — all values are valid)
+    //   area is not mapped — the Area quiz step is removed under V3 area safety
     //   category is consumed by mapQuizAnswersToStyle; no direct PlanPage param
     const derivedStyle = mapQuizAnswersToStyle(answers);
     const nextParams = new URLSearchParams();
@@ -721,7 +728,8 @@ export default function PlanPage() {
     nextParams.set("mood", answers.vibe);
     // V3 price safety: budget is not written into the URL from quiz answers, and the old
     // "all" → "$$" fallback is removed, until verified prices exist.
-    nextParams.set("area", answers.area || "any");
+    // V3 area safety: area is not written into the URL (the Area quiz step is removed and
+    // the value has no effect on ranking) until verified neighborhoods exist.
     nextParams.set("style", derivedStyle);
     nextParams.set("seed", "0");
     setSearchParams(nextParams, { replace: true });
@@ -988,7 +996,6 @@ export default function PlanPage() {
   }) => {
     const withWhoValue = overrides.withWho ?? companion;
     const moodValue = overrides.mood ?? mood;
-    const areaValue = overrides.area ?? area;
     const styleValue = overrides.style ?? planStyle;
     const seedValue = overrides.seed ?? refreshSeed;
     const lockedRolesValue = overrides.lockedRoles ?? parsedLockedRoles;
@@ -997,7 +1004,8 @@ export default function PlanPage() {
     nextParams.set("with", withWhoValue);
     nextParams.set("mood", moodValue);
     // V3 price safety: budget is not written into the URL until verified prices exist.
-    nextParams.set("area", areaValue);
+    // V3 area safety: area is not written into the URL while neighborhood personalization
+    // is off (overrides.area is accepted but ignored) until verified neighborhoods exist.
     nextParams.set("style", styleValue);
     nextParams.set("seed", String(seedValue));
 
@@ -1181,8 +1189,11 @@ export default function PlanPage() {
     applyRefinedPlan({ stops: nextStops, locks: lockedRoles, seed: nextSeed });
   };
 
-  const selectedAreaLabel =
-    areaFilterOptions.find((option) => option.value === area)?.label ?? "Casablanca";
+  // V3 area safety: the plan narrative and title use the honest city-level label
+  // ("Casablanca", true for every V3 venue) instead of a selected neighborhood, so we
+  // never claim a plan is specifically in Maârif / Ain Diab / etc. The dormant
+  // areaFilterOptions lookup returns with verified neighborhood data.
+  const selectedAreaLabel = "Casablanca";
   const planSummary = buildOutingNarrative({
     style: selectedPlanStyle,
     areaLabel: selectedAreaLabel,
@@ -1237,7 +1248,8 @@ export default function PlanPage() {
     nextParams.set("with", companion);
     nextParams.set("mood", mood);
     // V3 price safety: budget is not written into the URL until verified prices exist.
-    nextParams.set("area", area);
+    // V3 area safety: area is not written into the URL while neighborhood personalization
+    // is off until verified neighborhoods exist. Old area= URLs remain parseable.
     nextParams.set("style", planStyle);
     nextParams.set("seed", String(refreshSeed));
 
@@ -1375,7 +1387,8 @@ export default function PlanPage() {
     params.set("with", companion);
     params.set("mood", mood);
     // V3 price safety: budget is not propagated to venue links until verified prices exist.
-    params.set("area", area);
+    // V3 area safety: area is not propagated to venue links while it has no real effect
+    // (all venues resolve to "Casablanca") until verified neighborhoods exist.
     params.set("style", planStyle);
     return `/venues/${slug}?${params.toString()}`;
   };
@@ -1706,7 +1719,10 @@ export default function PlanPage() {
                   }
                 />
               </div>
-              <div className="bl-plan-filter-row">
+              {/* V3 area safety: area refine control hidden until verified venue
+                  neighborhoods exist (every venue currently resolves to "Casablanca",
+                  so choosing an area cannot change the plan). Dormant control preserved. */}
+              <div className="bl-plan-filter-row" style={{ display: "none" }}>
                 <span className="bl-plan-filter-label">{text.planPage.preferredArea}</span>
                 <FilterChips
                   options={areaFilterOptions}

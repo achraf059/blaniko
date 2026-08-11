@@ -51,9 +51,13 @@ function normalizeText(value: string | undefined): string {
   return (value ?? "").toLowerCase().trim();
 }
 
-function primaryArea(area: string): string {
-  return area.split(",")[0]?.toLowerCase().trim() ?? normalizeText(area);
-}
+// V3 area safety: same-area matching is disabled until verified venue neighborhoods
+// exist. Every V3 venue resolves to the same fallback area ("Casablanca"), so a
+// same-area bonus/reason would tag every candidate misleadingly. Dormant helper
+// preserved for restoration.
+// function primaryArea(area: string): string {
+//   return area.split(",")[0]?.toLowerCase().trim() ?? normalizeText(area);
+// }
 
 function overlapCount(valuesA: string[], valuesB: string[]): number {
   const setB = new Set(valuesB);
@@ -108,7 +112,8 @@ export function rankVenueAlternatives(
   language: AppLanguage = "en",
 ): VenueAlternative[] {
   const r = getReasons(language);
-  const currentArea = primaryArea(currentVenue.area);
+  // V3 area safety: currentArea disabled (see primaryArea note above).
+  // const currentArea = primaryArea(currentVenue.area);
   const currentBestFor = (currentVenue.bestForTags ?? [])
     .map((tag) => tag.trim())
     .filter(Boolean);
@@ -120,11 +125,13 @@ export function rankVenueAlternatives(
       const reasons: string[] = [];
       let score = 0;
 
-      const sameArea = primaryArea(venue.area) === currentArea;
-      if (sameArea) {
-        score += 5;
-        reasons.push(r.sameArea);
-      }
+      // V3 area safety: same-area bonus + reason disabled until verified neighborhoods
+      // exist (every venue resolves to "Casablanca"). Dormant logic preserved.
+      // const sameArea = primaryArea(venue.area) === currentArea;
+      // if (sameArea) {
+      //   score += 5;
+      //   reasons.push(r.sameArea);
+      // }
 
       if (venue.categorySlug === currentVenue.categorySlug) {
         score += 4;
@@ -205,20 +212,18 @@ export function rankVenueAlternatives(
     return ranked.slice(0, maxItems);
   }
 
+  // V3 area safety: fallback is category-only until verified neighborhoods exist.
+  // The same-area branch (disabled above) would otherwise match every venue and
+  // attach a misleading "Same area" reason.
   const fallback = allVenues
     .filter(
       (venue) =>
         venue.slug !== currentVenue.slug &&
-        (primaryArea(venue.area) === currentArea ||
-          venue.categorySlug === currentVenue.categorySlug),
+        venue.categorySlug === currentVenue.categorySlug,
     )
     .map((venue) => ({
       venue,
-      reasons: [
-        primaryArea(venue.area) === currentArea
-          ? r.sameArea
-          : r.sameCategory,
-      ],
+      reasons: [r.sameCategory],
       score: 1,
     }))
     .filter(

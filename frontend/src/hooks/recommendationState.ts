@@ -49,7 +49,12 @@ export function createDefaultQuizAnswers(): QuizAnswers {
     companion: "",
     category: "",
     budget: "all",
-    area: "",
+    // V3 area safety: the Area quiz step is temporarily removed (venue neighborhoods
+    // are unknown — every venue resolves to "Casablanca"), so area defaults to the
+    // dormant "any" value. Like budget ("all"), this keeps allQuestionsAnswered() true
+    // without asking, and is ignored by planner ranking. Restore to "" when the Area
+    // step returns with verified neighborhood data.
+    area: "any",
     vibe: "",
   };
 }
@@ -249,7 +254,13 @@ export function buildRecommendationSearchParams(options: {
     const param = PARAM_BY_ANSWER_KEY[answerKey];
     const value = answers[answerKey];
 
-    if (!value || (answerKey === "budget" && value === "all")) {
+    // V3 safety: skip dormant defaults that are not asked in the quiz — budget ("all")
+    // and area ("any") — so they never appear in quiz-state URLs.
+    if (
+      !value ||
+      (answerKey === "budget" && value === "all") ||
+      (answerKey === "area" && value === "any")
+    ) {
       continue;
     }
 
