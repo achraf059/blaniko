@@ -49,6 +49,9 @@ type SavedOuting = {
   budget: string;
   withWho: string;
   mood: string;
+  // Explicit "Looking for" category. Optional so pre-existing saved outings (without it)
+  // safely fall back to "any" / legacy behavior when reopened.
+  category?: string;
   lockedRoles?: StopRoleKey[];
   stops: SavedOutingStop[];
   createdAt: string;
@@ -78,6 +81,17 @@ const moodOptions = [
   { value: "active", label: "Active" },
   { value: "romantic", label: "Romantic" },
   { value: "family-friendly", label: "Family-friendly" },
+];
+
+// The user's explicit "Looking for" category from the OutingQuiz. These are already
+// venue categorySlug values, so they can be compared directly to venue.categorySlug.
+// A missing/invalid value parses to "any" — the neutral, legacy (unconstrained) behavior.
+const categoryOptions = [
+  { value: "activities" },
+  { value: "sports" },
+  { value: "gaming" },
+  { value: "outdoor" },
+  { value: "family" },
 ];
 
 const budgetOptions = [
@@ -496,6 +510,15 @@ function parseArea(value: string | null): string {
     : "any";
 }
 
+// Parses the explicit "Looking for" category from the plan URL. Returns a valid
+// categorySlug, or "any" when the param is missing/invalid — "any" means no explicit
+// category, which preserves the legacy unconstrained planner behavior.
+function parseCategory(value: string | null): string {
+  return categoryOptions.some((option) => option.value === value)
+    ? (value as string)
+    : "any";
+}
+
 // V3 price safety: "under-100-mad" excluded from selectable styles until verified prices exist.
 const disabledPlanStyles: ReadonlySet<string> = new Set(["under-100-mad"]);
 
@@ -542,6 +565,7 @@ function buildPlanUrl(options: {
   mood: string;
   budget: string;
   area: string;
+  category: string;
   style: string;
   seed: number;
   stopSlugs: string[];
@@ -553,6 +577,11 @@ function buildPlanUrl(options: {
   // V3 price safety: budget is not propagated into generated plan URLs until verified prices exist.
   // V3 area safety: area is not propagated into generated plan URLs while neighborhood
   // personalization is off (it has no effect on results). Old area= URLs stay parseable.
+  // The explicit "Looking for" category is propagated so shared/saved plans keep the
+  // main-stop intent. "any" means no explicit category and is omitted.
+  if (options.category && options.category !== "any") {
+    params.set("category", options.category);
+  }
   params.set("style", options.style);
   params.set("seed", String(options.seed));
 
@@ -649,6 +678,7 @@ function rankVenueForRole(
     style: PlanStyleConfig;
     mood?: DiscoveryMood;
     budget: string;
+    selectedCategory?: string;
   },
 ): number {
   let score = baseScore;
@@ -669,6 +699,19 @@ function rankVenueForRole(
     score += 2;
   }
 
+  // The user's explicit "Looking for" category acts as a small tie-break preference on
+  // the start/end stops (the main stop is already hard-constrained to it during picking).
+  // +0.5 is deliberately smaller than any role bonus (role match = +4/+5, categoryBoost
+  // = +2/+3), so it only decides between otherwise-tied candidates and never overrides a
+  // genuinely more role-appropriate venue — preserving 3-stop variety.
+  if (
+    options.selectedCategory &&
+    options.selectedCategory !== "any" &&
+    venue.categorySlug === options.selectedCategory
+  ) {
+    score += 0.5;
+  }
+
   // V3 price safety: budgetStrict penalty disabled until verified prices exist.
   // if (
   //   options.style.budgetStrict &&
@@ -679,6 +722,25 @@ function rankVenueForRole(
   // }
 
   return score;
+}
+
+// Enforces the product rule: the MAIN stop is hard-constrained to the user's explicit
+// "Looking for" category — but only when that category actually has an eligible
+// (still-available) venue. If none remain (or no category was selected), it returns the
+// full pool so the main stop falls back to the existing unrestricted logic. START/END are
+// never hard-constrained here, preserving 3-stop variety.
+function applyMainCategoryConstraint<T extends { venue: Venue }>(
+  role: StopRoleKey,
+  pool: T[],
+  selectedCategory: string,
+): T[] {
+  if (role !== "main" || selectedCategory === "any") {
+    return pool;
+  }
+  const eligible = pool.filter(
+    (item) => item.venue.categorySlug === selectedCategory,
+  );
+  return eligible.length > 0 ? eligible : pool;
 }
 
 function formatSavedDate(value: string): string {
@@ -720,7 +782,7 @@ export default function PlanPage() {
     //   companion → with  (same value set: alone/friends/family/partner)
     //   budget → budget  (same: all/$/$$/$$$ )
     //   area is not mapped — the Area quiz step is removed under V3 area safety
-    //   category is consumed by mapQuizAnswersToStyle; no direct PlanPage param
+    //   category → category  (the explicit "Looking for" intent; controls the main stop)
     const derivedStyle = mapQuizAnswersToStyle(answers);
     const nextParams = new URLSearchParams();
     nextParams.set("quizDone", "1");
@@ -731,6 +793,12 @@ export default function PlanPage() {
     // V3 area safety: area is not written into the URL (the Area quiz step is removed and
     // the value has no effect on ranking) until verified neighborhoods exist.
     nextParams.set("style", derivedStyle);
+    // Persist the explicit "Looking for" category so it survives refresh/share/refine.
+    // The plan style controls the route/feel; the category controls the activity intent.
+    const selectedCategoryFromQuiz = parseCategory(answers.category);
+    if (selectedCategoryFromQuiz !== "any") {
+      nextParams.set("category", selectedCategoryFromQuiz);
+    }
     nextParams.set("seed", "0");
     setSearchParams(nextParams, { replace: true });
   };
@@ -739,7 +807,15 @@ export default function PlanPage() {
   const mood = parseMood(searchParams.get("mood"));
   const budget = parseBudget(searchParams.get("budget"));
   const area = parseArea(searchParams.get("area"));
+  // The user's explicit "Looking for" category. "any" = no explicit category (legacy).
+  const selectedCategory = parseCategory(searchParams.get("category"));
   const planStyle = parsePlanStyle(searchParams.get("style"));
+  // Completed-plan signals read from the URL. Either one keeps showQuiz false. Both must
+  // survive the URL-sync rewrite (and the async venue-loading window) so that refreshing a
+  // finished plan reopens the plan, not the quiz. `quizDone` marks "quiz finished"; `stops`
+  // carries the concrete plan for refresh/share before venues resolve into derived stops.
+  const isQuizDone = searchParams.has("quizDone");
+  const stopsFromUrl = searchParams.get("stops") ?? "";
   const selectedPlanStyle = getPlanStyleById(planStyle);
   const displayPlanStyle = getPlanStyleDisplay(language, planStyle);
   const displayStyles = planStyleOptions.reduce(
@@ -932,10 +1008,16 @@ export default function PlanPage() {
       const avoidSlug =
         options.replaceRole === roleKey ? existingStop.venue.slug : undefined;
 
-      const rankedCandidates = options.rankedVenues
-        .filter(
-          ({ venue }) => !usedSlugs.has(venue.slug) && venue.slug !== avoidSlug,
-        )
+      const availableCandidates = options.rankedVenues.filter(
+        ({ venue }) => !usedSlugs.has(venue.slug) && venue.slug !== avoidSlug,
+      );
+      // MAIN stop keeps the explicit-category constraint through refinement/shuffle too.
+      const candidatePool = applyMainCategoryConstraint(
+        roleKey,
+        availableCandidates,
+        selectedCategory,
+      );
+      const rankedCandidates = candidatePool
         .map(({ venue, score }) => ({
           venue,
           roleScore: rankVenueForRole(
@@ -947,6 +1029,7 @@ export default function PlanPage() {
               style: selectedPlanStyle,
               mood: selectedMood,
               budget,
+              selectedCategory,
             },
           ),
           hasCategoryDuplication: usedCategories.has(venue.categorySlug),
@@ -989,6 +1072,7 @@ export default function PlanPage() {
     mood?: string;
     budget?: string;
     area?: string;
+    category?: string;
     style?: string;
     seed?: number;
     stopSlugs?: string[];
@@ -996,6 +1080,7 @@ export default function PlanPage() {
   }) => {
     const withWhoValue = overrides.withWho ?? companion;
     const moodValue = overrides.mood ?? mood;
+    const categoryValue = overrides.category ?? selectedCategory;
     const styleValue = overrides.style ?? planStyle;
     const seedValue = overrides.seed ?? refreshSeed;
     const lockedRolesValue = overrides.lockedRoles ?? parsedLockedRoles;
@@ -1006,6 +1091,10 @@ export default function PlanPage() {
     // V3 price safety: budget is not written into the URL until verified prices exist.
     // V3 area safety: area is not written into the URL while neighborhood personalization
     // is off (overrides.area is accepted but ignored) until verified neighborhoods exist.
+    // Preserve the explicit "Looking for" category across shuffle / style change / refine.
+    if (categoryValue && categoryValue !== "any") {
+      nextParams.set("category", categoryValue);
+    }
     nextParams.set("style", styleValue);
     nextParams.set("seed", String(seedValue));
 
@@ -1025,14 +1114,17 @@ export default function PlanPage() {
   const usedCategories = new Set<string>();
 
   const pickVenue = (role: StopRoleKey, preferredCategories: string[]) => {
-    const ranked = scoredVenues
-      .filter(({ venue }) => !used.has(venue.slug))
+    const available = scoredVenues.filter(({ venue }) => !used.has(venue.slug));
+    // MAIN stop: restrict to the explicit category when it has eligible venues.
+    const pool = applyMainCategoryConstraint(role, available, selectedCategory);
+    const ranked = pool
       .map(({ venue, score }) => ({
         venue,
         roleScore: rankVenueForRole(venue, role, preferredCategories, score, {
           style: selectedPlanStyle,
           mood: selectedMood,
           budget,
+          selectedCategory,
         }),
         hasCategoryDuplication: usedCategories.has(venue.categorySlug),
       }))
@@ -1245,16 +1337,29 @@ export default function PlanPage() {
     if (showQuiz) return;
 
     const nextParams = new URLSearchParams();
+    // Preserve the "quiz finished" marker. Without this, a refresh/rewrite that lands
+    // before venues finish loading (so no derived stops yet) would drop both `quizDone`
+    // and `stops`, flip showQuiz back to true, and reopen the quiz at its last step.
+    if (isQuizDone) {
+      nextParams.set("quizDone", "1");
+    }
     nextParams.set("with", companion);
     nextParams.set("mood", mood);
     // V3 price safety: budget is not written into the URL until verified prices exist.
     // V3 area safety: area is not written into the URL while neighborhood personalization
     // is off until verified neighborhoods exist. Old area= URLs remain parseable.
+    // Keep the explicit "Looking for" category in the URL so it survives refresh/share.
+    if (selectedCategory && selectedCategory !== "any") {
+      nextParams.set("category", selectedCategory);
+    }
     nextParams.set("style", planStyle);
     nextParams.set("seed", String(refreshSeed));
 
-    if (effectiveStopSlugsStr) {
-      nextParams.set("stops", effectiveStopSlugsStr);
+    // Prefer freshly-derived stops; otherwise carry the existing `stops` param forward so a
+    // refresh before venues resolve does not clobber a completed plan's stops.
+    const stopsToPersist = effectiveStopSlugsStr || stopsFromUrl;
+    if (stopsToPersist) {
+      nextParams.set("stops", stopsToPersist);
     }
 
     if (lockedRolesStr) {
@@ -1266,8 +1371,11 @@ export default function PlanPage() {
     showQuiz,
     area,
     budget,
+    selectedCategory,
     companion,
     effectiveStopSlugsStr,
+    isQuizDone,
+    stopsFromUrl,
     lockedRolesStr,
     mood,
     planStyle,
@@ -1284,6 +1392,7 @@ export default function PlanPage() {
               mood,
               budget,
               area,
+              category: selectedCategory,
               style: planStyle,
               seed: refreshSeed,
               stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
@@ -1294,6 +1403,7 @@ export default function PlanPage() {
               mood,
               budget,
               area,
+              category: selectedCategory,
               style: planStyle,
               seed: refreshSeed,
               stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
@@ -1317,6 +1427,7 @@ export default function PlanPage() {
             mood,
             budget,
             area,
+            category: selectedCategory,
             style: planStyle,
             seed: refreshSeed,
             stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
@@ -1327,6 +1438,7 @@ export default function PlanPage() {
             mood,
             budget,
             area,
+            category: selectedCategory,
             style: planStyle,
             seed: refreshSeed,
             stopSlugs: effectivePlanStops.map((stop) => stop.venue.slug),
@@ -1358,6 +1470,7 @@ export default function PlanPage() {
       budget,
       withWho: companion,
       mood,
+      category: selectedCategory,
       lockedRoles,
       stops: effectivePlanStops.map((stop) => ({
         role: stop.role,
@@ -1801,6 +1914,7 @@ export default function PlanPage() {
                         mood: outing.mood,
                         budget: outing.budget,
                         area: outing.area,
+                        category: outing.category ?? "any",
                         style: outing.planStyle ?? defaultPlanStyleId,
                         seed: 0,
                         stopSlugs: outing.stops.map((stop) => stop.slug),
