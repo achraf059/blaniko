@@ -735,7 +735,7 @@ const en: Dictionary = {
   mapPage: {
     eyebrow: "Geographic discovery",
     title: "Explore venues on the map",
-    subtitle: "Browse Casablanca venues by area and explore them on the map or in the list.",
+    subtitle: "Browse venues across Casablanca and explore them on the map or in the list.",
     helperText: "Tip: click any marker to preview details and open the venue page.",
     quickFiltersLabel: "Quick category filters",
     budgetLabel: "Budget",
@@ -743,7 +743,7 @@ const en: Dictionary = {
     budgetLow: "$",
     budgetMid: "$$",
     budgetHigh: "$$$",
-    searchPlaceholder: "Search places, categories, or areas",
+    searchPlaceholder: "Search places, categories, or activities",
     searchAction: "Search",
     listTitle: "Venues",
     mapTitle: "Casablanca map",
@@ -1158,7 +1158,7 @@ const fr: Dictionary = {
     eyebrow: "Découverte géographique",
     title: "Explorez les lieux sur la carte",
     subtitle:
-      "Parcourez les lieux de Casablanca par quartier et explorez-les sur la carte ou dans la liste.",
+      "Parcourez les lieux dans tout Casablanca et explorez-les sur la carte ou dans la liste.",
     helperText:
       "Astuce : cliquez sur un marqueur pour voir un aperçu et ouvrir la fiche du lieu.",
     quickFiltersLabel: "Filtres rapides",
@@ -1167,7 +1167,7 @@ const fr: Dictionary = {
     budgetLow: "$",
     budgetMid: "$$",
     budgetHigh: "$$$",
-    searchPlaceholder: "Rechercher des lieux, catégories ou quartiers",
+    searchPlaceholder: "Rechercher des lieux, catégories ou activités",
     searchAction: "Rechercher",
     listTitle: "Lieux",
     mapTitle: "Carte de Casablanca",
