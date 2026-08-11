@@ -47,11 +47,11 @@ function SearchRedirect() {
   }
   const params = new URLSearchParams();
   const q = searchParams.get("q");
-  const area = searchParams.get("area");
   const bestFor = searchParams.get("bestFor");
   const time = searchParams.get("time");
   if (q) params.set("q", q);
-  if (area) params.set("area", area);
+  // V3 area safety: area is not propagated into the /categories redirect while
+  // neighborhood filtering has no effect (all venues resolve to "Casablanca").
   if (bestFor) params.set("bestFor", bestFor);
   if (time) params.set("time", time);
   const suffix = params.toString();

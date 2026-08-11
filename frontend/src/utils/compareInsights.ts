@@ -166,8 +166,11 @@ export function buildCompareInsights(
         ? `Vous avez un lieu sélectionné à ${areas[0] ?? "Casablanca"}. Ajoutez-en d'autres pour débloquer les insights.`
         : `You have one venue selected in ${areas[0] ?? "Casablanca"}. Add more venues to unlock decision insights.`
       : isFr
-        ? `Comparaison de ${venues.length} lieux sur ${categories.length} catégories dans ${areas.length} quartiers.`
-        : `Comparing ${venues.length} venues across ${categories.length} categories in ${areas.length} areas.`;
+        // V3 area safety: the "dans N quartiers" clause is dropped — every venue resolves
+        // to "Casablanca", so the count was always 1 and meaningless. Restore with
+        // verified neighborhoods.
+        ? `Comparaison de ${venues.length} lieux sur ${categories.length} catégories.`
+        : `Comparing ${venues.length} venues across ${categories.length} categories.`;
 
   const insightChips: string[] = [];
   const callouts: CompareCallout[] = [];

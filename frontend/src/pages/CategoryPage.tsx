@@ -359,7 +359,6 @@ export default function CategoryPage() {
   /* ---- Read URL params to seed filter state (used by /search redirect) ---- */
   const [searchParams] = useSearchParams();
   const qFromUrl = searchParams.get("q") ?? "";
-  const areaFromUrl = searchParams.get("area") ?? "";
   // Accept both ?goodFor= and ?bestFor= (bestFor is the SearchPage param name)
   const goodForFromUrl = searchParams.get("goodFor") ?? searchParams.get("bestFor") ?? "all";
   const timeFromUrl = searchParams.get("time") ?? "any";
@@ -368,7 +367,10 @@ export default function CategoryPage() {
   const [f, setF] = useState<FilterState>({
     query: qFromUrl,
     sort: "recommended",
-    area: areaFromUrl || "all",
+    // V3 area safety: area filter forced to "all" (ignoring any legacy ?area= URL) while
+    // venue neighborhoods are unknown — every venue resolves to "Casablanca", so the
+    // location filter is hidden (areas.length is 1) and old area= values must not filter.
+    area: "all",
     goodFor: goodForFromUrl || "all",
     time: timeFromUrl || "any",
     subcat: "all",

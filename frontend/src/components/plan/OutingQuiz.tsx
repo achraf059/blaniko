@@ -59,18 +59,12 @@ export function OutingQuiz({ onComplete }: OutingQuizProps) {
       },
       // V3 price safety: budget question removed until verified prices exist.
       // Budget answer defaults to "all" via createDefaultQuizAnswers().
-      {
-        id: "area",
-        title: text.recommendationsPage.qArea,
-        stepLabel: text.recommendationsPage.profile.rowArea,
-        options: [
-          { value: "any", label: text.recommendationsPage.optionAny },
-          { value: "maarif", label: text.recommendationsPage.optionMaarif },
-          { value: "ain diab", label: text.recommendationsPage.optionAinDiab },
-          { value: "gauthier", label: text.recommendationsPage.optionGauthier },
-          { value: "old medina", label: text.recommendationsPage.optionOldMedina },
-        ],
-      },
+      //
+      // V3 area safety: the Area question is temporarily removed. Every V3 venue has
+      // an unknown neighborhood (venue.area resolves to "Casablanca"), so asking users
+      // to pick Maârif / Ain Diab / etc. would imply precision the data does not have,
+      // and the choice does not change ranking. Area defaults to the dormant "any" value
+      // via createDefaultQuizAnswers(). Restore this step with verified neighborhood data.
       {
         id: "vibe",
         title: text.recommendationsPage.qVibe,
