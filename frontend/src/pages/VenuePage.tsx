@@ -20,6 +20,7 @@ import {
 import { rankVenueAlternatives } from "../utils/venueAlternatives";
 import { getVenuePersonalitySection } from "../utils/venuePersonality";
 import { getVenueImageSrc } from "../utils/venueImage";
+import { safeExternalUrl } from "../utils/externalUrl";
 import PublicFooter from "../components/PublicFooter";
 import "./VenuePage.css";
 
@@ -414,8 +415,12 @@ export default function VenuePage() {
                 {(() => {
                   const hasMap = Boolean(venue.googleMapsLink);
                   const hasPhone = Boolean(venue.phone);
-                  const hasWebsite = Boolean(venue.website);
-                  const hasInstagram = Boolean(venue.instagram);
+                  // Normalize outbound links at render time (see safeExternalUrl).
+                  // The stored venue values are never mutated.
+                  const safeWebsite = safeExternalUrl(venue.website);
+                  const safeInstagram = safeExternalUrl(venue.instagram);
+                  const hasWebsite = Boolean(safeWebsite);
+                  const hasInstagram = Boolean(safeInstagram);
                   const hasAnyContact = hasMap || hasPhone || hasWebsite || hasInstagram;
 
                   // Sanitize phone: digits + leading +
@@ -462,7 +467,7 @@ export default function VenuePage() {
                           ) : null}
                           {hasWebsite ? (
                             <a
-                              href={venue.website!}
+                              href={safeWebsite!}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="bl-venue-cta-pill"
@@ -473,7 +478,7 @@ export default function VenuePage() {
                           ) : null}
                           {hasInstagram ? (
                             <a
-                              href={venue.instagram!}
+                              href={safeInstagram!}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="bl-venue-cta-pill"
