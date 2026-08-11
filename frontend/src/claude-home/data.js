@@ -31,11 +31,11 @@ const localizedHomeData = {
       { name: "Date Ideas", count: "Low-pressure ideas for two", img: "/category-images/generated/category-date-friendly-01.webp", slug: "activities", href: "/search?bestFor=date-spot" },
     ],
     curated: [
-      { title: "Corniche Beach Morning", chips: ["Morning", "Outdoor"], price: null, duration: "2h", img: "pi1", imgPath: "/picks-images/slow-morning-corniche/pick-slow-morning-corniche-01.webp", venueSlug: "l-eden-beach-club-blk-0039" },
-      { title: "Escape Room Challenge", chips: ["Group", "Game"], price: null, duration: "1.5h", img: "pi2", imgPath: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.webp", venueSlug: "the-doorz-escape-room-blk-0016" },
-      { title: "Karting at Sindibad", chips: ["Group", "Adrenaline"], price: null, duration: "1.5h", img: "pi3", imgPath: "/picks-images/sindibad-karting/pick-sindibad-karting-01.webp", venueSlug: "sindibad-karting-blk-0020" },
-      { title: "Pool Night", chips: ["Game"], price: null, duration: "2h", img: "pi4", imgPath: "/picks-images/pool-night/pick-pool-night-01.webp", venueSlug: "astropool-lounge-blk-0001" },
-      { title: "Bumper Cars Night", chips: ["Family", "Fun"], price: null, duration: "1.5h", img: "pi5", imgPath: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.webp", venueSlug: "parc-sindibad-blk-0028" },
+      { title: "Surf Session", chips: ["Surf", "Outdoor"], price: null, img: "pi1", venueSlug: "anfa-surf-school-casablanca-blk-0053" },
+      { title: "Escape Room Challenge", chips: ["Group", "Game"], price: null, duration: "1.5h", img: "pi2", imgPath: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.webp", venueSlug: "the-doorz-escape-room-blk-0060" },
+      { title: "Karting at Sindibad", chips: ["Group", "Adrenaline"], price: null, duration: "1.5h", img: "pi3", imgPath: "/picks-images/sindibad-karting/pick-sindibad-karting-01.webp", venueSlug: "sindibad-karting-blk-0056" },
+      { title: "Pool Night", chips: ["Game"], price: null, duration: "2h", img: "pi4", imgPath: "/picks-images/pool-night/pick-pool-night-01.webp", venueSlug: "astro-pool-lounge-blk-0001" },
+      { title: "Bumper Cars Night", chips: ["Family", "Fun"], price: null, duration: "1.5h", img: "pi5", imgPath: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.webp", venueSlug: "parc-sindibad-blk-0069" },
     ],
     howSteps: [
       {
@@ -99,11 +99,11 @@ const localizedHomeData = {
       { name: "Idées en duo", count: "Idées simples pour deux", img: "/category-images/generated/category-date-friendly-01.webp", slug: "activities", href: "/search?bestFor=date-spot" },
     ],
     curated: [
-      { title: "Matinée à la Corniche", chips: ["Matin", "Plein air"], price: null, duration: "2h", img: "pi1", imgPath: "/picks-images/slow-morning-corniche/pick-slow-morning-corniche-01.webp", venueSlug: "l-eden-beach-club-blk-0039" },
-      { title: "Escape Room Challenge", chips: ["Groupe", "Jeu"], price: null, duration: "1h30", img: "pi2", imgPath: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.webp", venueSlug: "the-doorz-escape-room-blk-0016" },
-      { title: "Karting à Sindibad", chips: ["Groupe", "Adrénaline"], price: null, duration: "1h30", img: "pi3", imgPath: "/picks-images/sindibad-karting/pick-sindibad-karting-01.webp", venueSlug: "sindibad-karting-blk-0020" },
-      { title: "Soirée billard", chips: ["Jeu"], price: null, duration: "2h", img: "pi4", imgPath: "/picks-images/pool-night/pick-pool-night-01.webp", venueSlug: "astropool-lounge-blk-0001" },
-      { title: "Soirée autos tamponneuses", chips: ["Famille", "Fun"], price: null, duration: "1h30", img: "pi5", imgPath: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.webp", venueSlug: "parc-sindibad-blk-0028" },
+      { title: "Session de surf", chips: ["Surf", "Plein air"], price: null, img: "pi1", venueSlug: "anfa-surf-school-casablanca-blk-0053" },
+      { title: "Escape Room Challenge", chips: ["Groupe", "Jeu"], price: null, duration: "1h30", img: "pi2", imgPath: "/picks-images/escape-room-challenge/pick-escape-room-challenge-01.webp", venueSlug: "the-doorz-escape-room-blk-0060" },
+      { title: "Karting à Sindibad", chips: ["Groupe", "Adrénaline"], price: null, duration: "1h30", img: "pi3", imgPath: "/picks-images/sindibad-karting/pick-sindibad-karting-01.webp", venueSlug: "sindibad-karting-blk-0056" },
+      { title: "Soirée billard", chips: ["Jeu"], price: null, duration: "2h", img: "pi4", imgPath: "/picks-images/pool-night/pick-pool-night-01.webp", venueSlug: "astro-pool-lounge-blk-0001" },
+      { title: "Soirée autos tamponneuses", chips: ["Famille", "Fun"], price: null, duration: "1h30", img: "pi5", imgPath: "/picks-images/bumper-cars-night/pick-bumper-cars-night-01.webp", venueSlug: "parc-sindibad-blk-0069" },
     ],
     howSteps: [
       {
