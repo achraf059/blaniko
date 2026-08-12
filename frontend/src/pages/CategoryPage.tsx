@@ -312,7 +312,7 @@ function FilterControls({ f, set, clearAll, areas, goodForOptions, language, d, 
 /* ============================================================
    Category navigation tabs
    ============================================================ */
-const NAV_CATEGORIES = ["activities", "sports", "gaming", "outdoor", "family"] as const;
+const NAV_CATEGORIES = ["activities", "sports", "gaming", "outdoor", "family", "wellness"] as const;
 
 interface CategoryTabsProps {
   activeSlug: string | undefined;
@@ -503,12 +503,19 @@ export default function CategoryPage() {
     return picks.filter((v) => venueMatchesSubcat(v, chip));
   }, [picks, f.subcat, availableChips]);
 
+  /** True when a real search/filter is active — the page then behaves like a results
+   *  list: Top Picks is hidden and the grid draws from the full pool (no reserved picks).
+   *  Deliberately excludes sort, category slug, and subcat (subcat keeps its existing
+   *  within-category browsing behavior alongside Top Picks). */
+  const isFiltering =
+    f.query.trim() !== "" || f.goodFor !== "all" || f.time !== "any" || f.area !== "all";
+
   const filteredGrid = useMemo(() => {
-    let result = categoryVenues.filter((v) => !pickSlugs.has(v.slug));
+    let result = categoryVenues.filter((v) => isFiltering || !pickSlugs.has(v.slug));
     if (f.query.trim()) {
       const q = f.query.trim().toLowerCase();
       result = result.filter((v) =>
-        [v.name, v.area, v.description].join(" ").toLowerCase().includes(q)
+        [v.name, v.area, v.description, v.categorySlug, v.category].join(" ").toLowerCase().includes(q)
       );
     }
     if (f.area !== "all") {
@@ -626,7 +633,7 @@ export default function CategoryPage() {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
     return result;
-  }, [categoryVenues, pickSlugs, f, availableChips, slug, isAllMode]);
+  }, [categoryVenues, pickSlugs, f, availableChips, slug, isAllMode, isFiltering]);
 
   const collageImages = useMemo(() => {
     const coverImg = CATEGORY_IMAGES[slug ?? ""] ?? "";
@@ -815,7 +822,7 @@ export default function CategoryPage() {
                 <div className="blc-stat">
                   <span className="blc-stat-ic"><CIcon name="building" size={17} /></span>
                   <div>
-                    <p className="blc-stat-n">{filteredGrid.length + filteredPicks.length}</p>
+                    <p className="blc-stat-n">{filteredGrid.length + (isFiltering ? 0 : filteredPicks.length)}</p>
                     <p className="blc-stat-l">{d.results}</p>
                   </div>
                 </div>
@@ -860,7 +867,7 @@ export default function CategoryPage() {
           ) : null}
 
           {/* TOP PICKS — hidden entirely when a chip is active and no picks match it */}
-          {filteredPicks.length > 0 ? (
+          {filteredPicks.length > 0 && !isFiltering ? (
             <section aria-label={d.topPicksTitle}>
               <div className="blc-sec-head">
                 <h2 className="blc-sec-title">
