@@ -92,6 +92,7 @@ const categoryOptions = [
   { value: "gaming" },
   { value: "outdoor" },
   { value: "family" },
+  { value: "wellness" },
 ];
 
 const budgetOptions = [

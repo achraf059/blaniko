@@ -121,6 +121,11 @@ export const categories: Category[] = [
     name: "Family",
     description: "Kid-friendly venues and family activities.",
   },
+  {
+    slug: "wellness",
+    name: "Wellness",
+    description: "Spas, hammams, and relaxing escapes in Casablanca.",
+  },
 ];
 
 export const venues: Venue[] = [

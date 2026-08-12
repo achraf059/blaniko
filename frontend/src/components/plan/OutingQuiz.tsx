@@ -55,6 +55,7 @@ export function OutingQuiz({ onComplete }: OutingQuizProps) {
           { value: "gaming", label: text.recommendationsPage.optionGaming },
           { value: "outdoor", label: text.recommendationsPage.optionOutdoor },
           { value: "family", label: text.recommendationsPage.optionFamily },
+          { value: "wellness", label: text.recommendationsPage.optionWellness },
         ],
       },
       // V3 price safety: budget question removed until verified prices exist.

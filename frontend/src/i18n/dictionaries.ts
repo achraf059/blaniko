@@ -537,6 +537,7 @@ const en: Dictionary = {
     gaming: "Gaming",
     outdoor: "Outdoor",
     family: "Family",
+    wellness: "Wellness",
     all: "All venues",
   },
   categoryDescriptions: {
@@ -545,6 +546,7 @@ const en: Dictionary = {
     gaming: "Arcades, lounges, and social gaming spots.",
     outdoor: "Fresh-air plans around Casablanca neighborhoods.",
     family: "Kid-friendly venues and family activities.",
+    wellness: "Spas, hammams, and relaxing escapes in Casablanca.",
     all: "Discover activities, sports, gaming, outdoor spots, and family venues across Casablanca.",
   },
   categoryPage: {
@@ -958,6 +960,7 @@ const fr: Dictionary = {
     gaming: "Gaming",
     outdoor: "Plein air",
     family: "Famille",
+    wellness: "Bien-être",
     all: "Tous les lieux",
   },
   categoryDescriptions: {
@@ -966,6 +969,7 @@ const fr: Dictionary = {
     gaming: "Arcades, lounges et espaces gaming conviviaux.",
     outdoor: "Des idées de sorties en plein air dans Casablanca.",
     family: "Des lieux et activités adaptés aux familles.",
+    wellness: "Spas, hammams et moments de détente à Casablanca.",
     all: "Découvrez activités, sports, gaming, espaces outdoor et sorties famille à Casablanca.",
   },
   categoryPage: {
