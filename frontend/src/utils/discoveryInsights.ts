@@ -176,7 +176,7 @@ function uniqueReasons(reasons: string[]): string[] {
   return unique;
 }
 
-function categorySupportsMood(categorySlug: string, mood: DiscoveryMood): boolean {
+export function categorySupportsMood(categorySlug: string, mood: DiscoveryMood): boolean {
   const moodCategories: Record<DiscoveryMood, string[]> = {
     chill: ["activities", "outdoor"],
     social: ["gaming", "activities", "sports"],
