@@ -262,6 +262,10 @@ export type Dictionary = {
     trustConfirmed: string;
     trustVerified: string;
     trustLastUpdated: string;
+    trustLastResearched: string;
+    type: string;
+    openingHours: string;
+    actionFacebook: string;
   };
   searchPage: {
     pageTitle: string;
@@ -681,6 +685,10 @@ const en: Dictionary = {
     trustConfirmed: "Venue confirmed",
     trustVerified: "Blaniko verified",
     trustLastUpdated: "Last updated",
+    trustLastResearched: "Last researched",
+    type: "Type",
+    openingHours: "Opening hours",
+    actionFacebook: "Facebook",
   },
   searchPage: {
     pageTitle: "Discover venues in Casablanca | Blaniko",
@@ -1104,6 +1112,10 @@ const fr: Dictionary = {
     trustConfirmed: "Confirmé par l'établissement",
     trustVerified: "Vérifié par Blaniko",
     trustLastUpdated: "Dernière mise à jour",
+    trustLastResearched: "Dernière recherche",
+    type: "Type",
+    openingHours: "Horaires",
+    actionFacebook: "Facebook",
   },
   searchPage: {
     pageTitle: "Découvrir des lieux à Casablanca | Blaniko",
