@@ -11,6 +11,7 @@
 
 import { type Venue } from "../data/mockData";
 import {
+  categorySupportsMood,
   venueMatchesMood,
   type DiscoveryCompanion,
   type DiscoveryMood,
@@ -64,6 +65,91 @@ export const companionKeywordMap: Record<DiscoveryCompanion, string[]> = {
   family: ["family", "parents", "children", "kids", "safe"],
   partner: ["couples", "romantic", "intimate", "date"],
 };
+
+// ─── Recommendation V2: structured-first companion / mood matching ──────────────
+//
+// Smallest high-confidence structured mappings from the V3 audit. Each quiz
+// companion maps to exactly one canonical `audienceTags` value; each mapped mood
+// maps to a small set of canonical `atmosphereTags` values. These replace (do not
+// stack with) the equivalent legacy free-text signal when the structured field is
+// present — see venueMatchesCompanion / venueMatchesRecommendationMood.
+//
+// Deliberately conservative: no Children/Teenagers/Young Adults/Parents on
+// companions, and no `romantic` mood mapping (no safe literal "Romantic"
+// atmosphere tag exists — romantic stays on the legacy path).
+
+const companionAudienceTagMap: Record<DiscoveryCompanion, string> = {
+  friends: "Friends / Groups",
+  partner: "Couples",
+  alone: "Solo Visitors",
+  family: "Families",
+};
+
+const moodAtmosphereTagMap: Partial<Record<DiscoveryMood, string[]>> = {
+  social: ["Social", "Lively"],
+  chill: ["Relaxed", "Quiet", "Cozy"],
+  active: ["Sport-Focused", "Energetic", "Competitive", "Adventurous"],
+  "family-friendly": ["Family-Friendly", "Playful", "Colorful"],
+  // romantic: intentionally omitted — no safe structured mapping (legacy fallback).
+};
+
+// Minimal safe tag comparison: trim + case-insensitive only. No fuzzy/semantic
+// normalization, no synonym inference, no translation.
+function normalizeRecommendationTag(tag: string): string {
+  return tag.trim().toLowerCase();
+}
+
+// Companion fit as a single capped signal.
+// Structured-first: when the venue has usable audienceTags, the result is decided
+// purely by the mapped structured tag (the legacy free-text keywords are NOT also
+// evaluated — no double counting). Legacy free-text is used only when audienceTags
+// is absent/empty.
+export function venueMatchesCompanion(
+  venue: Venue,
+  companion: DiscoveryCompanion,
+): boolean {
+  const tags = venue.audienceTags;
+  if (Array.isArray(tags) && tags.length > 0) {
+    const target = normalizeRecommendationTag(companionAudienceTagMap[companion]);
+    return tags.some((tag) => normalizeRecommendationTag(tag) === target);
+  }
+
+  // Fallback: legacy companion free-text keyword match (unchanged).
+  const keywords = companionKeywordMap[companion];
+  const audienceText =
+    `${venue.audience ?? ""} ${venue.description}`.toLowerCase();
+  return keywords.some((keyword) => audienceText.includes(keyword));
+}
+
+// Venue mood fit as a single capped signal, mirroring venueMatchesMood's shape.
+// Structured-first: for a mood with a safe atmosphere mapping AND a venue that has
+// usable atmosphereTags, the noisy venue-specific free-text evidence is replaced by
+// structured atmosphere evidence. The category-level assumption
+// (categorySupportsMood) is preserved unchanged in every branch. Moods without a
+// mapping (romantic) or venues without atmosphereTags fall back to legacy
+// venueMatchesMood exactly.
+export function venueMatchesRecommendationMood(
+  venue: Venue,
+  mood?: DiscoveryMood,
+): boolean {
+  if (!mood) {
+    return true;
+  }
+
+  const mapped = moodAtmosphereTagMap[mood];
+  const tags = venue.atmosphereTags;
+  if (mapped && Array.isArray(tags) && tags.length > 0) {
+    const targets = mapped.map(normalizeRecommendationTag);
+    const structuredMatch = tags.some((tag) =>
+      targets.includes(normalizeRecommendationTag(tag)),
+    );
+    // Structured venue evidence OR the (preserved) category-level mood support.
+    return structuredMatch || categorySupportsMood(venue.categorySlug, mood);
+  }
+
+  // Fallback: legacy free-text + category mood match (unchanged).
+  return venueMatchesMood(venue, mood);
+}
 
 // Dead fallback preserved from PlanPage: every plan style already defines
 // roleCategories, so this mood-based fallback never actually runs — kept verbatim
@@ -129,18 +215,16 @@ export function rankVenue(
   // never differentiate real areas (Maârif / Ain Diab / …) and choosing an area does
   // not change ranking.
 
-  if (options.mood && venueMatchesMood(venue, options.mood)) {
+  // Mood: structured-first (atmosphereTags) with legacy free-text fallback.
+  // Same magnitude and single capped contribution as before.
+  if (options.mood && venueMatchesRecommendationMood(venue, options.mood)) {
     score += 3 * moodWeight;
   }
 
-  if (options.companion) {
-    const keywords = companionKeywordMap[options.companion];
-    const audienceText =
-      `${venue.audience ?? ""} ${venue.description}`.toLowerCase();
-
-    if (keywords.some((keyword) => audienceText.includes(keyword))) {
-      score += 2;
-    }
+  // Companion: structured-first (audienceTags) with legacy free-text fallback.
+  // Same +2 magnitude, single capped contribution (no per-tag stacking).
+  if (options.companion && venueMatchesCompanion(venue, options.companion)) {
+    score += 2;
   }
 
   const style = options.style;
@@ -198,10 +282,11 @@ export function rankVenueForRole(
     score += role === "main" ? 3 : 2;
   }
 
+  // MAIN mood: same structured-first decision as the base score, same +2.
   if (
     role === "main" &&
     options.mood &&
-    venueMatchesMood(venue, options.mood)
+    venueMatchesRecommendationMood(venue, options.mood)
   ) {
     score += 2;
   }
