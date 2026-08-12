@@ -259,6 +259,41 @@ export function stableHash(input: string): number {
   );
 }
 
+// Deterministic, dependency-free 32-bit seeded string hash (FNV-1a).
+//
+// Replaces the previous `(stableHash(slug) + seed) % 11` tie-break, which the
+// saturation audit proved defective: adding the same seed shifts every venue's
+// modulo-11 bucket equally, so the tie-break has period 11 (seed 11 ≡ seed 0),
+// venues sharing a bucket can never reverse, and a tie group can surface at most
+// `distinctBuckets` winners forever (e.g. 10 of 28 equally-scored activities
+// venues). Hashing the full `${slug}:${seed}` string across the 32-bit space
+// removes that structural ceiling: the seed materially changes the ordering and
+// there is no small period, so equally-scored peers become reachable across seeds.
+//
+// Pure and portable (only Math.imul + 32-bit ops), so a future mobile engine can
+// reuse it and produce byte-for-byte identical orderings. This changes ONLY the
+// ordering of venues that already have equal relevance scores — never the scores
+// themselves, and never the relative order of two differently-scored venues.
+//
+// The seed is placed FIRST (`${seed}:${slug}`), not last. FNV-1a avalanches a byte
+// only through the multiplies that follow it, so a trailing seed digit barely mixes:
+// consecutive seeds then differ by a near-constant offset applied to every slug,
+// which preserves relative order (seeds 0 and 1 produced identical orderings, and a
+// 28-venue tie still capped at ~9 reachable winners) — the same defect as modulo-11.
+// Hashing the seed first lets the whole slug avalanche it, so each seed yields an
+// uncorrelated ordering and every tied peer is reachable across a wide seed range.
+export function seededHash(slug: string, seed: number): number {
+  const input = `${seed}:${slug}`;
+  // FNV-1a 32-bit: offset basis 2166136261, prime 16777619.
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  // Coerce to an unsigned 32-bit integer so comparisons are stable and positive.
+  return hash >>> 0;
+}
+
 // ─── Role scoring ──────────────────────────────────────────────────────────────
 
 export function rankVenueForRole(
@@ -371,13 +406,16 @@ export function scoreVenuesWithSeed(
       }),
     }))
     .sort((first, second) => {
+      // Relevance score is always primary — a strictly higher score always wins, so
+      // the tie-break below can never reorder two differently-scored venues.
       if (second.score !== first.score) {
         return second.score - first.score;
       }
 
+      // Equal relevance only: seeded 32-bit hash decides (higher wins), replacing the
+      // defective modulo-11 tie-break. Deterministic for identical (slug, seed).
       return (
-        ((stableHash(second.venue.slug) + seed) % 11) -
-        ((stableHash(first.venue.slug) + seed) % 11)
+        seededHash(second.venue.slug, seed) - seededHash(first.venue.slug, seed)
       );
     });
 }
