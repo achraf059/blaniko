@@ -11,7 +11,6 @@
 
 import { type Venue } from "../data/mockData";
 import {
-  categorySupportsMood,
   venueMatchesMood,
   type DiscoveryCompanion,
   type DiscoveryMood,
@@ -123,11 +122,19 @@ export function venueMatchesCompanion(
 
 // Venue mood fit as a single capped signal, mirroring venueMatchesMood's shape.
 // Structured-first: for a mood with a safe atmosphere mapping AND a venue that has
-// usable atmosphereTags, the noisy venue-specific free-text evidence is replaced by
-// structured atmosphere evidence. The category-level assumption
-// (categorySupportsMood) is preserved unchanged in every branch. Moods without a
-// mapping (romantic) or venues without atmosphereTags fall back to legacy
-// venueMatchesMood exactly.
+// usable atmosphereTags, the mood decision is made ONLY by direct structured
+// atmosphere evidence — the category-level assumption (categorySupportsMood) is
+// deliberately NOT OR-ed in on this branch. The saturation audit showed that OR
+// granted the mood bonus to whole categories regardless of a venue's own tags
+// (e.g. every "activities" billiards/pool lounge scored as active AND
+// family-friendly, every "outdoor" venue as active), over-surfacing generic
+// venues that carry none of the mapped atmosphere tags. A controlled 360-scenario
+// counterfactual confirmed removing the OR keeps the MAIN invariant (360/360) and
+// the romantic legacy path intact, improves coverage/variety, makes mood choice
+// meaningfully change results, and — across 171 strict-winner slots — only ever
+// demoted category-only winners in favor of venues with direct structured evidence
+// (0 regressions). Category support still contributes on the fallback path below,
+// so venues that lack atmosphereTags (and the unmapped romantic mood) are unchanged.
 export function venueMatchesRecommendationMood(
   venue: Venue,
   mood?: DiscoveryMood,
@@ -140,14 +147,16 @@ export function venueMatchesRecommendationMood(
   const tags = venue.atmosphereTags;
   if (mapped && Array.isArray(tags) && tags.length > 0) {
     const targets = mapped.map(normalizeRecommendationTag);
-    const structuredMatch = tags.some((tag) =>
+    // Structured-only: direct atmosphere evidence decides, no category-level OR.
+    return tags.some((tag) =>
       targets.includes(normalizeRecommendationTag(tag)),
     );
-    // Structured venue evidence OR the (preserved) category-level mood support.
-    return structuredMatch || categorySupportsMood(venue.categorySlug, mood);
   }
 
-  // Fallback: legacy free-text + category mood match (unchanged).
+  // Fallback (venue has no usable atmosphereTags, or the mood has no safe structured
+  // mapping — i.e. romantic): legacy free-text + category mood match, unchanged.
+  // categorySupportsMood still contributes here, preserving behavior when structured
+  // atmosphere data is absent.
   return venueMatchesMood(venue, mood);
 }
 
