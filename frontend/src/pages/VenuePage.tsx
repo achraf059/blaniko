@@ -183,12 +183,6 @@ export default function VenuePage() {
   const categoryName =
     dictionary.categoryNames[venue.categorySlug] ?? dictionary.venuePage.unknownCategory;
   const shortDescription = vd.shortDescription ?? vd.description;
-  const overview =
-    vd.overview ??
-    dictionary.venuePage.fallbackOverview
-      .replace("{name}", venue.name)
-      .replace("{category}", categoryName.toLowerCase())
-      .replace("{area}", venue.area);
   const vibe = vd.vibe ?? dictionary.venuePage.fallbackVibe;
   const audience = vd.audience ?? dictionary.venuePage.fallbackAudience;
   const priceLevel = venue.priceLevel ?? null;
@@ -275,6 +269,11 @@ export default function VenuePage() {
                   {dictionary.venuePage.trustLastUpdated}: {new Date(venue.lastUpdated).toLocaleDateString(language === "fr" ? "fr-FR" : "en-US", { month: "short", year: "numeric" })}
                 </span>
               )}
+              {venue.lastVerifiedDate && (
+                <span className="bl-venue-trust-date">
+                  {dictionary.venuePage.trustLastResearched}: {venue.lastVerifiedDate}
+                </span>
+              )}
             </span>
           </div>
 
@@ -296,22 +295,11 @@ export default function VenuePage() {
           <div className="bl-venue-body-grid">
             {/* Main content column */}
             <div className="bl-venue-body-main">
-              {/* Overview */}
-              <section className="bl-venue-body-section">
-                <h2 className="bl-venue-section-title">
-                  {dictionary.venuePage.overview}
-                </h2>
-                <p className="bl-venue-overview-text">{overview}</p>
-              </section>
-
               {/* Personality */}
               <section className="bl-venue-body-section">
                 <h2 className="bl-venue-section-title">
                   {text.venuePage.personalityTitle}
                 </h2>
-                <p className="bl-venue-overview-text">
-                  {personality.whyPeopleChoose}
-                </p>
 
                 {personality.bestFor.length > 0 ? (
                   <div className="bl-venue-why-card">
@@ -364,6 +352,12 @@ export default function VenuePage() {
               {/* Practical info */}
               <section className="bl-venue-body-section">
                 <div className="bl-venue-fact-strip">
+                  {venue.subcategory ? (
+                    <div className="bl-venue-fact-item">
+                      <span className="bl-venue-fact-label">{dictionary.venuePage.type}</span>
+                      <span className="bl-venue-fact-value">{venue.subcategory}</span>
+                    </div>
+                  ) : null}
                   <div className="bl-venue-fact-item">
                     <span className="bl-venue-fact-label">{dictionary.venuePage.area}</span>
                     <span className="bl-venue-fact-value">{venue.area.split(",")[0]?.trim() ?? venue.area}</span>
@@ -376,6 +370,17 @@ export default function VenuePage() {
                     <span className="bl-venue-fact-label">{dictionary.venuePage.audience}</span>
                     <span className="bl-venue-fact-value">{audience}</span>
                   </div>
+                  {(() => {
+                    // Display the verified V3 opening hours verbatim. Hidden when
+                    // empty or the placeholder "Unknown" — never parsed or inferred.
+                    const hours = venue.openingHoursRaw?.trim();
+                    return hours && hours.toLowerCase() !== "unknown" ? (
+                      <div className="bl-venue-fact-item">
+                        <span className="bl-venue-fact-label">{dictionary.venuePage.openingHours}</span>
+                        <span className="bl-venue-fact-value">{hours}</span>
+                      </div>
+                    ) : null;
+                  })()}
                   {priceLevel ? (
                     <div className="bl-venue-fact-item">
                       <span className="bl-venue-fact-label">{dictionary.venuePage.priceLevel}</span>
@@ -419,9 +424,11 @@ export default function VenuePage() {
                   // The stored venue values are never mutated.
                   const safeWebsite = safeExternalUrl(venue.website);
                   const safeInstagram = safeExternalUrl(venue.instagram);
+                  const safeFacebook = safeExternalUrl(venue.facebook);
                   const hasWebsite = Boolean(safeWebsite);
                   const hasInstagram = Boolean(safeInstagram);
-                  const hasAnyContact = hasMap || hasPhone || hasWebsite || hasInstagram;
+                  const hasFacebook = Boolean(safeFacebook);
+                  const hasAnyContact = hasMap || hasPhone || hasWebsite || hasInstagram || hasFacebook;
 
                   // Sanitize phone: digits + leading +
                   const rawPhone = venue.phone ?? "";
@@ -443,7 +450,7 @@ export default function VenuePage() {
                         </a>
                       ) : null}
 
-                      {(hasPhone || hasWebsite || hasInstagram) ? (
+                      {(hasPhone || hasWebsite || hasInstagram || hasFacebook) ? (
                         <div className="bl-venue-cta-pills">
                           {hasPhone ? (
                             <a
@@ -485,6 +492,17 @@ export default function VenuePage() {
                             >
                               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                               {dictionary.venuePage.actionInstagram}
+                            </a>
+                          ) : null}
+                          {hasFacebook ? (
+                            <a
+                              href={safeFacebook!}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bl-venue-cta-pill"
+                            >
+                              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                              {dictionary.venuePage.actionFacebook}
                             </a>
                           ) : null}
                         </div>

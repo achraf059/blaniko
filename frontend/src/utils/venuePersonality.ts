@@ -15,7 +15,27 @@ type VenuePersonalityInput = Pick<
   | "energyLevel"
   | "socialLevel"
   | "spaceType"
+  | "indoorOutdoor"
 >;
+
+// Resolve the displayed indoor/outdoor label, preferring the verified V3
+// `indoorOutdoor` source field over the computed `spaceType` inference.
+// `indoorOutdoor` is the raw DB value ("Indoor" | "Outdoor" | "Indoor / Outdoor");
+// we map it onto the existing localized spaceLabelMap so French stays localized.
+// `computeSpaceType` (used for filtering/recommendations) is left untouched — this
+// only affects display. Returns "" when no source is available.
+function resolveSpaceLabel(
+  venue: VenuePersonalityInput,
+  spaceLabelMap: { indoor: string; outdoor: string; mixed: string },
+): string {
+  const raw = (venue.indoorOutdoor ?? "").trim().toLowerCase();
+  if (raw === "indoor") return spaceLabelMap.indoor;
+  if (raw === "outdoor") return spaceLabelMap.outdoor;
+  if (raw === "indoor / outdoor") return spaceLabelMap.mixed;
+  // Legacy fallback: computed spaceType (only when indoorOutdoor is absent).
+  if (venue.spaceType) return spaceLabelMap[venue.spaceType] ?? venue.spaceType;
+  return "";
+}
 
 const labelByLanguage = {
   en: {
@@ -157,7 +177,7 @@ export function getVenuePersonalitySection(
       venue.vibe ?? "",
       venue.socialLevel ? labels.socialLabelMap[venue.socialLevel] : "",
       venue.energyLevel ? labels.energyLabelMap[venue.energyLevel] : "",
-      venue.spaceType ? labels.spaceLabelMap[venue.spaceType] : "",
+      resolveSpaceLabel(venue, labels.spaceLabelMap),
     ]
       .filter(Boolean)
       .join(" • "),
