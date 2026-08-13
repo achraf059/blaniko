@@ -601,7 +601,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid rgba(245, 240, 232, 0.22);
   border-radius: 100px;
   padding: 8px 8px 8px 22px;
-  max-width: 660px;
+  max-width: 700px;
   height: 64px;
   backdrop-filter: blur(18px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
@@ -637,6 +637,33 @@ a { color: inherit; text-decoration: none; }
   color: color-mix(in srgb, var(--accent) 85%, transparent); /* gold pin icon */
   flex-shrink: 0;
 }
+/* Explore — secondary action. Ghost/outline gold: the same accent family as the
+   filled gold Plan CTA, but outlined instead of filled so it stays theme-
+   consistent and clearly secondary. Reuses existing gold-accent border tokens. */
+.hero-search .explore {
+  display: inline-flex; align-items: center;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 100px;
+  margin: 0 10px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  color: rgba(244, 238, 230, 0.92); /* hero ivory — same as .hero-tags .tag text */
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: inherit;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 200ms var(--ease);
+}
+.hero-search .explore:hover {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+  transform: translateY(-1px);
+}
 .hero-search button.go {
   height: 48px;
   padding: 0 22px;
@@ -651,6 +678,18 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-search button.go:hover { background: color-mix(in srgb, var(--accent) 85%, #1F1530 15%); transform: translateY(-1px); }
 .hero-search button.go:active { transform: scale(0.98); }
+
+/* Quiet explanatory line under the bar — the two paths (explore vs. plan).
+   Uses the hero ivory text color at a lower alpha; aligned to the bar's
+   content inset. Understated, not a heading or CTA. */
+.hero-hint {
+  margin: 18px 0 0 22px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--accent) 75%, transparent); /* soft gold — accent family, kept subtle */
+  font-weight: 450;
+  letter-spacing: 0.01em;
+}
 
 .hero-tags {
   margin-top: 22px;
@@ -1969,9 +2008,16 @@ a { color: inherit; text-decoration: none; }
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(245, 240, 232, 0.15);
   }
-  /* Hide location pill + divider — not useful in stacked layout */
-  .hero-search .divider,
-  .hero-search .where { display: none; }
+  /* Hide the divider — not useful in stacked layout */
+  .hero-search .divider { display: none; }
+  /* Explore stacks as a full-width secondary above the primary Plan action */
+  .hero-search .explore {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    justify-content: center;
+    padding: 12px 18px;
+  }
   .hero-search button.go {
     width: 100%;
     height: auto;

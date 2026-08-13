@@ -68,13 +68,11 @@ export const Hero = () => {
           }}
         />
         <div className="divider"/>
-        <div className="where">
-          <Icon name="pin" size={14} />
-          Casablanca
-        </div>
-        <button className="go" onClick={handleSearch}>
+        <button className="explore" onClick={handleSearch}>
           {dictionary.claudeHome.heroStartPlanning}
-          <Icon name="arrow" size={14} />
+        </button>
+        <button className="go" onClick={() => navigate("/plan")}>
+          {dictionary.claudeHome.heroPlanOuting}
         </button>
       </div>
 
@@ -86,6 +84,10 @@ export const Hero = () => {
           </button>
         ))}
       </div>
+
+      <p className="hero-hint reveal in" style={{ transitionDelay: "420ms" }}>
+        {dictionary.claudeHome.heroPathsHint}
+      </p>
 
       {/* Floating cards — data-card-id used for scroll mapping */}
       {heroCards.map((c, i) => (

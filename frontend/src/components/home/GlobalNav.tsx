@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 import { useI18n } from "../../i18n/useI18n";
 import { useTheme } from "../../hooks/useTheme";
 import { useAuth } from "../../auth/useAuth";
@@ -24,6 +24,9 @@ export function GlobalNav({ labels }: GlobalNavProps) {
   const homeNav = dictionary.claudeHome;
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  // Hide the Plan CTA while already inside the planner. Pathname-only check so
+  // query params (e.g. /plan?quizDone=1) still count as being on /plan.
+  const isOnPlanRoute = useLocation().pathname === "/plan";
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -93,10 +96,13 @@ export function GlobalNav({ labels }: GlobalNavProps) {
         </ul>
 
         <div className="bl-global-nav-actions">
-          {/* Plan — primary product action, always visible */}
-          <Link to="/plan" className="bl-global-nav-cta">
-            {homeNav.navPlan}
-          </Link>
+          {/* Plan — primary product action. Hidden while already on /plan since
+              the user is inside the planner; the flex actions row closes the gap. */}
+          {!isOnPlanRoute && (
+            <Link to="/plan" className="bl-global-nav-cta">
+              {homeNav.navPlan}
+            </Link>
+          )}
 
           <Link to="/favorites" className="bl-global-nav-saved-pill">
             {homeNav.saved}

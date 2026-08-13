@@ -73,6 +73,8 @@ export type Dictionary = {
     heroSearchPlaceholder: string;
     heroExplore: string;
     heroStartPlanning: string;
+    heroPlanOuting: string;
+    heroPathsHint: string;
     heroTagWeekend: string;
     heroTagOutdoor: string;
     heroTagUnder200: string;
@@ -474,6 +476,8 @@ const en: Dictionary = {
     heroSearchPlaceholder: "Search activities or venues",
     heroExplore: "Explore all guides",
     heroStartPlanning: "Explore Experiences",
+    heroPlanOuting: "Plan my outing",
+    heroPathsHint: "Explore on your own · Or let Blaniko plan it for you",
     heroTagWeekend: "Weekend ideas",
     heroTagOutdoor: "Outdoor",
     heroTagUnder200: "Budget-friendly",
@@ -901,6 +905,8 @@ const fr: Dictionary = {
     heroSearchPlaceholder: "Rechercher des activités ou des lieux",
     heroExplore: "Explorer tous les guides",
     heroStartPlanning: "Explorer les expériences",
+    heroPlanOuting: "Planifier ma sortie",
+    heroPathsHint: "Explorez par vous-même · Ou laissez Blaniko planifier pour vous",
     heroTagWeekend: "Idées week-end",
     heroTagOutdoor: "En plein air",
     heroTagUnder200: "Petit budget",
