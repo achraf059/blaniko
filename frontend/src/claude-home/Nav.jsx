@@ -98,6 +98,9 @@ export const Nav = ({ favoritesCount = 0 }) => {
         </div>
 
         <div className="nav-right-group">
+          {/* Plan — primary product action, kept visible down to phones */}
+          <Link to="/plan" className="nav-cta">{homeNav.navPlan}</Link>
+
           <div className="nav-utility-group">
           <button
             className="saved-pill"
@@ -187,6 +190,11 @@ export const Nav = ({ favoritesCount = 0 }) => {
 
             {menuOpen && (
               <div className="nav-menu-panel">
+                {/* Plan — highest-priority destination in the mobile menu */}
+                <Link to="/plan" className="nav-menu-link nav-menu-link-primary" onClick={closeMenu}>{homeNav.navPlan}</Link>
+
+                <div className="nav-menu-divider" />
+
                 <p className="nav-menu-section">{homeNav.navMenuExploreBlaniko}</p>
                 <Link to="/categories" className="nav-menu-link" onClick={closeMenu}>{homeNav.navSearch}</Link>
                 <Link to="/guides" className="nav-menu-link" onClick={closeMenu}>{homeNav.navGuides}</Link>

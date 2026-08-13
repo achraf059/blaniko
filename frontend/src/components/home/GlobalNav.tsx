@@ -90,25 +90,14 @@ export function GlobalNav({ labels }: GlobalNavProps) {
               {homeNav.navGuides}
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/map"
-              className={({ isActive }) => `bl-global-nav-link${isActive ? " is-active" : ""}`}
-            >
-              {homeNav.navMap}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/partners"
-              className={({ isActive }) => `bl-global-nav-link${isActive ? " is-active" : ""}`}
-            >
-              {homeNav.navForVenues}
-            </NavLink>
-          </li>
         </ul>
 
         <div className="bl-global-nav-actions">
+          {/* Plan — primary product action, always visible */}
+          <Link to="/plan" className="bl-global-nav-cta">
+            {homeNav.navPlan}
+          </Link>
+
           <Link to="/favorites" className="bl-global-nav-saved-pill">
             {homeNav.saved}
           </Link>
@@ -178,13 +167,18 @@ export function GlobalNav({ labels }: GlobalNavProps) {
 
             {menuOpen && (
               <div className="bl-global-nav-menu-panel">
-                {/* Mobile-only: top links hidden from bar at <1024px */}
+                {/* Mobile-only: primary destinations hidden from the bar at <1080px.
+                    Plan leads as the highest-priority destination. */}
                 <div className="bl-global-nav-menu-mobile-nav">
+                  <Link to="/plan" className="bl-global-nav-menu-link bl-global-nav-menu-link-primary" onClick={closeMenu}>{homeNav.navPlan}</Link>
                   <Link to="/categories" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navSearch}</Link>
                   <Link to="/guides" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navGuides}</Link>
-                  <Link to="/map" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navMap}</Link>
-                  <Link to="/partners" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
+                  <div className="bl-global-nav-menu-divider" />
                 </div>
+
+                {/* More — secondary destinations, available on desktop and mobile */}
+                <Link to="/map" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navMap}</Link>
+                <Link to="/partners" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.navForVenues}</Link>
 
                 <div className="bl-global-nav-menu-divider" />
                 <Link to="/favorites" className="bl-global-nav-menu-link" onClick={closeMenu}>{homeNav.saved}</Link>

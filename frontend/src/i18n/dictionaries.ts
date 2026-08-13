@@ -879,7 +879,7 @@ const fr: Dictionary = {
     navMap: "Carte",
     navSearch: "Explorer",
     navGuides: "Guides",
-    navPlan: "Plan",
+    navPlan: "Planifier",
     navForVenues: "Pour les établissements",
     navAbout: "À propos",
     navMenuExploreBlaniko: "Explorer Blaniko",

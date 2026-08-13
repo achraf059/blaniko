@@ -50,7 +50,11 @@
   justify-content: space-between;
   gap: 2rem;
   width: 100%;
-  max-width: min(1480px, 94vw);
+  /* Wider than the 1480px content shell so the right-side action group
+     (Plan → hamburger) sits near the viewport edge with clear breathing room
+     from the centered links, instead of being crammed against them on wide
+     desktops. Mirrors the homepage nav frame. */
+  max-width: min(1680px, 95vw);
   min-height: 4.5rem;
   padding: 1.375rem 0;
   box-sizing: border-box;
@@ -262,6 +266,16 @@
   color: var(--plum-deep);
 }
 
+/* Plan — highest-priority destination inside the mobile menu */
+.bl-global-nav-menu-link-primary {
+  font-weight: 600;
+  color: var(--plum-deep);
+}
+.bl-global-nav-menu-link-primary:hover {
+  background: color-mix(in srgb, var(--plum) 12%, var(--surface));
+  color: var(--plum-deep);
+}
+
 .bl-global-nav-menu-divider {
   height: 1px;
   background: var(--line-soft);
@@ -274,7 +288,7 @@
 }
 
 .bl-global-nav-cta {
-  display: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
@@ -342,17 +356,14 @@
   filter: brightness(0) invert(1);
 }
 
-@media (min-width: 480px) {
-  .bl-global-nav-cta {
-    display: inline-flex;
-  }
-}
-
 @media (min-width: 1080px) {
-  /* 3-column grid mirrors the homepage shell layout:
+  /* 3-column grid mirrors the homepage nav layout:
      [logo 1fr] [center links auto] [actions 1fr]
-     minmax(0, 1fr) lets the side columns collapse so actions
-     never clip the center links at mid-width desktops. */
+     The symmetric side columns pin the center links to the EXACT viewport
+     centre regardless of the right group's width. The logo's isolation is
+     corrected with a deliberate inward inset on the brand below, NOT by moving
+     the links off-centre. minmax(0, 1fr) lets the side columns collapse so the
+     actions never clip the center links at mid-width desktops. */
   .bl-global-nav {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -362,6 +373,12 @@
   .bl-global-nav-brand {
     justify-self: start;
     min-width: 0;
+    /* Nudge the logo inward off the far-left edge so it reads as connected to
+       the centered links, without disturbing the exact centering (padding lives
+       inside the brand's own 1fr track). This block is already desktop-scoped
+       (min-width: 1080px), so mobile is untouched. clamp keeps it responsive
+       and bounded rather than a fixed one-off margin. */
+    padding-left: clamp(0px, 6vw, 132px);
   }
 
   .bl-global-nav-links {
@@ -376,6 +393,22 @@
 
   /* Desktop: top links visible in bar — hide them from inside the hamburger */
   .bl-global-nav-menu-mobile-nav {
+    display: none;
+  }
+}
+
+/* Mobile: keep the bar to Brand · Plan · utilities · Menu. Saved and Account
+   move into the hamburger (they already live there), leaving room for the
+   always-visible Plan action. Mirrors the homepage nav behaviour. */
+@media (max-width: 900px) {
+  /* Reset to the content shell so the mobile bar aligns with page content;
+     the wider desktop nav frame only applies above this breakpoint. */
+  .bl-global-nav {
+    max-width: min(1480px, 94vw);
+  }
+
+  .bl-global-nav-saved-pill,
+  .bl-global-nav-auth-pill {
     display: none;
   }
 }
