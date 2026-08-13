@@ -98,9 +98,8 @@ export const Nav = ({ favoritesCount = 0 }) => {
         </div>
 
         <div className="nav-right-group">
-          {/* Plan — primary product action, kept visible down to phones */}
-          <Link to="/plan" className="nav-cta">{homeNav.navPlan}</Link>
-
+          {/* Plan lives in the hero on the homepage; the hamburger menu keeps
+             persistent access, so no duplicate nav pill here. */}
           <div className="nav-utility-group">
           <button
             className="saved-pill"
