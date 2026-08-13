@@ -1,21 +1,25 @@
 type QuizOption = {
   value: string;
   label: string;
+  description?: string;
+  /** Full-width card — used for the odd trailing option (e.g. Family-friendly vibe). */
+  wide?: boolean;
 };
 
 type QuizStepProps = {
   title: string;
-  description?: string;
+  /** Short framing line under the question. */
+  helper?: string;
   options: QuizOption[];
   value: string;
   onChange: (value: string) => void;
 };
 
-export function QuizStep({ title, description, options, value, onChange }: QuizStepProps) {
+export function QuizStep({ title, helper, options, value, onChange }: QuizStepProps) {
   return (
     <section className="bl-reco-step">
-      <h2 className="bl-reco-step-title">{title}</h2>
-      {description ? <p className="bl-reco-step-description">{description}</p> : null}
+      <h1 className="bl-reco-step-title">{title}</h1>
+      {helper ? <p className="bl-reco-step-helper">{helper}</p> : null}
 
       <div className="bl-reco-option-grid">
         {options.map((option) => {
@@ -25,10 +29,19 @@ export function QuizStep({ title, description, options, value, onChange }: QuizS
             <button
               key={option.value}
               type="button"
-              className={`bl-reco-option ${selected ? "is-selected" : ""}`}
+              aria-pressed={selected}
+              className={`bl-reco-option${selected ? " is-selected" : ""}${
+                option.wide ? " is-wide" : ""
+              }`}
               onClick={() => onChange(option.value)}
             >
-              {option.label}
+              <span className="bl-reco-option-body">
+                <span className="bl-reco-option-title">{option.label}</span>
+                {option.description ? (
+                  <span className="bl-reco-option-desc">{option.description}</span>
+                ) : null}
+              </span>
+              <span className="bl-reco-option-check" aria-hidden="true" />
             </button>
           );
         })}
