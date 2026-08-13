@@ -35,6 +35,20 @@
   gap: 0;
 }
 
+/* Quiz-only desktop placement: nudge the natural-height planner composition
+   slightly lower below GlobalNav so it doesn't hug the nav. Restrained,
+   viewport-scaled top offset only — no vertical centering, no viewport
+   min-height, no column/panel stretch (internal quiz spacing is unchanged).
+   Scoped via :has(> .bl-reco-shell) so it applies ONLY while the quiz is
+   mounted (the results view has no .bl-reco-shell), and above the mobile
+   stacking breakpoint so mobile is untouched. Overrides only padding-top —
+   the existing bottom (5rem) and horizontal (0) padding are preserved. */
+@media (min-width: 60.01rem) {
+  .bl-plan-main:has(> .bl-reco-shell) {
+    padding-top: clamp(2.5rem, 8vh, 5rem);
+  }
+}
+
 /* ── A. HERO ── */
 .bl-plan-hero {
   position: relative;
