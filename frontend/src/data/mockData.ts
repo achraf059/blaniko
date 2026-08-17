@@ -58,6 +58,8 @@ export type Venue = {
   website?: string;
   instagram?: string;
   imageUrl?: string;
+  // Optional separate hero image for VenuePage; falls back to imageUrl, then placeholder.
+  detailImageUrl?: string | null;
   isActive?: boolean;
   source?: string;
 

@@ -30,3 +30,24 @@ export function hasVenueImage(venue: {
 }): boolean {
   return !!venue.imageUrl;
 }
+
+/**
+ * Resolves the large hero/detail image src for a venue (VenuePage only).
+ *
+ * Priority:
+ *  1. venue.detailImageUrl — explicit hero image
+ *  2. venue.imageUrl        — fall back to the card image
+ *  3. undefined             — VenueImage renders the "Photo coming soon" placeholder
+ *
+ * Venue cards keep using getVenueImageSrc() (imageUrl only) — they must not use
+ * the detail image.
+ */
+export function getVenueDetailImageSrc(venue: {
+  detailImageUrl?: string | null;
+  imageUrl?: string | null;
+  externalId?: string;
+}): string | undefined {
+  if (venue.detailImageUrl) return venue.detailImageUrl;
+  if (venue.imageUrl) return venue.imageUrl;
+  return undefined;
+}
