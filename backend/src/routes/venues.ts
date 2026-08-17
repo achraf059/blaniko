@@ -170,7 +170,7 @@ function toArea(
 }
 
 // Shape returned to the frontend for every venue.
-function mapVenue(row: Record<string, unknown>) {
+export function mapVenue(row: Record<string, unknown>) {
   const category = String(row.category ?? "");
   const subcategory = row.subcategory ? String(row.subcategory) : null;
   const rawNeighborhood = row.neighborhood ? String(row.neighborhood) : null;
@@ -247,6 +247,9 @@ function mapVenue(row: Record<string, unknown>) {
     vibe:      row.vibe      ? String(row.vibe)       : undefined,
     audience:  row.audience  ? String(row.audience)   : undefined,
     imageUrl: row.image_url ?? null,
+    // Optional separate hero/detail image for VenuePage. Falls back to imageUrl
+    // (then the "Photo coming soon" placeholder) on the frontend when null.
+    detailImageUrl: row.detail_image_url ?? null,
     isActive: row.is_active,
     source: row.source,
     // Discovery metadata — computed from subcategory; overridden by DB values when present

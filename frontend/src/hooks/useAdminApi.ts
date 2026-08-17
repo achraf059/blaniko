@@ -118,6 +118,7 @@ export type AdminVenueRow = {
   phone: string | null;
   short_description: string | null;
   image_url: string | null;
+  detail_image_url: string | null;
   is_active: boolean;
   price_level: string | null;
   lat: number | null;
@@ -165,6 +166,7 @@ export type AdminVenuePatch = {
   phone?: string | null;
   shortDescription?: string | null;
   imageUrl?: string | null;
+  detailImageUrl?: string | null;
   priceLevel?: string | null;
   lat?: number | null;
   lng?: number | null;

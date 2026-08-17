@@ -20,6 +20,7 @@ const PATCHABLE: Record<string, string> = {
   phone:            "phone",
   shortDescription: "short_description",
   imageUrl:         "image_url",
+  detailImageUrl:   "detail_image_url",
   priceLevel:       "price_level",
   lat:              "lat",
   lng:              "lng",

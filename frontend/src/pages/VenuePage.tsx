@@ -19,7 +19,7 @@ import {
 } from "../utils/discoveryInsights";
 import { rankVenueAlternatives } from "../utils/venueAlternatives";
 import { getVenuePersonalitySection } from "../utils/venuePersonality";
-import { getVenueImageSrc } from "../utils/venueImage";
+import { getVenueImageSrc, getVenueDetailImageSrc } from "../utils/venueImage";
 import { safeExternalUrl } from "../utils/externalUrl";
 import PublicFooter from "../components/PublicFooter";
 import "./VenuePage.css";
@@ -210,7 +210,7 @@ export default function VenuePage() {
         {/* Full-bleed hero image */}
         <div className="bl-venue-hero-wrap">
           <VenueImage
-            src={getVenueImageSrc(venue)}
+            src={getVenueDetailImageSrc(venue)}
             category={categoryName}
             categorySlug={venue.categorySlug}
             alt={venue.name}
