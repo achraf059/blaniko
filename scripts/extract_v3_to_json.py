@@ -79,6 +79,10 @@ COL_STATUS = 20
 COL_PRICE = 21
 COL_PRICE_DETAILS = 22
 COL_VERIFIED_BY = 23
+# Manually curated main area / quartier for discovery filtering (Phase 1 quartier
+# migration). Feeds the payload `neighborhood` field, which the backend composes
+# into the frontend `area`. Distinct from COL_LOCATION (full street address).
+COL_QUARTIER = 25
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -265,9 +269,13 @@ def extract(xlsx_path: str) -> list[dict]:
             if ae_str:
                 additional_experiences = split_additional_experiences(ae_str)
 
-        # Location
+        # Location (full street address)
         location_text = ws.cell(row=row_num, column=COL_LOCATION).value
         location_text = str(location_text).strip() if location_text else None
+
+        # Main area / quartier (curated) → payload neighborhood → frontend area.
+        quartier = ws.cell(row=row_num, column=COL_QUARTIER).value
+        quartier = str(quartier).strip() if quartier else None
 
         # Contact information — MUST be a string, preserve exactly
         contact_cell = ws.cell(row=row_num, column=COL_CONTACT)
@@ -386,7 +394,7 @@ def extract(xlsx_path: str) -> list[dict]:
             "short_description": experience_description,
             "overview": experience_description,
             "region": None,
-            "neighborhood": None,
+            "neighborhood": quartier,
             "image_url": None,
         }
 
