@@ -1,0 +1,522 @@
+{
+  "generated_from": "Achraf manual quartier list, historical OLD-ID assignments converted through the canonical V3 crosswalk (scripts/venue-id-crosswalk-pre-v3-to-v3.json)",
+  "canonical_policy": "Current V3 IDs are permanent and are never renumbered",
+  "stored_in": "Workbook 'Blaniko Official MVP' column 'Area / Quartier' (col 25) -> extractor payload field 'neighborhood' -> backend/frontend 'area'. This file is an audit/migration record, NOT a runtime source of truth; the workbook remains authoritative.",
+  "vocabulary_normalizations": [
+    {
+      "external_id": "BLK-0003",
+      "from": "Borgone",
+      "to": "Bourgogne"
+    }
+  ],
+  "counts": {
+    "active": 97,
+    "retired_skipped": 2,
+    "reserved_gap": [
+      "BLK-0037"
+    ]
+  },
+  "skipped_retired_identities": [
+    {
+      "old_external_id": "BLK-0020",
+      "current_external_id": "BLK-0020",
+      "name": "E-Blue Gaming Center",
+      "supplied_quartier": "Racine",
+      "reason": "permanently closed — excluded from MVP; no active assignment"
+    },
+    {
+      "old_external_id": "BLK-0043",
+      "current_external_id": "BLK-0044",
+      "name": "Étoile Football Académie (EFA)",
+      "supplied_quartier": "Beauséjour",
+      "reason": "editorial decision — excluded from MVP; no active assignment"
+    }
+  ],
+  "venues": [
+    {
+      "external_id": "BLK-0001",
+      "name": "Astro Pool Lounge",
+      "quartier": "Racine"
+    },
+    {
+      "external_id": "BLK-0002",
+      "name": "PARIS POOL",
+      "quartier": "Centre-ville"
+    },
+    {
+      "external_id": "BLK-0003",
+      "name": "LEVEL Club De Billard",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0004",
+      "name": "Blackspin",
+      "quartier": "Val Fleuri"
+    },
+    {
+      "external_id": "BLK-0005",
+      "name": "Sons of Billiards - Pool Club",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0006",
+      "name": "Cavalli Club",
+      "quartier": "Californie"
+    },
+    {
+      "external_id": "BLK-0007",
+      "name": "Billardaire",
+      "quartier": "Belvédère"
+    },
+    {
+      "external_id": "BLK-0008",
+      "name": "First Havana Pool",
+      "quartier": "Centre-ville"
+    },
+    {
+      "external_id": "BLK-0009",
+      "name": "UK Academy",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0010",
+      "name": "Trocadero players",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0011",
+      "name": "Spirit Gaming",
+      "quartier": "Oulfa"
+    },
+    {
+      "external_id": "BLK-0012",
+      "name": "Warriors Gaming",
+      "quartier": "Belvédère"
+    },
+    {
+      "external_id": "BLK-0013",
+      "name": "Avatar Gaming",
+      "quartier": "Aïn Sebaâ"
+    },
+    {
+      "external_id": "BLK-0014",
+      "name": "Lpz gaming",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0015",
+      "name": "Temple Gaming",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0016",
+      "name": "House of Gaming",
+      "quartier": "Oulfa"
+    },
+    {
+      "external_id": "BLK-0017",
+      "name": "Pixel & Play",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0018",
+      "name": "Casa Gaming",
+      "quartier": "Jnane Louz"
+    },
+    {
+      "external_id": "BLK-0019",
+      "name": "Saw Gaming Club",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0021",
+      "name": "squizy",
+      "quartier": "Marina"
+    },
+    {
+      "external_id": "BLK-0022",
+      "name": "Totem Kids Coffee (centre de loisirs casablanca )",
+      "quartier": "Racine"
+    },
+    {
+      "external_id": "BLK-0023",
+      "name": "Flokiz",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0024",
+      "name": "Au Pays des Rêves by Villa Eden",
+      "quartier": "Racine"
+    },
+    {
+      "external_id": "BLK-0025",
+      "name": "Kidz Korner",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0026",
+      "name": "Yasmine Fun Park - Ovillage Sidi maarouf",
+      "quartier": "Sidi Maârouf"
+    },
+    {
+      "external_id": "BLK-0027",
+      "name": "Quartier Libre, casablanca",
+      "quartier": "Racine"
+    },
+    {
+      "external_id": "BLK-0028",
+      "name": "Play Planet",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0029",
+      "name": "MK INO Kids Play Café",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0030",
+      "name": "Fun Club",
+      "quartier": "Les Hôpitaux"
+    },
+    {
+      "external_id": "BLK-0031",
+      "name": "Bisounours Ludothèque",
+      "quartier": "Palmier"
+    },
+    {
+      "external_id": "BLK-0032",
+      "name": "PADEL PRO",
+      "quartier": "Lissasfa"
+    },
+    {
+      "external_id": "BLK-0033",
+      "name": "Padel 4",
+      "quartier": "Bouskoura"
+    },
+    {
+      "external_id": "BLK-0034",
+      "name": "DEPOT 4 - INDOOR PADEL CLUB",
+      "quartier": "Sidi Maârouf"
+    },
+    {
+      "external_id": "BLK-0035",
+      "name": "Padel Social Club",
+      "quartier": "CIL"
+    },
+    {
+      "external_id": "BLK-0036",
+      "name": "Padel Park by Sindibad",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0038",
+      "name": "OASIS SPORTS CITY",
+      "quartier": "Oasis"
+    },
+    {
+      "external_id": "BLK-0039",
+      "name": "Arena Ville Verte",
+      "quartier": "Bouskoura"
+    },
+    {
+      "external_id": "BLK-0040",
+      "name": "Laser Game Evolution Casablanca",
+      "quartier": "Marina"
+    },
+    {
+      "external_id": "BLK-0041",
+      "name": "EyeDive",
+      "quartier": "Racine"
+    },
+    {
+      "external_id": "BLK-0042",
+      "name": "Ginga Sport Casablanca",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0043",
+      "name": "City Foot 5",
+      "quartier": "Oasis"
+    },
+    {
+      "external_id": "BLK-0045",
+      "name": "FCC football sidi maarouf كرة القدم سيدي معروف",
+      "quartier": "Sidi Maârouf"
+    },
+    {
+      "external_id": "BLK-0046",
+      "name": "Street 5 Soccer",
+      "quartier": "Zenata"
+    },
+    {
+      "external_id": "BLK-0047",
+      "name": "CAMPUS SPORT",
+      "quartier": "Lissasfa"
+    },
+    {
+      "external_id": "BLK-0048",
+      "name": "Juventus Academy CASABLANCA",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0049",
+      "name": "Terrain espace sbata ملعب فضاء سباتة",
+      "quartier": "Sbata"
+    },
+    {
+      "external_id": "BLK-0050",
+      "name": "AREA SPORTS & EVENTS CENTER",
+      "quartier": "Almaz"
+    },
+    {
+      "external_id": "BLK-0051",
+      "name": "City Foot Academy",
+      "quartier": "Oasis"
+    },
+    {
+      "external_id": "BLK-0052",
+      "name": "SAM PARK Morocco",
+      "quartier": "Oued Hassar"
+    },
+    {
+      "external_id": "BLK-0053",
+      "name": "Anfa Surf School casablanca",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0054",
+      "name": "Casablanca Surf coaching",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0055",
+      "name": "Waves School Darbouazza Surf Maroc",
+      "quartier": "Dar Bouazza"
+    },
+    {
+      "external_id": "BLK-0056",
+      "name": "Sindibad Karting",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0057",
+      "name": "KOJUMP Casablanca",
+      "quartier": "Casablanca Finance City (CFC)"
+    },
+    {
+      "external_id": "BLK-0058",
+      "name": "Sky Jump Casablanca",
+      "quartier": "Californie"
+    },
+    {
+      "external_id": "BLK-0059",
+      "name": "Quad Friends , Casablanca, Morocco 🇲🇦",
+      "quartier": "Soualem Trifia"
+    },
+    {
+      "external_id": "BLK-0060",
+      "name": "The DoorZ Escape room",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0061",
+      "name": "Get Out Casablanca - Escape Game",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0062",
+      "name": "Plein Ciel Paradise",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0063",
+      "name": "Oceanic Club de Casablanca",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0064",
+      "name": "COC Tennis",
+      "quartier": "Oasis"
+    },
+    {
+      "external_id": "BLK-0065",
+      "name": "Tamaris Bowling & Parc De Jeux",
+      "quartier": "Tamaris"
+    },
+    {
+      "external_id": "BLK-0066",
+      "name": "Badr Funtour",
+      "quartier": "Soualem Trifia"
+    },
+    {
+      "external_id": "BLK-0067",
+      "name": "Royal Golf Anfa",
+      "quartier": "Anfa"
+    },
+    {
+      "external_id": "BLK-0068",
+      "name": "Place Nevada",
+      "quartier": "Centre-ville"
+    },
+    {
+      "external_id": "BLK-0069",
+      "name": "Parc Sindibad",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0070",
+      "name": "Parc Loupi Land",
+      "quartier": "Oulfa"
+    },
+    {
+      "external_id": "BLK-0071",
+      "name": "Dream World",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0072",
+      "name": "Crazy Park",
+      "quartier": "Dar Bouazza"
+    },
+    {
+      "external_id": "BLK-0073",
+      "name": "Yasmine Fun Park - Tachfine",
+      "quartier": "Belvédère"
+    },
+    {
+      "external_id": "BLK-0074",
+      "name": "Tamaris Aquaparc",
+      "quartier": "Tamaris"
+    },
+    {
+      "external_id": "BLK-0075",
+      "name": "Jungle Park",
+      "quartier": "Bouskoura"
+    },
+    {
+      "external_id": "BLK-0076",
+      "name": "Pathé Californie Casablanca",
+      "quartier": "Californie"
+    },
+    {
+      "external_id": "BLK-0077",
+      "name": "Ain Sebaa Zoo",
+      "quartier": "Aïn Sebaâ"
+    },
+    {
+      "external_id": "BLK-0078",
+      "name": "Flèche Casablanca de Tir à l'Arc",
+      "quartier": "Lissasfa"
+    },
+    {
+      "external_id": "BLK-0079",
+      "name": "Maroc Skydive",
+      "quartier": "Tit Mellil"
+    },
+    {
+      "external_id": "BLK-0080",
+      "name": "Tahiti Beach Club",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0081",
+      "name": "Victoria Academy Pool & Snooker",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0082",
+      "name": "PlayerZ Gaming Arena",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0083",
+      "name": "TRUE GAMERS Casablanca - Café Gaming",
+      "quartier": "2 mars"
+    },
+    {
+      "external_id": "BLK-0084",
+      "name": "Kama gaming cafe",
+      "quartier": "2 mars"
+    },
+    {
+      "external_id": "BLK-0085",
+      "name": "First One Club",
+      "quartier": "Gauthier"
+    },
+    {
+      "external_id": "BLK-0086",
+      "name": "Century Break Academy",
+      "quartier": "Maârif"
+    },
+    {
+      "external_id": "BLK-0087",
+      "name": "The Break Pool",
+      "quartier": "Aïn Sebaâ"
+    },
+    {
+      "external_id": "BLK-0088",
+      "name": "Versus Arena Gaming",
+      "quartier": "2 mars"
+    },
+    {
+      "external_id": "BLK-0089",
+      "name": "Arena Gaming",
+      "quartier": "Sbata"
+    },
+    {
+      "external_id": "BLK-0090",
+      "name": "Fun Art Place",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0091",
+      "name": "Club Alpin Français de Casablanca",
+      "quartier": "Beauséjour"
+    },
+    {
+      "external_id": "BLK-0092",
+      "name": "Royal Club Equestre Anfa Casablanca",
+      "quartier": "Aïn Diab"
+    },
+    {
+      "external_id": "BLK-0093",
+      "name": "Skate Park",
+      "quartier": "Casablanca Finance City (CFC)"
+    },
+    {
+      "external_id": "BLK-0094",
+      "name": "Suan Thaï Casablanca",
+      "quartier": "Anfa"
+    },
+    {
+      "external_id": "BLK-0095",
+      "name": "Zen Thai Spa",
+      "quartier": "Gauthier"
+    },
+    {
+      "external_id": "BLK-0096",
+      "name": "Spany Flor",
+      "quartier": "Les Hôpitaux"
+    },
+    {
+      "external_id": "BLK-0097",
+      "name": "Spa Diva Casablanca",
+      "quartier": "Gauthier"
+    },
+    {
+      "external_id": "BLK-0098",
+      "name": "MAGIC Spa By Hotel Unico",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0099",
+      "name": "ZAHA Hammam & Spa Casablanca",
+      "quartier": "Bourgogne"
+    },
+    {
+      "external_id": "BLK-0100",
+      "name": "LE M SPA – Hammam & Massage Spa Casablanca",
+      "quartier": "Maârif"
+    }
+  ]
+}
