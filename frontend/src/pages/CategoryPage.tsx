@@ -9,6 +9,7 @@ import { usePageMeta } from "../hooks/usePageMeta";
 import { useVenues } from "../hooks/useVenues";
 import { useI18n } from "../i18n/useI18n";
 import { getVenueImageSrc, hasVenueImage } from "../utils/venueImage";
+import { deriveAreaOptions, venueMatchesArea } from "../utils/areaFilter";
 import PublicFooter from "../components/PublicFooter";
 import type { Venue } from "../data/mockData";
 import type { AppLanguage } from "../i18n/types";
@@ -362,15 +363,17 @@ export default function CategoryPage() {
   // Accept both ?goodFor= and ?bestFor= (bestFor is the SearchPage param name)
   const goodForFromUrl = searchParams.get("goodFor") ?? searchParams.get("bestFor") ?? "all";
   const timeFromUrl = searchParams.get("time") ?? "any";
+  const areaFromUrl = searchParams.get("area") ?? "all";
 
   /* ---- All hooks must come before any conditional return ---- */
   const [f, setF] = useState<FilterState>({
     query: qFromUrl,
     sort: "recommended",
-    // V3 area safety: area filter forced to "all" (ignoring any legacy ?area= URL) while
-    // venue neighborhoods are unknown — every venue resolves to "Casablanca", so the
-    // location filter is hidden (areas.length is 1) and old area= values must not filter.
-    area: "all",
+    // Area seeds from ?area= like the other filters (q / goodFor / time). Now that Phase 2
+    // populated real venue neighborhoods, venue.area carries actual quartiers (not the old
+    // "Casablanca" fallback), so the location filter is live. An unknown ?area= value simply
+    // yields the no-results state (with Clear all), the same as an unknown ?goodFor=.
+    area: areaFromUrl,
     goodFor: goodForFromUrl || "all",
     time: timeFromUrl || "any",
     subcat: "all",
@@ -464,14 +467,7 @@ export default function CategoryPage() {
 
   const pickSlugs = useMemo(() => new Set(picks.map((v) => v.slug)), [picks]);
 
-  const areas = useMemo(() => {
-    const areaSet = new Set<string>();
-    categoryVenues.forEach((v) => {
-      const a = (v.area?.split(",")[0] ?? "").trim();
-      if (a) areaSet.add(a);
-    });
-    return Array.from(areaSet).sort();
-  }, [categoryVenues]);
+  const areas = useMemo(() => deriveAreaOptions(categoryVenues), [categoryVenues]);
 
   const goodForOptions = useMemo(() => {
     const tagCounts = new Map<string, number>();
@@ -519,7 +515,7 @@ export default function CategoryPage() {
       );
     }
     if (f.area !== "all") {
-      result = result.filter((v) => (v.area?.split(",")[0] ?? "").trim() === f.area);
+      result = result.filter((v) => venueMatchesArea(v, f.area));
     }
     if (f.goodFor !== "all") {
       result = result.filter((v) => v.bestForTags?.includes(f.goodFor));

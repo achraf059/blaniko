@@ -49,9 +49,11 @@ function SearchRedirect() {
   const q = searchParams.get("q");
   const bestFor = searchParams.get("bestFor");
   const time = searchParams.get("time");
+  const area = searchParams.get("area");
   if (q) params.set("q", q);
-  // V3 area safety: area is not propagated into the /categories redirect while
-  // neighborhood filtering has no effect (all venues resolve to "Casablanca").
+  // Area propagates into the /categories redirect now that Phase 2 populated real venue
+  // neighborhoods and the Explore location filter is live.
+  if (area) params.set("area", area);
   if (bestFor) params.set("bestFor", bestFor);
   if (time) params.set("time", time);
   const suffix = params.toString();
