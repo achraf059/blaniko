@@ -63,3 +63,7 @@ backups/
 
 # Generated venue data payloads
 scripts/v3_venues_payload.json
+
+# Python bytecode cache
+__pycache__/
+*.pyc

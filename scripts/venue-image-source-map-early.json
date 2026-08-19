@@ -1,0 +1,1160 @@
+{
+  "generated_at": "2026-08-19T18:24:40.707Z",
+  "description": "Corrected source→authoritative image mapping for the early venue batch (BLK-0001..BLK-0049). Accounts for the +1 Desktop-folder shift after the phantom BLK-0037. Do not rely on folder number alone.",
+  "source_archive": "Desktop/Pictures for Blaniko ",
+  "mapping_rule": "Desktop 0001-0036 → authoritative 1:1; Desktop 0037-0049 → authoritative +1 (0038-0050).",
+  "card_detail_rule": "DETERMINISTIC SOURCE ORDER (matches BLK-0050..0100): first source → CARD, second source → DETAIL/hero. Order key is the in-filename ChatGPT timestamp (chronological = generation/selection order) or a numeric ordinal ((N) / _N); resolution NEVER decides the role, only how the chosen image is encoded. review_flag notes small sources (encoding only) and any venue ordered by plain filename sort (no timestamp/ordinal).",
+  "processing_standard": {
+    "card": {
+      "format": "webp",
+      "quality": 90,
+      "target_width": 1200,
+      "upscale": false,
+      "strip_metadata": true
+    },
+    "detail": {
+      "format": "webp",
+      "quality": 92,
+      "native_resolution": true,
+      "max_width_cap": 2400,
+      "upscale": false,
+      "strip_metadata": true
+    }
+  },
+  "counts": {
+    "active_early_venues": 46,
+    "removed": 2,
+    "missing_image_active": 1,
+    "processable_venues": 45,
+    "expected_new_webps": 90
+  },
+  "excluded_from_processing": [
+    "BLK-0020",
+    "BLK-0037",
+    "BLK-0044",
+    "BLK-0045",
+    "BLK-0050"
+  ],
+  "venues": [
+    {
+      "external_id": "BLK-0001",
+      "name": "Astro Pool Lounge",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0001",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 02_11_35 AM.png",
+          "width": 1097,
+          "height": 1434
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 02_11_43 AM.png",
+          "width": 857,
+          "height": 1835
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 02_11_35 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 02_11_43 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 857px < 1200"
+    },
+    {
+      "external_id": "BLK-0002",
+      "name": "PARIS POOL",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0002",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 11_39_19 PM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 11_40_43 PM.png",
+          "width": 1254,
+          "height": 1254
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 11_39_19 PM.png",
+      "detail_source": "ChatGPT Image Aug 18, 2026, 11_40_43 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0003",
+      "name": "LEVEL Club De Billard",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0003",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 11_48_55 PM.png",
+          "width": 1086,
+          "height": 1448
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_00_44 AM.png",
+          "width": 1672,
+          "height": 941
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 11_48_55 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 12_00_44 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0004",
+      "name": "Blackspin",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0004",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_14_55 AM.png",
+          "width": 1133,
+          "height": 1388
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_21_39 AM.png",
+          "width": 1122,
+          "height": 1402
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 12_14_55 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 12_21_39 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1122px < 1200"
+    },
+    {
+      "external_id": "BLK-0005",
+      "name": "Sons of Billiards - Pool Club",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0005",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_30_28 AM.png",
+          "width": 1086,
+          "height": 1448
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_35_49 AM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 12_30_28 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 12_35_49 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0006",
+      "name": "Cavalli Club",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0006",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_42_33 AM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_45_01 AM.png",
+          "width": 1116,
+          "height": 1410
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 12_42_33 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 12_45_01 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1116px < 1200"
+    },
+    {
+      "external_id": "BLK-0007",
+      "name": "Billardaire",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0007",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_52_43 AM.png",
+          "width": 1510,
+          "height": 1041
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 12_54_39 AM.png",
+          "width": 1469,
+          "height": 1071
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 12_52_43 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 12_54_39 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0008",
+      "name": "First Havana Pool",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0008",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_02_14 AM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_10_41 AM.png",
+          "width": 1175,
+          "height": 1339
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_02_14 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 01_10_41 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1175px < 1200"
+    },
+    {
+      "external_id": "BLK-0009",
+      "name": "UK Academy",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0009",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_13_54 AM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 06_27_38 PM.png",
+          "width": 1455,
+          "height": 1081
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_13_54 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 06_27_38 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0010",
+      "name": "Trocadero players",
+      "subcategory": "Billiard Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0010",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_18_50 AM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_20_11 AM.png",
+          "width": 941,
+          "height": 1672
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_18_50 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 01_20_11 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 941px < 1200"
+    },
+    {
+      "external_id": "BLK-0011",
+      "name": "Spirit Gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0011",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_23_59 AM.png",
+          "width": 1402,
+          "height": 1122
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_26_34 AM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_23_59 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 01_26_34 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0012",
+      "name": "Warriors Gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0012",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_31_56 AM.png",
+          "width": 1278,
+          "height": 1231
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 06_30_46 PM.png",
+          "width": 1254,
+          "height": 1254
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_31_56 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 06_30_46 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0013",
+      "name": "Avatar Gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0013",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_38_49 AM.png",
+          "width": 1154,
+          "height": 1363
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_40_16 AM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_38_49 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 01_40_16 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0014",
+      "name": "Lpz gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0014",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_43_46 AM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_46_05 AM.png",
+          "width": 1399,
+          "height": 1124
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_43_46 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 01_46_05 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0015",
+      "name": "Temple Gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0015",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_49_18 AM.png",
+          "width": 1133,
+          "height": 1388
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 01_51_19 AM.png",
+          "width": 1215,
+          "height": 1295
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 01_49_18 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 01_51_19 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0016",
+      "name": "House of Gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0016",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_11_38 PM.png",
+          "width": 1149,
+          "height": 1369
+        },
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_15_03 PM.png",
+          "width": 1661,
+          "height": 947
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 06_11_38 PM.png",
+      "detail_source": "ChatGPT Image Aug 18, 2026, 06_15_03 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0017",
+      "name": "Pixel & Play",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0017",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_18_12 PM.png",
+          "width": 965,
+          "height": 1630
+        },
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_19_44 PM.png",
+          "width": 1139,
+          "height": 1381
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 06_18_12 PM.png",
+      "detail_source": "ChatGPT Image Aug 18, 2026, 06_19_44 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1139px < 1200; card source 965px < 1000"
+    },
+    {
+      "external_id": "BLK-0018",
+      "name": "Casa Gaming",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0018",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_24_14 PM.png",
+          "width": 1559,
+          "height": 1009
+        },
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_25_56 PM.png",
+          "width": 1461,
+          "height": 1076
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 06_24_14 PM.png",
+      "detail_source": "ChatGPT Image Aug 18, 2026, 06_25_56 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0019",
+      "name": "Saw Gaming Club",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0019",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_29_38 PM.png",
+          "width": 1087,
+          "height": 1447
+        },
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_31_20 PM.png",
+          "width": 1085,
+          "height": 1450
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 06_29_38 PM.png",
+      "detail_source": "ChatGPT Image Aug 18, 2026, 06_31_20 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1085px < 1200"
+    },
+    {
+      "external_id": "BLK-0020",
+      "name": null,
+      "subcategory": null,
+      "status": "REMOVED",
+      "source_desktop_folder": "BLK-0020",
+      "source_images": [],
+      "card_source": null,
+      "detail_source": null,
+      "assignment_method": null,
+      "review_flag": null,
+      "note": "Removed from MVP (permanently closed). Source folder empty."
+    },
+    {
+      "external_id": "BLK-0021",
+      "name": "squizy",
+      "subcategory": "Gaming Lounge",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0021",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_36_10 PM.png",
+          "width": 1096,
+          "height": 1435
+        },
+        {
+          "file": "ChatGPT Image Aug 18, 2026, 06_38_59 PM.png",
+          "width": 1135,
+          "height": 1386
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 18, 2026, 06_36_10 PM.png",
+      "detail_source": "ChatGPT Image Aug 18, 2026, 06_38_59 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1135px < 1200"
+    },
+    {
+      "external_id": "BLK-0022",
+      "name": "Totem Kids Coffee (centre de loisirs casablanca )",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0022",
+      "source_images": [
+        {
+          "file": "image_enhanced.png",
+          "width": 1502,
+          "height": 1584
+        },
+        {
+          "file": "image_enhanced_2.png",
+          "width": 812,
+          "height": 682
+        }
+      ],
+      "card_source": "image_enhanced.png",
+      "detail_source": "image_enhanced_2.png",
+      "assignment_method": "source order (first=card, second=detail; numeric ordinal in filename)",
+      "review_flag": "hero source 812px < 1200"
+    },
+    {
+      "external_id": "BLK-0023",
+      "name": "Flokiz",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0023",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 03_53_58 AM.png",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 03_59_12 AM.png",
+          "width": 988,
+          "height": 1592
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 03_53_58 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 03_59_12 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 988px < 1200"
+    },
+    {
+      "external_id": "BLK-0024",
+      "name": "Au Pays des Rêves by Villa Eden",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0024",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_20_13 AM.png",
+          "width": 1131,
+          "height": 1391
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_22_25 AM.png",
+          "width": 1131,
+          "height": 1391
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_20_13 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_22_25 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1131px < 1200"
+    },
+    {
+      "external_id": "BLK-0025",
+      "name": "Kidz Korner",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0025",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_27_16 AM.png",
+          "width": 1122,
+          "height": 1402
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_30_16 AM.png",
+          "width": 1401,
+          "height": 1123
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_27_16 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_30_16 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0026",
+      "name": "Yasmine Fun Park - Ovillage Sidi maarouf",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0026",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_32_50 AM.png",
+          "width": 1450,
+          "height": 1085
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_34_48 AM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_32_50 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_34_48 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0027",
+      "name": "Quartier Libre, casablanca",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0027",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_37_36 AM.png",
+          "width": 1454,
+          "height": 1082
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_40_38 AM.png",
+          "width": 1529,
+          "height": 1028
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_37_36 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_40_38 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0028",
+      "name": "Play Planet",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0028",
+      "source_images": [
+        {
+          "file": "enhanced_playground.png",
+          "width": 1506,
+          "height": 1800
+        },
+        {
+          "file": "enhanced_playroom.png",
+          "width": 1902,
+          "height": 1430
+        }
+      ],
+      "card_source": "enhanced_playground.png",
+      "detail_source": "enhanced_playroom.png",
+      "assignment_method": "manually confirmed (Achraf)",
+      "manually_confirmed": true,
+      "review_flag": null,
+      "note": "Manually confirmed by Achraf: playground = card (stronger activity-focused image); playroom = detail/hero (wider environmental composition)."
+    },
+    {
+      "external_id": "BLK-0029",
+      "name": "MK INO Kids Play Café",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0029",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_06_18 AM.png",
+          "width": 1451,
+          "height": 1084
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_08_43 AM.png",
+          "width": 1082,
+          "height": 1453
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_06_18 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_08_43 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1082px < 1200"
+    },
+    {
+      "external_id": "BLK-0030",
+      "name": "Fun Club",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0030",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_13_20 AM.png",
+          "width": 992,
+          "height": 1586
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_16_58 AM.png",
+          "width": 1080,
+          "height": 1456
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_13_20 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_16_58 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1080px < 1200; card source 992px < 1000"
+    },
+    {
+      "external_id": "BLK-0031",
+      "name": "Bisounours Ludothèque",
+      "subcategory": "Kids Activities",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0031",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_19_43 AM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_23_19 AM.png",
+          "width": 956,
+          "height": 1645
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_19_43 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_23_19 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 956px < 1200"
+    },
+    {
+      "external_id": "BLK-0032",
+      "name": "PADEL PRO",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0032",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_26_03 AM.png",
+          "width": 1254,
+          "height": 1254
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_28_35 AM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_26_03 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_28_35 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0033",
+      "name": "Padel 4",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0033",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_31_13 AM.png",
+          "width": 983,
+          "height": 1600
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_32_09 AM.png",
+          "width": 1450,
+          "height": 1085
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_31_13 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_32_09 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "card source 983px < 1000"
+    },
+    {
+      "external_id": "BLK-0034",
+      "name": "DEPOT 4 - INDOOR PADEL CLUB",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0034",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_33_36 AM.png",
+          "width": 1297,
+          "height": 1213
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_35_43 AM.png",
+          "width": 1114,
+          "height": 1412
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_33_36 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_35_43 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1114px < 1200"
+    },
+    {
+      "external_id": "BLK-0035",
+      "name": "Padel Social Club",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0035",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_36_35 AM.png",
+          "width": 1492,
+          "height": 1054
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_37_53 AM.png",
+          "width": 1058,
+          "height": 1487
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_36_35 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_37_53 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1058px < 1200"
+    },
+    {
+      "external_id": "BLK-0036",
+      "name": "Padel Park by Sindibad",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0036",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_38_54 AM.png",
+          "width": 1095,
+          "height": 1436
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_40_29 AM.png",
+          "width": 1114,
+          "height": 1411
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_38_54 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_40_29 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1114px < 1200"
+    },
+    {
+      "external_id": "BLK-0037",
+      "name": null,
+      "status": "NO_VENUE",
+      "note": "Authoritative BLK-0037 never existed. A Desktop folder named BLK-0037 exists but its images belong to BLK-0038. This id must NEVER become a venue.",
+      "source_desktop_folder": "BLK-0037",
+      "card_source": null,
+      "detail_source": null
+    },
+    {
+      "external_id": "BLK-0038",
+      "name": "OASIS SPORTS CITY",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0037",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_44_51 AM.png",
+          "width": 1184,
+          "height": 1328
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_47_17 AM.png",
+          "width": 995,
+          "height": 1581
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_44_51 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_47_17 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 995px < 1200"
+    },
+    {
+      "external_id": "BLK-0039",
+      "name": "Arena Ville Verte",
+      "subcategory": "Padel",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0038",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_49_33 AM.png",
+          "width": 1559,
+          "height": 1009
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_52_12 AM.png",
+          "width": 1166,
+          "height": 1349
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_49_33 AM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_52_12 AM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1166px < 1200"
+    },
+    {
+      "external_id": "BLK-0040",
+      "name": "Laser Game Evolution Casablanca",
+      "subcategory": "Laser Tag",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0039",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_06_39 PM.png",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_09_22 PM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_06_39 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_09_22 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0041",
+      "name": "EyeDive",
+      "subcategory": "Virtual Reality (VR)",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0040",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_12_58 PM.png",
+          "width": 1098,
+          "height": 1432
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_20_58 PM.png",
+          "width": 1438,
+          "height": 1094
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_12_58 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_20_58 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0042",
+      "name": "Ginga Sport Casablanca",
+      "subcategory": "Football",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0041",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_27_03 PM.png",
+          "width": 1534,
+          "height": 1025
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_32_21 PM.png",
+          "width": 1448,
+          "height": 1086
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_27_03 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_32_21 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0043",
+      "name": "City Foot 5",
+      "subcategory": "Football",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0042",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_39_07 PM.png",
+          "width": 1797,
+          "height": 875
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_42_42 PM.png",
+          "width": 1106,
+          "height": 1422
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_39_07 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_42_42 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1106px < 1200"
+    },
+    {
+      "external_id": "BLK-0044",
+      "name": null,
+      "subcategory": null,
+      "status": "REMOVED",
+      "source_desktop_folder": "BLK-0043",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_46_50 PM.png",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 04_48_48 PM.png",
+          "width": 1668,
+          "height": 943
+        }
+      ],
+      "card_source": null,
+      "detail_source": null,
+      "assignment_method": null,
+      "review_flag": null,
+      "note": "Removed from MVP (editorial decision). Desktop BLK-0043 DOES contain EFA images, but they must NOT be processed."
+    },
+    {
+      "external_id": "BLK-0045",
+      "name": "FCC football sidi maarouf كرة القدم سيدي معروف",
+      "subcategory": "Football",
+      "status": "MISSING_IMAGES",
+      "source_desktop_folder": "BLK-0044",
+      "source_images": [],
+      "card_source": null,
+      "detail_source": null,
+      "assignment_method": null,
+      "review_flag": null,
+      "note": "Active venue with no source imagery (Desktop BLK-0044 slot is empty). image_url/detail_image_url stay NULL; 'Photo coming soon' fallback remains."
+    },
+    {
+      "external_id": "BLK-0046",
+      "name": "Street 5 Soccer",
+      "subcategory": "Football",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0045",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_16_38 PM.png",
+          "width": 1479,
+          "height": 1063
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_20_26 PM.png",
+          "width": 1907,
+          "height": 825
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_16_38 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_20_26 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0047",
+      "name": "CAMPUS SPORT",
+      "subcategory": "Football",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0046",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_22_43 PM.png",
+          "width": 1473,
+          "height": 1068
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_24_02 PM.png",
+          "width": 1472,
+          "height": 1069
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_22_43 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_24_02 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0048",
+      "name": "Juventus Academy CASABLANCA",
+      "subcategory": "Football",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0047",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_27_34 PM.png",
+          "width": 1504,
+          "height": 1046
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_30_52 PM.png",
+          "width": 1029,
+          "height": 1529
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_27_34 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 05_30_52 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "hero source 1029px < 1200"
+    },
+    {
+      "external_id": "BLK-0049",
+      "name": "Terrain espace sbata ملعب فضاء سباتة",
+      "subcategory": "Football",
+      "status": "READY",
+      "source_desktop_folder": "BLK-0048",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 05_57_19 PM.png",
+          "width": 1642,
+          "height": 958
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 06_04_52 PM.png",
+          "width": 1836,
+          "height": 857
+        }
+      ],
+      "card_source": "ChatGPT Image Aug 19, 2026, 05_57_19 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 06_04_52 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": null
+    },
+    {
+      "external_id": "BLK-0050",
+      "name": "AREA SPORTS & EVENTS CENTER",
+      "subcategory": "Padel",
+      "status": "ALREADY_PROCESSED",
+      "source_desktop_folder": "BLK-0049",
+      "source_images": [
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 06_08_43 PM.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "file": "ChatGPT Image Aug 19, 2026, 06_11_06 PM.png",
+          "width": 1023,
+          "height": 1537
+        }
+      ],
+      "card_source": null,
+      "detail_source": null,
+      "assignment_method": null,
+      "review_flag": null,
+      "note": "AREA SPORTS & EVENTS CENTER — already processed, uploaded, linked and merged. DO NOT TOUCH. Excluded from this batch."
+    }
+  ]
+}
