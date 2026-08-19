@@ -427,7 +427,7 @@ export const venues: Venue[] = [
   // useVenues falls back to this file. Do not use these stubs for editorial
   // content or production display.
   {
-    slug: "padel-pro-blk-0024",
+    slug: "padel-pro-blk-0032",
     name: "Padel Pro",
     category: "Sports",
     categorySlug: "sports",
@@ -435,7 +435,7 @@ export const venues: Venue[] = [
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "tahiti-beach-club-blk-0040",
+    slug: "tahiti-beach-club-blk-0080",
     name: "Tahiti Beach Club",
     category: "Outdoor",
     categorySlug: "outdoor",
@@ -443,7 +443,7 @@ export const venues: Venue[] = [
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "sindibad-karting-blk-0020",
+    slug: "sindibad-karting-blk-0056",
     name: "Sindibad Karting",
     category: "Activities",
     categorySlug: "activities",
@@ -451,7 +451,7 @@ export const venues: Venue[] = [
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "house-of-gaming-blk-0046",
+    slug: "house-of-gaming-blk-0016",
     name: "House of Gaming",
     category: "Gaming",
     categorySlug: "gaming",
@@ -459,15 +459,15 @@ export const venues: Venue[] = [
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "l-eden-beach-club-blk-0039",
-    name: "L'Eden Beach Club",
-    category: "Outdoor",
-    categorySlug: "outdoor",
-    area: "Corniche, Casablanca",
+    slug: "anfa-surf-school-casablanca-blk-0053",
+    name: "Anfa Surf School Casablanca",
+    category: "Sports",
+    categorySlug: "sports",
+    area: "Ain Diab, Casablanca",
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "the-doorz-escape-room-blk-0016",
+    slug: "the-doorz-escape-room-blk-0060",
     name: "The Doorz Escape Room",
     category: "Activities",
     categorySlug: "activities",
@@ -475,18 +475,18 @@ export const venues: Venue[] = [
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "astropool-lounge-blk-0001",
-    name: "Astropool Lounge",
+    slug: "astro-pool-lounge-blk-0001",
+    name: "Astro Pool Lounge",
     category: "Activities",
     categorySlug: "activities",
     area: "Casablanca",
     description: "Dev fallback venue — real data served from API in production.",
   },
   {
-    slug: "parc-sindibad-blk-0028",
+    slug: "parc-sindibad-blk-0069",
     name: "Parc Sindibad",
-    category: "Family",
-    categorySlug: "family",
+    category: "Activities",
+    categorySlug: "activities",
     area: "Ain Diab, Casablanca",
     description: "Dev fallback venue — real data served from API in production.",
   },
