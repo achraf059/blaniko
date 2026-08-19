@@ -1,10 +1,10 @@
 const localizedHomeData = {
   en: {
     heroCards: [
-      { id: "c1", title: "Padel at Ocean Drive", tagline: "Ain Diab · Sport", price: null, img: "p2", venueSlug: "padel-pro-blk-0024" },
-      { id: "c2", title: "Beach Sunset at Tahiti", tagline: "Corniche · Beach", price: null, img: "p3", venueSlug: "tahiti-beach-club-blk-0040" },
-      { id: "c3", title: "Karting at Sindibad", tagline: "Ain Diab · Karting", price: null, img: "p4", venueSlug: "sindibad-karting-blk-0020" },
-      { id: "c4", title: "Gaming Night", tagline: "Hay El Ward · Gaming", price: null, img: "p1", venueSlug: "house-of-gaming-blk-0046" },
+      { id: "c1", title: "Padel at Ocean Drive", tagline: "Ain Diab · Sport", price: null, img: "p2", venueSlug: "padel-pro-blk-0032" },
+      { id: "c2", title: "Beach Sunset at Tahiti", tagline: "Corniche · Beach", price: null, img: "p3", venueSlug: "tahiti-beach-club-blk-0080" },
+      { id: "c3", title: "Karting at Sindibad", tagline: "Ain Diab · Karting", price: null, img: "p4", venueSlug: "sindibad-karting-blk-0056" },
+      { id: "c4", title: "Gaming Night", tagline: "Hay El Ward · Gaming", price: null, img: "p1", venueSlug: "house-of-gaming-blk-0016" },
     ],
     moods: [
       { title: "Tonight", sub: "after 7pm", ico: "moon", href: "/search?mood=social" },
@@ -69,10 +69,10 @@ const localizedHomeData = {
   },
   fr: {
     heroCards: [
-      { id: "c1", title: "Padel à Ocean Drive", tagline: "Ain Diab · Sport", price: null, img: "p2", venueSlug: "padel-pro-blk-0024" },
-      { id: "c2", title: "Coucher de soleil à Tahiti", tagline: "Corniche · Plage", price: null, img: "p3", venueSlug: "tahiti-beach-club-blk-0040" },
-      { id: "c3", title: "Karting chez Sindibad", tagline: "Ain Diab · Karting", price: null, img: "p4", venueSlug: "sindibad-karting-blk-0020" },
-      { id: "c4", title: "Soirée gaming", tagline: "Hay El Ward · Gaming", price: null, img: "p1", venueSlug: "house-of-gaming-blk-0046" },
+      { id: "c1", title: "Padel à Ocean Drive", tagline: "Ain Diab · Sport", price: null, img: "p2", venueSlug: "padel-pro-blk-0032" },
+      { id: "c2", title: "Coucher de soleil à Tahiti", tagline: "Corniche · Plage", price: null, img: "p3", venueSlug: "tahiti-beach-club-blk-0080" },
+      { id: "c3", title: "Karting chez Sindibad", tagline: "Ain Diab · Karting", price: null, img: "p4", venueSlug: "sindibad-karting-blk-0056" },
+      { id: "c4", title: "Soirée gaming", tagline: "Hay El Ward · Gaming", price: null, img: "p1", venueSlug: "house-of-gaming-blk-0016" },
     ],
     moods: [
       { title: "Ce soir", sub: "après 19h", ico: "moon", href: "/search?mood=social" },
