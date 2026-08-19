@@ -8,8 +8,15 @@ suitable for the replace_venues_v3 RPC or the TS dry-run importer.
 Usage:
     python3 scripts/extract_v3_to_json.py [--xlsx PATH] [--output PATH]
 
+Workbook path resolution (highest priority first):
+    1. --xlsx PATH                 explicit CLI argument
+    2. BLANIKO_V3_XLSX env var     explicit override
+    3. ~/Desktop/Blaniko/Excel file/Blaniko_Venues_FINAL_v3.xlsx  (portable default)
+
+    The resolved path is printed. If it does not exist the script fails loudly
+    and NEVER silently falls back to another (older V2/V3/backup) workbook.
+
 Defaults:
-    --xlsx   ../Desktop/Excel file/Blaniko_Venues_FINAL_v3.xlsx  (relative to repo)
     --output scripts/v3_venues_payload.json
 """
 
@@ -27,11 +34,21 @@ import openpyxl
 
 SHEET_NAME = "Blaniko Official MVP"
 
-EXPECTED_COUNT = 99
+# Permanently retired venues — removed from the MVP and NEVER to be reintroduced.
+# Rows with these IDs are skipped during extraction so a regeneration from the
+# source xlsx can never bring them back. Their BLK IDs must never be reassigned.
+#   BLK-0020  E-Blue Gaming Center            (permanently closed)
+#   BLK-0044  Étoile Football Académie (EFA)  (product/editorial decision)
+RETIRED_IDS = {"BLK-0020", "BLK-0044"}
 
-EXPECTED_IDS = set(
-    [f"BLK-{i:04d}" for i in range(1, 37)]
-    + [f"BLK-{i:04d}" for i in range(38, 101)]
+EXPECTED_COUNT = 97
+
+EXPECTED_IDS = (
+    set(
+        [f"BLK-{i:04d}" for i in range(1, 37)]
+        + [f"BLK-{i:04d}" for i in range(38, 101)]
+    )
+    - RETIRED_IDS
 )
 
 UNKNOWN_CONTACT_IDS = {"BLK-0045", "BLK-0068", "BLK-0076", "BLK-0089"}
@@ -216,6 +233,10 @@ def extract(xlsx_path: str) -> list[dict]:
         external_id = str(external_id).strip()
         if not external_id.startswith("BLK-"):
             break
+
+        # Skip permanently retired venues so they are never reintroduced.
+        if external_id in RETIRED_IDS:
+            continue
 
         name = ws.cell(row=row_num, column=COL_NAME).value
         if name is None:
@@ -433,16 +454,16 @@ def validate(venues: list[dict]) -> bool:
     else:
         errors.append("BLK-0100 not found")
 
-    # 99 Google Maps hyperlink targets
+    # 97 Google Maps hyperlink targets
     maps_count = sum(1 for v in venues if v["google_maps_url"])
-    if maps_count != 99:
-        errors.append(f"Expected 99 Google Maps URLs, got {maps_count}")
+    if maps_count != 97:
+        errors.append(f"Expected 97 Google Maps URLs, got {maps_count}")
 
-    # 99 Contact information strings
+    # 97 Contact information strings
     contacts = [v["contact_information"] for v in venues]
     string_contacts = [c for c in contacts if isinstance(c, str)]
-    if len(string_contacts) != 99:
-        errors.append(f"Expected 99 string contacts, got {len(string_contacts)}")
+    if len(string_contacts) != 97:
+        errors.append(f"Expected 97 string contacts, got {len(string_contacts)}")
 
     # 4 Unknown contacts
     unknown_contacts = [v for v in venues if v["contact_information"] == "Unknown"]
@@ -454,10 +475,10 @@ def validate(venues: list[dict]) -> bool:
     if unknown_ids != UNKNOWN_CONTACT_IDS:
         errors.append(f"Wrong Unknown contact IDs: expected {UNKNOWN_CONTACT_IDS}, got {unknown_ids}")
 
-    # 95 non-Unknown contacts
+    # 93 non-Unknown contacts
     non_unknown = [c for c in contacts if c != "Unknown"]
-    if len(non_unknown) != 95:
-        errors.append(f"Expected 95 non-Unknown contacts, got {len(non_unknown)}")
+    if len(non_unknown) != 93:
+        errors.append(f"Expected 93 non-Unknown contacts, got {len(non_unknown)}")
 
     # 0 null contacts
     null_contacts = [c for c in contacts if c is None]
@@ -534,14 +555,14 @@ def validate(venues: list[dict]) -> bool:
         print(f"\n{'='*60}")
         print("VALIDATION PASSED — all checks OK")
         print(f"  ✓ {len(venues)} venues extracted")
-        print(f"  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100)")
-        print(f"  ✓ BLK-0037 absent")
-        print(f"  ✓ 99 unique external IDs")
-        print(f"  ✓ 99 unique slugs")
+        print(f"  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0044)")
+        print(f"  ✓ BLK-0037 absent; BLK-0020 & BLK-0044 retired")
+        print(f"  ✓ 97 unique external IDs")
+        print(f"  ✓ 97 unique slugs")
         print(f"  ✓ BLK-0038 = OASIS SPORTS CITY")
         print(f"  ✓ BLK-0100 = LE M SPA identity confirmed")
-        print(f"  ✓ 99 Google Maps hyperlink targets")
-        print(f"  ✓ 99 contact strings (4 Unknown, 95 non-Unknown, 0 null)")
+        print(f"  ✓ 97 Google Maps hyperlink targets")
+        print(f"  ✓ 97 contact strings (4 Unknown, 93 non-Unknown, 0 null)")
         print(f"  ✓ Unknown contacts: {sorted(UNKNOWN_CONTACT_IDS)}")
         print(f"  ✓ All audience arrays non-empty")
         print(f"  ✓ All atmosphere arrays non-empty")
@@ -563,14 +584,8 @@ def main():
     parser = argparse.ArgumentParser(description="Extract V3 venues from xlsx to JSON")
     parser.add_argument(
         "--xlsx",
-        default=os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            "..",
-            "Desktop",
-            "Excel file",
-            "Blaniko_Venues_FINAL_v3.xlsx",
-        ),
-        help="Path to the V3 xlsx file",
+        default=None,
+        help="Path to the V3 xlsx file (overrides BLANIKO_V3_XLSX and the default)",
     )
     parser.add_argument(
         "--output",
@@ -582,8 +597,39 @@ def main():
     )
     args = parser.parse_args()
 
-    print(f"Reading: {args.xlsx}")
-    venues = extract(args.xlsx)
+    # Resolve the workbook path portably (never hardcode a username):
+    #   1. --xlsx  2. BLANIKO_V3_XLSX env  3. ~/Desktop/Blaniko/Excel file/…
+    default_xlsx = os.path.join(
+        os.path.expanduser("~"),
+        "Desktop",
+        "Blaniko",
+        "Excel file",
+        "Blaniko_Venues_FINAL_v3.xlsx",
+    )
+    if args.xlsx:
+        xlsx_path = args.xlsx
+        xlsx_source = "--xlsx argument"
+    elif os.environ.get("BLANIKO_V3_XLSX"):
+        xlsx_path = os.environ["BLANIKO_V3_XLSX"]
+        xlsx_source = "BLANIKO_V3_XLSX env var"
+    else:
+        xlsx_path = default_xlsx
+        xlsx_source = "portable default (~/Desktop/Blaniko/Excel file/…)"
+
+    print(f"Workbook path ({xlsx_source}): {xlsx_path}")
+
+    # Fail loudly rather than silently reading the wrong (older) workbook.
+    if not os.path.isfile(xlsx_path):
+        print(
+            f"\nERROR: V3 workbook not found at resolved path:\n  {xlsx_path}\n"
+            "Provide the correct workbook via --xlsx PATH or the BLANIKO_V3_XLSX "
+            "environment variable. This script never falls back to another spreadsheet.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    print(f"Reading: {xlsx_path}")
+    venues = extract(xlsx_path)
 
     print(f"\nExtracted {len(venues)} venues")
 

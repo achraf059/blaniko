@@ -1,0 +1,639 @@
+{
+  "title": "Blaniko pre-V3 → V3 venue ID crosswalk",
+  "generated_at": "2026-08-20",
+  "canonical": "CURRENT_V3",
+  "rule": "current_id = old_id for OLD BLK-0001..0036; current_id = old_id + 1 for OLD BLK-0037..0099.",
+  "divergence_point": {
+    "old_id": "BLK-0037",
+    "current_id": "BLK-0038",
+    "venue": "OASIS SPORTS CITY"
+  },
+  "shift_end": {
+    "old_id": "BLK-0099",
+    "current_id": "BLK-0100",
+    "venue": "LE M SPA – Hammam & Massage Spa Casablanca"
+  },
+  "current_reserved_gap": {
+    "current_id": "BLK-0037",
+    "status": "NO_VENUE / RESERVED_GAP",
+    "note": "No venue occupies current BLK-0037. It is a permanent gap created by the +1 renumber. Never assign a venue to it."
+  },
+  "current_retired_ids": [
+    {
+      "current_id": "BLK-0020",
+      "old_id": "BLK-0020",
+      "venue": "E-Blue Gaming Center",
+      "reason": "permanently closed — removed from MVP"
+    },
+    {
+      "current_id": "BLK-0044",
+      "old_id": "BLK-0043",
+      "venue": "Étoile Football Académie (EFA)",
+      "reason": "editorial decision — removed from MVP"
+    }
+  ],
+  "counts": {
+    "historical_mappings": 99,
+    "unique_old_ids": 99,
+    "unique_current_ids": 99,
+    "same_id": 35,
+    "shifted_id": 62,
+    "retired_current": 2
+  },
+  "mappings": [
+    {
+      "old_id": "BLK-0001",
+      "current_id": "BLK-0001",
+      "venue_name": "Astro Pool Lounge",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0002",
+      "current_id": "BLK-0002",
+      "venue_name": "PARIS POOL",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0003",
+      "current_id": "BLK-0003",
+      "venue_name": "LEVEL Club De Billard",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0004",
+      "current_id": "BLK-0004",
+      "venue_name": "Blackspin",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0005",
+      "current_id": "BLK-0005",
+      "venue_name": "Sons of Billiards - Pool Club",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0006",
+      "current_id": "BLK-0006",
+      "venue_name": "Cavalli Club",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0007",
+      "current_id": "BLK-0007",
+      "venue_name": "Billardaire",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0008",
+      "current_id": "BLK-0008",
+      "venue_name": "First Havana Pool",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0009",
+      "current_id": "BLK-0009",
+      "venue_name": "UK Academy",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0010",
+      "current_id": "BLK-0010",
+      "venue_name": "Trocadero players",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0011",
+      "current_id": "BLK-0011",
+      "venue_name": "Spirit Gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0012",
+      "current_id": "BLK-0012",
+      "venue_name": "Warriors Gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0013",
+      "current_id": "BLK-0013",
+      "venue_name": "Avatar Gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0014",
+      "current_id": "BLK-0014",
+      "venue_name": "Lpz gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0015",
+      "current_id": "BLK-0015",
+      "venue_name": "Temple Gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0016",
+      "current_id": "BLK-0016",
+      "venue_name": "House of Gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0017",
+      "current_id": "BLK-0017",
+      "venue_name": "Pixel & Play",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0018",
+      "current_id": "BLK-0018",
+      "venue_name": "Casa Gaming",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0019",
+      "current_id": "BLK-0019",
+      "venue_name": "Saw Gaming Club",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0020",
+      "current_id": "BLK-0020",
+      "venue_name": "E-Blue Gaming Center",
+      "status": "RETIRED_CURRENT"
+    },
+    {
+      "old_id": "BLK-0021",
+      "current_id": "BLK-0021",
+      "venue_name": "squizy",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0022",
+      "current_id": "BLK-0022",
+      "venue_name": "Totem Kids Coffee (centre de loisirs casablanca )",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0023",
+      "current_id": "BLK-0023",
+      "venue_name": "Flokiz",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0024",
+      "current_id": "BLK-0024",
+      "venue_name": "Au Pays des Rêves by Villa Eden",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0025",
+      "current_id": "BLK-0025",
+      "venue_name": "Kidz Korner",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0026",
+      "current_id": "BLK-0026",
+      "venue_name": "Yasmine Fun Park - Ovillage Sidi maarouf",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0027",
+      "current_id": "BLK-0027",
+      "venue_name": "Quartier Libre, casablanca",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0028",
+      "current_id": "BLK-0028",
+      "venue_name": "Play Planet",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0029",
+      "current_id": "BLK-0029",
+      "venue_name": "MK INO Kids Play Café",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0030",
+      "current_id": "BLK-0030",
+      "venue_name": "Fun Club",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0031",
+      "current_id": "BLK-0031",
+      "venue_name": "Bisounours Ludothèque",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0032",
+      "current_id": "BLK-0032",
+      "venue_name": "PADEL PRO",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0033",
+      "current_id": "BLK-0033",
+      "venue_name": "Padel 4",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0034",
+      "current_id": "BLK-0034",
+      "venue_name": "DEPOT 4 - INDOOR PADEL CLUB",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0035",
+      "current_id": "BLK-0035",
+      "venue_name": "Padel Social Club",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0036",
+      "current_id": "BLK-0036",
+      "venue_name": "Padel Park by Sindibad",
+      "status": "SAME_ID"
+    },
+    {
+      "old_id": "BLK-0037",
+      "current_id": "BLK-0038",
+      "venue_name": "OASIS SPORTS CITY",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0038",
+      "current_id": "BLK-0039",
+      "venue_name": "Arena Ville Verte",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0039",
+      "current_id": "BLK-0040",
+      "venue_name": "Laser Game Evolution Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0040",
+      "current_id": "BLK-0041",
+      "venue_name": "EyeDive",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0041",
+      "current_id": "BLK-0042",
+      "venue_name": "Ginga Sport Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0042",
+      "current_id": "BLK-0043",
+      "venue_name": "City Foot 5",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0043",
+      "current_id": "BLK-0044",
+      "venue_name": "Étoile Football Académie (EFA)",
+      "status": "RETIRED_CURRENT"
+    },
+    {
+      "old_id": "BLK-0044",
+      "current_id": "BLK-0045",
+      "venue_name": "FCC football sidi maarouf كرة القدم سيدي معروف",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0045",
+      "current_id": "BLK-0046",
+      "venue_name": "Street 5 Soccer",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0046",
+      "current_id": "BLK-0047",
+      "venue_name": "CAMPUS SPORT",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0047",
+      "current_id": "BLK-0048",
+      "venue_name": "Juventus Academy CASABLANCA",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0048",
+      "current_id": "BLK-0049",
+      "venue_name": "Terrain espace sbata ملعب فضاء سباتة",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0049",
+      "current_id": "BLK-0050",
+      "venue_name": "AREA SPORTS & EVENTS CENTER",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0050",
+      "current_id": "BLK-0051",
+      "venue_name": "City Foot Academy",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0051",
+      "current_id": "BLK-0052",
+      "venue_name": "SAM PARK Morocco",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0052",
+      "current_id": "BLK-0053",
+      "venue_name": "Anfa Surf School casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0053",
+      "current_id": "BLK-0054",
+      "venue_name": "Casablanca Surf coaching",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0054",
+      "current_id": "BLK-0055",
+      "venue_name": "Waves School Darbouazza Surf Maroc",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0055",
+      "current_id": "BLK-0056",
+      "venue_name": "Sindibad Karting",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0056",
+      "current_id": "BLK-0057",
+      "venue_name": "KOJUMP Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0057",
+      "current_id": "BLK-0058",
+      "venue_name": "Sky Jump Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0058",
+      "current_id": "BLK-0059",
+      "venue_name": "Quad Friends , Casablanca, Morocco 🇲🇦",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0059",
+      "current_id": "BLK-0060",
+      "venue_name": "The DoorZ Escape room",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0060",
+      "current_id": "BLK-0061",
+      "venue_name": "Get Out Casablanca - Escape Game",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0061",
+      "current_id": "BLK-0062",
+      "venue_name": "Plein Ciel Paradise",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0062",
+      "current_id": "BLK-0063",
+      "venue_name": "Oceanic Club de Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0063",
+      "current_id": "BLK-0064",
+      "venue_name": "COC Tennis",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0064",
+      "current_id": "BLK-0065",
+      "venue_name": "Tamaris Bowling & Parc De Jeux",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0065",
+      "current_id": "BLK-0066",
+      "venue_name": "Badr Funtour",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0066",
+      "current_id": "BLK-0067",
+      "venue_name": "Royal Golf Anfa",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0067",
+      "current_id": "BLK-0068",
+      "venue_name": "Place Nevada",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0068",
+      "current_id": "BLK-0069",
+      "venue_name": "Parc Sindibad",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0069",
+      "current_id": "BLK-0070",
+      "venue_name": "Parc Loupi Land",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0070",
+      "current_id": "BLK-0071",
+      "venue_name": "Dream World",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0071",
+      "current_id": "BLK-0072",
+      "venue_name": "Crazy Park",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0072",
+      "current_id": "BLK-0073",
+      "venue_name": "Yasmine Fun Park - Tachfine",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0073",
+      "current_id": "BLK-0074",
+      "venue_name": "Tamaris Aquaparc",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0074",
+      "current_id": "BLK-0075",
+      "venue_name": "Jungle Park",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0075",
+      "current_id": "BLK-0076",
+      "venue_name": "Pathé Californie Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0076",
+      "current_id": "BLK-0077",
+      "venue_name": "Ain Sebaa Zoo",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0077",
+      "current_id": "BLK-0078",
+      "venue_name": "Flèche Casablanca de Tir à l'Arc",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0078",
+      "current_id": "BLK-0079",
+      "venue_name": "Maroc Skydive",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0079",
+      "current_id": "BLK-0080",
+      "venue_name": "Tahiti Beach Club",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0080",
+      "current_id": "BLK-0081",
+      "venue_name": "Victoria Academy Pool & Snooker",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0081",
+      "current_id": "BLK-0082",
+      "venue_name": "PlayerZ Gaming Arena",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0082",
+      "current_id": "BLK-0083",
+      "venue_name": "TRUE GAMERS Casablanca - Café Gaming",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0083",
+      "current_id": "BLK-0084",
+      "venue_name": "Kama gaming cafe",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0084",
+      "current_id": "BLK-0085",
+      "venue_name": "First One Club",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0085",
+      "current_id": "BLK-0086",
+      "venue_name": "Century Break Academy",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0086",
+      "current_id": "BLK-0087",
+      "venue_name": "The Break Pool",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0087",
+      "current_id": "BLK-0088",
+      "venue_name": "Versus Arena Gaming",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0088",
+      "current_id": "BLK-0089",
+      "venue_name": "Arena Gaming",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0089",
+      "current_id": "BLK-0090",
+      "venue_name": "Fun Art Place",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0090",
+      "current_id": "BLK-0091",
+      "venue_name": "Club Alpin Français de Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0091",
+      "current_id": "BLK-0092",
+      "venue_name": "Royal Club Equestre Anfa Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0092",
+      "current_id": "BLK-0093",
+      "venue_name": "Skate Park",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0093",
+      "current_id": "BLK-0094",
+      "venue_name": "Suan Thaï Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0094",
+      "current_id": "BLK-0095",
+      "venue_name": "Zen Thai Spa",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0095",
+      "current_id": "BLK-0096",
+      "venue_name": "Spany Flor",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0096",
+      "current_id": "BLK-0097",
+      "venue_name": "Spa Diva Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0097",
+      "current_id": "BLK-0098",
+      "venue_name": "MAGIC Spa By Hotel Unico",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0098",
+      "current_id": "BLK-0099",
+      "venue_name": "ZAHA Hammam & Spa Casablanca",
+      "status": "SHIFTED_ID"
+    },
+    {
+      "old_id": "BLK-0099",
+      "current_id": "BLK-0100",
+      "venue_name": "LE M SPA – Hammam & Massage Spa Casablanca",
+      "status": "SHIFTED_ID"
+    }
+  ]
+}

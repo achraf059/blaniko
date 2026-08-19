@@ -65,12 +65,20 @@ interface V3Venue {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const EXPECTED_COUNT = 99;
+const EXPECTED_COUNT = 97;
 
-const EXPECTED_IDS = new Set<string>([
-  ...Array.from({ length: 36 }, (_, i) => `BLK-${String(i + 1).padStart(4, "0")}`),
-  ...Array.from({ length: 63 }, (_, i) => `BLK-${String(i + 38).padStart(4, "0")}`),
-]);
+// Permanently retired venues — removed from the MVP and NEVER to be reintroduced.
+// Their BLK identities must never be reassigned to another venue.
+//   BLK-0020  E-Blue Gaming Center            (permanently closed)
+//   BLK-0044  Étoile Football Académie (EFA)  (product/editorial decision)
+const RETIRED_IDS = new Set<string>(["BLK-0020", "BLK-0044"]);
+
+const EXPECTED_IDS = new Set<string>(
+  [
+    ...Array.from({ length: 36 }, (_, i) => `BLK-${String(i + 1).padStart(4, "0")}`),
+    ...Array.from({ length: 63 }, (_, i) => `BLK-${String(i + 38).padStart(4, "0")}`),
+  ].filter((id) => !RETIRED_IDS.has(id))
+);
 
 const UNKNOWN_CONTACT_IDS = new Set(["BLK-0045", "BLK-0068", "BLK-0076", "BLK-0089"]);
 
@@ -97,6 +105,11 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
 
   // BLK-0037 absent
   if (actualIds.has("BLK-0037")) errors.push("BLK-0037 must be absent");
+
+  // Retired venues must never reappear (guards against regeneration from the source xlsx)
+  for (const rid of RETIRED_IDS) {
+    if (actualIds.has(rid)) errors.push(`${rid} is retired and must never be reintroduced`);
+  }
 
   // 99 unique external IDs
   if (actualIds.size !== venues.length) errors.push("Duplicate external IDs");
@@ -126,15 +139,15 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
     errors.push("BLK-0100 not found");
   }
 
-  // 99 Google Maps hyperlink targets
+  // 97 Google Maps hyperlink targets
   const mapsCount = venues.filter((v) => v.google_maps_url).length;
-  if (mapsCount !== 99) errors.push(`Google Maps URLs: expected 99, got ${mapsCount}`);
+  if (mapsCount !== 97) errors.push(`Google Maps URLs: expected 97, got ${mapsCount}`);
 
   // Contact information validation
   const contacts = venues.map((v) => v.contact_information);
   const stringContacts = contacts.filter((c) => typeof c === "string");
-  if (stringContacts.length !== 99) {
-    errors.push(`String contacts: expected 99, got ${stringContacts.length}`);
+  if (stringContacts.length !== 97) {
+    errors.push(`String contacts: expected 97, got ${stringContacts.length}`);
   }
 
   const unknownContacts = venues.filter((v) => v.contact_information === "Unknown");
@@ -148,8 +161,8 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
   }
 
   const nonUnknown = contacts.filter((c) => c !== "Unknown");
-  if (nonUnknown.length !== 95) {
-    errors.push(`Non-Unknown contacts: expected 95, got ${nonUnknown.length}`);
+  if (nonUnknown.length !== 93) {
+    errors.push(`Non-Unknown contacts: expected 93, got ${nonUnknown.length}`);
   }
 
   const nullContacts = contacts.filter((c) => c === null || c === undefined);
@@ -286,14 +299,14 @@ async function main() {
   console.log(`\n${"=".repeat(60)}`);
   console.log("VALIDATION PASSED — all checks OK");
   console.log(`  ✓ ${venues.length} venues`);
-  console.log("  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100)");
-  console.log("  ✓ BLK-0037 absent");
-  console.log("  ✓ 99 unique external IDs");
-  console.log("  ✓ 99 unique slugs");
+  console.log("  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0044)");
+  console.log("  ✓ BLK-0037 absent; BLK-0020 & BLK-0044 retired");
+  console.log("  ✓ 97 unique external IDs");
+  console.log("  ✓ 97 unique slugs");
   console.log("  ✓ BLK-0038 = OASIS SPORTS CITY");
   console.log("  ✓ BLK-0100 = LE M SPA identity confirmed");
-  console.log("  ✓ 99 Google Maps hyperlink targets");
-  console.log("  ✓ 99 contact strings (4 Unknown, 95 non-Unknown, 0 null)");
+  console.log("  ✓ 97 Google Maps hyperlink targets");
+  console.log("  ✓ 97 contact strings (4 Unknown, 93 non-Unknown, 0 null)");
   console.log("  ✓ All audience/atmosphere arrays non-empty");
   console.log("  ✓ All experience descriptions non-empty");
   console.log("  ✓ Indoor/Outdoor values valid");
@@ -345,6 +358,52 @@ async function main() {
   // ─── Live replacement ──────────────────────────────────────────────────────
 
   if (isConfirmReplace) {
+    // ─── Step 0: HARD image-safety guard (runs before everything else) ────────
+    // The V3 replace path DELETEs every venue row and re-INSERTs from the
+    // payload — which carries image_url = null and no detail_image_url column.
+    // If any production venue currently has a live image, replacement would
+    // destroy it. This guard performs its OWN read-only check and aborts, so it
+    // keeps protecting live images even if a future developer changes the
+    // legacy-count / identity guards below or re-creates the replace_venues_v3
+    // RPC. It is intentionally NOT overridable by --confirm-replace and has no
+    // bypass flag.
+    console.log("\n[image-safety] Checking for live venue images before replacement...");
+    const { data: imageRows, error: imageErr } = await supabase
+      .from("venues")
+      .select("external_id, image_url, detail_image_url");
+
+    if (imageErr) {
+      console.error(`\nERROR: image-safety pre-flight read failed: ${imageErr.message}`);
+      console.error("ABORTING — cannot verify image safety, so replacement is blocked.");
+      process.exit(1);
+    }
+
+    const withCard = (imageRows ?? []).filter((v) => v.image_url != null).length;
+    const withDetail = (imageRows ?? []).filter((v) => v.detail_image_url != null).length;
+
+    if (withCard > 0 || withDetail > 0) {
+      console.error(`\n${"!".repeat(60)}`);
+      console.error("REPLACEMENT BLOCKED — LIVE VENUE IMAGES DETECTED");
+      console.error(`${"!".repeat(60)}`);
+      console.error(`  ${withCard} venue(s) have a non-null image_url`);
+      console.error(`  ${withDetail} venue(s) have a non-null detail_image_url`);
+      console.error("");
+      console.error("  Production contains live venue images. This replacement importer");
+      console.error("  deletes and re-inserts every venue from the payload and does NOT");
+      console.error("  guarantee preservation of image_url/detail_image_url (the extractor");
+      console.error("  emits image_url = null and there is no detail_image_url in the payload).");
+      console.error("  Running it would wipe live production images.");
+      console.error("");
+      console.error("  Replacement is blocked until image-preserving import behavior is");
+      console.error("  implemented (e.g. an upsert by external_id that never overwrites the");
+      console.error("  image columns, or a snapshot+restore of image_url/detail_image_url");
+      console.error("  around the replace). There is intentionally NO bypass flag.");
+      console.error(`${"!".repeat(60)}`);
+      process.exit(1);
+    }
+
+    console.log("  ✓ No live venue images found — image-safety guard passed.");
+
     // Step 3: Supabase service-role client already imported at top level.
 
     // Step 4: Read current production venues BEFORE replacement.
@@ -437,7 +496,7 @@ async function main() {
 
     // Step 7: Final warning.
     console.log(`\n${"=".repeat(60)}`);
-    console.log("⚠  About to atomically replace 47 production venues with 99 V3 venues.");
+    console.log(`⚠  About to atomically replace existing production venues with ${venues.length} V3 venues.`);
     console.log(`${"=".repeat(60)}`);
 
     // Step 8: Call the RPC.
@@ -472,9 +531,9 @@ async function main() {
       process.exit(1);
     }
 
-    // venues count = 99
-    if (!newVenues || newVenues.length !== 99) {
-      postFlightErrors.push(`Venue count: expected 99, got ${newVenues?.length ?? 0}`);
+    // venues count = 97
+    if (!newVenues || newVenues.length !== 97) {
+      postFlightErrors.push(`Venue count: expected 97, got ${newVenues?.length ?? 0}`);
     }
 
     if (newVenues && newVenues.length > 0) {
@@ -504,12 +563,17 @@ async function main() {
         postFlightErrors.push(`BLK-0100: expected '${expectedName100}', got '${post100?.name}'`);
       }
 
-      // 99 unique external IDs
-      if (postIds.size !== 99) postFlightErrors.push(`Unique external IDs: expected 99, got ${postIds.size}`);
+      // 97 unique external IDs
+      if (postIds.size !== 97) postFlightErrors.push(`Unique external IDs: expected 97, got ${postIds.size}`);
 
-      // 99 unique slugs
+      // 97 unique slugs
       const postSlugs = new Set(newVenues.map((v: { slug: string }) => v.slug));
-      if (postSlugs.size !== 99) postFlightErrors.push(`Unique slugs: expected 99, got ${postSlugs.size}`);
+      if (postSlugs.size !== 97) postFlightErrors.push(`Unique slugs: expected 97, got ${postSlugs.size}`);
+
+      // Retired venues must never reappear post-flight
+      for (const rid of RETIRED_IDS) {
+        if (postIds.has(rid)) postFlightErrors.push(`${rid} is retired and must never be present`);
+      }
 
       // 0 null contact_information
       const nullContacts = newVenues.filter((v: { contact_information: string | null }) => v.contact_information === null).length;
@@ -599,7 +663,7 @@ async function main() {
     // Step 12: Success.
     console.log(`\n${"=".repeat(60)}`);
     console.log("V3 PRODUCTION REPLACEMENT COMPLETE");
-    console.log("47 legacy venues → 99 authoritative V3 venues");
+    console.log(`Replaced legacy venues → ${venues.length} authoritative V3 venues`);
     console.log("All post-flight checks passed.");
     console.log(`Backup: ${backupPath}`);
     console.log(`${"=".repeat(60)}`);
