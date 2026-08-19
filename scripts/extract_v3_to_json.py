@@ -208,7 +208,7 @@ def split_booking_method(value: str) -> list[str] | None:
 
 
 def extract(xlsx_path: str) -> list[dict]:
-    """Extract all 99 venues from the V3 xlsx file."""
+    """Extract all 97 venues from the V3 xlsx file."""
 
     if not os.path.exists(xlsx_path):
         print(f"ERROR: File not found: {xlsx_path}", file=sys.stderr)
@@ -409,7 +409,7 @@ def validate(venues: list[dict]) -> bool:
     """Run all payload validations. Returns True if valid."""
     errors: list[str] = []
 
-    # Exactly 99 rows
+    # Exactly 97 rows
     if len(venues) != EXPECTED_COUNT:
         errors.append(f"Expected {EXPECTED_COUNT} venues, got {len(venues)}")
 
@@ -427,12 +427,12 @@ def validate(venues: list[dict]) -> bool:
     if "BLK-0037" in actual_ids:
         errors.append("BLK-0037 must be absent")
 
-    # 99 unique external IDs
+    # 97 unique external IDs
     ext_ids = [v["external_id"] for v in venues]
     if len(ext_ids) != len(set(ext_ids)):
         errors.append("Duplicate external IDs found")
 
-    # 99 unique slugs
+    # 97 unique slugs
     slugs = [v["slug"] for v in venues]
     if len(slugs) != len(set(slugs)):
         errors.append("Duplicate slugs found")
