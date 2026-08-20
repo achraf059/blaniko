@@ -315,7 +315,7 @@ describe("Area / neighborhood does not filter or reorder venues", () => {
 
 describe("Retired-ID exclusion is a DATA-SOURCE invariant, not a recommender one", () => {
   // The engine ranks whatever venue array it is handed; it never inspects
-  // externalId / isActive and has no knowledge of BLK-0020 / BLK-0037 / BLK-0044.
+  // externalId / isActive and has no knowledge of BLK-0020 / BLK-0037 / BLK-0045.
   // Excluding retired IDs is guaranteed upstream (the V3 extractor: EXPECTED_COUNT
   // = 97, RETIRED_IDS, BLK-0037 absent) / importer / DB — NOT here. This test
   // documents that boundary; it deliberately does NOT assert the engine filters
@@ -324,10 +324,10 @@ describe("Retired-ID exclusion is a DATA-SOURCE invariant, not a recommender one
     // Both eligible sports venues carry retired external_ids, so whichever survives
     // START to become MAIN is necessarily a retired-ID venue. If the engine filtered
     // retired IDs, MAIN could never be one of these.
-    const retiredIds = ["BLK-0020", "BLK-0044"];
+    const retiredIds = ["BLK-0020", "BLK-0045"];
     const pool = [
       makeVenue({ slug: "retired-a", categorySlug: "sports", externalId: "BLK-0020" }),
-      makeVenue({ slug: "retired-b", categorySlug: "sports", externalId: "BLK-0044" }),
+      makeVenue({ slug: "retired-b", categorySlug: "sports", externalId: "BLK-0045" }),
       makeVenue({ slug: "gaming-a", categorySlug: "gaming" }),
     ];
 

@@ -37,9 +37,9 @@ SHEET_NAME = "Blaniko Official MVP"
 # Permanently retired venues — removed from the MVP and NEVER to be reintroduced.
 # Rows with these IDs are skipped during extraction so a regeneration from the
 # source xlsx can never bring them back. Their BLK IDs must never be reassigned.
-#   BLK-0020  E-Blue Gaming Center            (permanently closed)
-#   BLK-0044  Étoile Football Académie (EFA)  (product/editorial decision)
-RETIRED_IDS = {"BLK-0020", "BLK-0044"}
+#   BLK-0020  E-Blue Gaming Center                    (permanently closed)
+#   BLK-0045  FCC football sidi maarouf كرة القدم…    (product/editorial decision)
+RETIRED_IDS = {"BLK-0020", "BLK-0045"}
 
 EXPECTED_COUNT = 97
 
@@ -51,7 +51,9 @@ EXPECTED_IDS = (
     - RETIRED_IDS
 )
 
-UNKNOWN_CONTACT_IDS = {"BLK-0045", "BLK-0068", "BLK-0076", "BLK-0089"}
+# BLK-0045 (FCC) formerly had an Unknown contact but is now retired/excluded;
+# BLK-0044 (EFA, now active) has a known phone, so the active set has 3 Unknowns.
+UNKNOWN_CONTACT_IDS = {"BLK-0068", "BLK-0076", "BLK-0089"}
 
 VALID_INDOOR_OUTDOOR = {"Indoor", "Outdoor", "Indoor / Outdoor"}
 
@@ -473,20 +475,20 @@ def validate(venues: list[dict]) -> bool:
     if len(string_contacts) != 97:
         errors.append(f"Expected 97 string contacts, got {len(string_contacts)}")
 
-    # 4 Unknown contacts
+    # 3 Unknown contacts
     unknown_contacts = [v for v in venues if v["contact_information"] == "Unknown"]
-    if len(unknown_contacts) != 4:
-        errors.append(f"Expected 4 Unknown contacts, got {len(unknown_contacts)}")
+    if len(unknown_contacts) != 3:
+        errors.append(f"Expected 3 Unknown contacts, got {len(unknown_contacts)}")
 
     # Correct Unknown contact IDs
     unknown_ids = {v["external_id"] for v in unknown_contacts}
     if unknown_ids != UNKNOWN_CONTACT_IDS:
         errors.append(f"Wrong Unknown contact IDs: expected {UNKNOWN_CONTACT_IDS}, got {unknown_ids}")
 
-    # 93 non-Unknown contacts
+    # 94 non-Unknown contacts
     non_unknown = [c for c in contacts if c != "Unknown"]
-    if len(non_unknown) != 93:
-        errors.append(f"Expected 93 non-Unknown contacts, got {len(non_unknown)}")
+    if len(non_unknown) != 94:
+        errors.append(f"Expected 94 non-Unknown contacts, got {len(non_unknown)}")
 
     # 0 null contacts
     null_contacts = [c for c in contacts if c is None]
@@ -563,14 +565,14 @@ def validate(venues: list[dict]) -> bool:
         print(f"\n{'='*60}")
         print("VALIDATION PASSED — all checks OK")
         print(f"  ✓ {len(venues)} venues extracted")
-        print(f"  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0044)")
-        print(f"  ✓ BLK-0037 absent; BLK-0020 & BLK-0044 retired")
+        print(f"  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0045)")
+        print(f"  ✓ BLK-0037 absent; BLK-0020 & BLK-0045 retired")
         print(f"  ✓ 97 unique external IDs")
         print(f"  ✓ 97 unique slugs")
         print(f"  ✓ BLK-0038 = OASIS SPORTS CITY")
         print(f"  ✓ BLK-0100 = LE M SPA identity confirmed")
         print(f"  ✓ 97 Google Maps hyperlink targets")
-        print(f"  ✓ 97 contact strings (4 Unknown, 93 non-Unknown, 0 null)")
+        print(f"  ✓ 97 contact strings (3 Unknown, 94 non-Unknown, 0 null)")
         print(f"  ✓ Unknown contacts: {sorted(UNKNOWN_CONTACT_IDS)}")
         print(f"  ✓ All audience arrays non-empty")
         print(f"  ✓ All atmosphere arrays non-empty")

@@ -25,10 +25,10 @@
       "reason": "permanently closed — excluded from MVP; no active assignment"
     },
     {
-      "old_external_id": "BLK-0043",
-      "current_external_id": "BLK-0044",
-      "name": "Étoile Football Académie (EFA)",
-      "supplied_quartier": "Beauséjour",
+      "old_external_id": "BLK-0044",
+      "current_external_id": "BLK-0045",
+      "name": "FCC football sidi maarouf كرة القدم سيدي معروف",
+      "supplied_quartier": "Sidi Maârouf",
       "reason": "editorial decision — excluded from MVP; no active assignment"
     }
   ],
@@ -239,9 +239,9 @@
       "quartier": "Oasis"
     },
     {
-      "external_id": "BLK-0045",
-      "name": "FCC football sidi maarouf كرة القدم سيدي معروف",
-      "quartier": "Sidi Maârouf"
+      "external_id": "BLK-0044",
+      "name": "Étoile Football Académie (EFA)",
+      "quartier": "Beauséjour"
     },
     {
       "external_id": "BLK-0046",
