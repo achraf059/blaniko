@@ -1,7 +1,7 @@
 /**
  * syncVenueNeighborhoods.ts — Phase 2 of the Blaniko venue-area migration.
  *
- * Synchronizes the canonical 97 `neighborhood` values from the approved migration
+ * Synchronizes the canonical 96 `neighborhood` values from the approved migration
  * input (scripts/venue-quartier-map-v3.json) into the production Supabase `venues`
  * table. This is a SURGICAL, single-column sync — the ONLY column it ever writes is
  * `neighborhood`, matched by `external_id`.
@@ -13,7 +13,7 @@
  *   - never calls replace_venues_v3 or any RPC
  *   - never inserts / deletes / upserts
  *   - never sends a full venue object — only { neighborhood } patches
- *   - refuses to touch retired/reserved IDs (BLK-0020, BLK-0037, BLK-0045)
+ *   - refuses to touch retired/reserved IDs (BLK-0020, BLK-0037, BLK-0044, BLK-0045)
  *   - refuses to overwrite a non-null neighborhood that differs (CONFLICT → STOP)
  *   - asserts exactly one row is affected per update
  *   - re-reads and diffs all protected fields after write (only neighborhood may change)
@@ -27,9 +27,9 @@ import { fileURLToPath } from "url";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-const EXPECTED_COUNT = 97;
-// Retired (BLK-0020, BLK-0045) + reserved gap (BLK-0037). Must never be updated.
-const FORBIDDEN_IDS = new Set(["BLK-0020", "BLK-0037", "BLK-0045"]);
+const EXPECTED_COUNT = 96;
+// Retired (BLK-0020, BLK-0044, BLK-0045) + reserved gap (BLK-0037). Must never be updated.
+const FORBIDDEN_IDS = new Set(["BLK-0020", "BLK-0037", "BLK-0044", "BLK-0045"]);
 
 // Protected fields — snapshotted before write and proven unchanged afterward.
 // `neighborhood` is intentionally NOT in this list (it is the one allowed change).
@@ -54,14 +54,13 @@ const PROTECTED_FIELDS = [
 const SELECT_COLUMNS = [...PROTECTED_FIELDS, "id", "neighborhood"].join(", ");
 
 const CRITICAL_IDS = [
-  "BLK-0001", "BLK-0003", "BLK-0044", "BLK-0046", "BLK-0049", "BLK-0050",
+  "BLK-0001", "BLK-0003", "BLK-0046", "BLK-0049", "BLK-0050",
   "BLK-0051", "BLK-0052", "BLK-0053", "BLK-0056", "BLK-0060", "BLK-0069",
   "BLK-0080", "BLK-0100",
 ];
 
 // Expected area values for the critical IDs (independent post-write assertion).
 const CRITICAL_EXPECTED: Record<string, string> = {
-  "BLK-0044": "Beauséjour",
   "BLK-0046": "Zenata",
   "BLK-0049": "Sbata",
   "BLK-0050": "Almaz",
@@ -165,7 +164,7 @@ async function main() {
   // Retired / reserved must be entirely absent.
   const presentForbidden = [...FORBIDDEN_IDS].filter((id) => allIds.has(id));
   console.log(`  total rows: ${rows.length} | active rows: ${activeRows.length}`);
-  console.log(`  forbidden IDs present (BLK-0020/0037/0045): ${presentForbidden.length ? presentForbidden.join(", ") : "none"} ✓`);
+  console.log(`  forbidden IDs present (BLK-0020/0037/0044/0045): ${presentForbidden.length ? presentForbidden.join(", ") : "none"} ✓`);
   if (presentForbidden.length)
     die(`retired/reserved IDs exist in production: ${presentForbidden.join(", ")}`);
   if (activeRows.length !== EXPECTED_COUNT)
@@ -262,7 +261,7 @@ async function main() {
   console.log(`\n[snapshot] wrote pre-sync snapshot: ${snapshotPath}`);
 
   if (willUpdate.length === 0) {
-    console.log("\n✓ Nothing to apply — all 97 neighborhoods already correct.");
+    console.log("\n✓ Nothing to apply — all 96 neighborhoods already correct.");
     return;
   }
 

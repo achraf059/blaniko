@@ -8,7 +8,7 @@
 // The engine is a pure module: no Date, no Math.random, no shuffle. Given a fixed
 // seed, seededHash(slug, seed) is fully deterministic, so every test below is
 // stable. Fixtures are minimal hand-built Venues (only the fields the engine
-// reads); the 97-venue production dataset is never imported (mockData is a
+// reads); the 96-venue production dataset is never imported (mockData is a
 // type-only import here, erased at runtime).
 
 import { describe, it, expect } from "vitest";
@@ -315,9 +315,9 @@ describe("Area / neighborhood does not filter or reorder venues", () => {
 
 describe("Retired-ID exclusion is a DATA-SOURCE invariant, not a recommender one", () => {
   // The engine ranks whatever venue array it is handed; it never inspects
-  // externalId / isActive and has no knowledge of BLK-0020 / BLK-0037 / BLK-0045.
+  // externalId / isActive and has no knowledge of BLK-0020 / BLK-0037 / BLK-0044 / BLK-0045.
   // Excluding retired IDs is guaranteed upstream (the V3 extractor: EXPECTED_COUNT
-  // = 97, RETIRED_IDS, BLK-0037 absent) / importer / DB — NOT here. This test
+  // = 96, RETIRED_IDS, BLK-0037 absent) / importer / DB — NOT here. This test
   // documents that boundary; it deliberately does NOT assert the engine filters
   // retired IDs, because it does not and must not.
   it("selects a venue carrying a retired external_id when every eligible candidate is retired (proving no engine-level filter)", () => {

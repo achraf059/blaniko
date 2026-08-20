@@ -1,25 +1,25 @@
 /**
  * linkEarlyBatchImageUrls.ts
  *
- * Safely links the 46 early-batch venue image URLs into public.venues.
+ * Safely links the 45 early-batch venue image URLs into public.venues.
  * Targets by external_id ONLY. Reads the durable manifest
  * (scripts/venue-image-source-map-early.json) as source of truth.
  *
- * For each of the 46 READY venues it sets:
+ * For each of the 45 READY venues it sets:
  *   image_url        = <base>/venue-images/BLK-XXXX/card.webp
  *   detail_image_url = <base>/venue-images/BLK-XXXX/detail.webp
  *
- * Explicitly excludes: BLK-0020, BLK-0037, BLK-0045, BLK-0050.
+ * Explicitly excludes: BLK-0020, BLK-0037, BLK-0044, BLK-0045, BLK-0050.
  *
  * Pre-flight validation (aborts rather than partially updating):
- *   - exactly 46 target rows exist
+ *   - exactly 45 target rows exist
  *   - every target row currently has image_url = NULL and detail_image_url = NULL
  *     (early batch was never linked before; refuse to clobber existing URLs)
  *   - none of the excluded IDs are in the target set
  *
  * Modes:
  *   (default)   DRY — validate + print plan, NO writes
- *   --apply     perform the updates, then re-verify all 46 rows
+ *   --apply     perform the updates, then re-verify all 45 rows
  *
  * Run from backend/ so dotenv finds backend/.env:
  *   npx tsx scripts/linkEarlyBatchImageUrls.ts            # dry
@@ -37,8 +37,8 @@ const MANIFEST = path.resolve(__dirname, "..", "..", "scripts", "venue-image-sou
 const STORAGE_BASE =
   "https://vptjbfoaqmbdjdqwloae.supabase.co/storage/v1/object/public/venue-images";
 
-const NEVER_TARGET = new Set(["BLK-0020", "BLK-0037", "BLK-0045", "BLK-0050"]);
-const EXPECTED = 46;
+const NEVER_TARGET = new Set(["BLK-0020", "BLK-0037", "BLK-0044", "BLK-0045", "BLK-0050"]);
+const EXPECTED = 45;
 
 const APPLY = process.argv.includes("--apply");
 
@@ -65,7 +65,7 @@ async function main() {
   const ready = manifest.venues.filter((v) => v.status === "READY");
   const ids = ready.map((v) => v.external_id);
 
-  // Guard: never target excluded IDs; expect exactly 46.
+  // Guard: never target excluded IDs; expect exactly 45.
   const illegal = ids.filter((id) => NEVER_TARGET.has(id));
   if (illegal.length) {
     console.error(`ERROR: target set includes excluded IDs: ${illegal.join(", ")}`);
@@ -149,7 +149,7 @@ async function main() {
     console.error(`✗ VERIFY FAILED: ${bad.length} row(s) not linked correctly.`);
     process.exit(1);
   }
-  console.log("✓ VERIFY OK: all 46 venues linked to card.webp + detail.webp.");
+  console.log("✓ VERIFY OK: all 45 venues linked to card.webp + detail.webp.");
 }
 
 main().catch((err) => {
