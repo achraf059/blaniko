@@ -5,8 +5,8 @@
  * images. Models the proven BLK-0050..BLK-0100 workflow: Supabase Storage CLI,
  * exact-key collision checking, NEVER overwrite/delete, dry-run first.
  *
- * Targets ONLY the 45 READY venues from scripts/venue-image-source-map-early.json.
- * Never targets: BLK-0020, BLK-0037, BLK-0044, BLK-0045, BLK-0050.
+ * Targets ONLY the 46 READY venues from scripts/venue-image-source-map-early.json.
+ * Never targets: BLK-0020, BLK-0037, BLK-0045, BLK-0050.
  *
  * Object layout (public bucket `venue-images`):
  *   venue-images/BLK-XXXX/card.webp    → venues.image_url
@@ -15,7 +15,7 @@
  * Modes (MODE env var, default "dry"):
  *   MODE=dry     Local validation + read-only remote collision check. No writes.
  *   MODE=upload  Upload only NON-existing keys (aborts if ANY target already exists).
- *   MODE=verify  Read-only: confirm both keys exist for all 45 venues.
+ *   MODE=verify  Read-only: confirm both keys exist for all 46 venues.
  *
  * Usage:
  *   node scripts/upload-early-batch-images.mjs               # dry (default)
@@ -35,9 +35,9 @@ const BUCKET = "venue-images";
 const CONTENT_TYPE = "image/webp";
 const MODE = (process.env.MODE || "dry").toLowerCase();
 
-const EXPECTED_VENUES = 45;
-const EXPECTED_FILES = 90;
-const NEVER_TARGET = new Set(["BLK-0020", "BLK-0037", "BLK-0044", "BLK-0045", "BLK-0050"]);
+const EXPECTED_VENUES = 46;
+const EXPECTED_FILES = 92;
+const NEVER_TARGET = new Set(["BLK-0020", "BLK-0037", "BLK-0045", "BLK-0050"]);
 
 if (!["dry", "upload", "verify"].includes(MODE)) {
   console.error(`ERROR: invalid MODE='${MODE}'. Use dry | upload | verify.`);
@@ -128,7 +128,7 @@ if (MODE === "verify") {
     missing.forEach((t) => console.error(`  ✗ ${t.key}`));
     process.exit(1);
   }
-  console.log("✓ VERIFY OK: all 90 keys exist remotely.");
+  console.log("✓ VERIFY OK: all 92 keys exist remotely.");
   process.exit(0);
 }
 

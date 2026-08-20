@@ -69,9 +69,9 @@ const EXPECTED_COUNT = 97;
 
 // Permanently retired venues — removed from the MVP and NEVER to be reintroduced.
 // Their BLK identities must never be reassigned to another venue.
-//   BLK-0020  E-Blue Gaming Center            (permanently closed)
-//   BLK-0044  Étoile Football Académie (EFA)  (product/editorial decision)
-const RETIRED_IDS = new Set<string>(["BLK-0020", "BLK-0044"]);
+//   BLK-0020  E-Blue Gaming Center                 (permanently closed)
+//   BLK-0045  FCC football sidi maarouf …          (product/editorial decision)
+const RETIRED_IDS = new Set<string>(["BLK-0020", "BLK-0045"]);
 
 const EXPECTED_IDS = new Set<string>(
   [
@@ -80,7 +80,9 @@ const EXPECTED_IDS = new Set<string>(
   ].filter((id) => !RETIRED_IDS.has(id))
 );
 
-const UNKNOWN_CONTACT_IDS = new Set(["BLK-0045", "BLK-0068", "BLK-0076", "BLK-0089"]);
+// BLK-0045 (FCC) formerly had an Unknown contact but is now retired/excluded;
+// BLK-0044 (EFA, now active) has a known phone, so the active set has 3 Unknowns.
+const UNKNOWN_CONTACT_IDS = new Set(["BLK-0068", "BLK-0076", "BLK-0089"]);
 
 const VALID_INDOOR_OUTDOOR = new Set(["Indoor", "Outdoor", "Indoor / Outdoor"]);
 
@@ -151,8 +153,8 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
   }
 
   const unknownContacts = venues.filter((v) => v.contact_information === "Unknown");
-  if (unknownContacts.length !== 4) {
-    errors.push(`Unknown contacts: expected 4, got ${unknownContacts.length}`);
+  if (unknownContacts.length !== 3) {
+    errors.push(`Unknown contacts: expected 3, got ${unknownContacts.length}`);
   }
 
   const unknownIds = new Set(unknownContacts.map((v) => v.external_id));
@@ -161,8 +163,8 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
   }
 
   const nonUnknown = contacts.filter((c) => c !== "Unknown");
-  if (nonUnknown.length !== 93) {
-    errors.push(`Non-Unknown contacts: expected 93, got ${nonUnknown.length}`);
+  if (nonUnknown.length !== 94) {
+    errors.push(`Non-Unknown contacts: expected 94, got ${nonUnknown.length}`);
   }
 
   const nullContacts = contacts.filter((c) => c === null || c === undefined);
@@ -299,14 +301,14 @@ async function main() {
   console.log(`\n${"=".repeat(60)}`);
   console.log("VALIDATION PASSED — all checks OK");
   console.log(`  ✓ ${venues.length} venues`);
-  console.log("  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0044)");
-  console.log("  ✓ BLK-0037 absent; BLK-0020 & BLK-0044 retired");
+  console.log("  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0045)");
+  console.log("  ✓ BLK-0037 absent; BLK-0020 & BLK-0045 retired");
   console.log("  ✓ 97 unique external IDs");
   console.log("  ✓ 97 unique slugs");
   console.log("  ✓ BLK-0038 = OASIS SPORTS CITY");
   console.log("  ✓ BLK-0100 = LE M SPA identity confirmed");
   console.log("  ✓ 97 Google Maps hyperlink targets");
-  console.log("  ✓ 97 contact strings (4 Unknown, 93 non-Unknown, 0 null)");
+  console.log("  ✓ 97 contact strings (3 Unknown, 94 non-Unknown, 0 null)");
   console.log("  ✓ All audience/atmosphere arrays non-empty");
   console.log("  ✓ All experience descriptions non-empty");
   console.log("  ✓ Indoor/Outdoor values valid");
@@ -579,10 +581,10 @@ async function main() {
       const nullContacts = newVenues.filter((v: { contact_information: string | null }) => v.contact_information === null).length;
       if (nullContacts !== 0) postFlightErrors.push(`Null contact_information: expected 0, got ${nullContacts}`);
 
-      // exactly 4 contact_information == "Unknown"
+      // exactly 3 contact_information == "Unknown"
       const unknownContacts = newVenues.filter((v: { contact_information: string }) => v.contact_information === "Unknown");
-      if (unknownContacts.length !== 4) {
-        postFlightErrors.push(`Unknown contacts: expected 4, got ${unknownContacts.length}`);
+      if (unknownContacts.length !== 3) {
+        postFlightErrors.push(`Unknown contacts: expected 3, got ${unknownContacts.length}`);
       }
 
       // Unknown IDs exact

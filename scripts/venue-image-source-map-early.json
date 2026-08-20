@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T18:24:40.707Z",
+  "generated_at": "2026-08-20T14:32:20.872Z",
   "description": "Corrected source→authoritative image mapping for the early venue batch (BLK-0001..BLK-0049). Accounts for the +1 Desktop-folder shift after the phantom BLK-0037. Do not rely on folder number alone.",
   "source_archive": "Desktop/Pictures for Blaniko ",
   "mapping_rule": "Desktop 0001-0036 → authoritative 1:1; Desktop 0037-0049 → authoritative +1 (0038-0050).",
@@ -24,14 +24,13 @@
   "counts": {
     "active_early_venues": 46,
     "removed": 2,
-    "missing_image_active": 1,
-    "processable_venues": 45,
-    "expected_new_webps": 90
+    "missing_image_active": 0,
+    "processable_venues": 46,
+    "expected_new_webps": 92
   },
   "excluded_from_processing": [
     "BLK-0020",
     "BLK-0037",
-    "BLK-0044",
     "BLK-0045",
     "BLK-0050"
   ],
@@ -1005,9 +1004,9 @@
     },
     {
       "external_id": "BLK-0044",
-      "name": null,
-      "subcategory": null,
-      "status": "REMOVED",
+      "name": "Étoile Football Académie (EFA)",
+      "subcategory": "Football",
+      "status": "READY",
       "source_desktop_folder": "BLK-0043",
       "source_images": [
         {
@@ -1021,24 +1020,23 @@
           "height": 943
         }
       ],
-      "card_source": null,
-      "detail_source": null,
-      "assignment_method": null,
-      "review_flag": null,
-      "note": "Removed from MVP (editorial decision). Desktop BLK-0043 DOES contain EFA images, but they must NOT be processed."
+      "card_source": "ChatGPT Image Aug 19, 2026, 04_46_50 PM.png",
+      "detail_source": "ChatGPT Image Aug 19, 2026, 04_48_48 PM.png",
+      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
+      "review_flag": "card source 941px < 1000"
     },
     {
       "external_id": "BLK-0045",
-      "name": "FCC football sidi maarouf كرة القدم سيدي معروف",
-      "subcategory": "Football",
-      "status": "MISSING_IMAGES",
+      "name": null,
+      "subcategory": null,
+      "status": "REMOVED",
       "source_desktop_folder": "BLK-0044",
       "source_images": [],
       "card_source": null,
       "detail_source": null,
       "assignment_method": null,
       "review_flag": null,
-      "note": "Active venue with no source imagery (Desktop BLK-0044 slot is empty). image_url/detail_image_url stay NULL; 'Photo coming soon' fallback remains."
+      "note": "Removed from MVP (editorial decision). Source folder (Desktop BLK-0044) is empty; never processable."
     },
     {
       "external_id": "BLK-0046",

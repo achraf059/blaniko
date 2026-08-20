@@ -26,9 +26,9 @@
       "reason": "permanently closed — removed from MVP"
     },
     {
-      "current_id": "BLK-0044",
-      "old_id": "BLK-0043",
-      "venue": "Étoile Football Académie (EFA)",
+      "current_id": "BLK-0045",
+      "old_id": "BLK-0044",
+      "venue": "FCC football sidi maarouf كرة القدم سيدي معروف",
       "reason": "editorial decision — removed from MVP"
     }
   ],
@@ -297,13 +297,13 @@
       "old_id": "BLK-0043",
       "current_id": "BLK-0044",
       "venue_name": "Étoile Football Académie (EFA)",
-      "status": "RETIRED_CURRENT"
+      "status": "SHIFTED_ID"
     },
     {
       "old_id": "BLK-0044",
       "current_id": "BLK-0045",
       "venue_name": "FCC football sidi maarouf كرة القدم سيدي معروف",
-      "status": "SHIFTED_ID"
+      "status": "RETIRED_CURRENT"
     },
     {
       "old_id": "BLK-0045",

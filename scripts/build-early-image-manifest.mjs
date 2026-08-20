@@ -40,7 +40,7 @@ const PAYLOAD_PATH = join(REPO_ROOT, "scripts", "v3_venues_payload.json");
 const OUT_PATH = join(REPO_ROOT, "scripts", "venue-image-source-map-early.json");
 
 // ── Final decisions (approved) ──────────────────────────────────────────────
-const REMOVED_IDS = new Set(["BLK-0020", "BLK-0044"]);          // removed from MVP
+const REMOVED_IDS = new Set(["BLK-0020", "BLK-0045"]);          // removed from MVP
 const ALREADY_PROCESSED_IDS = new Set(["BLK-0050"]);            // live, do not touch
 const IMAGE_EXT = /\.(png|jpe?g|webp)$/i;
 
@@ -259,11 +259,11 @@ for (let a = 1; a <= 50; a++) {
     review_flag: lowResFlag,
     note:
       status === "REMOVED"
-        ? (authId === "BLK-0044"
-            ? "Removed from MVP (editorial decision). Desktop BLK-0043 DOES contain EFA images, but they must NOT be processed."
+        ? (authId === "BLK-0045"
+            ? "Removed from MVP (editorial decision). Source folder (Desktop BLK-0044) is empty; never processable."
             : "Removed from MVP (permanently closed). Source folder empty.")
         : status === "MISSING_IMAGES"
-        ? "Active venue with no source imagery (Desktop BLK-0044 slot is empty). image_url/detail_image_url stay NULL; 'Photo coming soon' fallback remains."
+        ? "Active venue with no source imagery. image_url/detail_image_url stay NULL; 'Photo coming soon' fallback remains."
         : status === "ALREADY_PROCESSED"
         ? "AREA SPORTS & EVENTS CENTER — already processed, uploaded, linked and merged. DO NOT TOUCH. Excluded from this batch."
         : confirmedNote || undefined,
@@ -287,11 +287,11 @@ const manifest = {
   counts: {
     active_early_venues: 46,
     removed: 2,
-    missing_image_active: 1,
+    missing_image_active: 0,
     processable_venues: readyCount,
     expected_new_webps: webpExpected,
   },
-  excluded_from_processing: ["BLK-0020", "BLK-0037", "BLK-0044", "BLK-0045", "BLK-0050"],
+  excluded_from_processing: ["BLK-0020", "BLK-0037", "BLK-0045", "BLK-0050"],
   venues: entries,
 };
 
