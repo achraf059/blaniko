@@ -22,15 +22,16 @@
     }
   },
   "counts": {
-    "active_early_venues": 46,
-    "removed": 2,
+    "active_early_venues": 45,
+    "removed": 3,
     "missing_image_active": 0,
-    "processable_venues": 46,
-    "expected_new_webps": 92
+    "processable_venues": 45,
+    "expected_new_webps": 90
   },
   "excluded_from_processing": [
     "BLK-0020",
     "BLK-0037",
+    "BLK-0044",
     "BLK-0045",
     "BLK-0050"
   ],
@@ -1006,7 +1007,7 @@
       "external_id": "BLK-0044",
       "name": "Étoile Football Académie (EFA)",
       "subcategory": "Football",
-      "status": "READY",
+      "status": "REMOVED",
       "source_desktop_folder": "BLK-0043",
       "source_images": [
         {
@@ -1020,10 +1021,11 @@
           "height": 943
         }
       ],
-      "card_source": "ChatGPT Image Aug 19, 2026, 04_46_50 PM.png",
-      "detail_source": "ChatGPT Image Aug 19, 2026, 04_48_48 PM.png",
-      "assignment_method": "source order (first=card, second=detail; chronological timestamp in filename)",
-      "review_flag": "card source 941px < 1000"
+      "card_source": null,
+      "detail_source": null,
+      "assignment_method": null,
+      "review_flag": null,
+      "note": "Retired from MVP (owner/editorial decision). Source images exist in Desktop folder BLK-0043 but are no longer assigned or processed. Retained here as history; do not reintroduce."
     },
     {
       "external_id": "BLK-0045",

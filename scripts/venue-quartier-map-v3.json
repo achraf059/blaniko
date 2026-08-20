@@ -10,8 +10,8 @@
     }
   ],
   "counts": {
-    "active": 97,
-    "retired_skipped": 2,
+    "active": 96,
+    "retired_skipped": 3,
     "reserved_gap": [
       "BLK-0037"
     ]
@@ -23,6 +23,13 @@
       "name": "E-Blue Gaming Center",
       "supplied_quartier": "Racine",
       "reason": "permanently closed — excluded from MVP; no active assignment"
+    },
+    {
+      "old_external_id": "BLK-0043",
+      "current_external_id": "BLK-0044",
+      "name": "Étoile Football Académie (EFA)",
+      "supplied_quartier": "Beauséjour",
+      "reason": "owner/editorial decision — retired from MVP; no active assignment"
     },
     {
       "old_external_id": "BLK-0044",
@@ -237,11 +244,6 @@
       "external_id": "BLK-0043",
       "name": "City Foot 5",
       "quartier": "Oasis"
-    },
-    {
-      "external_id": "BLK-0044",
-      "name": "Étoile Football Académie (EFA)",
-      "quartier": "Beauséjour"
     },
     {
       "external_id": "BLK-0046",

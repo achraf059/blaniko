@@ -65,13 +65,14 @@ interface V3Venue {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const EXPECTED_COUNT = 97;
+const EXPECTED_COUNT = 96;
 
 // Permanently retired venues — removed from the MVP and NEVER to be reintroduced.
 // Their BLK identities must never be reassigned to another venue.
 //   BLK-0020  E-Blue Gaming Center                 (permanently closed)
+//   BLK-0044  Étoile Football Académie (EFA)       (owner/editorial decision)
 //   BLK-0045  FCC football sidi maarouf …          (product/editorial decision)
-const RETIRED_IDS = new Set<string>(["BLK-0020", "BLK-0045"]);
+const RETIRED_IDS = new Set<string>(["BLK-0020", "BLK-0044", "BLK-0045"]);
 
 const EXPECTED_IDS = new Set<string>(
   [
@@ -80,8 +81,8 @@ const EXPECTED_IDS = new Set<string>(
   ].filter((id) => !RETIRED_IDS.has(id))
 );
 
-// BLK-0045 (FCC) formerly had an Unknown contact but is now retired/excluded;
-// BLK-0044 (EFA, now active) has a known phone, so the active set has 3 Unknowns.
+// BLK-0044 (EFA) and BLK-0045 (FCC) are both retired/excluded. EFA had a known
+// phone and FCC an Unknown one; with both gone the active set has 3 Unknowns.
 const UNKNOWN_CONTACT_IDS = new Set(["BLK-0068", "BLK-0076", "BLK-0089"]);
 
 const VALID_INDOOR_OUTDOOR = new Set(["Indoor", "Outdoor", "Indoor / Outdoor"]);
@@ -141,15 +142,15 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
     errors.push("BLK-0100 not found");
   }
 
-  // 97 Google Maps hyperlink targets
+  // 96 Google Maps hyperlink targets
   const mapsCount = venues.filter((v) => v.google_maps_url).length;
-  if (mapsCount !== 97) errors.push(`Google Maps URLs: expected 97, got ${mapsCount}`);
+  if (mapsCount !== 96) errors.push(`Google Maps URLs: expected 96, got ${mapsCount}`);
 
   // Contact information validation
   const contacts = venues.map((v) => v.contact_information);
   const stringContacts = contacts.filter((c) => typeof c === "string");
-  if (stringContacts.length !== 97) {
-    errors.push(`String contacts: expected 97, got ${stringContacts.length}`);
+  if (stringContacts.length !== 96) {
+    errors.push(`String contacts: expected 96, got ${stringContacts.length}`);
   }
 
   const unknownContacts = venues.filter((v) => v.contact_information === "Unknown");
@@ -163,8 +164,8 @@ function validate(venues: V3Venue[]): { valid: boolean; errors: string[] } {
   }
 
   const nonUnknown = contacts.filter((c) => c !== "Unknown");
-  if (nonUnknown.length !== 94) {
-    errors.push(`Non-Unknown contacts: expected 94, got ${nonUnknown.length}`);
+  if (nonUnknown.length !== 93) {
+    errors.push(`Non-Unknown contacts: expected 93, got ${nonUnknown.length}`);
   }
 
   const nullContacts = contacts.filter((c) => c === null || c === undefined);
@@ -301,14 +302,14 @@ async function main() {
   console.log(`\n${"=".repeat(60)}`);
   console.log("VALIDATION PASSED — all checks OK");
   console.log(`  ✓ ${venues.length} venues`);
-  console.log("  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0045)");
-  console.log("  ✓ BLK-0037 absent; BLK-0020 & BLK-0045 retired");
-  console.log("  ✓ 97 unique external IDs");
-  console.log("  ✓ 97 unique slugs");
+  console.log("  ✓ Exact ID set (BLK-0001..BLK-0036, BLK-0038..BLK-0100, minus retired BLK-0020/BLK-0044/BLK-0045)");
+  console.log("  ✓ BLK-0037 absent; BLK-0020, BLK-0044 & BLK-0045 retired");
+  console.log("  ✓ 96 unique external IDs");
+  console.log("  ✓ 96 unique slugs");
   console.log("  ✓ BLK-0038 = OASIS SPORTS CITY");
   console.log("  ✓ BLK-0100 = LE M SPA identity confirmed");
-  console.log("  ✓ 97 Google Maps hyperlink targets");
-  console.log("  ✓ 97 contact strings (3 Unknown, 94 non-Unknown, 0 null)");
+  console.log("  ✓ 96 Google Maps hyperlink targets");
+  console.log("  ✓ 96 contact strings (3 Unknown, 93 non-Unknown, 0 null)");
   console.log("  ✓ All audience/atmosphere arrays non-empty");
   console.log("  ✓ All experience descriptions non-empty");
   console.log("  ✓ Indoor/Outdoor values valid");
@@ -533,9 +534,9 @@ async function main() {
       process.exit(1);
     }
 
-    // venues count = 97
-    if (!newVenues || newVenues.length !== 97) {
-      postFlightErrors.push(`Venue count: expected 97, got ${newVenues?.length ?? 0}`);
+    // venues count = 96
+    if (!newVenues || newVenues.length !== 96) {
+      postFlightErrors.push(`Venue count: expected 96, got ${newVenues?.length ?? 0}`);
     }
 
     if (newVenues && newVenues.length > 0) {
@@ -565,12 +566,12 @@ async function main() {
         postFlightErrors.push(`BLK-0100: expected '${expectedName100}', got '${post100?.name}'`);
       }
 
-      // 97 unique external IDs
-      if (postIds.size !== 97) postFlightErrors.push(`Unique external IDs: expected 97, got ${postIds.size}`);
+      // 96 unique external IDs
+      if (postIds.size !== 96) postFlightErrors.push(`Unique external IDs: expected 96, got ${postIds.size}`);
 
-      // 97 unique slugs
+      // 96 unique slugs
       const postSlugs = new Set(newVenues.map((v: { slug: string }) => v.slug));
-      if (postSlugs.size !== 97) postFlightErrors.push(`Unique slugs: expected 97, got ${postSlugs.size}`);
+      if (postSlugs.size !== 96) postFlightErrors.push(`Unique slugs: expected 96, got ${postSlugs.size}`);
 
       // Retired venues must never reappear post-flight
       for (const rid of RETIRED_IDS) {

@@ -35,8 +35,9 @@ by both venue name and Google Maps identity with **0 mismatches**, all the way t
 by the renumber. No venue occupies it; never assign one to it.
 
 ## 7. Retired CURRENT IDs
-Two canonical IDs were retired from the MVP and deleted from production (current count = **97**):
+Three canonical IDs were retired from the MVP (current canonical count = **96**):
 - **`BLK-0020` E-Blue Gaming Center** — permanently closed.
+- **`BLK-0044` Étoile Football Académie (EFA)** — removed from MVP (owner/editorial decision).
 - **`BLK-0045` FCC football sidi maarouf كرة القدم سيدي معروف** — removed from MVP (editorial decision).
 
 ## 8. Never infer identity from an old number
@@ -44,7 +45,7 @@ Never infer a venue's identity from an old BLK number without consulting this cr
 Adjacency of BLK numbers does **not** imply the same venue.
 
 ## 9. Never reuse retired / gap IDs
-`BLK-0020`, `BLK-0037`, and `BLK-0045` are permanently reserved. Do not reuse them for any venue.
+`BLK-0020`, `BLK-0037`, `BLK-0044`, and `BLK-0045` are permanently reserved. Do not reuse them for any venue.
 
 ## 10. New work uses CURRENT IDs only
 All new code, images, Storage objects, outreach, analytics, and partnership records must use
@@ -110,7 +111,7 @@ uploaded to Storage and linked in the `venues` table use the **current** IDs and
 | BLK-0040 | BLK-0041 | EyeDive | SHIFTED_ID |
 | BLK-0041 | BLK-0042 | Ginga Sport Casablanca | SHIFTED_ID |
 | BLK-0042 | BLK-0043 | City Foot 5 | SHIFTED_ID |
-| BLK-0043 | BLK-0044 | Étoile Football Académie (EFA) | SHIFTED_ID |
+| BLK-0043 | BLK-0044 | Étoile Football Académie (EFA) | RETIRED_CURRENT |
 | BLK-0044 | BLK-0045 | FCC football sidi maarouf كرة القدم سيدي معروف | RETIRED_CURRENT |
 | BLK-0045 | BLK-0046 | Street 5 Soccer | SHIFTED_ID |
 | BLK-0046 | BLK-0047 | CAMPUS SPORT | SHIFTED_ID |
