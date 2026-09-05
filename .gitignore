@@ -52,11 +52,9 @@ next-env.d.ts
 venue-images/
 venue-images-raw/
 
-# Claude Design exports / temporary design files
-claude-design-export.zip
-claude-design-combined-export.zip
-claude-design-combined-export/
-claude-design-combined-export 2/
+# Temporary design exports
+*design*export*.zip
+*design*export*/
 
 # Local backups
 backups/

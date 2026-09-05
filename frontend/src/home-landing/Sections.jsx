@@ -1,24 +1,24 @@
 import React from "react";
 import { Link, useNavigate } from "react-router";
 import { Icon } from "./Icon.jsx";
-import { getClaudeHomeLocalizedData } from "./data.js";
+import { getHomeLandingLocalizedData } from "./data.js";
 import { useI18n } from "../i18n/useI18n";
 
 // Blaniko — Categories + Curated + How + Footer
 export const Categories = () => {
   const navigate = useNavigate();
   const { language, dictionary } = useI18n();
-  const { categories } = getClaudeHomeLocalizedData(language);
+  const { categories } = getHomeLandingLocalizedData(language);
 
   return (
     <section className="categories shell" id="categories">
       <div className="section-head">
         <div>
-          <div className="eyebrow">{dictionary.claudeHome.categoriesEyebrow}</div>
-          <h2>{dictionary.claudeHome.categoriesTitlePrefix} <em>{dictionary.claudeHome.categoriesTitleEmphasis}</em>.</h2>
+          <div className="eyebrow">{dictionary.homeLanding.categoriesEyebrow}</div>
+          <h2>{dictionary.homeLanding.categoriesTitlePrefix} <em>{dictionary.homeLanding.categoriesTitleEmphasis}</em>.</h2>
         </div>
         <div className="head-right">
-          {dictionary.claudeHome.categoriesRight}
+          {dictionary.homeLanding.categoriesRight}
         </div>
       </div>
       <div className="cat-grid">
@@ -44,8 +44,8 @@ export const Categories = () => {
       </div>
       <div className="cat-quiz-cta">
         <Link to="/plan" className="cat-quiz-cta-pill">
-          <span className="cat-quiz-cta-prompt">{dictionary.claudeHome.categoriesNotSurePrompt}</span>
-          <span className="cat-quiz-cta-action">{dictionary.claudeHome.categoriesNotSureCta}</span>
+          <span className="cat-quiz-cta-prompt">{dictionary.homeLanding.categoriesNotSurePrompt}</span>
+          <span className="cat-quiz-cta-action">{dictionary.homeLanding.categoriesNotSureCta}</span>
         </Link>
       </div>
     </section>
@@ -55,7 +55,7 @@ export const Categories = () => {
 export const Curated = ({ favorites, toggleFav }) => {
   const navigate = useNavigate();
   const { language, dictionary } = useI18n();
-  const { curated } = getClaudeHomeLocalizedData(language);
+  const { curated } = getHomeLandingLocalizedData(language);
   const row1 = curated.slice(0, 3);
   const row2 = curated.slice(3, 6);
   const renderCard = (a, wide) => {
@@ -95,11 +95,11 @@ export const Curated = ({ favorites, toggleFav }) => {
     <section className="curated shell" id="picks">
       <div className="section-head">
         <div>
-          <div className="eyebrow">{dictionary.claudeHome.curatedEyebrow}</div>
-          <h2>{dictionary.claudeHome.curatedTitlePrefix} <em>{dictionary.claudeHome.curatedTitleEmphasis}</em>, {dictionary.claudeHome.curatedTitleSuffix}</h2>
+          <div className="eyebrow">{dictionary.homeLanding.curatedEyebrow}</div>
+          <h2>{dictionary.homeLanding.curatedTitlePrefix} <em>{dictionary.homeLanding.curatedTitleEmphasis}</em>, {dictionary.homeLanding.curatedTitleSuffix}</h2>
         </div>
         <div className="head-right">
-          {dictionary.claudeHome.curatedRight}
+          {dictionary.homeLanding.curatedRight}
         </div>
       </div>
 
@@ -116,14 +116,14 @@ export const Curated = ({ favorites, toggleFav }) => {
 
 export const How = () => {
   const { language, dictionary } = useI18n();
-  const { howSteps } = getClaudeHomeLocalizedData(language);
+  const { howSteps } = getHomeLandingLocalizedData(language);
 
   return (
     <section className="how shell" id="how">
       <div className="section-head" style={{ marginBottom: 56 }}>
         <div>
-          <div className="eyebrow">{dictionary.claudeHome.howEyebrow}</div>
-          <h2>{dictionary.claudeHome.howTitlePrefix} <em>{dictionary.claudeHome.howTitleEmphasis}</em> — {dictionary.claudeHome.howTitleSuffix}</h2>
+          <div className="eyebrow">{dictionary.homeLanding.howEyebrow}</div>
+          <h2>{dictionary.homeLanding.howTitlePrefix} <em>{dictionary.homeLanding.howTitleEmphasis}</em> — {dictionary.homeLanding.howTitleSuffix}</h2>
         </div>
       </div>
       <div className="how-grid">
@@ -180,7 +180,7 @@ export const FooterCTA = () => {
     }
   };
 
-  const ch = dictionary.claudeHome;
+  const ch = dictionary.homeLanding;
   const inlineError =
     status === "invalid_email" ? ch.waitlistInvalidEmail :
     status === "duplicate" ? ch.waitlistDuplicate :
@@ -238,7 +238,7 @@ export const FooterCTA = () => {
 
 export const AboutSection = () => {
   const { dictionary } = useI18n();
-  const ch = dictionary.claudeHome;
+  const ch = dictionary.homeLanding;
 
   return (
     <section className="about-section shell" id="about">
@@ -255,15 +255,15 @@ export const AboutSection = () => {
 
 export const Foot = () => {
   const { language, dictionary } = useI18n();
-  const { footer } = getClaudeHomeLocalizedData(language);
+  const { footer } = getHomeLandingLocalizedData(language);
 
   return (
     <footer className="shell foot">
       <div>{footer.madeIn}</div>
       <div className="foot-links">
         <a href="/#about" className="foot-about-link">{footer.about}</a>
-        <Link to="/privacy" className="foot-about-link">{dictionary.claudeHome.footerPrivacyLink}</Link>
-        <Link to="/partners" className="foot-about-link">{dictionary.claudeHome.footerForVenues}</Link>
+        <Link to="/privacy" className="foot-about-link">{dictionary.homeLanding.footerPrivacyLink}</Link>
+        <Link to="/partners" className="foot-about-link">{dictionary.homeLanding.footerForVenues}</Link>
       </div>
     </footer>
   );

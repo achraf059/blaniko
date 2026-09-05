@@ -21,7 +21,7 @@ export type GlobalNavProps = {
 
 export function GlobalNav({ labels }: GlobalNavProps) {
   const { dictionary } = useI18n();
-  const homeNav = dictionary.claudeHome;
+  const homeNav = dictionary.homeLanding;
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   // Hide the Plan CTA while already inside the planner. Pathname-only check so

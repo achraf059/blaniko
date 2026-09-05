@@ -45,7 +45,7 @@ export type Dictionary = {
     featuredSubtitle: string;
     footerText: string;
   };
-  claudeHome: {
+  homeLanding: {
     navExplore: string;
     navCategories: string;
     navCurated: string;
@@ -447,7 +447,7 @@ const en: Dictionary = {
     featuredSubtitle: "Handpicked spots to start exploring Casablanca.",
     footerText: "Discover what to do in Casablanca.",
   },
-  claudeHome: {
+  homeLanding: {
     navExplore: "Home",
     navCategories: "Categories",
     navCurated: "Top picks",
@@ -876,7 +876,7 @@ const fr: Dictionary = {
       "Une sélection d'adresses pour commencer à explorer Casablanca.",
     footerText: "Découvrez quoi faire à Casablanca.",
   },
-  claudeHome: {
+  homeLanding: {
     navExplore: "Accueil",
     navCategories: "Catégories",
     navCurated: "Sélection",
