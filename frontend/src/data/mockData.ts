@@ -148,12 +148,12 @@ export const venues: Venue[] = [
     vibeSummary: "High-energy padel sessions with social momentum.",
     audience: "Padel players, friend groups, beginners",
     bestForTags: ["friends", "late-night"],
-    searchKeywords: ["jetski", "jet ski", "surf", "surfing", "water sports", "beach activity", "coastal sport", "ain diab activity"],
+    searchKeywords: ["padel", "padel club", "padel courts", "racket sports", "coaching", "ain diab activity"],
     timeOfDay: ["afternoon", "evening"],
     energyLevel: "high",
     socialLevel: "high",
     spaceType: "outdoor",
-    verificationStatus: "verified",
+    verificationStatus: "collected",
     lastUpdated: "2026-07-15",
     translations: {
       fr: {
