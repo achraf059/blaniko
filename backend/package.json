@@ -6,8 +6,6 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "data:update-venues": "tsx scripts/updateVenueData.ts",
-    "data:update-venues:dry": "tsx scripts/updateVenueData.ts --dry-run",
     "test": "vitest run",
     "test:watch": "vitest"
   },
