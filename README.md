@@ -208,4 +208,4 @@ Developed over several months through feature branches and pull requests into a 
 
 ## Author
 
-Primary developer: **Achraf Ait Tayeb** — Software Engineering student at Sichuan University. Built with iterative research and data-collection support from a small team; engineering, architecture, and implementation are primarily the author's work.
+Primary developer: **Achraf Ait Tayeb** — Software Engineering student at Sichuan University.
