@@ -775,7 +775,7 @@ export default function CategoryPage() {
         <div className="blc-sidebar-col">
         <aside className="blc-sidebar">
           <Link to="/" className="blc-back">
-            <CIcon name="back" size={14} /> {dictionary.claudeHome.navExplore}
+            <CIcon name="back" size={14} /> {dictionary.homeLanding.navExplore}
           </Link>
           <div>
             <p className="blc-side-eyebrow">{d.sidebarEyebrow}</p>

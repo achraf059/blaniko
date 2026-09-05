@@ -2,16 +2,16 @@ import React from "react";
 import { Link, useNavigate } from "react-router";
 import { Icon } from "./Icon.jsx";
 import { useI18n } from "../i18n/useI18n";
-import { getClaudeHomeLocalizedData } from "./data.js";
+import { getHomeLandingLocalizedData } from "./data.js";
 
 // Blaniko — Moods, Map preview, Editorial feature, Compare tray
 export const Moods = () => {
   const navigate = useNavigate();
   const { language, dictionary } = useI18n();
-  const { moods } = getClaudeHomeLocalizedData(language);
+  const { moods } = getHomeLandingLocalizedData(language);
   return (
     <section className="moods shell" id="moods">
-      <div className="moods-head">{dictionary.claudeHome.moodsHead}</div>
+      <div className="moods-head">{dictionary.homeLanding.moodsHead}</div>
       <div className="mood-grid">
         {moods.map(m => (
           <button key={m.title} className="mood" onClick={() => navigate(m.href)}>
@@ -30,21 +30,21 @@ export const Moods = () => {
 export const MapPreview = () => {
   const navigate = useNavigate();
   const { language, dictionary } = useI18n();
-  const { mapPins } = getClaudeHomeLocalizedData(language);
+  const { mapPins } = getHomeLandingLocalizedData(language);
   return (
     <section className="mapband shell" id="map">
       <div className="map-card">
         <div className="left">
           <div>
-            <div className="eyebrow">{dictionary.claudeHome.mapEyebrow}</div>
-            <h3>{dictionary.claudeHome.mapTitlePrefix} <em>{dictionary.claudeHome.mapTitleEmphasis}</em>, {dictionary.claudeHome.mapTitleSuffix}</h3>
+            <div className="eyebrow">{dictionary.homeLanding.mapEyebrow}</div>
+            <h3>{dictionary.homeLanding.mapTitlePrefix} <em>{dictionary.homeLanding.mapTitleEmphasis}</em>, {dictionary.homeLanding.mapTitleSuffix}</h3>
           </div>
           <div className="map-meta">
-            <span className="dot"><span className="swatch" style={{background:"var(--plum)"}}/>{dictionary.claudeHome.mapActivities}</span>
-            <span className="dot"><span className="swatch" style={{background:"var(--heather)"}}/>{dictionary.claudeHome.mapNeighborhoods}</span>
+            <span className="dot"><span className="swatch" style={{background:"var(--plum)"}}/>{dictionary.homeLanding.mapActivities}</span>
+            <span className="dot"><span className="swatch" style={{background:"var(--heather)"}}/>{dictionary.homeLanding.mapNeighborhoods}</span>
           </div>
           <button className="open-map" onClick={() => navigate("/map")}>
-            {dictionary.claudeHome.mapOpen}
+            {dictionary.homeLanding.mapOpen}
             <Icon name="arrow" size={14} />
           </button>
         </div>
@@ -129,19 +129,19 @@ export const Editorial = () => {
           />
         </div>
         <div className="ed-body">
-          <div className="ed-eyebrow">{dictionary.claudeHome.editorialEyebrow}</div>
+          <div className="ed-eyebrow">{dictionary.homeLanding.editorialEyebrow}</div>
           <h3>
-            {dictionary.claudeHome.editorialTitlePrefix}{" "}
-            <em>{dictionary.claudeHome.editorialTitleEmphasis}</em>
+            {dictionary.homeLanding.editorialTitlePrefix}{" "}
+            <em>{dictionary.homeLanding.editorialTitleEmphasis}</em>
           </h3>
-          <p>{dictionary.claudeHome.editorialDescription}</p>
+          <p>{dictionary.homeLanding.editorialDescription}</p>
           <div className="ed-chips">
             {chips.map((chip) => (
               <span key={chip}>{chip}</span>
             ))}
           </div>
           <Link to="/guides" className="ed-cta">
-            {dictionary.claudeHome.editorialRead}
+            {dictionary.homeLanding.editorialRead}
             <Icon name="arrow" size={14} />
           </Link>
         </div>
@@ -162,12 +162,12 @@ export const CompareTray = ({ items, onClear }) => {
         ))}
       </div>
       <div>
-        <div className="tray-label">{dictionary.claudeHome.compareLabel}</div>
-        <div>{dictionary.claudeHome.compareSelected.replace("{count}", String(items.length))}</div>
+        <div className="tray-label">{dictionary.homeLanding.compareLabel}</div>
+        <div>{dictionary.homeLanding.compareSelected.replace("{count}", String(items.length))}</div>
       </div>
-      <button className="clear" onClick={onClear}>{dictionary.claudeHome.compareClear}</button>
+      <button className="clear" onClick={onClear}>{dictionary.homeLanding.compareClear}</button>
       <button className="go" onClick={() => navigate("/compare")}>
-        {dictionary.claudeHome.compareGo}
+        {dictionary.homeLanding.compareGo}
         <Icon name="arrow" size={14} />
       </button>
     </div>

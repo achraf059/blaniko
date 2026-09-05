@@ -10,7 +10,7 @@ import { AuthContext } from "../auth/AuthProvider";
 export const Nav = ({ favoritesCount = 0 }) => {
   const navigate = useNavigate();
   const { language, setLanguage, dictionary } = useI18n();
-  const homeNav = dictionary.claudeHome;
+  const homeNav = dictionary.homeLanding;
   const { theme, toggleTheme } = useTheme();
   const auth = React.useContext(AuthContext);
   const user = auth?.user ?? null;

@@ -151,7 +151,7 @@
 /* Dark body background — deep purple radial glows.
    Uses html[data-theme="dark"] body (specificity 0,1,2) instead of
    [data-theme="dark"] body (0,1,1) so it wins over any competing rule in
-   claude-home/styles.css regardless of CSS bundle injection order. */
+   home-landing/styles.css regardless of CSS bundle injection order. */
 html[data-theme="dark"] body {
   background:
     radial-gradient(1100px 500px at 85% -5%, rgba(120, 60, 200, 0.18), transparent 60%),

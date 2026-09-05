@@ -137,7 +137,7 @@ const localizedHomeData = {
   },
 };
 
-export function getClaudeHomeLocalizedData(language) {
+export function getHomeLandingLocalizedData(language) {
   return localizedHomeData[language] ?? localizedHomeData.en;
 }
 
