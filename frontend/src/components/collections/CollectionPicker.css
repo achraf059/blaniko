@@ -1,0 +1,87 @@
+.bl-collection-picker {
+  margin-top: 0.55rem;
+}
+
+.bl-collection-picker-summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-card);
+  color: var(--color-primary-dark);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.bl-collection-picker-summary::-webkit-details-marker {
+  display: none;
+}
+
+.bl-collection-picker-panel {
+  margin-top: 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--color-card) 82%, var(--color-surface-elevated) 18%);
+  padding: 0.7rem;
+}
+
+.bl-collection-picker-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.bl-collection-picker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-text);
+}
+
+.bl-collection-picker-empty,
+.bl-collection-picker-feedback {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--color-muted);
+}
+
+.bl-collection-picker-feedback {
+  margin-top: 0.5rem;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.bl-collection-picker-create {
+  margin-top: 0.6rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+}
+
+.bl-collection-picker-create input {
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.55rem;
+}
+
+.bl-collection-picker-create button {
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.35rem 0.6rem;
+}
+
+.bl-collection-picker.is-compact {
+  margin-top: 0.45rem;
+}

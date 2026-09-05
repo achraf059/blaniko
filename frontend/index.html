@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Anti-flash: apply saved theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('blaniko:theme:v1') || localStorage.getItem('blaniko-theme');
+          if (!t && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+          if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        } catch (e) { console.warn("Blaniko theme init failed", e); }
+      })();
+    </script>
+    <link rel="icon" type="image/png" href="/icons/favicon-32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icons/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary meta -->
+    <title>Blaniko — Discover Things to Do in Casablanca</title>
+    <meta name="description" content="Find the best activities, sports venues, escape rooms, gaming arcades, beach clubs, and more in Casablanca. Filter by mood, budget, area, and who you're going with." />
+    <!-- Canonical: JS (usePageMeta) overrides this per-route for SPA navigation -->
+    <link rel="canonical" href="https://blaniko.com" />
+
+    <!-- Open Graph -->
+    <!-- og:url should match your production domain, e.g. https://blaniko.com -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="Blaniko — Discover Things to Do in Casablanca" />
+    <meta property="og:description" content="Find activities, sports venues, gaming arcades, beach clubs, escape rooms and more in Casablanca. Filtered by mood, budget, and who you're going with." />
+    <meta property="og:url"         content="https://blaniko.com" />
+    <meta property="og:image"       content="/og-cover.png" />
+    <meta property="og:image:alt"   content="Blaniko — Discover Things to Do in Casablanca" />
+    <meta property="og:site_name"   content="Blaniko" />
+    <meta property="og:locale"      content="en_US" />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Blaniko — Discover Things to Do in Casablanca" />
+    <meta name="twitter:description" content="Find activities, sports venues, gaming arcades, beach clubs, escape rooms and more in Casablanca." />
+    <meta name="twitter:image"       content="/og-cover.png" />
+    <meta name="twitter:image:alt"   content="Blaniko — Discover Things to Do in Casablanca" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Netlify Forms detection — hidden static form required for Vite SPA deploys -->
+    <form name="waitlist" data-netlify="true" hidden>
+      <input type="email" name="email" />
+    </form>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

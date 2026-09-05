@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --bg: #faf7fc;
+  --bg-warm: #f6f3f9;
+  --surface: #ffffff;
+  --mist: #e8dff5;
+  --heather: #b8a4d6;
+  --plum: #6b4e8a;
+  --plum-deep: #3d2966;
+  --ink: #1f1530;
+  --ink-soft: #5a4d70;
+  --line: rgba(107, 78, 138, 0.14);
+  --line-soft: rgba(107, 78, 138, 0.08);
+  --accent: #d9b382;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Casablanca editorial warm layer */
+  --cream: #faf6f1;
+  --sand: #f0e8da;
+  --terracotta: #b5674c;
+  --terracotta-soft: color-mix(in srgb, #b5674c 11%, #ffffff 89%);
+
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color-primary: var(--plum);
+  --color-primary-hover: color-mix(in srgb, var(--plum) 84%, var(--plum-deep) 16%);
+  --color-primary-dark: var(--plum-deep);
+  --color-background: var(--bg);
+  --color-background-alt: var(--bg-warm);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface);
+  --color-card: var(--surface);
+  --color-hero: var(--mist);
+  --color-highlight: var(--heather);
+  --color-accent: var(--accent);
+  --color-accent-soft: color-mix(in srgb, var(--accent) 22%, var(--surface) 78%);
+  --color-text: var(--ink);
+  --color-muted: var(--ink-soft);
+  --color-border: var(--line);
+
+  --color-primary-soft: color-mix(in srgb, var(--plum) 16%, var(--surface) 84%);
+  --color-primary-soft-strong: color-mix(in srgb, var(--plum) 28%, var(--surface) 72%);
+
+  /* Terracotta semantic aliases */
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-soft: var(--terracotta-soft);
+
+  /* Internal page background — clean white with subtle brand-purple depth */
+  --bg-internal: #ffffff;
+  --gradient-internal:
+    radial-gradient(900px 400px at 92% -4%, color-mix(in srgb, var(--mist) 14%, transparent 86%), transparent 55%),
+    radial-gradient(700px 350px at 4% 94%, color-mix(in srgb, var(--mist) 8%, transparent 92%), transparent 50%),
+    #ffffff;
+
+  /* Display type scale — used by SearchPage, CategoryPage, VenuePage, VenueCard */
+  --text-hero:      clamp(2.5rem,  6vw,  3.75rem); /* VenuePage title, CategoryPage hero */
+  --text-page:      clamp(1.875rem, 5vw, 2.875rem); /* SearchPage main title            */
+  --text-section:   clamp(1.125rem, 2.5vw, 1.5rem); /* Section headings                 */
+  --text-card-name: clamp(1rem,    2vw,  1.125rem); /* Venue name in cards              */
+  --text-eyebrow:   0.68rem;                        /* Mono uppercase eyebrow labels    */
+
+  --gradient-app:
+    radial-gradient(circle at 14% 8%, color-mix(in srgb, var(--color-primary) 19%, transparent 81%), transparent 38%),
+    radial-gradient(circle at 88% 90%, color-mix(in srgb, var(--color-highlight) 46%, transparent 54%), transparent 36%),
+    linear-gradient(180deg, var(--color-background) 0%, var(--color-background-alt) 100%);
+  --gradient-hero-home: linear-gradient(
+    142deg,
+    var(--color-hero) 0%,
+    color-mix(in srgb, var(--color-hero) 72%, var(--color-background-alt) 28%) 60%,
+    color-mix(in srgb, var(--color-hero) 60%, var(--color-surface) 40%) 100%
+  );
+  --gradient-hero: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-hero) 70%, var(--color-background) 30%) 0%,
+    color-mix(in srgb, var(--color-surface-elevated) 76%, var(--color-hero) 24%) 100%
+  );
+  --gradient-warm: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--color-surface) 82%, white 18%) 0%,
+    color-mix(in srgb, var(--color-surface) 70%, var(--color-accent-soft) 30%) 52%,
+    color-mix(in srgb, var(--color-surface) 64%, var(--color-highlight) 36%) 100%
+  );
+
+  --shadow-tint: rgba(61, 41, 102, 0.16);
+  --shadow-card: 0 10px 28px -22px var(--shadow-tint);
+  --shadow-card-hover: 0 18px 40px -24px var(--shadow-tint);
+  --shadow-section: 0 20px 50px -38px var(--shadow-tint);
+}
+
+/* ============================================================
+   DARK THEME  — deep plum / midnight purple palette
+   Applied via [data-theme="dark"] on <html>.
+   Primitive tokens are redefined here; all color-mix() and
+   semantic-alias tokens that reference them auto-recalculate.
+   ============================================================ */
+[data-theme="dark"] {
+  /* ── Primitive palette ── */
+  --bg:          #0f0920;
+  --bg-warm:     #130c26;
+  --surface:     #1c1233;
+  --mist:        #251442;
+  --heather:     #3e2860;
+  --plum:        #a87fd4;      /* lighter for contrast on dark bg   */
+  --plum-deep:   #cba8f0;      /* bright lavender for emphasis text  */
+  --ink:         #ede8ff;      /* near-white with lavender tint      */
+  --ink-soft:    #b9a8d6;      /* muted lavender secondary text      */
+  --line:        rgba(185, 155, 220, 0.14);
+  --line-soft:   rgba(185, 155, 220, 0.07);
+  --accent:      #ddb978;
+  --cream:       #1c1233;
+  --sand:        #221640;
+  --terracotta:  #d4845e;
+  --terracotta-soft: rgba(212, 132, 94, 0.18);
+
+  /* ── Shadow — stronger on dark surfaces ── */
+  --shadow-tint:        rgba(0, 0, 0, 0.45);
+  --shadow-card:        0 10px 28px -16px rgba(0, 0, 0, 0.55);
+  --shadow-card-hover:  0 18px 40px -18px rgba(0, 0, 0, 0.65);
+  --shadow-section:     0 20px 50px -30px rgba(0, 0, 0, 0.6);
+
+  /* ── bg-internal ── */
+  --bg-internal: var(--color-surface);
+  --gradient-internal:
+    radial-gradient(900px 400px at 92% -4%, color-mix(in srgb, var(--mist) 40%, transparent 60%), transparent 55%),
+    radial-gradient(700px 350px at 4% 94%,  color-mix(in srgb, var(--mist) 22%, transparent 78%), transparent 50%),
+    var(--color-surface);
+
+  /* ── Semantic depth hierarchy — page bg < sections < cards < active ── */
+  --color-surface:          #18112c;   /* section / panel layer  (step 2) */
+  --color-card:             #221740;   /* card surface layer     (step 3) */
+  --color-surface-elevated: #221740;   /* elevated = card level           */
+
+  /* gradient-warm: light-mode formula mixes literal 'white' → too pale in dark */
+  --gradient-warm: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--color-card) 78%, var(--heather) 22%) 0%,
+    color-mix(in srgb, var(--color-card) 68%, var(--mist) 32%)   52%,
+    color-mix(in srgb, var(--color-card) 60%, var(--heather) 40%) 100%
+  );
+}
+
+/* Dark body background — deep purple radial glows.
+   Uses html[data-theme="dark"] body (specificity 0,1,2) instead of
+   [data-theme="dark"] body (0,1,1) so it wins over any competing rule in
+   home-landing/styles.css regardless of CSS bundle injection order. */
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(1100px 500px at 85% -5%, rgba(120, 60, 200, 0.18), transparent 60%),
+    radial-gradient(800px 400px at 5% 15%,  rgba(80, 40, 160, 0.28),  transparent 55%),
+    var(--bg);
+}
+
+/* Dark html root — ensures no white gap behind body on any page.
+   Note: selector must be html[data-theme="dark"], NOT [data-theme="dark"] html
+   (the latter would require html to be a *descendant* of [data-theme="dark"],
+   which is impossible since html has no parent element). */
+html[data-theme="dark"],
+html[data-theme="dark"] #root {
+  background: var(--bg);
+}
+
+/* ── Smooth transitions for theme changes ── */
+*,
+*::before,
+*::after {
+  transition:
+    background-color 180ms ease,
+    border-color     180ms ease,
+    color            180ms ease,
+    box-shadow       180ms ease;
+}
+
+/* Exempt elements where transitions create visual glitches */
+img, video, canvas,
+.leaflet-container, .leaflet-tile,
+[class*="blm-pin"],
+[class*="bl-venue-image"] {
+  transition: none !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(1100px 500px at 85% -5%, rgba(184, 164, 214, 0.18), transparent 60%),
+    radial-gradient(800px 400px at 5% 15%, rgba(232, 223, 245, 0.45), transparent 55%),
+    var(--bg);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-primary-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* ── Route-level lazy-load fallback ── */
+.bl-route-loading {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* API error message — shown when venues API is unreachable in production */
+.bl-api-error {
+  max-width: 480px;
+  margin: 3rem auto 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--mist) 30%, var(--surface) 70%);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.bl-retry-btn {
+  display: block;
+  margin: 1rem auto 3rem;
+  padding: 0.55rem 1.4rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-primary-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.bl-retry-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}

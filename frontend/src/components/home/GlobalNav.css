@@ -1,0 +1,414 @@
+/* ── Skip-to-main link (a11y) ─────────────────────────────────── */
+.skip-to-main {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 10px 20px;
+  background: var(--plum);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 6px 0;
+  transition: top 150ms var(--ease);
+}
+.skip-to-main:focus {
+  top: 0;
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.bl-global-nav-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding-top: env(safe-area-inset-top, 0);
+  border-bottom: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--surface) 80%, transparent 20%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 220ms var(--ease),
+    border-color 220ms var(--ease),
+    backdrop-filter 220ms var(--ease),
+    box-shadow 220ms var(--ease);
+}
+
+.bl-global-nav-header.is-scrolled {
+  border-bottom-color: var(--line);
+  background: color-mix(in srgb, var(--surface) 72%, var(--mist) 28%);
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+  box-shadow: 0 14px 36px -28px rgba(61, 41, 102, 0.35);
+}
+
+.bl-global-nav {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+  /* Wider than the 1480px content shell so the right-side action group
+     (Plan → hamburger) sits near the viewport edge with clear breathing room
+     from the centered links, instead of being crammed against them on wide
+     desktops. Mirrors the homepage nav frame. */
+  max-width: min(1680px, 95vw);
+  min-height: 4.5rem;
+  padding: 1.375rem 0;
+  box-sizing: border-box;
+}
+
+.bl-global-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.bl-global-nav-wordmark {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.bl-global-nav-links {
+  display: none;
+  align-items: center;
+  gap: 2.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bl-global-nav-link {
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: color 200ms var(--ease);
+}
+
+.bl-global-nav-link:hover {
+  color: #fff;
+}
+
+/* Gold underline beneath the active nav link */
+.bl-global-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 180ms var(--ease);
+  pointer-events: none;
+}
+
+.bl-global-nav-link.is-active::after {
+  width: 100%;
+}
+
+/* Keyboard focus ring — preserved above the underline layer */
+.bl-global-nav-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.bl-global-nav-link-admin {
+  color: color-mix(in srgb, var(--ink-soft) 85%, var(--plum-deep) 15%);
+}
+
+.bl-global-nav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.125rem;
+  flex-shrink: 0;
+}
+
+.bl-global-nav-saved-pill {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  transition:
+    background-color 200ms var(--ease),
+    border-color 200ms var(--ease),
+    color 200ms var(--ease);
+}
+
+.bl-global-nav-saved-pill:hover {
+  background: color-mix(in srgb, var(--mist) 40%, var(--surface));
+  border-color: color-mix(in srgb, var(--plum) 30%, var(--line));
+  color: #fff;
+}
+
+.bl-global-nav-auth-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  transition:
+    background-color 200ms var(--ease),
+    border-color 200ms var(--ease),
+    color 200ms var(--ease);
+}
+
+/* "Sign in" variant — subtle plum tint to read as a soft CTA */
+.bl-global-nav-auth-pill.is-guest {
+  border-color: color-mix(in srgb, var(--plum) 35%, var(--line));
+  color: #fff;
+}
+
+.bl-global-nav-auth-pill:hover,
+.bl-global-nav-auth-pill.is-guest:hover {
+  background: color-mix(in srgb, var(--plum) 8%, var(--surface));
+  border-color: var(--plum);
+  color: #fff;
+}
+
+/* ── Language-switcher text — white inside nav context ─────── */
+/* Overrides LanguageSwitcher.css which uses --color-muted / --color-primary-dark */
+.bl-global-nav .bl-language-switcher-btn {
+  color: #fff;
+  padding: 4px 8px;
+}
+.bl-global-nav .bl-language-switcher-btn.is-active {
+  color: #fff;
+}
+
+/* ── Hamburger button ───────────────────────────────────────── */
+.bl-global-nav-menu-wrap {
+  position: relative;
+}
+
+.bl-global-nav-hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+
+.bl-global-nav-hamburger:hover,
+.bl-global-nav-hamburger[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--mist) 50%, var(--surface));
+  border-color: color-mix(in srgb, var(--plum) 22%, var(--line));
+  color: var(--ink);
+}
+
+/* ── Hamburger dropdown panel ───────────────────────────────── */
+.bl-global-nav-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 15rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 88%, var(--mist) 12%);
+  box-shadow: 0 18px 40px -28px rgba(61, 41, 102, 0.5);
+  padding: 0.5rem;
+  z-index: 35;
+}
+
+.bl-global-nav-menu-section {
+  margin: 0;
+  padding: 0.35rem 0.6rem 0.2rem;
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.6;
+}
+
+.bl-global-nav-menu-link {
+  display: block;
+  border-radius: 0.62rem;
+  padding: 0.42rem 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 0.83rem;
+  font-weight: 500;
+  transition: background 150ms var(--ease), color 150ms var(--ease);
+}
+
+.bl-global-nav-menu-link:hover {
+  background: color-mix(in srgb, var(--mist) 46%, var(--surface) 54%);
+  color: var(--plum-deep);
+}
+
+/* Plan — highest-priority destination inside the mobile menu */
+.bl-global-nav-menu-link-primary {
+  font-weight: 600;
+  color: var(--plum-deep);
+}
+.bl-global-nav-menu-link-primary:hover {
+  background: color-mix(in srgb, var(--plum) 12%, var(--surface));
+  color: var(--plum-deep);
+}
+
+.bl-global-nav-menu-divider {
+  height: 1px;
+  background: var(--line-soft);
+  margin: 0.35rem 0.6rem;
+}
+
+/* Mobile-only section inside hamburger (top links hidden from bar at <1080px) */
+.bl-global-nav-menu-mobile-nav {
+  display: block;
+}
+
+.bl-global-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--plum-deep) 75%, black 25%);
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--plum-deep) 78%, black 22%),
+    color-mix(in srgb, var(--plum) 66%, var(--plum-deep) 34%)
+  );
+  color: #fff;
+  padding: 0.48rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition:
+    transform 180ms var(--ease),
+    box-shadow 180ms var(--ease),
+    filter 180ms var(--ease);
+}
+
+.bl-global-nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -16px rgba(61, 41, 102, 0.8);
+  filter: brightness(1.04);
+}
+
+/* ── Theme toggle button ────────────────────────────────────── */
+.bl-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.bl-theme-toggle:hover {
+  background: color-mix(in srgb, var(--mist) 50%, var(--surface));
+  border-color: color-mix(in srgb, var(--plum) 30%, var(--line));
+  color: var(--plum);
+}
+
+/* ── Dark-mode nav overrides ────────────────────────────────── */
+[data-theme="dark"] .bl-global-nav-header {
+  background: color-mix(in srgb, var(--surface) 85%, transparent 15%);
+  border-bottom-color: var(--line-soft);
+}
+[data-theme="dark"] .bl-global-nav-header.is-scrolled {
+  background: color-mix(in srgb, var(--surface) 80%, var(--mist) 20%);
+  border-bottom-color: var(--line);
+  box-shadow: 0 14px 36px -28px rgba(0, 0, 0, 0.7);
+}
+[data-theme="dark"] .bl-global-nav-menu-panel {
+  background: color-mix(in srgb, var(--surface) 94%, var(--mist) 6%);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.7);
+}
+
+/* Logo — dark PNG needs inversion to stay visible on dark nav */
+[data-theme="dark"] .bl-global-nav-wordmark {
+  filter: brightness(0) invert(1);
+}
+
+@media (min-width: 1080px) {
+  /* 3-column grid mirrors the homepage nav layout:
+     [logo 1fr] [center links auto] [actions 1fr]
+     The symmetric side columns pin the center links to the EXACT viewport
+     centre regardless of the right group's width. The logo's isolation is
+     corrected with a deliberate inward inset on the brand below, NOT by moving
+     the links off-centre. minmax(0, 1fr) lets the side columns collapse so the
+     actions never clip the center links at mid-width desktops. */
+  .bl-global-nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .bl-global-nav-brand {
+    justify-self: start;
+    min-width: 0;
+    /* Nudge the logo inward off the far-left edge so it reads as connected to
+       the centered links, without disturbing the exact centering (padding lives
+       inside the brand's own 1fr track). This block is already desktop-scoped
+       (min-width: 1080px), so mobile is untouched. clamp keeps it responsive
+       and bounded rather than a fixed one-off margin. */
+    padding-left: clamp(0px, 6vw, 132px);
+  }
+
+  .bl-global-nav-links {
+    display: inline-flex;
+    justify-self: center;
+  }
+
+  .bl-global-nav-actions {
+    justify-self: end;
+    min-width: 0;
+  }
+
+  /* Desktop: top links visible in bar — hide them from inside the hamburger */
+  .bl-global-nav-menu-mobile-nav {
+    display: none;
+  }
+}
+
+/* Mobile: keep the bar to Brand · Plan · utilities · Menu. Saved and Account
+   move into the hamburger (they already live there), leaving room for the
+   always-visible Plan action. Mirrors the homepage nav behaviour. */
+@media (max-width: 900px) {
+  /* Reset to the content shell so the mobile bar aligns with page content;
+     the wider desktop nav frame only applies above this breakpoint. */
+  .bl-global-nav {
+    max-width: min(1480px, 94vw);
+  }
+
+  .bl-global-nav-saved-pill,
+  .bl-global-nav-auth-pill {
+    display: none;
+  }
+}

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="bg-glow-a" cx="20%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#b8a4d6" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#faf6f1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bg-glow-b" cx="82%" cy="78%" r="50%">
+      <stop offset="0%" stop-color="#9f8de8" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#faf6f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#faf6f1"/>
+  <rect width="1200" height="630" fill="url(#bg-glow-a)"/>
+  <rect width="1200" height="630" fill="url(#bg-glow-b)"/>
+
+  <!-- Subtle border frame -->
+  <rect x="32" y="32" width="1136" height="566" rx="24" ry="24"
+        fill="none" stroke="#6b4e8a" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- Wordmark — Fraunces-style serif logotype (system fallback: Georgia) -->
+  <text
+    x="600" y="248"
+    font-family="'Fraunces', Georgia, 'Times New Roman', serif"
+    font-size="108"
+    font-weight="600"
+    letter-spacing="-2"
+    text-anchor="middle"
+    fill="#1f1530"
+  >Blaniko</text>
+
+  <!-- Tagline -->
+  <text
+    x="600" y="320"
+    font-family="'JetBrains Mono', 'Courier New', monospace"
+    font-size="22"
+    font-weight="500"
+    letter-spacing="3"
+    text-anchor="middle"
+    fill="#5a4d70"
+    text-transform="uppercase"
+  >DISCOVER THINGS TO DO IN CASABLANCA</text>
+
+  <!-- Decorative wave (Casablanca coastline motif) -->
+  <g transform="translate(468, 370)" stroke="#6b4e8a" stroke-opacity="0.35" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M0 12c8-9 16-9 24 0s16 9 24 0 16-9 24 0 16 9 24 0 16-9 24 0 16 9 24 0 16-9 24 0 16 9 24 0 16-9 24 0 16 9 24 0 16-9 24 0"/>
+  </g>
+
+  <!-- City tag -->
+  <text
+    x="600" y="438"
+    font-family="'JetBrains Mono', 'Courier New', monospace"
+    font-size="15"
+    font-weight="500"
+    letter-spacing="2"
+    text-anchor="middle"
+    fill="#5a4d70"
+    fill-opacity="0.6"
+  >33.57°N · 7.59°W · CASABLANCA, MA</text>
+</svg>

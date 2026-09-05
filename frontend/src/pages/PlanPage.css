@@ -1,0 +1,1482 @@
+/* ── PlanPage.css ─ Blaniko Plan — gold-and-purple theme ── */
+
+/* Local tokens (WhatsApp — not in global set, plus gold accent system) */
+.bl-plan-page {
+  --whatsapp: #1fa855;
+  --whatsapp-deep: #14823f;
+
+  /* gold accent — mirrors Category/Guides palette */
+  --gold:        var(--accent);
+  --gold-soft:   color-mix(in srgb, var(--accent) 70%, transparent);
+  --gold-border: color-mix(in srgb, var(--accent) 35%, var(--line));
+  --gold-shadow: color-mix(in srgb, var(--accent) 65%, transparent);
+
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: transparent;
+  color: var(--color-text);
+}
+[data-theme="dark"] .bl-plan-page {
+  background: var(--bg);
+}
+
+/* Light-mode gold softening — keeps sufficient contrast on white surfaces */
+[data-theme="light"] .bl-plan-page {
+  --gold-border: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+/* ── PAGE SHELL ── */
+.bl-plan-main {
+  width: min(1720px, 95vw);
+  margin: 0 auto;
+  padding: 1.5rem 0 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Quiz-only desktop placement: nudge the natural-height planner composition
+   slightly lower below GlobalNav so it doesn't hug the nav. Restrained,
+   viewport-scaled top offset only — no vertical centering, no viewport
+   min-height, no column/panel stretch (internal quiz spacing is unchanged).
+   Scoped via :has(> .bl-reco-shell) so it applies ONLY while the quiz is
+   mounted (the results view has no .bl-reco-shell), and above the mobile
+   stacking breakpoint so mobile is untouched. Overrides only padding-top —
+   the existing bottom (5rem) and horizontal (0) padding are preserved. */
+@media (min-width: 60.01rem) {
+  .bl-plan-main:has(> .bl-reco-shell) {
+    padding-top: clamp(2.5rem, 8vh, 5rem);
+  }
+}
+
+/* ── A. HERO ── */
+.bl-plan-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--mist) 70%, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--color-surface) 80%, var(--mist)) 100%
+  );
+  border: 1px solid var(--gold-border);
+  box-shadow: var(--shadow-section);
+  padding: 2.6rem 2.8rem;
+  margin-bottom: 2.6rem;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.bl-plan-hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 30rem;
+}
+
+.bl-plan-eyebrow {
+  margin: 0;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bl-plan-hero-title {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  margin: 0.9rem 0 0;
+  color: var(--ink);
+}
+
+/* Gold gradient emphasis on city name — mirrors Guides .blg-hero-title em */
+.bl-plan-hero-title em {
+  font-style: italic;
+  background: linear-gradient(92deg, var(--gold), color-mix(in srgb, var(--gold) 60%, var(--plum-deep)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bl-plan-hero-sub {
+  margin: 0.9rem 0 0;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 26rem;
+}
+
+.bl-plan-preview-note {
+  margin: 0.75rem 0 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--plum) 8%, var(--surface) 92%);
+  border: 1px solid var(--line-soft);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 26rem;
+}
+
+.bl-plan-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+  margin-top: 1.4rem;
+}
+
+.bl-plan-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.bl-plan-trust-item svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Hero art — pure CSS gradient with decorative layers */
+.bl-plan-hero-art {
+  position: relative;
+  align-self: stretch;
+  min-height: 230px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.bl-plan-hero-sky {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 70% 120%,
+    #f6c98a 0%,
+    #e7a98e 26%,
+    #c98fb0 52%,
+    color-mix(in srgb, var(--mist) 80%, #cdb6e6) 78%,
+    transparent 100%
+  );
+}
+
+/* Decorative circles — abstract depth, no image needed */
+.bl-plan-hero-sky::before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  right: -60px;
+  bottom: -80px;
+}
+
+.bl-plan-hero-sky::after {
+  content: "";
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.09);
+  right: 70px;
+  top: 24px;
+}
+
+[data-theme="dark"] .bl-plan-hero-sky {
+  background: radial-gradient(
+    120% 90% at 70% 120%,
+    #d98a52 0%,
+    #9c5a7e 32%,
+    #4a2c66 64%,
+    transparent 100%
+  );
+}
+
+/* ── SECTION HEADINGS ── */
+.bl-plan-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 1.25rem;
+}
+
+.bl-plan-section-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* Gold section numbers — mirrors Category/Guides style */
+.bl-plan-section-num {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-weight: 500;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.bl-plan-section-sub {
+  margin: 0.4rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* Gold sparkle/spark icon accent */
+.bl-plan-sparkle {
+  color: var(--gold);
+  vertical-align: 0.06em;
+  font-size: 0.85em;
+}
+
+/* ── SECTION SHELL ── */
+.bl-plan-section {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--color-surface);
+  padding: 1.75rem 2rem;
+  box-shadow: var(--shadow-card);
+}
+
+/* Plain sections: no box */
+.bl-plan-section--bare {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ── B. VIBE PICKER ── */
+.bl-plan-vibes {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.9rem;
+}
+
+.bl-plan-vibe {
+  position: relative;
+  text-align: left;
+  border-radius: 18px;
+  padding: 1.1rem 1rem 1rem;
+  border: 1px solid var(--line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 158px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 180ms ease,
+              background 180ms ease;
+}
+
+/* Hover: restrained gold border */
+.bl-plan-vibe:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: color-mix(in srgb, var(--gold) 40%, var(--line));
+}
+
+/* Focus-visible: gold ring */
+.bl-plan-vibe:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: var(--shadow-card-hover), 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent);
+}
+
+/* Selected: dark purple card with subtle gold tint and border */
+.bl-plan-vibe.is-active {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--gold) 9%, #1c1138),
+    #1c1138 80%
+  );
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 28%, transparent),
+              0 18px 38px -20px color-mix(in srgb, var(--gold) 40%, transparent);
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .bl-plan-vibe.is-active {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--gold) 10%, #2a1c44),
+    #2a1c44 80%
+  );
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+}
+
+.bl-plan-vibe-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.bl-plan-vibe-label {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.bl-plan-vibe.is-active .bl-plan-vibe-label {
+  color: #fff;
+}
+
+.bl-plan-vibe-sub {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+  margin-top: -0.15rem;
+}
+
+.bl-plan-vibe.is-active .bl-plan-vibe-sub {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Category label badge — gold accent on selected */
+.bl-plan-vibe-badge {
+  margin-top: auto;
+  align-self: flex-start;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.55rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--plum) 12%, var(--color-surface));
+  color: var(--plum-deep);
+}
+
+.bl-plan-vibe.is-active .bl-plan-vibe-badge {
+  background: color-mix(in srgb, var(--gold) 16%, transparent);
+  color: var(--gold);
+  border: 1px solid color-mix(in srgb, var(--gold) 32%, transparent);
+}
+
+/* Gold check indicator on selected card */
+.bl-plan-vibe-check {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: #1f1326;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.bl-plan-vibe.is-active .bl-plan-vibe-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── C. PLAN BAR ── */
+.bl-plan-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.8rem 0 1.4rem;
+  flex-wrap: wrap;
+}
+
+.bl-plan-bar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.bl-plan-bar-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* ── SHARED BUTTON SYSTEM ── */
+.bl-plan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.05rem;
+  border-radius: 9999px;
+  font-family: var(--font-sans, Inter, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--color-surface);
+  color: var(--ink);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.bl-plan-btn:hover {
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Icon color inside ghost buttons */
+.bl-plan-btn svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.bl-plan-btn--ghost {
+  /* inherits defaults */
+}
+
+/* Primary action — gold with dark readable text */
+.bl-plan-btn--primary {
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    color-mix(in srgb, var(--gold) 72%, var(--plum-deep))
+  );
+  border-color: transparent;
+  color: #1f1326;
+  box-shadow: 0 10px 24px -12px var(--gold-shadow);
+}
+
+.bl-plan-btn--primary svg {
+  color: #1f1326;
+}
+
+.bl-plan-btn--primary:hover {
+  box-shadow: 0 16px 32px -12px var(--gold-shadow);
+  border-color: transparent;
+}
+
+.bl-plan-btn--wa {
+  background: var(--color-surface);
+  border-color: color-mix(in srgb, var(--whatsapp) 45%, var(--line));
+  color: var(--whatsapp-deep);
+}
+
+.bl-plan-btn--wa svg {
+  color: var(--whatsapp);
+}
+
+.bl-plan-btn--wa:hover {
+  border-color: var(--whatsapp);
+  background: color-mix(in srgb, var(--whatsapp) 8%, var(--color-surface));
+}
+
+.bl-plan-btn--wa-solid {
+  background: var(--whatsapp);
+  border-color: var(--whatsapp);
+  color: #fff;
+  padding: 0.7rem 1.3rem;
+}
+
+.bl-plan-btn--wa-solid svg {
+  color: #fff;
+}
+
+.bl-plan-btn--wa-solid:hover {
+  background: var(--whatsapp-deep);
+  box-shadow: 0 14px 30px -16px color-mix(in srgb, var(--whatsapp) 70%, transparent);
+  transform: translateY(-1px);
+}
+
+/* ── ROUTE ── */
+.bl-plan-route {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+}
+
+.bl-plan-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.bl-plan-stop-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+/* Gold route step circles — dark readable text */
+.bl-plan-stop-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: #1f1326;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+/* Gold connector line */
+.bl-plan-stop-line {
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed color-mix(in srgb, var(--gold) 38%, transparent);
+  margin-left: 0.2rem;
+}
+
+/* Gold-tinted role labels (START, MAIN STOP, TO FINISH) */
+.bl-plan-stop-role {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.64rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+}
+
+/* ── PLAN CARD ── */
+.bl-plan-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 200ms ease;
+}
+
+.bl-plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--gold-border);
+}
+
+/* Locked card — gold border accent */
+.bl-plan-card.is-locked {
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--gold) 45%, transparent), var(--shadow-card);
+}
+
+/* Override VenueImage border-radius inside card */
+.bl-plan-card-media .bl-venue-image {
+  border-radius: 0;
+}
+
+.bl-plan-card-media {
+  position: relative;
+}
+
+.bl-plan-card-cat {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  z-index: 2;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.bl-plan-lock-btn {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: color-mix(in srgb, var(--color-surface) 84%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ink);
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.bl-plan-lock-btn:hover {
+  background: var(--color-surface);
+}
+
+/* Locked state — gold badge */
+.bl-plan-lock-btn.is-locked {
+  background: var(--gold);
+  color: #1f1326;
+}
+
+.bl-plan-card-body {
+  padding: 1rem 1.05rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1;
+}
+
+.bl-plan-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Gold role labels */
+.bl-plan-card-role-badge {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.64rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+.bl-plan-card-price {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.bl-plan-card-name {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.bl-plan-card-area {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.bl-plan-card-area svg {
+  color: var(--terracotta);
+  flex-shrink: 0;
+}
+
+.bl-plan-card-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bl-plan-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.bl-plan-card-tag {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.28rem 0.6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--mist) 60%, var(--color-surface));
+  color: var(--plum-deep);
+  border: 1px solid var(--line-soft);
+  white-space: nowrap;
+}
+
+.bl-plan-card-reason {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--terracotta);
+  margin-top: 0.1rem;
+  line-height: 1.4;
+}
+
+.bl-plan-card-reason svg {
+  flex-shrink: 0;
+  color: var(--terracotta);
+}
+
+/* ── CARD FOOT ── */
+.bl-plan-card-foot {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-left: 1.05rem;
+  padding-right: 1.05rem;
+  padding-bottom: 1rem;
+}
+
+.bl-plan-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.42rem 0.6rem;
+  border-radius: 9px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--color-surface);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.bl-plan-mini:hover {
+  border-color: color-mix(in srgb, var(--gold) 50%, transparent);
+  color: var(--ink);
+}
+
+.bl-plan-mini:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Gold icon in mini controls */
+.bl-plan-mini svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.bl-plan-mini--heart {
+  padding: 0.42rem;
+}
+
+.bl-plan-mini--heart.is-active {
+  color: var(--terracotta);
+  border-color: color-mix(in srgb, var(--terracotta) 45%, var(--line));
+}
+
+.bl-plan-mini--heart.is-active svg {
+  color: var(--terracotta);
+}
+
+/* Details link — borderless */
+.bl-plan-mini--cta {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--gold);
+}
+
+.bl-plan-mini--cta:hover {
+  border: none;
+  background: none;
+  color: var(--ink);
+}
+
+.bl-plan-mini--cta svg {
+  color: inherit;
+}
+
+/* ── FEEDBACK / EMPTY ── */
+.bl-plan-feedback {
+  margin: 0.6rem 0 0;
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.bl-plan-empty {
+  margin-top: 1rem;
+  border: 1.5px dashed var(--line);
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  background: color-mix(in srgb, var(--mist) 22%, var(--color-surface));
+}
+
+.bl-plan-empty-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.bl-plan-empty-desc {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ── ASSURANCE STRIP ── */
+.bl-plan-assure {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+  margin-top: 1.4rem;
+  padding: 1.2rem 1.6rem;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--mist) 30%, var(--color-surface));
+  border: 1px solid var(--line-soft);
+}
+
+.bl-plan-assure-item {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+}
+
+/* Gold assurance icons */
+.bl-plan-assure-item > svg {
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.bl-plan-assure-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.bl-plan-assure-item strong {
+  display: block;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.bl-plan-assure-item span {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+/* ── D. CUSTOMIZE ── */
+.bl-plan-customize-section {
+  margin-top: 2.8rem;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  padding: 0;
+}
+
+.bl-plan-customize-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.3rem 1.6rem;
+}
+
+.bl-plan-customize-top .bl-plan-bar-left h2 {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+/* Gold section number inside customize header */
+.bl-plan-customize-top .bl-plan-section-num {
+  color: var(--gold);
+  font-weight: 500;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: inherit;
+}
+
+.bl-plan-customize-top .bl-plan-section-sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.86rem;
+}
+
+/* Gold accent on Refine/expand toggle */
+.bl-plan-customize-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: var(--color-surface);
+  font-family: var(--font-sans, Inter, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.bl-plan-customize-toggle:hover {
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  color: var(--ink);
+}
+
+.bl-plan-chevron {
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bl-plan-customize-toggle.is-open .bl-plan-chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-plan-chevron { transition: none; }
+}
+
+.bl-plan-customize {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bl-plan-customize.is-open {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-plan-customize { transition: none; }
+}
+
+.bl-plan-customize-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.bl-plan-filter-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.6rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.bl-plan-filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.bl-plan-customize-reset {
+  padding: 1rem 1.6rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ── E. SAVED OUTINGS ── */
+.bl-plan-saved {
+  margin-top: 2.8rem;
+}
+
+.bl-plan-saved-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.1rem;
+}
+
+.bl-plan-saved-heading {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Gold accent on saved heading icon */
+.bl-plan-saved-heading svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.bl-plan-saved-count {
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  background: var(--color-surface);
+  color: var(--gold);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  flex-shrink: 0;
+}
+
+/* Empty state — horizontal layout */
+.bl-plan-saved-empty {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 1.6rem;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--mist) 22%, var(--color-surface));
+}
+
+/* Gold accent on empty-state icon mark */
+.bl-plan-save-icon-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--gold) 12%, var(--color-surface));
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.bl-plan-saved-empty-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.bl-plan-saved-empty-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.bl-plan-saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.bl-plan-saved-card {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.bl-plan-saved-card + .bl-plan-saved-card {
+  margin-top: 0.8rem;
+}
+
+.bl-plan-saved-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.bl-plan-saved-card-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.bl-plan-saved-card-meta {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.bl-plan-saved-stops-mini {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.bl-plan-saved-stop-name {
+  font-size: 0.66rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--mist) 55%, var(--color-surface));
+  color: var(--plum-deep);
+}
+
+.bl-plan-saved-date {
+  margin: 0;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.64rem;
+  color: var(--ink-soft);
+}
+
+.bl-plan-saved-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ── F. BOTTOM CTA ── */
+.bl-plan-cta {
+  margin-top: 2.8rem;
+  border-radius: 22px;
+  padding: 1.6rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gold) 10%, color-mix(in srgb, var(--mist) 64%, var(--color-surface))),
+    color-mix(in srgb, var(--color-surface) 86%, var(--mist))
+  );
+  border: 1px solid var(--gold-border);
+}
+
+.bl-plan-cta-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  flex: 1;
+  min-width: 14rem;
+}
+
+/* Gold spark in CTA */
+.bl-plan-cta-spark {
+  color: var(--gold);
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.bl-plan-cta-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.bl-plan-cta-sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.bl-plan-cta-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ── G. MOBILE STICKY SHARE ── */
+.bl-plan-mobile-share {
+  display: none;
+}
+
+/* ── RESPONSIVE ── */
+
+@media (max-width: 1080px) {
+  .bl-plan-vibes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 960px) {
+  .bl-plan-hero {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.8rem;
+  }
+
+  .bl-plan-hero-art {
+    min-height: 170px;
+    order: -1;
+  }
+
+  .bl-plan-route {
+    grid-template-columns: 1fr;
+    gap: 2.2rem;
+  }
+
+  .bl-plan-stop-line {
+    display: none;
+  }
+
+  .bl-plan-assure {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .bl-plan-main {
+    width: calc(100% - 2rem);
+    padding-bottom: 6rem;
+  }
+
+  .bl-plan-hero {
+    padding: 1.6rem 1.4rem;
+    margin-bottom: 1.8rem;
+    border-radius: 22px;
+  }
+
+  .bl-plan-bar {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 2rem;
+  }
+
+  .bl-plan-bar-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bl-plan-bar-actions .bl-plan-btn {
+    justify-content: center;
+  }
+
+  .bl-plan-bar-actions .bl-plan-btn--primary {
+    grid-column: 1 / -1;
+  }
+
+  .bl-plan-filter-row {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    padding: 1rem 1.2rem;
+  }
+
+  .bl-plan-customize-top {
+    padding: 1.1rem 1.2rem;
+  }
+
+  .bl-plan-cta {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .bl-plan-cta-actions {
+    flex-direction: column;
+  }
+
+  .bl-plan-cta-actions .bl-plan-btn {
+    justify-content: center;
+  }
+
+  .bl-plan-saved-card {
+    flex-wrap: wrap;
+  }
+
+  .bl-plan-saved-cta {
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .bl-plan-saved-cta .bl-plan-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Mobile sticky share bar */
+  .bl-plan-mobile-share {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+    padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+    gap: 0.5rem;
+  }
+
+  .bl-plan-mobile-share .bl-plan-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .bl-plan-vibes {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Right-edge fade to hint at scrollable content */
+    mask-image: linear-gradient(to right, black calc(100% - 3rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 3rem), transparent 100%);
+    /* Extra right padding so last card isn't masked away when fully scrolled */
+    padding-right: 3rem;
+  }
+
+  .bl-plan-vibes::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bl-plan-vibe {
+    scroll-snap-align: start;
+    min-width: 156px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .bl-plan-hero-title {
+    font-size: 1.8rem;
+  }
+
+  .bl-plan-section-title {
+    font-size: 1.3rem;
+  }
+
+  .bl-plan-lock-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ── DARK MODE ── */
+/* Hierarchy: page bg (#0f0920) < section (#18112c) < card (#221740) < active */
+[data-theme="dark"] .bl-plan-hero {
+  background: linear-gradient(150deg,
+    color-mix(in srgb, var(--gold) 6%, color-mix(in srgb, var(--mist) 55%, var(--color-card))) 0%,
+    var(--color-card) 100%
+  );
+  border-color: color-mix(in srgb, var(--gold) 22%, var(--line));
+}
+
+/* Bare sections (vibe picker, plan route) stay transparent — their child
+   components (bl-plan-vibe, bl-plan-card) carry their own elevated surfaces. */
+[data-theme="dark"] .bl-plan-section:not(.bl-plan-section--bare) {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .bl-plan-vibe {
+  background: var(--color-card);      /* elevated card layer */
+}
+
+/* Dark selected vibe: deep purple + gold tint and border */
+[data-theme="dark"] .bl-plan-vibe.is-active {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--gold) 10%, #1c1138),
+    #1c1138 80%
+  );
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 28%, transparent),
+              0 18px 38px -20px color-mix(in srgb, var(--gold) 40%, transparent);
+}
+
+[data-theme="dark"] .bl-plan-card {
+  background: var(--color-card);      /* elevated card layer */
+}
+
+/* Dark locked card — gold border */
+[data-theme="dark"] .bl-plan-card.is-locked {
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--gold) 40%, transparent), var(--shadow-card);
+}
+
+/* Dark lock btn locked: gold */
+[data-theme="dark"] .bl-plan-lock-btn.is-locked {
+  background: var(--gold);
+  color: #1f1326;
+}
+
+/* Dark stop num: ensure bg ring against dark page */
+[data-theme="dark"] .bl-plan-stop-num {
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+[data-theme="dark"] .bl-plan-assure {
+  background: color-mix(in srgb, var(--mist) 24%, var(--color-surface));
+}
+
+[data-theme="dark"] .bl-plan-customize-section {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .bl-plan-saved-empty {
+  background: color-mix(in srgb, var(--mist) 18%, var(--color-surface));
+}
+
+[data-theme="dark"] .bl-plan-saved-card {
+  background: var(--color-card);
+}
+
+[data-theme="dark"] .bl-plan-cta {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--gold) 8%, color-mix(in srgb, var(--mist) 45%, var(--color-card))),
+    var(--color-card)
+  );
+  border-color: color-mix(in srgb, var(--gold) 22%, var(--line));
+}
+
+[data-theme="dark"] .bl-plan-mobile-share {
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+}

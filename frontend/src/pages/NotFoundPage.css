@@ -1,0 +1,102 @@
+.bl-notfound-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--gradient-internal);
+  color: var(--color-text);
+}
+
+.bl-notfound-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: min(1360px, 92vw);
+  padding: 3rem 1.25rem 6rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bl-notfound-card {
+  max-width: 32rem;
+  width: 100%;
+  text-align: center;
+  padding: 3rem 2rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.bl-notfound-eyebrow {
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum);
+}
+
+.bl-notfound-title {
+  margin: 0 0 0.875rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.bl-notfound-desc {
+  margin: 0 0 2rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.bl-notfound-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  justify-content: center;
+}
+
+.bl-notfound-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  background: var(--plum);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+
+.bl-notfound-btn-primary:hover {
+  background: var(--plum-deep);
+}
+
+.bl-notfound-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--plum-deep);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.bl-notfound-btn-secondary:hover {
+  border-color: var(--plum);
+  background: color-mix(in srgb, var(--plum) 6%, var(--surface) 94%);
+}

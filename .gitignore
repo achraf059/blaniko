@@ -33,9 +33,35 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# backend
+backend/node_modules
+backend/dist
+backend/.env
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Allow safe backend environment template
+!backend/.env.example
+
+# Local venue image source folders
+venue-images/
+venue-images-raw/
+
+# Temporary design exports
+*design*export*.zip
+*design*export*/
+
+# Local backups
+backups/
+
+# Generated venue data payloads
+scripts/v3_venues_payload.json
+
+# Python bytecode cache
+__pycache__/
+*.pyc
