@@ -4,6 +4,10 @@
 
 Blaniko is a full-stack activity-discovery and outing-planning platform for Casablanca, Morocco, built around structured venue data, preference-based recommendations, and a security-conscious backend. It was developed iteratively over several months as a software-engineering project: a React/TypeScript SPA, an Express API, a PostgreSQL database (Supabase) with row-level security, a verification-aware data pipeline, and an automated test suite enforced in CI.
 
+![Blaniko homepage](docs/screenshots/homepage.webp)
+
+*Blaniko activity discovery interface for Casablanca.*
+
 ## Project Overview
 
 The product answers one question well: *"What can I do in Casablanca?"*
@@ -67,6 +71,18 @@ The key architectural boundary: **all public state-changing writes go through Ex
 
 The recommendation logic is a deterministic, heuristic engine over structured venue data — not ML, and intentionally so at this dataset size.
 
+The planner collects structured preferences — companion/group context, the target activity category, and the desired outing atmosphere — which become the engine's inputs:
+
+![Planner preferences step](docs/screenshots/planner-preferences.webp)
+
+*The planning flow: each answer maps to a structured constraint, with the outing profile built up alongside.*
+
+![Generated outing](docs/screenshots/generated-outing.webp)
+
+*The deterministic recommendation engine turns those structured preferences into a three-stop outing (start → main stop → finish).*
+
+How the engine ranks:
+
 - **Structured-first matching**: audience tags, atmosphere tags, and category constraints from the V3 dataset drive scoring; legacy computed tags act as a fallback for venues without structured data.
 - **The explicit category wins**: if the user asks for sports, the main recommendation is a sports venue whenever an eligible one exists — style preferences can reorder within a category but never override it.
 - **Deterministic ranking with seeded tie-breaking**: equally-scored venues are ordered by a seeded FNV-1a hash, so identical inputs always produce identical plans, while different seeds rotate fairly through tied peers. The previous modulo-based tie-break had a structural period that made some venues unreachable; the redesign is documented in [docs/technical-decisions/recommendation-tie-break.md](docs/technical-decisions/recommendation-tie-break.md).
@@ -82,6 +98,10 @@ The dataset is a curated collection of roughly 100 Casablanca venues (96 active;
 - booking method and booking link
 - contact and location information
 - research status, verification level, last-verified date, and verifier
+
+![Venue detail page](docs/screenshots/venue-detail.webp)
+
+*A venue detail page rendering the structured metadata: category, location, factual description, research status, best-for tags, time-of-day guidance, atmosphere, and contact/navigation options.*
 
 The dataset is **verification-aware**: every record tracks how far its data has been verified, and unverified fields stay empty rather than being guessed. Concretely:
 
