@@ -229,3 +229,5 @@ Developed over several months through feature branches and pull requests into a 
 ## Author
 
 Primary developer: **Achraf Ait Tayeb** — Software Engineering student at Sichuan University.
+
+Source usage: this repository is publicly accessible for portfolio and academic review; see [NOTICE.md](NOTICE.md) for usage terms.
