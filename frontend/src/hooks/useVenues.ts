@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { venues as mockVenues, type Venue } from "../data/mockData";
+import type { Venue } from "../data/mockData";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
@@ -18,6 +18,47 @@ const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
 let venueCache: Venue[] | null = null;
 let inFlightPromise: Promise<Venue[]> | null = null;
+
+// ─── Shared loader ──────────────────────────────────────────────────────────────
+//
+// Single source of truth for fetching venues. Resolves with the real API
+// response and only the real API response — a failed request rejects and is
+// NEVER silently substituted with mock/demo venues, in any environment. This
+// enforces Blaniko's data policy: an empty, error-flagged UI is correct;
+// fictional venues are not.
+//
+// Cache/de-dup contract:
+//   - a populated cache resolves immediately (no network);
+//   - one in-flight Promise is shared by all callers during a request;
+//   - a successful response fills the cache for the rest of the session;
+//   - a rejection clears the in-flight Promise and leaves the cache null,
+//     so a later call (e.g. from retry()) starts a fresh real request.
+export function loadVenues(): Promise<Venue[]> {
+  if (venueCache !== null) return Promise.resolve(venueCache);
+
+  if (!inFlightPromise) {
+    inFlightPromise = fetch(`${API_URL}/api/venues`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json() as Promise<Venue[]>;
+      })
+      .then((data) => {
+        venueCache = data;       // populate cache for all future callers
+        inFlightPromise = null;  // allow a retry if needed later
+        return data;
+      })
+      .catch((err: unknown) => {
+        inFlightPromise = null;  // allow retry on next mount
+        venueCache = null;       // never cache a failure; force a real re-fetch
+        const message = err instanceof Error ? err.message : "Unknown error";
+        console.error("useVenues: API fetch failed:", message);
+        // Propagate so subscribers enter the error state. No mock fallback.
+        throw new Error(message);
+      });
+  }
+
+  return inFlightPromise;
+}
 
 export function useVenues() {
   // Initialise directly from cache so components that mount after the first
@@ -42,53 +83,12 @@ export function useVenues() {
   useEffect(() => {
     let cancelled = false;
 
-    // Fast path: cache was already populated before or during this render.
-    // The lazy useState initializers handle the common case (cache filled before
-    // render). For the narrow race where cache filled between render and this
-    // effect, defer the state update via a resolved Promise so we never call
-    // setState synchronously inside an effect body.
-    if (venueCache !== null) {
-      const snapshot = venueCache;
-      Promise.resolve(snapshot).then((data) => {
-        if (!cancelled) {
-          setVenues(data);
-          setIsLoading(false);
-        }
-      });
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    // Start a new fetch only when no request is already in flight.
-    if (!inFlightPromise) {
-      inFlightPromise = fetch(`${API_URL}/api/venues`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json() as Promise<Venue[]>;
-        })
-        .then((data) => {
-          venueCache = data;       // populate cache for all future mounts
-          inFlightPromise = null;  // allow a retry if needed later
-          return data;
-        })
-        .catch((err: unknown) => {
-          inFlightPromise = null;  // allow retry on next mount
-          const message = err instanceof Error ? err.message : "Unknown error";
-          console.error("useVenues: API fetch failed:", message);
-          if (!import.meta.env.PROD) {
-            // Development: fall back to mock data and treat as success so
-            // the UI stays usable without a running backend.
-            venueCache = mockVenues;
-            return mockVenues as Venue[];
-          }
-          // Production: propagate so subscribers can enter the error state.
-          throw new Error(message);
-        });
-    }
-
-    // Subscribe to the in-flight (or just-started) promise.
-    inFlightPromise
+    // Subscribe to the shared loader. loadVenues() resolves from cache when
+    // available (deferred via a resolved Promise, so setState is never called
+    // synchronously in the effect body) and otherwise shares/starts a single
+    // real request. A rejection means the API failed: enter the error state
+    // with no venues — mock data is never substituted.
+    loadVenues()
       .then((data) => {
         if (cancelled) return;
         setVenues(data);
