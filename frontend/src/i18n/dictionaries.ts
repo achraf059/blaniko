@@ -92,6 +92,7 @@ export type Dictionary = {
     curatedTitleEmphasis: string;
     curatedTitleSuffix: string;
     curatedRight: string;
+    curatedPhotoComingSoon: string;
     mapEyebrow: string;
     mapTitlePrefix: string;
     mapTitleEmphasis: string;
@@ -497,6 +498,7 @@ const en: Dictionary = {
     curatedTitleSuffix: "chosen with care.",
     curatedRight:
       "Selected activity ideas — picked for fit, not paid placement.",
+    curatedPhotoComingSoon: "Photo coming soon",
     mapEyebrow: "Map",
     mapTitlePrefix: "See the city",
     mapTitleEmphasis: "as a map",
@@ -926,6 +928,7 @@ const fr: Dictionary = {
     curatedTitleSuffix: "choisies avec soin.",
     curatedRight:
       "Des idées de sorties sélectionnées — choisies pour leur intérêt, pas pour un placement payé.",
+    curatedPhotoComingSoon: "Photo à venir",
     mapEyebrow: "Carte",
     mapTitlePrefix: "Voyez la ville",
     mapTitleEmphasis: "comme une carte",
