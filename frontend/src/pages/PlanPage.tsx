@@ -32,7 +32,11 @@ import {
 import { getBestForBadges } from "../utils/venuePersonality";
 import { VenueImage } from "../components/home/VenueImage";
 import { getVenueImageSrc } from "../utils/venueImage";
-import { selectPlanViewState, resolveStopsToPersist } from "./planViewState";
+import {
+  selectPlanViewState,
+  resolveStopsToPersist,
+  resolveRequestedStops,
+} from "./planViewState";
 import "./PlanPage.css";
 
 type OutingStop = {
@@ -852,8 +856,33 @@ export default function PlanPage() {
     })
     .filter((value): value is OutingStop => value !== undefined);
 
+  // Authoritative slug set from the successfully-loaded venues. Also reused below to
+  // validate saved-outing cards. Meaningful only once loading finished without error;
+  // selectPlanViewState gates the derived states on that, so a still-empty set during
+  // loading can never surface as "unavailable".
+  const knownVenueSlugs = new Set(venues.map((venue) => venue.slug));
+
+  // Intent-based classification of an explicitly requested plan:
+  //   none        → no `stops` param; generate a normal plan (legacy behavior).
+  //   resolved    → every requested slug maps to a real venue; restore in order.
+  //   unavailable → one or more requested slugs are missing; NEVER silently substitute
+  //                 generated venues or display a partial itinerary.
+  const requestedStopsResolution = resolveRequestedStops(
+    sharedStopSlugs,
+    knownVenueSlugs,
+  );
+  const requestedStopsUnavailable =
+    requestedStopsResolution.kind === "unavailable";
+
+  // When a requested plan is unavailable we deliberately produce NO stops: this keeps a
+  // generated/partial plan from being rendered, tracked as recent activity, or persisted
+  // into the URL (the sync effect then carries the original `stops` param forward intact).
   const effectivePlanStops =
-    sharedPlanStops.length > 0 ? sharedPlanStops : planStops;
+    requestedStopsResolution.kind === "resolved"
+      ? sharedPlanStops
+      : requestedStopsResolution.kind === "unavailable"
+        ? []
+        : planStops;
   const lockedRoles = parsedLockedRoles;
 
   // Stable string primitives derived from arrays — used as effect deps instead of
@@ -1138,6 +1167,25 @@ export default function PlanPage() {
     );
   };
 
+  // Explicit, user-initiated recovery from the unavailable-plan state. It discards the
+  // stale `stops` param and builds a fresh plan from the remaining preferences — this is
+  // a NEW plan, not a restoration of the old one (the copy makes that clear). `quizDone`
+  // is set so removing `stops` does not flip the page back to the quiz; the URL-sync
+  // effect then persists the freshly generated stops.
+  const handleGenerateNewPlan = () => {
+    const nextParams = new URLSearchParams();
+    nextParams.set("quizDone", "1");
+    nextParams.set("with", companion);
+    nextParams.set("mood", mood);
+    if (selectedCategory && selectedCategory !== "any") {
+      nextParams.set("category", selectedCategory);
+    }
+    nextParams.set("style", planStyle);
+    nextParams.set("seed", "0");
+    // `stops` and `locks` are intentionally omitted so the stale requested plan is dropped.
+    setSearchParams(nextParams, { replace: true });
+  };
+
   const buildVenueHref = (slug: string) => {
     const params = new URLSearchParams();
     params.set("from", "plan");
@@ -1157,6 +1205,7 @@ export default function PlanPage() {
     showQuiz,
     venuesLoading,
     venuesError,
+    requestedStopsUnavailable,
   });
 
   return (
@@ -1199,6 +1248,28 @@ export default function PlanPage() {
               >
                 {dictionary.common.retry}
               </button>
+            </div>
+          </section>
+        ) : planViewState === "unavailable" ? (
+          <section className="bl-plan-status bl-plan-status--unavailable">
+            <div className="bl-plan-status-copy">
+              <h1 className="bl-plan-status-title">{text.planPage.unavailablePlanTitle}</h1>
+              <p className="bl-plan-status-desc" id="bl-plan-unavailable-desc">
+                {text.planPage.unavailablePlanDescription}
+              </p>
+              <div className="bl-plan-status-actions">
+                <button
+                  type="button"
+                  className="bl-plan-btn bl-plan-btn--primary"
+                  onClick={handleGenerateNewPlan}
+                  aria-describedby="bl-plan-unavailable-desc"
+                >
+                  {text.planPage.generateNewPlan}
+                </button>
+                <Link to="/" className="bl-plan-btn bl-plan-btn--ghost">
+                  {text.planPage.unavailableBackHome}
+                </Link>
+              </div>
             </div>
           </section>
         ) : (
@@ -1580,48 +1651,81 @@ export default function PlanPage() {
             </div>
           ) : (
             <div className="bl-plan-saved-list">
-              {savedOutings.map((outing) => (
-                <article key={outing.id} className="bl-plan-saved-card">
-                  <div className="bl-plan-saved-info">
-                    <p className="bl-plan-saved-card-title">{outing.title}</p>
-                    <p className="bl-plan-saved-card-meta">{outing.summary}</p>
-                    <div className="bl-plan-saved-stops-mini">
-                      {outing.stops.map((stop) => (
-                        <span key={`${outing.id}-${stop.slug}`} className="bl-plan-saved-stop-name">
-                          {stop.name}
-                        </span>
-                      ))}
+              {savedOutings.map((outing) => {
+                // Validate stored stop slugs against the authoritative venue set (only
+                // reached in the "plan" state, i.e. venues loaded without error). A saved
+                // outing referencing any venue that no longer exists must not offer an
+                // enabled Open plan that would silently navigate into a replacement plan.
+                // Its stored names are preserved so the user knows which plan is affected,
+                // and Delete stays available — localStorage is never auto-mutated.
+                const outingUnavailable =
+                  resolveRequestedStops(
+                    outing.stops.map((stop) => stop.slug),
+                    knownVenueSlugs,
+                  ).kind === "unavailable";
+
+                return (
+                  <article
+                    key={outing.id}
+                    className={`bl-plan-saved-card${outingUnavailable ? " is-unavailable" : ""}`}
+                  >
+                    <div className="bl-plan-saved-info">
+                      <p className="bl-plan-saved-card-title">{outing.title}</p>
+                      <p className="bl-plan-saved-card-meta">{outing.summary}</p>
+                      <div className="bl-plan-saved-stops-mini">
+                        {outing.stops.map((stop) => (
+                          <span key={`${outing.id}-${stop.slug}`} className="bl-plan-saved-stop-name">
+                            {stop.name}
+                          </span>
+                        ))}
+                      </div>
+                      {outingUnavailable ? (
+                        <p className="bl-plan-saved-unavailable" role="status">
+                          {text.planPage.savedOutingUnavailable}
+                        </p>
+                      ) : null}
+                      <p className="bl-plan-saved-date">{formatSavedDate(outing.createdAt)}</p>
                     </div>
-                    <p className="bl-plan-saved-date">{formatSavedDate(outing.createdAt)}</p>
-                  </div>
-                  <div className="bl-plan-saved-cta">
-                    <Link
-                      to={buildPlanUrl({
-                        withWho: outing.withWho,
-                        mood: outing.mood,
-                        budget: outing.budget,
-                        area: outing.area,
-                        category: outing.category ?? "any",
-                        style: outing.planStyle ?? defaultPlanStyleId,
-                        seed: 0,
-                        stopSlugs: outing.stops.map((stop) => stop.slug),
-                        lockedRoles: outing.lockedRoles,
-                      })}
-                      className="bl-plan-btn bl-plan-btn--primary"
-                    >
-                      {text.planPage.openAgain}
-                    </Link>
-                    <button
-                      type="button"
-                      className="bl-plan-btn bl-plan-btn--ghost"
-                      onClick={() => handleDeleteSavedOuting(outing.id)}
-                      aria-label={`${text.planPage.delete} — ${outing.title}`}
-                    >
-                      {text.planPage.delete}
-                    </button>
-                  </div>
-                </article>
-              ))}
+                    <div className="bl-plan-saved-cta">
+                      {outingUnavailable ? (
+                        <button
+                          type="button"
+                          className="bl-plan-btn bl-plan-btn--primary"
+                          disabled
+                          aria-disabled="true"
+                        >
+                          {text.planPage.openAgain}
+                        </button>
+                      ) : (
+                        <Link
+                          to={buildPlanUrl({
+                            withWho: outing.withWho,
+                            mood: outing.mood,
+                            budget: outing.budget,
+                            area: outing.area,
+                            category: outing.category ?? "any",
+                            style: outing.planStyle ?? defaultPlanStyleId,
+                            seed: 0,
+                            stopSlugs: outing.stops.map((stop) => stop.slug),
+                            lockedRoles: outing.lockedRoles,
+                          })}
+                          className="bl-plan-btn bl-plan-btn--primary"
+                        >
+                          {text.planPage.openAgain}
+                        </Link>
+                      )}
+                      <button
+                        type="button"
+                        className="bl-plan-btn bl-plan-btn--ghost"
+                        onClick={() => handleDeleteSavedOuting(outing.id)}
+                        aria-label={`${text.planPage.delete} — ${outing.title}`}
+                      >
+                        {text.planPage.delete}
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>
