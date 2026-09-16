@@ -1636,6 +1636,50 @@ a { color: inherit; text-decoration: none; }
 .cur-img.pi4,
 .cur-img.pi5 { background-color: #1F1530; }
 
+/* Branded "photo coming soon" placeholder — shown when a pick has no
+   trusted imgPath. Mirrors the VenueImage placeholder design so a missing
+   photo reads as intentional, never broken. Text lives in the DOM (not a
+   CSS background) and the graphics are decorative; the card title labels
+   the card, so no misleading alt is introduced. */
+.cur-img-ph {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(150deg,
+    color-mix(in srgb, var(--plum) 55%, var(--plum-deep)),
+    var(--plum-deep) 60%,
+    #1F1530);
+}
+.cur-img-ph-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.cur-img-ph-coast { opacity: 0.85; }
+.cur-img-ph-word {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--accent) 65%, #fff);
+  text-shadow: 0 1px 6px rgba(31, 21, 48, 0.35);
+}
+.cur-img-ph-note {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
 /* =========================================================
    HOW IT WORKS
    ========================================================= */

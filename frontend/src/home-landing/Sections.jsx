@@ -70,7 +70,30 @@ export const Curated = ({ favorites, toggleFav }) => {
         <div
           className={`cur-img ${a.img}`}
           style={a.imgPath ? { backgroundImage: `url(${a.imgPath})` } : undefined}
-        ></div>
+        >
+          {!a.imgPath && (
+            <div className="cur-img-ph">
+              <span className="cur-img-ph-mark" aria-hidden="true">
+                <svg
+                  className="cur-img-ph-coast"
+                  width="30"
+                  height="9"
+                  viewBox="0 0 26 8"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                >
+                  <path d="M1 5c2-3 4-3 6 0s4 3 6 0 4-3 6 0 4 3 6 0" />
+                </svg>
+                <span className="cur-img-ph-word">Blaniko</span>
+              </span>
+              <span className="cur-img-ph-note">
+                {dictionary.homeLanding.curatedPhotoComingSoon}
+              </span>
+            </div>
+          )}
+        </div>
         <button
           className={`fav-btn ${isFav ? "active pulse" : ""}`}
           onClick={(e) => { e.stopPropagation(); toggleFav(id); }}
