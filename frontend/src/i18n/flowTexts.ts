@@ -381,6 +381,12 @@ const byLanguage = {
       notEnoughTitle: "Not enough venues for this exact combination yet.",
       notEnoughDescription:
         "Try a different vibe or plan style to unlock more complete outing routes.",
+      loadingPlanTitle: "Building your plan…",
+      loadingPlanDescription:
+        "We're loading the venues for your outing. Your plan is safe — this will only take a moment.",
+      errorPlanTitle: "We couldn't load your venues",
+      errorPlanDescription:
+        "Your plan is still here — we just couldn't reach Blaniko's venues. Check your connection and try again.",
       savedOutings: "Saved outings",
       savedCount: "{count} saved",
       noSavedTitle: "Your saved plans will appear here.",
@@ -971,6 +977,12 @@ const byLanguage = {
       notEnoughTitle: "Pas assez de lieux pour cette combinaison exacte.",
       notEnoughDescription:
         "Essaie une autre ambiance ou un autre style de plan pour débloquer des parcours plus complets.",
+      loadingPlanTitle: "Préparation de ton plan…",
+      loadingPlanDescription:
+        "Nous chargeons les lieux de ta sortie. Ton plan est conservé — ce sera prêt dans un instant.",
+      errorPlanTitle: "Impossible de charger les lieux",
+      errorPlanDescription:
+        "Ton plan est toujours là — nous n'avons pas pu joindre les lieux de Blaniko. Vérifie ta connexion et réessaie.",
       savedOutings: "Sorties enregistrées",
       savedCount: "{count} enregistrées",
       noSavedTitle: "Tes plans enregistrés apparaîtront ici.",

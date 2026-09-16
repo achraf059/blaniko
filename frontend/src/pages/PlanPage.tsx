@@ -32,6 +32,7 @@ import {
 import { getBestForBadges } from "../utils/venuePersonality";
 import { VenueImage } from "../components/home/VenueImage";
 import { getVenueImageSrc } from "../utils/venueImage";
+import { selectPlanViewState, resolveStopsToPersist } from "./planViewState";
 import "./PlanPage.css";
 
 type OutingStop = {
@@ -536,7 +537,12 @@ export default function PlanPage() {
   const moodLabels = getDiscoveryMoodLabel(language);
   const companionLabels = getDiscoveryCompanionLabel(language);
   const location = useLocation();
-  const { venues } = useVenues();
+  const {
+    venues,
+    isLoading: venuesLoading,
+    error: venuesError,
+    retry: retryVenues,
+  } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { trackActivity } = useRecentActivity();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -995,7 +1001,7 @@ export default function PlanPage() {
 
     // Prefer freshly-derived stops; otherwise carry the existing `stops` param forward so a
     // refresh before venues resolve does not clobber a completed plan's stops.
-    const stopsToPersist = effectiveStopSlugsStr || stopsFromUrl;
+    const stopsToPersist = resolveStopsToPersist(effectiveStopSlugsStr, stopsFromUrl);
     if (stopsToPersist) {
       nextParams.set("stops", stopsToPersist);
     }
@@ -1144,14 +1150,57 @@ export default function PlanPage() {
     return `/venues/${slug}?${params.toString()}`;
   };
 
+  // Which top-level view to render. Loading and error are surfaced as dedicated states
+  // so the "Not enough venues" message is only reachable once venue loading has genuinely
+  // completed without error (the `plan` state). See selectPlanViewState for precedence.
+  const planViewState = selectPlanViewState({
+    showQuiz,
+    venuesLoading,
+    venuesError,
+  });
 
   return (
     <div className="bl-plan-page">
       <HomeHeader labels={dictionary.header} />
 
       <main className="bl-plan-main">
-        {showQuiz ? (
+        {planViewState === "quiz" ? (
           <OutingQuiz onComplete={handleQuizComplete} />
+        ) : planViewState === "loading" ? (
+          <section className="bl-plan-status" role="status" aria-live="polite">
+            <div className="bl-plan-status-copy">
+              <span className="bl-plan-status-spinner" aria-hidden="true" />
+              <h1 className="bl-plan-status-title">{text.planPage.loadingPlanTitle}</h1>
+              <p className="bl-plan-status-desc">{text.planPage.loadingPlanDescription}</p>
+            </div>
+            <div className="bl-plan-skeleton-route" aria-hidden="true">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bl-plan-skeleton-stop">
+                  <div className="bl-plan-skeleton-media" />
+                  <div className="bl-plan-skeleton-line bl-plan-skeleton-line--short" />
+                  <div className="bl-plan-skeleton-line" />
+                  <div className="bl-plan-skeleton-line bl-plan-skeleton-line--wide" />
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : planViewState === "error" ? (
+          <section className="bl-plan-status bl-plan-status--error">
+            <div className="bl-plan-status-copy">
+              <h1 className="bl-plan-status-title">{text.planPage.errorPlanTitle}</h1>
+              <p className="bl-plan-status-desc" id="bl-plan-error-desc">
+                {text.planPage.errorPlanDescription}
+              </p>
+              <button
+                type="button"
+                className="bl-retry-btn"
+                onClick={retryVenues}
+                aria-describedby="bl-plan-error-desc"
+              >
+                {dictionary.common.retry}
+              </button>
+            </div>
+          </section>
         ) : (
         <>
 
@@ -1610,7 +1659,7 @@ export default function PlanPage() {
       </main>
 
       {/* ── G. MOBILE STICKY SHARE ── */}
-      {!showQuiz && <div className="bl-plan-mobile-share">
+      {planViewState === "plan" && <div className="bl-plan-mobile-share">
         <button
           type="button"
           className="bl-plan-btn bl-plan-btn--ghost"
