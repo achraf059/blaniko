@@ -1531,6 +1531,34 @@
   margin-top: 0.4rem;
 }
 
+/* Stale/unavailable requested-plan state: explicit recovery actions, no auto-substitute */
+.bl-plan-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+/* Saved-outing card whose stored venues no longer exist in the authoritative set.
+   Names stay visible; the Open action is disabled so it can never silently open a
+   replacement plan, while Delete remains fully usable. */
+.bl-plan-saved-card.is-unavailable {
+  opacity: 0.92;
+}
+
+.bl-plan-saved-unavailable {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-danger, #b4232a);
+}
+
+.bl-plan-saved-cta .bl-plan-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Skeleton preview of the 3-stop route while venues load */
 .bl-plan-skeleton-route {
   display: grid;

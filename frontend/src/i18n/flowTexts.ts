@@ -387,6 +387,13 @@ const byLanguage = {
       errorPlanTitle: "We couldn't load your venues",
       errorPlanDescription:
         "Your plan is still here — we just couldn't reach Blaniko's venues. Check your connection and try again.",
+      unavailablePlanTitle: "This plan is no longer available",
+      unavailablePlanDescription:
+        "One or more venues in this saved or shared plan are no longer part of Blaniko. We haven't replaced them automatically, so nothing here is a stand-in. You can generate a new plan from your preferences whenever you're ready — it will be a fresh plan, not this one restored.",
+      generateNewPlan: "Generate a new plan",
+      unavailableBackHome: "Back to home",
+      savedOutingUnavailable:
+        "One or more venues in this saved plan are no longer available. Blaniko hasn't replaced them.",
       savedOutings: "Saved outings",
       savedCount: "{count} saved",
       noSavedTitle: "Your saved plans will appear here.",
@@ -983,6 +990,13 @@ const byLanguage = {
       errorPlanTitle: "Impossible de charger les lieux",
       errorPlanDescription:
         "Ton plan est toujours là — nous n'avons pas pu joindre les lieux de Blaniko. Vérifie ta connexion et réessaie.",
+      unavailablePlanTitle: "Ce plan n'est plus disponible",
+      unavailablePlanDescription:
+        "Un ou plusieurs lieux de ce plan enregistré ou partagé ne font plus partie de Blaniko. Nous ne les avons pas remplacés automatiquement : rien ici n'est un substitut. Tu peux générer un nouveau plan à partir de tes préférences quand tu veux — ce sera un nouveau plan, pas celui-ci restauré.",
+      generateNewPlan: "Générer un nouveau plan",
+      unavailableBackHome: "Retour à l'accueil",
+      savedOutingUnavailable:
+        "Un ou plusieurs lieux de ce plan enregistré ne sont plus disponibles. Blaniko ne les a pas remplacés.",
       savedOutings: "Sorties enregistrées",
       savedCount: "{count} enregistrées",
       noSavedTitle: "Tes plans enregistrés apparaîtront ici.",
