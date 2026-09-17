@@ -21,6 +21,7 @@ import { rankVenueAlternatives } from "../utils/venueAlternatives";
 import { getVenuePersonalitySection } from "../utils/venuePersonality";
 import { getVenueImageSrc, getVenueDetailImageSrc } from "../utils/venueImage";
 import { safeExternalUrl } from "../utils/externalUrl";
+import { normalizePhoneContact } from "../utils/phoneContact";
 import PublicFooter from "../components/PublicFooter";
 import "./VenuePage.css";
 
@@ -419,7 +420,6 @@ export default function VenuePage() {
                 {/* Primary CTA block — contact / directions */}
                 {(() => {
                   const hasMap = Boolean(venue.googleMapsLink);
-                  const hasPhone = Boolean(venue.phone);
                   // Normalize outbound links at render time (see safeExternalUrl).
                   // The stored venue values are never mutated.
                   const safeWebsite = safeExternalUrl(venue.website);
@@ -428,13 +428,11 @@ export default function VenuePage() {
                   const hasWebsite = Boolean(safeWebsite);
                   const hasInstagram = Boolean(safeInstagram);
                   const hasFacebook = Boolean(safeFacebook);
+                  // Derive a usable phone contact — hides the "Unknown" / empty
+                  // placeholders that would otherwise yield empty tel:/wa.me links.
+                  const phoneContact = normalizePhoneContact(venue.phone);
+                  const hasPhone = phoneContact !== null;
                   const hasAnyContact = hasMap || hasPhone || hasWebsite || hasInstagram || hasFacebook;
-
-                  // Sanitize phone: digits + leading +
-                  const rawPhone = venue.phone ?? "";
-                  const dialPhone = rawPhone.replace(/[^\d+]/g, "");
-                  // WhatsApp: digits only, drop leading +
-                  const waPhone = dialPhone.replace(/^\+/, "");
 
                   return (
                     <div className="bl-venue-cta-block">
@@ -452,18 +450,18 @@ export default function VenuePage() {
 
                       {(hasPhone || hasWebsite || hasInstagram || hasFacebook) ? (
                         <div className="bl-venue-cta-pills">
-                          {hasPhone ? (
+                          {phoneContact ? (
                             <a
-                              href={`tel:${dialPhone}`}
+                              href={`tel:${phoneContact.tel}`}
                               className="bl-venue-cta-pill"
                             >
                               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L11 11.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.4 1.9.6 2.9.7A2 2 0 0 1 22 16.9Z"/></svg>
                               {dictionary.venuePage.actionCall}
                             </a>
                           ) : null}
-                          {hasPhone ? (
+                          {phoneContact ? (
                             <a
-                              href={`https://wa.me/${waPhone}`}
+                              href={`https://wa.me/${phoneContact.wa}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="bl-venue-cta-pill"
