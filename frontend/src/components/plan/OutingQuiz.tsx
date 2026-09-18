@@ -145,8 +145,9 @@ export function OutingQuiz({ onComplete }: OutingQuizProps) {
     [allowedAnswerValues, questions],
   );
 
-  const [stepIndex, setStepIndex] = useState(initialState.stepIndex);
-  const [answers, setAnswers] = useState<QuizAnswers>(initialState.answers);
+  const [initialSnapshot] = useState(initialState);
+  const [stepIndex, setStepIndex] = useState(initialSnapshot.stepIndex);
+  const [answers, setAnswers] = useState<QuizAnswers>(initialSnapshot.answers);
 
   const currentQuestion = questionsWithLayout[stepIndex];
   const currentValue = answers[currentQuestion.id];
@@ -169,8 +170,18 @@ export function OutingQuiz({ onComplete }: OutingQuizProps) {
   }, [answers, searchParams, setSearchParams, stepIndex]);
 
   useEffect(() => {
+    // After a failed read the stored draft is unknown: don't overwrite it with the
+    // fallback on mount — persist once the user actually answers or moves a step.
+    if (
+      initialSnapshot.storageReadFailed &&
+      answers === initialSnapshot.answers &&
+      stepIndex === initialSnapshot.stepIndex
+    ) {
+      return;
+    }
+
     persistRecommendationState({ answers, stepIndex, isComplete: false });
-  }, [answers, stepIndex]);
+  }, [answers, initialSnapshot, stepIndex]);
 
   const getLabel = (id: keyof QuizAnswers, value: string) =>
     questions

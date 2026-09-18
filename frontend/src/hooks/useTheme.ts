@@ -4,26 +4,43 @@ import React, {
   useContext,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { tryReadStorageItem, writeStorageItem } from "../utils/safeStorage";
 
 export type Theme = "light" | "dark";
 const STORAGE_KEY = "blaniko:theme:v1";
 const STORAGE_KEY_LEGACY = "blaniko-theme";
 
-function getInitialTheme(): Theme {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "dark" || stored === "light") return stored;
-    // Migrate from old key for existing users.
-    const legacy = localStorage.getItem(STORAGE_KEY_LEGACY);
-    if (legacy === "dark" || legacy === "light") return legacy;
-    // No saved preference — respect OS dark-mode setting.
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
-  } catch {
-    // localStorage unavailable (SSR, sandboxed iframe, etc.)
+type InitialTheme = {
+  theme: Theme;
+  // True when the stored preference could not be read, so it is unknown.
+  readFailed: boolean;
+};
+
+function getInitialTheme(): InitialTheme {
+  const stored = tryReadStorageItem(STORAGE_KEY);
+  // localStorage unavailable (SSR, sandboxed iframe, etc.)
+  if (!stored.ok) return { theme: "light", readFailed: true };
+  if (stored.value === "dark" || stored.value === "light") {
+    return { theme: stored.value, readFailed: false };
   }
-  return "light";
+  // Migrate from old key for existing users.
+  const legacy = tryReadStorageItem(STORAGE_KEY_LEGACY);
+  if (!legacy.ok) return { theme: "light", readFailed: true };
+  if (legacy.value === "dark" || legacy.value === "light") {
+    return { theme: legacy.value, readFailed: false };
+  }
+  // No saved preference — respect OS dark-mode setting.
+  try {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return { theme: "dark", readFailed: false };
+    }
+  } catch {
+    // matchMedia unavailable
+  }
+  return { theme: "light", readFailed: false };
 }
 
 // ─── Context ────────────────────────────────────────────────────────────────
@@ -47,7 +64,9 @@ export function ThemeProvider({
 }: {
   children: React.ReactNode;
 }): React.ReactElement {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [initial] = useState(getInitialTheme);
+  const [theme, setTheme] = useState<Theme>(initial.theme);
+  const themeChangedRef = useRef(false);
 
   // useLayoutEffect fires synchronously before the browser paints, so
   // data-theme is always set before any child component renders its visuals.
@@ -84,12 +103,16 @@ export function ThemeProvider({
       root.style.backgroundColor = "";
     }
 
-    try {
-      localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      // localStorage unavailable
+    if (theme !== initial.theme) {
+      themeChangedRef.current = true;
     }
-  }, [theme]);
+
+    // After a failed read the stored preference is unknown: don't overwrite it with
+    // the fallback just because the provider mounted — persist once the user toggles.
+    if (!initial.readFailed || themeChangedRef.current) {
+      writeStorageItem(STORAGE_KEY, theme);
+    }
+  }, [initial, theme]);
 
   const toggleTheme = useCallback(() => {
     setTheme((t) => (t === "light" ? "dark" : "light"));

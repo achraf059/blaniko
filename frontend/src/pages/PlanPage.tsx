@@ -32,6 +32,7 @@ import {
 import { getBestForBadges } from "../utils/venuePersonality";
 import { VenueImage } from "../components/home/VenueImage";
 import { getVenueImageSrc } from "../utils/venueImage";
+import { tryReadStorageItem, writeStorageItem } from "../utils/safeStorage";
 import {
   selectPlanViewState,
   resolveStopsToPersist,
@@ -624,48 +625,62 @@ export default function PlanPage() {
     "sunset-plan": "🌅",
     "family-afternoon": "👨‍👩‍👧",
   };
-  const [savedOutings, setSavedOutings] = useState<SavedOuting[]>(() => {
+  // `readFailed` means the stored outings are unknown (storage could not be read), so
+  // nothing may be migrated or automatically written over them.
+  const [initialSavedOutings] = useState<{ outings: SavedOuting[]; readFailed: boolean }>(() => {
     if (typeof window === "undefined") {
-      return [];
+      return { outings: [], readFailed: false };
+    }
+
+    // Read new key first; fall back to legacy key for existing users.
+    const current = tryReadStorageItem(SAVED_OUTINGS_KEY);
+    const legacy = current.ok && !current.value
+      ? tryReadStorageItem(SAVED_OUTINGS_KEY_LEGACY)
+      : null;
+    if (!current.ok || legacy?.ok === false) {
+      return { outings: [], readFailed: true };
     }
 
     try {
-      // Read new key first; fall back to legacy key for existing users.
-      let raw = window.localStorage.getItem(SAVED_OUTINGS_KEY);
-      const migratedFromLegacy = !raw && Boolean(window.localStorage.getItem(SAVED_OUTINGS_KEY_LEGACY));
+      let raw = current.value;
+      const migratedFromLegacy = !raw && Boolean(legacy?.ok && legacy.value);
       if (!raw) {
-        raw = window.localStorage.getItem(SAVED_OUTINGS_KEY_LEGACY);
+        raw = legacy?.ok ? legacy.value : null;
       }
       if (!raw) {
-        return [];
+        return { outings: [], readFailed: false };
       }
 
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) {
-        return [];
+        return { outings: [], readFailed: false };
       }
 
       // Persist under new key immediately so subsequent writes use it.
       if (migratedFromLegacy) {
-        window.localStorage.setItem(SAVED_OUTINGS_KEY, raw);
+        writeStorageItem(SAVED_OUTINGS_KEY, raw);
       }
 
-      return parsed as SavedOuting[];
+      return { outings: parsed as SavedOuting[], readFailed: false };
     } catch {
-      return [];
+      return { outings: [], readFailed: false };
     }
   });
+  const [savedOutings, setSavedOutings] = useState<SavedOuting[]>(initialSavedOutings.outings);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    window.localStorage.setItem(
-      SAVED_OUTINGS_KEY,
-      JSON.stringify(savedOutings),
-    );
-  }, [savedOutings]);
+    // After a failed read, don't overwrite the unknown stored outings with the empty
+    // fallback on mount — only persist once the user saves or deletes an outing.
+    if (initialSavedOutings.readFailed && savedOutings === initialSavedOutings.outings) {
+      return;
+    }
+
+    writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(savedOutings));
+  }, [initialSavedOutings, savedOutings]);
 
   const selectedMood = isDiscoveryMood(mood) ? mood : undefined;
   const selectedCompanion = companionOptions.some(
