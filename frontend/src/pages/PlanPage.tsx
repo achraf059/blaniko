@@ -38,38 +38,13 @@ import {
   resolveStopsToPersist,
   resolveRequestedStops,
 } from "./planViewState";
+import { sanitizeSavedOutings, type SavedOuting } from "./savedOutings";
 import "./PlanPage.css";
 
 type OutingStop = {
   role: string;
   roleHint: string;
   venue: Venue;
-};
-
-type SavedOutingStop = {
-  role: string;
-  roleHint: string;
-  slug: string;
-  name: string;
-  area: string;
-  category: string;
-};
-
-type SavedOuting = {
-  id: string;
-  title: string;
-  summary: string;
-  planStyle?: string;
-  area: string;
-  budget: string;
-  withWho: string;
-  mood: string;
-  // Explicit "Looking for" category. Optional so pre-existing saved outings (without it)
-  // safely fall back to "any" / legacy behavior when reopened.
-  category?: string;
-  lockedRoles?: StopRoleKey[];
-  stops: SavedOutingStop[];
-  createdAt: string;
 };
 
 const SAVED_OUTINGS_KEY = "blaniko:saved-outings:v1";
@@ -652,16 +627,21 @@ export default function PlanPage() {
       }
 
       const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) {
-        return { outings: [], readFailed: false };
-      }
 
-      // Persist under new key immediately so subsequent writes use it.
+      // Drops individual outings that are structurally malformed (D3) — e.g. a
+      // non-array `stops`, a `null` stop, or a `title`/`stop.name` that can't be
+      // rendered — while preserving every other outing, including ones whose venues
+      // are merely stale or retired. See savedOutings.ts for exactly what is checked.
+      const sanitized = sanitizeSavedOutings(parsed);
+
+      // Persist under new key immediately so subsequent writes use it. Only the
+      // sanitized outings are migrated — a malformed legacy entry is never carried
+      // forward into the new key.
       if (migratedFromLegacy) {
-        writeStorageItem(SAVED_OUTINGS_KEY, raw);
+        writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(sanitized));
       }
 
-      return { outings: parsed as SavedOuting[], readFailed: false };
+      return { outings: sanitized, readFailed: false };
     } catch {
       return { outings: [], readFailed: false };
     }
