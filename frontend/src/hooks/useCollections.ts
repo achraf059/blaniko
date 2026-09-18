@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { readStorageItem, writeStorageItem } from "../utils/safeStorage";
 
 const STORAGE_KEY = "blaniko:collections:v1";
 const COLLECTIONS_EVENT = "blaniko:collections-updated";
@@ -88,7 +89,7 @@ function readCollections(): VenueCollection[] {
     return [];
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  const raw = readStorageItem(STORAGE_KEY);
   if (!raw) {
     return [];
   }
@@ -107,7 +108,7 @@ function writeCollections(collections: VenueCollection[]): void {
   }
 
   const normalized = sanitizeCollections(collections);
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+  writeStorageItem(STORAGE_KEY, JSON.stringify(normalized));
   window.dispatchEvent(
     new CustomEvent<CollectionsEventDetail>(COLLECTIONS_EVENT, {
       detail: { collections: normalized },

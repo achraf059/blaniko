@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import { supabase } from "../lib/supabaseClient";
+import { tryReadStorageItem, writeStorageItem } from "../utils/safeStorage";
 
 const STORAGE_KEY = "blaniko:favorites:v1";
 
@@ -30,22 +31,27 @@ function sanitizeFavoriteSlugs(rawValue: unknown): string[] {
   return [...unique];
 }
 
-function readFavoriteSlugs(): string[] {
+// `readFailed` means the stored favorites are unknown (storage could not be read).
+function readFavoriteSlugs(): { slugs: string[]; readFailed: boolean } {
   if (typeof window === "undefined") {
-    return [];
+    return { slugs: [], readFailed: false };
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  const result = tryReadStorageItem(STORAGE_KEY);
 
-  if (!raw) {
-    return [];
+  if (!result.ok) {
+    return { slugs: [], readFailed: true };
+  }
+
+  if (!result.value) {
+    return { slugs: [], readFailed: false };
   }
 
   try {
-    const parsed = JSON.parse(raw) as unknown;
-    return sanitizeFavoriteSlugs(parsed);
+    const parsed = JSON.parse(result.value) as unknown;
+    return { slugs: sanitizeFavoriteSlugs(parsed), readFailed: false };
   } catch {
-    return [];
+    return { slugs: [], readFailed: false };
   }
 }
 
@@ -57,7 +63,8 @@ export function useFavorites() {
   const auth = useContext(AuthContext);
   const userId = auth?.user?.id ?? null;
 
-  const [favoriteSlugs, setFavoriteSlugs] = useState<string[]>(() => readFavoriteSlugs());
+  const [initialFavorites] = useState(readFavoriteSlugs);
+  const [favoriteSlugs, setFavoriteSlugs] = useState<string[]>(initialFavorites.slugs);
 
   // Refs let async callbacks and stable callbacks read current values without
   // being listed as effect dependencies (which would cause re-runs / loops).
@@ -81,9 +88,15 @@ export function useFavorites() {
       return;
     }
 
+    // After a failed read the stored favorites are unknown: don't overwrite them with
+    // the empty fallback on mount — only persist once the favorites actually change.
+    if (initialFavorites.readFailed && favoriteSlugs === initialFavorites.slugs) {
+      return;
+    }
+
     const normalized = sanitizeFavoriteSlugs(favoriteSlugs);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-  }, [favoriteSlugs]);
+    writeStorageItem(STORAGE_KEY, JSON.stringify(normalized));
+  }, [favoriteSlugs, initialFavorites]);
 
   // ── Cross-tab sync ─────────────────────────────────────────────────────────
   // Unchanged from the original — picks up localStorage writes made in other tabs.

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { readStorageItem, writeStorageItem } from "../utils/safeStorage";
 
 const STORAGE_KEY = "blaniko:compare:v1";
 const COMPARE_EVENT = "blaniko:compare-updated";
@@ -36,7 +37,7 @@ function readCompareSlugs(): string[] {
     return [];
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  const raw = readStorageItem(STORAGE_KEY);
   if (!raw) {
     return [];
   }
@@ -55,7 +56,7 @@ function writeCompareSlugs(slugs: string[]): void {
   }
 
   const normalized = sanitizeCompareSlugs(slugs);
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+  writeStorageItem(STORAGE_KEY, JSON.stringify(normalized));
   window.dispatchEvent(
     new CustomEvent<CompareEventDetail>(COMPARE_EVENT, {
       detail: { slugs: normalized },

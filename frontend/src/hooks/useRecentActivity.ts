@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { tryReadStorageItem, writeStorageItem } from "../utils/safeStorage";
 
 const STORAGE_KEY = "blaniko:recent-activity:v1";
 const RECENT_ACTIVITY_EVENT = "blaniko:recent-activity-updated";
@@ -87,31 +88,38 @@ function sanitizeRecentActivity(rawValue: unknown): RecentActivityItem[] {
   return [...unique.values()].slice(0, MAX_RECENT_ACTIVITY_ITEMS);
 }
 
-function readRecentActivity(): RecentActivityItem[] {
+// `readFailed` means the stored history is unknown (storage could not be read).
+function readRecentActivity(): { items: RecentActivityItem[]; readFailed: boolean } {
   if (typeof window === "undefined") {
-    return [];
+    return { items: [], readFailed: false };
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return [];
+  const result = tryReadStorageItem(STORAGE_KEY);
+  if (!result.ok) {
+    return { items: [], readFailed: true };
+  }
+
+  if (!result.value) {
+    return { items: [], readFailed: false };
   }
 
   try {
-    const parsed = JSON.parse(raw) as unknown;
-    return sanitizeRecentActivity(parsed);
+    const parsed = JSON.parse(result.value) as unknown;
+    return { items: sanitizeRecentActivity(parsed), readFailed: false };
   } catch {
-    return [];
+    return { items: [], readFailed: false };
   }
 }
 
-function writeRecentActivity(items: RecentActivityItem[]): void {
+function writeRecentActivity(items: RecentActivityItem[], persist = true): void {
   if (typeof window === "undefined") {
     return;
   }
 
   const normalized = sanitizeRecentActivity(items);
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+  if (persist) {
+    writeStorageItem(STORAGE_KEY, JSON.stringify(normalized));
+  }
   window.dispatchEvent(
     new CustomEvent<RecentActivityEventDetail>(RECENT_ACTIVITY_EVENT, {
       detail: { items: normalized },
@@ -120,7 +128,12 @@ function writeRecentActivity(items: RecentActivityItem[]): void {
 }
 
 export function useRecentActivity() {
-  const [activities, setActivities] = useState<RecentActivityItem[]>(() => readRecentActivity());
+  const [initialActivity] = useState(readRecentActivity);
+  const [activities, setActivities] = useState<RecentActivityItem[]>(initialActivity.items);
+  // Page views are tracked automatically on mount. After a failed read the stored
+  // history is unknown, so tracking must not overwrite it; an explicit remove/clear
+  // is a deliberate change and re-enables persistence.
+  const suppressTrackPersistRef = useRef(initialActivity.readFailed);
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
@@ -174,18 +187,20 @@ export function useRecentActivity() {
       return;
     }
 
+    const persist = !suppressTrackPersistRef.current;
     setActivities((previous) => {
       const previousItems = sanitizeRecentActivity(previous);
       const next = [
         normalizedInput,
         ...previousItems.filter((item) => getActivityKey(item) !== getActivityKey(normalizedInput)),
       ].slice(0, MAX_RECENT_ACTIVITY_ITEMS);
-      writeRecentActivity(next);
+      writeRecentActivity(next, persist);
       return next;
     });
   }, []);
 
   const removeActivity = useCallback((item: Pick<RecentActivityItem, "id" | "type">) => {
+    suppressTrackPersistRef.current = false;
     setActivities((previous) => {
       const next = previous.filter((entry) => getActivityKey(entry) !== getActivityKey(item));
       writeRecentActivity(next);
@@ -194,6 +209,7 @@ export function useRecentActivity() {
   }, []);
 
   const clearActivities = useCallback(() => {
+    suppressTrackPersistRef.current = false;
     setActivities([]);
     writeRecentActivity([]);
   }, []);

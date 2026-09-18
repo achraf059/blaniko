@@ -1,3 +1,5 @@
+import { removeStorageItem, tryReadStorageItem, writeStorageItem } from "../utils/safeStorage";
+
 export type QuizAnswers = {
   companion: string;
   category: string;
@@ -28,6 +30,9 @@ export type HydratedRecommendationState = {
   answers: QuizAnswers;
   stepIndex: number;
   isComplete: boolean;
+  // True when the stored draft could not be read, so it is unknown and must not be
+  // overwritten automatically.
+  storageReadFailed: boolean;
 };
 
 const STORAGE_KEY = "blaniko:recommendations-state:v1";
@@ -131,15 +136,11 @@ function sanitizeStoredAnswers(
 }
 
 function readStoredRecommendationState(
+  raw: string | null,
   allowedValues: Record<QuizAnswerKey, Set<string>>,
   defaults: QuizAnswers,
   maxStepIndex: number
 ): StoredRecommendationState | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) {
     return null;
   }
@@ -208,7 +209,14 @@ export function hydrateRecommendationState(options: {
   const hasUrlState = hasAnyAnswers(urlAnswers) || searchParams.has("step");
   const urlStep = parseStepParam(searchParams, maxStepIndex);
 
-  const localState = readStoredRecommendationState(allowedValues, defaults, maxStepIndex);
+  const stored = tryReadStorageItem(STORAGE_KEY);
+  const storageReadFailed = typeof window !== "undefined" && !stored.ok;
+  const localState = readStoredRecommendationState(
+    stored.ok ? stored.value : null,
+    allowedValues,
+    defaults,
+    maxStepIndex
+  );
 
   const mergedAnswers = hasUrlState
     ? { ...defaults, ...localState?.answers, ...urlAnswers }
@@ -221,6 +229,7 @@ export function hydrateRecommendationState(options: {
       answers: mergedAnswers,
       stepIndex: maxStepIndex,
       isComplete: true,
+      storageReadFailed,
     };
   }
 
@@ -234,6 +243,7 @@ export function hydrateRecommendationState(options: {
     answers: mergedAnswers,
     stepIndex: restoredStep,
     isComplete: false,
+    storageReadFailed,
   };
 }
 
@@ -291,7 +301,7 @@ export function persistRecommendationState(options: {
     isComplete,
   };
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  writeStorageItem(STORAGE_KEY, JSON.stringify(payload));
 }
 
 export function clearRecommendationStateStorage(): void {
@@ -299,5 +309,5 @@ export function clearRecommendationStateStorage(): void {
     return;
   }
 
-  window.localStorage.removeItem(STORAGE_KEY);
+  removeStorageItem(STORAGE_KEY);
 }
