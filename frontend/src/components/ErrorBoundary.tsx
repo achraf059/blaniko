@@ -1,4 +1,7 @@
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, useContext, type ErrorInfo, type ReactNode } from "react";
+import { I18nContext } from "../i18n/context";
+import { getDictionary } from "../i18n/dictionaries";
+import { DEFAULT_LANGUAGE } from "../i18n/types";
 import "./ErrorBoundary.css";
 
 interface Props {
@@ -8,6 +11,53 @@ interface Props {
 interface State {
   hasError: boolean;
   errorMessage: string;
+}
+
+type ErrorFallbackProps = {
+  onReset: () => void;
+  onReload: () => void;
+};
+
+// ErrorBoundary itself must stay a class component (only classes support
+// getDerivedStateFromError/componentDidCatch), so it cannot call hooks. This
+// function component renders the fallback instead, purely so it can read the
+// current language from context. It reads I18nContext directly rather than
+// via useI18n() (which throws outside a provider) so the recovery UI can
+// never itself fail to render for lack of translation context — it falls
+// back to the default-language dictionary instead.
+function ErrorFallback({ onReset, onReload }: ErrorFallbackProps) {
+  const context = useContext(I18nContext);
+  const dictionary = context?.dictionary ?? getDictionary(DEFAULT_LANGUAGE);
+  const text = dictionary.errorBoundary;
+
+  return (
+    <div className="bl-error-boundary" role="alert">
+      <div className="bl-error-boundary-card">
+        <p className="bl-error-boundary-eyebrow">{text.eyebrow}</p>
+        <h1 className="bl-error-boundary-title">{text.title}</h1>
+        <p className="bl-error-boundary-desc">{text.description}</p>
+        <div className="bl-error-boundary-actions">
+          <button
+            type="button"
+            className="bl-error-boundary-btn-primary"
+            onClick={onReset}
+          >
+            {dictionary.common.retry}
+          </button>
+          <button
+            type="button"
+            className="bl-error-boundary-btn-secondary"
+            onClick={onReload}
+          >
+            {text.reload}
+          </button>
+          <a href="/" className="bl-error-boundary-btn-secondary">
+            {text.goHome}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -36,39 +86,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="bl-error-boundary" role="alert">
-          <div className="bl-error-boundary-card">
-            <p className="bl-error-boundary-eyebrow">Something went wrong</p>
-            <h1 className="bl-error-boundary-title">
-              This page ran into a problem
-            </h1>
-            <p className="bl-error-boundary-desc">
-              An unexpected error occurred while rendering this page. Your data
-              is safe — try recovering below or go back to the home page.
-            </p>
-            <div className="bl-error-boundary-actions">
-              <button
-                type="button"
-                className="bl-error-boundary-btn-primary"
-                onClick={this.handleReset}
-              >
-                Try again
-              </button>
-              <button
-                type="button"
-                className="bl-error-boundary-btn-secondary"
-                onClick={this.handleReload}
-              >
-                Reload page
-              </button>
-              <a href="/" className="bl-error-boundary-btn-secondary">
-                Go to home
-              </a>
-            </div>
-          </div>
-        </div>
-      );
+      return <ErrorFallback onReset={this.handleReset} onReload={this.handleReload} />;
     }
 
     return this.props.children;
