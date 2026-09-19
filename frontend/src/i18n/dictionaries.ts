@@ -400,6 +400,13 @@ export type Dictionary = {
     apiError: string;
     retry: string;
   };
+  errorBoundary: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    reload: string;
+    goHome: string;
+  };
 };
 
 const en: Dictionary = {
@@ -827,6 +834,13 @@ const en: Dictionary = {
   common: {
     apiError: "Blaniko is having trouble loading places right now. Please try again in a moment.",
     retry: "Try again",
+  },
+  errorBoundary: {
+    eyebrow: "Something went wrong",
+    title: "This page ran into a problem",
+    description: "An unexpected error occurred while rendering this page. Your data is safe — try recovering below or go back to the home page.",
+    reload: "Reload page",
+    goHome: "Go to home",
   },
 };
 
@@ -1260,6 +1274,13 @@ const fr: Dictionary = {
   common: {
     apiError: "Blaniko rencontre un problème pour charger les lieux pour le moment. Veuillez réessayer dans un instant.",
     retry: "Réessayer",
+  },
+  errorBoundary: {
+    eyebrow: "Une erreur est survenue",
+    title: "Cette page a rencontré un problème",
+    description: "Une erreur inattendue s'est produite lors de l'affichage de cette page. Vos données sont en sécurité — essayez de relancer ci-dessous ou retournez à l'accueil.",
+    reload: "Recharger la page",
+    goHome: "Retour à l'accueil",
   },
 };
 
