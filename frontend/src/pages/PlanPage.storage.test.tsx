@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { act } from "react";
 import { MemoryRouter } from "react-router";
 import PlanPage from "./PlanPage";
 import { ErrorBoundary } from "../components/ErrorBoundary";
@@ -75,6 +76,25 @@ const savedTitles = (container: HTMLElement) =>
 const storedIds = () =>
   (JSON.parse(storage.peek(SAVED_KEY) ?? "[]") as Array<{ id: string }>).map((o) => o.id);
 
+// Simulates another tab writing this key: real browsers fire the `storage` event only
+// in *other* documents, never the one that made the write, so a tab's own save/delete
+// (which calls writeStorageItem directly) must never dispatch this itself — only tests
+// standing in for "another tab" do.
+function otherTabWrites(payload: unknown) {
+  const value = JSON.stringify(payload);
+  storage.seed(SAVED_KEY, value);
+  act(() => {
+    window.dispatchEvent(new StorageEvent("storage", { key: SAVED_KEY, newValue: value }));
+  });
+}
+
+function otherTabClears() {
+  storage.removeItem(SAVED_KEY);
+  act(() => {
+    window.dispatchEvent(new StorageEvent("storage", { key: SAVED_KEY, newValue: null }));
+  });
+}
+
 beforeEach(() => {
   storage.reset();
   vi.spyOn(console, "error").mockImplementation(() => {});
@@ -132,7 +152,10 @@ describe("PlanPage saved outings — storage failures (D4)", () => {
     click(findButtonByText(container, "Save outing"));
     expect(routeCrashed(container)).toBe(false);
     expect(savedTitles(container)).toHaveLength(1);
-    expect(storage.peek(SAVED_KEY)).toBe("[]");
+    // B04 D5: mount no longer writes anything on its own (only an explicit save/delete
+    // does), so a failed save leaves storage exactly as it was — genuinely untouched,
+    // not "[]" from an earlier mount-time write.
+    expect(storage.peek(SAVED_KEY)).toBeNull();
   });
 
   it("deleting an outing updates memory without crashing when the write fails", async () => {
@@ -267,18 +290,25 @@ describe("PlanPage saved outings — malformed structures (D3)", () => {
 });
 
 describe("PlanPage saved outings — sanitization write-back (current key)", () => {
-  it("a successful read replaces a malformed current-key entry with only the sanitized outings", async () => {
+  it("a malformed current-key entry is hidden from the UI immediately, and dropped from storage by the next save/delete", async () => {
     const good = outingWithId("good-1", "Kept plan");
-    storage.seed(SAVED_KEY, JSON.stringify([{ ...storedOuting, id: "m", stops: null }, good]));
+    const stored = JSON.stringify([{ ...storedOuting, id: "m", stops: null }, good]);
+    storage.seed(SAVED_KEY, stored);
     const container = await renderPlan();
     expect(routeCrashed(container)).toBe(false);
     expect(savedTitles(container)).toEqual(["Kept plan"]);
-    // the malformed entry is gone from storage itself, not just hidden in the UI —
-    // acceptable per PR #240 because the read succeeded and only a provably malformed
-    // entry was removed; the valid outing's own data is untouched.
-    expect(storedIds()).toEqual(["good-1"]);
-    const persisted = JSON.parse(storage.peek(SAVED_KEY)!);
-    expect(persisted).toEqual([good]);
+
+    // B04 D5: mount only reads — it no longer writes the sanitized result back on its
+    // own. Automatically rewriting storage just because the page was *viewed* is
+    // exactly the kind of unconditional write that caused D5's lost updates, so the
+    // malformed entry is left alone in storage until a real user action touches it.
+    expect(storage.peek(SAVED_KEY)).toBe(stored);
+
+    // The next explicit action re-reads and sanitizes storage before writing, so the
+    // malformed entry disappears as a natural side effect — without a second,
+    // independent "cleanup" write path.
+    click(container.querySelector("[aria-label='Delete — Kept plan']"));
+    expect(storedIds()).toEqual([]);
   });
 
   it("a failed current-key read leaves the malformed data untouched in storage (PR #240 protection unchanged)", async () => {
@@ -337,5 +367,260 @@ describe("PlanPage saved outings — legacy key with malformed data (D3)", () =>
     expect(routeCrashed(container)).toBe(false);
     expect(savedTitles(container)).toEqual(["Migrated plan"]);
     expect(JSON.parse(storage.peek(SAVED_KEY)!)).toEqual([good]);
+  });
+});
+
+// ───────────────────────────── D5: cross-tab saved-outing sync ─────────────────────────────
+//
+// Each `renderPlan()` call below is an independent React root/PlanPage instance sharing
+// the same underlying storage double — standing in for a separate browser tab. A tab's
+// own save/delete never dispatches a storage event (matching real browsers, where the
+// event fires only in *other* documents), so two tabs mounted from the same seed stay
+// independently stale from each other exactly the way two real tabs would, until an
+// explicit `otherTabWrites`/`otherTabClears` call (or a real cross-tab event) tells one
+// of them what the other one did.
+
+describe("PlanPage saved outings — cross-tab UI sync (D5)", () => {
+  it("a storage event from another tab adds a saved outing to this tab's list", async () => {
+    const container = await renderPlan();
+    expect(savedTitles(container)).toEqual([]);
+
+    otherTabWrites([outingWithId("from-b", "From tab B")]);
+    expect(savedTitles(container)).toEqual(["From tab B"]);
+  });
+
+  it("a storage event from another tab removes an outing from this tab's list", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("a", "Plan A"), outingWithId("b", "Plan B")]));
+    const container = await renderPlan();
+    expect(savedTitles(container)).toEqual(["Plan A", "Plan B"]);
+
+    otherTabWrites([outingWithId("b", "Plan B")]);
+    expect(savedTitles(container)).toEqual(["Plan B"]);
+  });
+
+  it("a malformed storage-event payload does not crash the route", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("a", "Plan A")]));
+    const container = await renderPlan();
+
+    otherTabWrites([{ ...storedOuting, id: "bad", stops: null }]);
+    expect(routeCrashed(container)).toBe(false);
+    expect(savedTitles(container)).toEqual([]);
+  });
+
+  it("a mixed malformed + valid storage-event payload keeps only the valid entry", async () => {
+    const container = await renderPlan();
+
+    otherTabWrites([{ ...storedOuting, id: "bad", title: {} }, outingWithId("good", "Good plan")]);
+    expect(routeCrashed(container)).toBe(false);
+    expect(savedTitles(container)).toEqual(["Good plan"]);
+  });
+
+  it("newValue null (another tab cleared storage) safely becomes the empty state", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("a", "Plan A")]));
+    const container = await renderPlan();
+    expect(savedTitles(container)).toEqual(["Plan A"]);
+
+    otherTabClears();
+    expect(routeCrashed(container)).toBe(false);
+    expect(container.querySelector(".bl-plan-saved-empty")).not.toBeNull();
+  });
+});
+
+describe("PlanPage saved outings — lost-update protection (D5)", () => {
+  it("A and B both start empty; A saves, then a still-stale B saves — both survive", async () => {
+    const tabA = await renderPlan();
+    const tabB = await renderPlan();
+
+    click(findButtonByText(tabA, "Save outing"));
+    // B never received a storage event for A's write — it is still stale here, exactly
+    // as a real second tab would be.
+    click(findButtonByText(tabB, "Save outing"));
+
+    expect(storedIds()).toHaveLength(2);
+  });
+
+  it("A saves A2 on top of a pre-existing A1; a stale B (mounted before A2) also saves — A1 and A2 both survive alongside B's save", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const tabA = await renderPlan();
+    const tabB = await renderPlan();
+
+    click(findButtonByText(tabA, "Save outing")); // A2
+    click(findButtonByText(tabB, "Save outing")); // B's save, from B's still-stale [A1] state
+
+    const ids = storedIds();
+    expect(ids).toContain("A1");
+    expect(ids).toHaveLength(3);
+  });
+
+  it("delete race: A deletes A1 from [A1, A2]; a stale B still saves — A1 is NOT resurrected", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1"), outingWithId("A2", "Plan A2")]));
+    const tabA = await renderPlan();
+    const tabB = await renderPlan();
+
+    click(tabA.querySelector("[aria-label='Delete — Plan A1']")); // storage is now [A2]
+    click(findButtonByText(tabB, "Save outing")); // B is still stale with [A1, A2] in its own state
+
+    const ids = storedIds();
+    expect(ids).not.toContain("A1");
+    expect(ids).toContain("A2");
+    expect(ids).toHaveLength(2); // A2 + B's new save
+  });
+
+  it("save/delete race: A saves A2 on top of [A1]; a stale B deletes A1 — A2 remains and A1 is deleted", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const tabA = await renderPlan();
+    const tabB = await renderPlan();
+
+    click(findButtonByText(tabA, "Save outing")); // storage is now [A2, A1]
+    click(tabB.querySelector("[aria-label='Delete — Plan A1']")); // B deletes A1 from its own stale [A1] view
+
+    const ids = storedIds();
+    expect(ids).not.toContain("A1");
+    expect(ids).toHaveLength(1); // just A2
+  });
+
+  it("a longer chain of cross-tab saves and deletes without notification preserves every intended entry", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("seed-1", "Seed plan")]));
+    const tabA = await renderPlan();
+    const tabB = await renderPlan(); // both start from the same seeded [seed-1]
+
+    // The save button's own label briefly changes to a "saved" confirmation after a
+    // click, so a tab that saves twice can't be found by its resting label alone.
+    const clickSave = (container: HTMLElement) =>
+      click(findButtonByText(container, "Save outing") ?? findButtonByText(container, "Outing saved."));
+
+    clickSave(tabA); // A re-reads fresh → storage: [A-new, seed-1]
+    // B is still stale with only [seed-1] in its own state, but its own delete still
+    // re-reads storage fresh first, so it sees A's save too.
+    click(tabB.querySelector("[aria-label='Delete — Seed plan']")); // → [A-new]
+    clickSave(tabA); // A re-reads fresh again → [A-new-2, A-new]
+
+    const ids = storedIds();
+    expect(ids).not.toContain("seed-1");
+    expect(ids).toHaveLength(2);
+  });
+});
+
+describe("PlanPage saved outings — ordering and cap (D5)", () => {
+  it("newest-first ordering is preserved across a fresh-read merge", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    click(findButtonByText(container, "Save outing"));
+    const titles = savedTitles(container);
+    expect(titles[titles.length - 1]).toBe("Plan A1");
+    expect(titles).toHaveLength(2);
+  });
+
+  it("the 20-item cap is still enforced after a merge-aware save", async () => {
+    const twenty = Array.from({ length: 20 }, (_, i) => outingWithId(`existing-${i}`, `Existing ${i}`));
+    storage.seed(SAVED_KEY, JSON.stringify(twenty));
+    const container = await renderPlan();
+    expect(savedTitles(container)).toHaveLength(20);
+
+    click(findButtonByText(container, "Save outing"));
+    expect(storedIds()).toHaveLength(20);
+  });
+
+  it("saving past the cap drops exactly the oldest (last) entry, same as the pre-D5 behavior", async () => {
+    const twenty = Array.from({ length: 20 }, (_, i) => outingWithId(`existing-${i}`, `Existing ${i}`));
+    storage.seed(SAVED_KEY, JSON.stringify(twenty));
+    const container = await renderPlan();
+
+    click(findButtonByText(container, "Save outing"));
+    const ids = storedIds();
+    expect(ids).not.toContain("existing-19");
+    expect(ids).toContain("existing-0");
+  });
+});
+
+describe("PlanPage saved outings — storage failures around save/delete (D5)", () => {
+  it("a fresh read failure before save does not crash and still saves in memory", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    storage.failure = "read";
+    click(findButtonByText(container, "Save outing"));
+    expect(routeCrashed(container)).toBe(false);
+    expect(savedTitles(container)).toHaveLength(2);
+  });
+
+  it("a fresh read failure before delete does not crash and still deletes in memory", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    storage.failure = "read";
+    click(container.querySelector("[aria-label='Delete — Plan A1']"));
+    expect(routeCrashed(container)).toBe(false);
+    expect(savedTitles(container)).toEqual([]);
+  });
+
+  it("a write failure during save does not crash and the in-memory list still reflects the save", async () => {
+    const container = await renderPlan();
+    storage.failure = "write";
+    click(findButtonByText(container, "Save outing"));
+    expect(routeCrashed(container)).toBe(false);
+    expect(savedTitles(container)).toHaveLength(1);
+  });
+
+  it("a fresh read failure before save does NOT discard this tab's existing visible entries (not confused with genuinely empty storage)", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    expect(savedTitles(container)).toEqual(["Plan A1"]);
+
+    storage.failure = "read";
+    click(findButtonByText(container, "Save outing"));
+    // falls back to this tab's own in-memory state as the merge base, not an empty list
+    expect(savedTitles(container)).toContain("Plan A1");
+    expect(savedTitles(container)).toHaveLength(2);
+  });
+});
+
+describe("PlanPage saved outings — D3 compatibility during save (D5)", () => {
+  it("malformed current storage is sanitized before the save merges into it", async () => {
+    const good = outingWithId("good-1", "Kept plan");
+    storage.seed(SAVED_KEY, JSON.stringify([{ ...storedOuting, id: "bad", stops: null }, good]));
+    const container = await renderPlan();
+    expect(savedTitles(container)).toEqual(["Kept plan"]);
+
+    click(findButtonByText(container, "Save outing"));
+    const ids = storedIds();
+    expect(ids).not.toContain("bad");
+    expect(ids).toContain("good-1");
+    expect(ids).toHaveLength(2);
+  });
+
+  it("a stale/retired-venue outing survives a save elsewhere and keeps its unavailable state", async () => {
+    const stale = outingWithId("stale-1", "Stale plan");
+    stale.stops = [{ slug: "e-blue-gaming-center-blk-0020", name: "Retired venue" }];
+    storage.seed(SAVED_KEY, JSON.stringify([stale]));
+    const container = await renderPlan();
+    expect(container.querySelector(".bl-plan-saved-card.is-unavailable")).not.toBeNull();
+
+    click(findButtonByText(container, "Save outing"));
+    expect(routeCrashed(container)).toBe(false);
+    expect(storedIds()).toContain("stale-1");
+    expect(container.querySelector(".bl-plan-saved-card.is-unavailable")).not.toBeNull();
+  });
+});
+
+describe("PlanPage saved outings — normal single-tab behavior remains correct (D5)", () => {
+  it("save, delete, and reload all still work with no other tab involved", async () => {
+    const first = await renderPlan();
+    click(findButtonByText(first, "Save outing"));
+    expect(storedIds()).toHaveLength(1);
+    const [savedId] = storedIds();
+
+    cleanupRendered();
+    const second = await renderPlan();
+    expect(savedTitles(second)).toHaveLength(1);
+
+    click(second.querySelector(`[aria-label$="— ${savedTitles(second)[0]}"]`));
+    expect(storedIds()).toEqual([]);
+    expect(savedId).toBeTruthy();
+  });
+
+  it("valid legacy migration still works with the new save/delete architecture", async () => {
+    storage.seed(SAVED_KEY_LEGACY, JSON.stringify([storedOuting]));
+    const container = await renderPlan();
+    expect(savedTitles(container)).toEqual(["Stored plan"]);
+    expect(storedIds()).toEqual(["stored-1"]);
   });
 });

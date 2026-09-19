@@ -38,7 +38,13 @@ import {
   resolveStopsToPersist,
   resolveRequestedStops,
 } from "./planViewState";
-import { sanitizeSavedOutings, type SavedOuting } from "./savedOutings";
+import {
+  mergeSavedOuting,
+  readCurrentSavedOutings,
+  removeSavedOuting,
+  sanitizeSavedOutings,
+  type SavedOuting,
+} from "./savedOutings";
 import "./PlanPage.css";
 
 type OutingStop = {
@@ -600,11 +606,15 @@ export default function PlanPage() {
     "sunset-plan": "🌅",
     "family-afternoon": "👨‍👩‍👧",
   };
-  // `readFailed` means the stored outings are unknown (storage could not be read), so
-  // nothing may be migrated or automatically written over them.
-  const [initialSavedOutings] = useState<{ outings: SavedOuting[]; readFailed: boolean }>(() => {
+  // Reads (and, on first run, migrates) the saved outings this tab starts with. A
+  // failed read must not migrate the legacy key over an unreadable current key, and
+  // never gets a chance to — it returns immediately, before migration is considered.
+  // There is no corresponding "write the initial value back" step anymore (see the
+  // save/delete handlers below for why), so a failed read simply starts this tab at []
+  // without ever touching storage.
+  const [savedOutings, setSavedOutings] = useState<SavedOuting[]>(() => {
     if (typeof window === "undefined") {
-      return { outings: [], readFailed: false };
+      return [];
     }
 
     // Read new key first; fall back to legacy key for existing users.
@@ -613,7 +623,7 @@ export default function PlanPage() {
       ? tryReadStorageItem(SAVED_OUTINGS_KEY_LEGACY)
       : null;
     if (!current.ok || legacy?.ok === false) {
-      return { outings: [], readFailed: true };
+      return [];
     }
 
     try {
@@ -623,7 +633,7 @@ export default function PlanPage() {
         raw = legacy?.ok ? legacy.value : null;
       }
       if (!raw) {
-        return { outings: [], readFailed: false };
+        return [];
       }
 
       const parsed = JSON.parse(raw);
@@ -641,26 +651,47 @@ export default function PlanPage() {
         writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(sanitized));
       }
 
-      return { outings: sanitized, readFailed: false };
+      return sanitized;
     } catch {
-      return { outings: [], readFailed: false };
+      return [];
     }
   });
-  const [savedOutings, setSavedOutings] = useState<SavedOuting[]>(initialSavedOutings.outings);
 
+  // Cross-tab sync (B04 D5): the native `storage` event fires in every OTHER tab when
+  // one tab writes this key, so another /plan tab's list updates without a reload. This
+  // only ever calls setSavedOutings — it never writes back — so receiving an update
+  // can't turn around and re-trigger the event in a ping-pong loop. Writes belong solely
+  // to handleSaveOuting/handleDeleteSavedOuting below, which is also why there is no
+  // longer a blanket "persist on every state change" effect here: that effect not only
+  // caused this feedback risk, it also let a tab's own stale state silently overwrite a
+  // newer value another tab had already written (the actual cause of D5).
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    // After a failed read, don't overwrite the unknown stored outings with the empty
-    // fallback on mount — only persist once the user saves or deletes an outing.
-    if (initialSavedOutings.readFailed && savedOutings === initialSavedOutings.outings) {
-      return;
-    }
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== SAVED_OUTINGS_KEY) {
+        return;
+      }
 
-    writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(savedOutings));
-  }, [initialSavedOutings, savedOutings]);
+      if (!event.newValue) {
+        setSavedOutings([]);
+        return;
+      }
+
+      try {
+        setSavedOutings(sanitizeSavedOutings(JSON.parse(event.newValue)));
+      } catch {
+        setSavedOutings([]);
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
 
   const selectedMood = isDiscoveryMood(mood) ? mood : undefined;
   const selectedCompanion = companionOptions.some(
@@ -1151,15 +1182,32 @@ export default function PlanPage() {
       createdAt: now,
     };
 
-    setSavedOutings((previous) => [saved, ...previous].slice(0, 20));
+    // Re-read storage right before mutating it (B04 D5): another /plan tab may have
+    // saved or deleted an outing since this tab last saw a storage event, so this
+    // tab's own `savedOutings` state can be stale. Merging against a fresh, sanitized
+    // read — not that stale state — means this save can't silently erase it. A failed
+    // read leaves the real stored value unknown; per PR #240, this deliberate action is
+    // still allowed to proceed against this tab's own view rather than block entirely.
+    const current = readCurrentSavedOutings(SAVED_OUTINGS_KEY);
+    const base = current.ok ? current.outings : savedOutings;
+    const next = mergeSavedOuting(base, saved);
+
+    writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(next));
+    setSavedOutings(next);
     setSaveFeedback("saved");
     window.setTimeout(() => setSaveFeedback("idle"), 2200);
   };
 
   const handleDeleteSavedOuting = (id: string) => {
-    setSavedOutings((previous) =>
-      previous.filter((outing) => outing.id !== id),
-    );
+    // Same fresh-read-then-mutate rule as handleSaveOuting: delete against current
+    // storage, not this tab's possibly-stale state, so it can't resurrect an outing
+    // another tab already removed, or discard one another tab just added.
+    const current = readCurrentSavedOutings(SAVED_OUTINGS_KEY);
+    const base = current.ok ? current.outings : savedOutings;
+    const next = removeSavedOuting(base, id);
+
+    writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(next));
+    setSavedOutings(next);
   };
 
   // Explicit, user-initiated recovery from the unavailable-plan state. It discards the
