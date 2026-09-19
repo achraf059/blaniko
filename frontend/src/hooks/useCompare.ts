@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { readStorageItem, writeStorageItem } from "../utils/safeStorage";
 
 const STORAGE_KEY = "blaniko:compare:v1";
@@ -50,6 +50,14 @@ function readCompareSlugs(): string[] {
   }
 }
 
+// Persists `slugs` and notifies every other same-tab `useCompare()` instance (via the
+// custom event) and every other tab (via the native storage event). Never call this
+// from inside a state updater: it has side effects (a localStorage write and an event
+// dispatch), and React does not guarantee an updater function runs exactly once for a
+// given call — the eager-state optimization can skip it entirely when a call is queued
+// behind a pending update, and StrictMode deliberately invokes it twice in development
+// to surface exactly this class of bug. Called as a plain, synchronous step outside any
+// updater, it always runs exactly once per logical mutation.
 function writeCompareSlugs(slugs: string[]): void {
   if (typeof window === "undefined") {
     return;
@@ -67,28 +75,39 @@ function writeCompareSlugs(slugs: string[]): void {
 export function useCompare() {
   const [compareSlugs, setCompareSlugs] = useState<string[]>(() => readCompareSlugs());
 
+  // Mirrors `compareSlugs`, updated synchronously (never inside a state updater) on
+  // every mutation and every incoming same-tab/cross-tab event. `compareSlugs` itself
+  // only exists to trigger re-renders; every mutation below reads and computes against
+  // this ref instead, so the {result, next state} pair is determined deterministically
+  // from the truly-current value — not a value React may not have applied yet, and not
+  // a value captured once in a stale closure — even if two mutations happen in the same
+  // tick, before React has re-rendered between them.
+  const compareSlugsRef = useRef(compareSlugs);
+
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== STORAGE_KEY) {
         return;
       }
 
-      if (!event.newValue) {
-        setCompareSlugs([]);
-        return;
+      let next: string[] = [];
+      if (event.newValue) {
+        try {
+          next = sanitizeCompareSlugs(JSON.parse(event.newValue) as unknown);
+        } catch {
+          next = [];
+        }
       }
 
-      try {
-        const parsed = JSON.parse(event.newValue) as unknown;
-        setCompareSlugs(sanitizeCompareSlugs(parsed));
-      } catch {
-        setCompareSlugs([]);
-      }
+      compareSlugsRef.current = next;
+      setCompareSlugs(next);
     };
 
     const handleCompareUpdated = (event: Event) => {
       const customEvent = event as CustomEvent<CompareEventDetail>;
-      setCompareSlugs(sanitizeCompareSlugs(customEvent.detail?.slugs));
+      const next = sanitizeCompareSlugs(customEvent.detail?.slugs);
+      compareSlugsRef.current = next;
+      setCompareSlugs(next);
     };
 
     window.addEventListener("storage", handleStorage);
@@ -113,38 +132,34 @@ export function useCompare() {
       return "exists";
     }
 
-    let result: "added" | "exists" | "limit" = "exists";
+    const current = compareSlugsRef.current;
 
-    setCompareSlugs((previous) => {
-      if (previous.includes(normalized)) {
-        result = "exists";
-        return previous;
-      }
+    if (current.includes(normalized)) {
+      return "exists";
+    }
 
-      if (previous.length >= MAX_COMPARE_ITEMS) {
-        result = "limit";
-        return previous;
-      }
+    if (current.length >= MAX_COMPARE_ITEMS) {
+      return "limit";
+    }
 
-      const next = [...previous, normalized];
-      writeCompareSlugs(next);
-      result = "added";
-      return next;
-    });
-
-    return result;
+    const next = [...current, normalized];
+    compareSlugsRef.current = next;
+    writeCompareSlugs(next);
+    setCompareSlugs(next);
+    return "added";
   }, []);
 
   const removeFromCompare = useCallback((slug: string) => {
-    setCompareSlugs((previous) => {
-      const next = previous.filter((item) => item !== slug);
-      if (next.length === previous.length) {
-        return previous;
-      }
+    const current = compareSlugsRef.current;
+    const next = current.filter((item) => item !== slug);
 
-      writeCompareSlugs(next);
-      return next;
-    });
+    if (next.length === current.length) {
+      return;
+    }
+
+    compareSlugsRef.current = next;
+    writeCompareSlugs(next);
+    setCompareSlugs(next);
   }, []);
 
   const toggleCompare = useCallback((slug: string): "added" | "removed" | "limit" => {
@@ -153,33 +168,31 @@ export function useCompare() {
       return "limit";
     }
 
-    let result: "added" | "removed" | "limit" = "limit";
+    const current = compareSlugsRef.current;
 
-    setCompareSlugs((previous) => {
-      if (previous.includes(normalized)) {
-        const next = previous.filter((item) => item !== normalized);
-        writeCompareSlugs(next);
-        result = "removed";
-        return next;
-      }
-
-      if (previous.length >= MAX_COMPARE_ITEMS) {
-        result = "limit";
-        return previous;
-      }
-
-      const next = [...previous, normalized];
+    if (current.includes(normalized)) {
+      const next = current.filter((item) => item !== normalized);
+      compareSlugsRef.current = next;
       writeCompareSlugs(next);
-      result = "added";
-      return next;
-    });
+      setCompareSlugs(next);
+      return "removed";
+    }
 
-    return result;
+    if (current.length >= MAX_COMPARE_ITEMS) {
+      return "limit";
+    }
+
+    const next = [...current, normalized];
+    compareSlugsRef.current = next;
+    writeCompareSlugs(next);
+    setCompareSlugs(next);
+    return "added";
   }, []);
 
   const clearCompare = useCallback(() => {
-    setCompareSlugs([]);
+    compareSlugsRef.current = [];
     writeCompareSlugs([]);
+    setCompareSlugs([]);
   }, []);
 
   return {
