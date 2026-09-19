@@ -1,5 +1,14 @@
-import { describe, expect, it } from "vitest";
-import { sanitizeSavedOutings, type SavedOuting } from "./savedOutings";
+// @vitest-environment jsdom
+import { describe, expect, it, beforeEach } from "vitest";
+import {
+  MAX_SAVED_OUTINGS,
+  mergeSavedOuting,
+  readCurrentSavedOutings,
+  removeSavedOuting,
+  sanitizeSavedOutings,
+  type SavedOuting,
+} from "./savedOutings";
+import { installControllableStorage } from "../test/storageTestUtils";
 
 // Regression coverage for B04 D3: one malformed saved outing must never crash the
 // /plan route, and every genuinely well-formed outing (including ones referencing a
@@ -197,5 +206,103 @@ describe("sanitizeSavedOutings — mixed lists", () => {
   it("a malformed-only list sanitizes down to an empty array", () => {
     const list = [null, "x", 1, { stops: null }, { ...validOuting(), title: {} }];
     expect(sanitizeSavedOutings(list)).toEqual([]);
+  });
+});
+
+// ─── Cross-tab-safe mutation helpers (B04 D5) ──────────────────────────────────────
+
+const KEY = "blaniko:saved-outings:v1";
+const storage = installControllableStorage();
+
+function outing(id: string): SavedOuting {
+  return {
+    id,
+    title: `Plan ${id}`,
+    summary: "s",
+    createdAt: "2026-09-01T10:00:00.000Z",
+    withWho: "friends",
+    mood: "social",
+    budget: "all",
+    area: "any",
+    stops: [{ slug: "venue-a", name: "Venue A" }],
+  };
+}
+
+beforeEach(() => {
+  storage.reset();
+});
+
+describe("readCurrentSavedOutings", () => {
+  it("reads and sanitizes a valid stored list", () => {
+    storage.seed(KEY, JSON.stringify([outing("a")]));
+    expect(readCurrentSavedOutings(KEY)).toEqual({ ok: true, outings: [outing("a")] });
+  });
+
+  it("reports ok:true with an empty list for a genuinely absent key", () => {
+    expect(readCurrentSavedOutings(KEY)).toEqual({ ok: true, outings: [] });
+  });
+
+  it("reports ok:true with an empty list for invalid JSON (distinct from a read failure)", () => {
+    storage.seed(KEY, "{not json");
+    expect(readCurrentSavedOutings(KEY)).toEqual({ ok: true, outings: [] });
+  });
+
+  it("drops only malformed entries, preserving valid ones", () => {
+    storage.seed(KEY, JSON.stringify([outing("a"), { stops: null }, outing("b")]));
+    expect(readCurrentSavedOutings(KEY)).toEqual({ ok: true, outings: [outing("a"), outing("b")] });
+  });
+
+  it("reports ok:false when the read itself fails — never confused with a genuinely empty read", () => {
+    storage.seed(KEY, JSON.stringify([outing("a")]));
+    storage.failure = "read";
+    expect(readCurrentSavedOutings(KEY)).toEqual({ ok: false });
+  });
+
+  it("reports ok:false when storage access itself throws", () => {
+    storage.failure = "access";
+    expect(readCurrentSavedOutings(KEY)).toEqual({ ok: false });
+  });
+});
+
+describe("mergeSavedOuting", () => {
+  it("prepends the new outing ahead of the current list", () => {
+    expect(mergeSavedOuting([outing("a")], outing("b"))).toEqual([outing("b"), outing("a")]);
+  });
+
+  it("preserves the existing order of everything else", () => {
+    const current = [outing("a"), outing("b"), outing("c")];
+    expect(mergeSavedOuting(current, outing("d"))).toEqual([outing("d"), outing("a"), outing("b"), outing("c")]);
+  });
+
+  it("caps at MAX_SAVED_OUTINGS, dropping the oldest (last) entries — same as the pre-D5 behavior", () => {
+    const current = Array.from({ length: MAX_SAVED_OUTINGS }, (_, i) => outing(`existing-${i}`));
+    const result = mergeSavedOuting(current, outing("new"));
+    expect(result).toHaveLength(MAX_SAVED_OUTINGS);
+    expect(result[0]).toEqual(outing("new"));
+    expect(result.map((o) => o.id)).not.toContain(`existing-${MAX_SAVED_OUTINGS - 1}`);
+  });
+
+  it("does not mutate the input array", () => {
+    const current = [outing("a")];
+    mergeSavedOuting(current, outing("b"));
+    expect(current).toEqual([outing("a")]);
+  });
+});
+
+describe("removeSavedOuting", () => {
+  it("removes only the matching id", () => {
+    const current = [outing("a"), outing("b"), outing("c")];
+    expect(removeSavedOuting(current, "b")).toEqual([outing("a"), outing("c")]);
+  });
+
+  it("is a no-op if the id is not present", () => {
+    const current = [outing("a")];
+    expect(removeSavedOuting(current, "missing")).toEqual([outing("a")]);
+  });
+
+  it("does not mutate the input array", () => {
+    const current = [outing("a"), outing("b")];
+    removeSavedOuting(current, "a");
+    expect(current).toEqual([outing("a"), outing("b")]);
   });
 });

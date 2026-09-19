@@ -37,6 +37,7 @@
 // outing ever has.
 
 import { stopRoleOrder, type StopRoleKey } from "../utils/recommendationEngine";
+import { tryReadStorageItem } from "../utils/safeStorage";
 
 export type SavedOutingStop = {
   role?: string;
@@ -162,4 +163,58 @@ export function sanitizeSavedOutings(rawValue: unknown): SavedOuting[] {
   }
 
   return rawValue.filter(isSanitizedSavedOuting);
+}
+
+// ─── Cross-tab-safe mutation helpers (B04 D5) ──────────────────────────────────────
+//
+// If a tab saves or deletes an outing based on its own in-memory `savedOutings` state,
+// a second tab that hasn't yet seen the first tab's write (or was simply opened later
+// and never received it) can save or delete based on its own *stale* copy and blast a
+// full-array write over storage, silently erasing the first tab's change. There is no
+// way to detect this after the fact — the fix is to never treat in-memory state as the
+// source of truth for a write: every save/delete re-reads and re-sanitizes storage
+// immediately beforehand and mutates *that*, not the stale local copy.
+
+export type SavedOutingsReadResult =
+  | { ok: true; outings: SavedOuting[] }
+  | { ok: false };
+
+// Reads and sanitizes the CURRENT saved-outings key only — never the legacy key, which
+// is a one-time, mount-only migration source (see PlanPage's initializer) that nothing
+// ever writes to again, so it needs no fresh-read step of its own.
+//
+// `ok: false` means the read itself failed, so the real stored value is unknown.
+// `ok: true, outings: []` means storage was genuinely read and found empty, absent, or
+// unparsable. Callers must not conflate the two (PR #240): a failed read is never
+// treated as "confirmed empty," which would let a subsequent write silently overwrite
+// data that may still be sitting there unread.
+export function readCurrentSavedOutings(key: string): SavedOutingsReadResult {
+  const result = tryReadStorageItem(key);
+  if (!result.ok) {
+    return { ok: false };
+  }
+
+  if (!result.value) {
+    return { ok: true, outings: [] };
+  }
+
+  try {
+    return { ok: true, outings: sanitizeSavedOutings(JSON.parse(result.value)) };
+  } catch {
+    return { ok: true, outings: [] };
+  }
+}
+
+export const MAX_SAVED_OUTINGS = 20;
+
+// Prepends `outing` ahead of `current` — the freshly-read, authoritative list, never a
+// stale in-memory copy — then applies the existing newest-first ordering and cap
+// unchanged from the pre-D5 behavior.
+export function mergeSavedOuting(current: SavedOuting[], outing: SavedOuting): SavedOuting[] {
+  return [outing, ...current].slice(0, MAX_SAVED_OUTINGS);
+}
+
+// Removes `id` from `current` — the freshly-read, authoritative list.
+export function removeSavedOuting(current: SavedOuting[], id: string): SavedOuting[] {
+  return current.filter((outing) => outing.id !== id);
 }
