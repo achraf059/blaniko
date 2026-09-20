@@ -111,20 +111,88 @@ function readRecentActivity(): { items: RecentActivityItem[]; readFailed: boolea
   }
 }
 
-function writeRecentActivity(items: RecentActivityItem[], persist = true): void {
+type RecentActivityReadResult = { ok: true; items: RecentActivityItem[] } | { ok: false };
+
+// Re-reads storage right before an explicit mutation (B04 D7): another tab may have
+// tracked/removed/cleared activity since this tab last saw a storage event or
+// same-tab CustomEvent. `ok: false` means the read itself failed (storage truly
+// unknown), distinct from a confirmed-empty read.
+function readCurrentRecentActivity(): RecentActivityReadResult {
+  const result = tryReadStorageItem(STORAGE_KEY);
+  if (!result.ok) {
+    return { ok: false };
+  }
+
+  if (!result.value) {
+    return { ok: true, items: [] };
+  }
+
+  try {
+    return { ok: true, items: sanitizeRecentActivity(JSON.parse(result.value) as unknown) };
+  } catch {
+    return { ok: true, items: [] };
+  }
+}
+
+function writeRecentActivity(items: RecentActivityItem[], persist = true): boolean {
   if (typeof window === "undefined") {
-    return;
+    return false;
   }
 
   const normalized = sanitizeRecentActivity(items);
-  if (persist) {
-    writeStorageItem(STORAGE_KEY, JSON.stringify(normalized));
-  }
+  const success = persist ? writeStorageItem(STORAGE_KEY, JSON.stringify(normalized)) : true;
   window.dispatchEvent(
     new CustomEvent<RecentActivityEventDetail>(RECENT_ACTIVITY_EVENT, {
       detail: { items: normalized },
     })
   );
+  return success;
+}
+
+// ── Pending-operation model (B04 D7 failure-recovery fix) ───────────────────────
+//
+// A boolean "my last write failed, ignore storage" flag is too coarse: it can't
+// distinguish "storage still holds what it held before my failed write" from
+// "another tab has since written something newer". Instead, every unpersisted user
+// action is recorded as a small, replayable operation — a `track` op stores the
+// FULLY RESOLVED item (including its timestamp, computed once at the original
+// action) so replay never regenerates a new timestamp. Every mutation and every
+// incoming event reconciles by replaying every still-pending op, in order, over the
+// freshest known persisted base. Once a write succeeds, the pending queue clears.
+type RecentActivityOp =
+  | { type: "track"; item: RecentActivityItem }
+  | { type: "remove"; key: string }
+  // Captures the item keys that were visible at the moment of the clear, so
+  // activity tracked by another tab *after* this clear was issued is not
+  // retroactively erased once this pending clear eventually replays against a
+  // newer base (see B04 D7 review: a later explicit clear must not silently
+  // discard genuinely newer activity it never knew about).
+  | { type: "clearKeys"; keys: string[] };
+
+function applyRecentActivityOp(
+  op: RecentActivityOp,
+  base: RecentActivityItem[],
+): RecentActivityItem[] {
+  switch (op.type) {
+    case "track": {
+      const key = getActivityKey(op.item);
+      return [op.item, ...base.filter((item) => getActivityKey(item) !== key)].slice(
+        0,
+        MAX_RECENT_ACTIVITY_ITEMS,
+      );
+    }
+    case "remove":
+      return base.filter((item) => getActivityKey(item) !== op.key);
+    case "clearKeys":
+      return base.filter((item) => !op.keys.includes(getActivityKey(item)));
+  }
+}
+
+function replayRecentActivityOps(
+  base: RecentActivityItem[],
+  ops: RecentActivityOp[],
+): RecentActivityItem[] {
+  return ops.reduce((acc, op) => applyRecentActivityOp(op, acc), base);
 }
 
 export function useRecentActivity() {
@@ -135,28 +203,44 @@ export function useRecentActivity() {
   // is a deliberate change and re-enables persistence.
   const suppressTrackPersistRef = useRef(initialActivity.readFailed);
 
+  // Mirrors `activities`, updated synchronously (never inside a state updater) on
+  // every mutation and every incoming same-tab/cross-tab event — same role as
+  // `compareSlugsRef` in useCompare.ts.
+  const activitiesRef = useRef(activities);
+  // Operations applied in memory but not yet confirmed persisted (B04 D7). Cleared
+  // the moment a write succeeds; replayed over the freshest known base otherwise.
+  const pendingOpsRef = useRef<RecentActivityOp[]>([]);
+
+  // Reconciles an incoming persisted/broadcast base against this tab's own
+  // still-pending operations, rather than blindly replacing visible state — so an
+  // unpersisted local action isn't discarded merely because an event arrived.
+  const reconcileIncoming = useCallback((incomingBase: RecentActivityItem[]) => {
+    const reconciled = replayRecentActivityOps(incomingBase, pendingOpsRef.current);
+    activitiesRef.current = reconciled;
+    setActivities(reconciled);
+  }, []);
+
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== STORAGE_KEY) {
         return;
       }
 
-      if (!event.newValue) {
-        setActivities([]);
-        return;
+      let incomingBase: RecentActivityItem[] = [];
+      if (event.newValue) {
+        try {
+          incomingBase = sanitizeRecentActivity(JSON.parse(event.newValue) as unknown);
+        } catch {
+          incomingBase = [];
+        }
       }
 
-      try {
-        const parsed = JSON.parse(event.newValue) as unknown;
-        setActivities(sanitizeRecentActivity(parsed));
-      } catch {
-        setActivities([]);
-      }
+      reconcileIncoming(incomingBase);
     };
 
     const handleRecentActivityUpdated = (event: Event) => {
       const customEvent = event as CustomEvent<RecentActivityEventDetail>;
-      setActivities(sanitizeRecentActivity(customEvent.detail?.items));
+      reconcileIncoming(sanitizeRecentActivity(customEvent.detail?.items));
     };
 
     window.addEventListener("storage", handleStorage);
@@ -166,7 +250,7 @@ export function useRecentActivity() {
       window.removeEventListener("storage", handleStorage);
       window.removeEventListener(RECENT_ACTIVITY_EVENT, handleRecentActivityUpdated);
     };
-  }, []);
+  }, [reconcileIncoming]);
 
   const activityCount = activities.length;
 
@@ -176,6 +260,18 @@ export function useRecentActivity() {
       return accumulator;
     }, {});
   }, [activities]);
+
+  // Re-reads storage fresh and replays any still-pending local operations over it.
+  // A failed read means the true persisted base is currently unknown, so this falls
+  // back to the already-reconciled `activitiesRef.current` (the same PR #240
+  // tradeoff `readCurrentSavedOutings` documents).
+  const readReconciledBase = useCallback((): RecentActivityItem[] => {
+    const fresh = readCurrentRecentActivity();
+    if (fresh.ok) {
+      return replayRecentActivityOps(fresh.items, pendingOpsRef.current);
+    }
+    return activitiesRef.current;
+  }, []);
 
   const trackActivity = useCallback((input: TrackRecentActivityInput) => {
     const normalizedInput = sanitizeRecentActivityItem({
@@ -188,31 +284,69 @@ export function useRecentActivity() {
     }
 
     const persist = !suppressTrackPersistRef.current;
-    setActivities((previous) => {
-      const previousItems = sanitizeRecentActivity(previous);
-      const next = [
-        normalizedInput,
-        ...previousItems.filter((item) => getActivityKey(item) !== getActivityKey(normalizedInput)),
-      ].slice(0, MAX_RECENT_ACTIVITY_ITEMS);
-      writeRecentActivity(next, persist);
-      return next;
-    });
-  }, []);
+    // While persistence is suppressed (unknown initial read, no explicit action
+    // yet), storage is never touched at all — matches the prior behavior exactly —
+    // so there is nothing to reconcile against yet; use the ref directly.
+    const current = persist ? readReconciledBase() : activitiesRef.current;
+
+    const op: RecentActivityOp = { type: "track", item: normalizedInput };
+    const next = applyRecentActivityOp(op, current);
+
+    activitiesRef.current = next;
+    setActivities(next);
+
+    if (persist) {
+      // Appended to the pending queue BEFORE writing — not after — because the
+      // write synchronously dispatches the same-tab CustomEvent, which this same
+      // hook instance also listens for; if the queue didn't already include `op`
+      // at that moment, the self-received event would reconcile against stale
+      // pending ops and clobber the state just set above. Every op here is
+      // idempotent under double-application, so briefly re-applying this
+      // instance's own already-applied op via that event is a harmless no-op.
+      pendingOpsRef.current = [...pendingOpsRef.current, op];
+      const success = writeRecentActivity(next, true);
+      if (success) {
+        pendingOpsRef.current = [];
+      }
+    } else {
+      writeRecentActivity(next, false);
+    }
+  }, [readReconciledBase]);
 
   const removeActivity = useCallback((item: Pick<RecentActivityItem, "id" | "type">) => {
     suppressTrackPersistRef.current = false;
-    setActivities((previous) => {
-      const next = previous.filter((entry) => getActivityKey(entry) !== getActivityKey(item));
-      writeRecentActivity(next);
-      return next;
-    });
-  }, []);
+
+    const current = readReconciledBase();
+    const op: RecentActivityOp = { type: "remove", key: getActivityKey(item) };
+    const next = applyRecentActivityOp(op, current);
+
+    activitiesRef.current = next;
+    setActivities(next);
+    pendingOpsRef.current = [...pendingOpsRef.current, op];
+    const success = writeRecentActivity(next);
+    if (success) {
+      pendingOpsRef.current = [];
+    }
+  }, [readReconciledBase]);
 
   const clearActivities = useCallback(() => {
     suppressTrackPersistRef.current = false;
-    setActivities([]);
-    writeRecentActivity([]);
-  }, []);
+
+    const current = readReconciledBase();
+    // Scoped to what was actually visible at the moment of the clear — activity
+    // tracked by another tab afterward is not retroactively erased once this
+    // pending clear eventually replays.
+    const op: RecentActivityOp = { type: "clearKeys", keys: current.map(getActivityKey) };
+    const next = applyRecentActivityOp(op, current);
+
+    activitiesRef.current = next;
+    setActivities(next);
+    pendingOpsRef.current = [...pendingOpsRef.current, op];
+    const success = writeRecentActivity(next);
+    if (success) {
+      pendingOpsRef.current = [];
+    }
+  }, [readReconciledBase]);
 
   return {
     activities,
