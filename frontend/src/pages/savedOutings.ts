@@ -218,3 +218,45 @@ export function mergeSavedOuting(current: SavedOuting[], outing: SavedOuting): S
 export function removeSavedOuting(current: SavedOuting[], id: string): SavedOuting[] {
   return current.filter((outing) => outing.id !== id);
 }
+
+// ─── Pending-operation model (B04 D9 failure-recovery fix) ─────────────────────
+//
+// handleSaveOuting/handleDeleteSavedOuting already re-read storage fresh before
+// mutating (D5), but a fresh read that legitimately succeeds can still return a
+// value that doesn't include THIS tab's own previous save/delete, if that previous
+// write failed. Treating that successful-but-stale-relative-to-this-tab's-own-
+// intent read as fully authoritative silently discards the earlier unpersisted
+// action — the same failure class D7/D8 fixed for Favorites/Collections/Recent
+// Activity/Compare. Each unpersisted save/delete is now recorded as a small,
+// replayable operation — the fully resolved `SavedOuting` object for a save (its id
+// and createdAt are fixed once, at the original action, never regenerated here), or
+// the target id for a delete. Every mutation and the storage-event handler
+// reconcile by taking the freshest known persisted list and replaying every still-
+// pending op over it, in order. Once a write succeeds, the pending queue — now
+// fully represented by what was just persisted — clears.
+export type SavedOutingOp =
+  | { type: "save"; outing: SavedOuting }
+  | { type: "delete"; id: string };
+
+export function applySavedOutingOp(op: SavedOutingOp, base: SavedOuting[]): SavedOuting[] {
+  switch (op.type) {
+    case "save":
+      // Idempotent: mergeSavedOuting itself has no id guard, so replaying the same
+      // save op twice (e.g. if an earlier write actually landed despite reporting
+      // failure) must not create a second entry with the same id.
+      return base.some((outing) => outing.id === op.outing.id)
+        ? base
+        : mergeSavedOuting(base, op.outing);
+    case "delete":
+      // removeSavedOuting's filter is already idempotent — deleting an id that's
+      // already absent (e.g. another tab removed it too) is a safe no-op.
+      return removeSavedOuting(base, op.id);
+  }
+}
+
+export function replaySavedOutingOps(
+  base: SavedOuting[],
+  ops: SavedOutingOp[],
+): SavedOuting[] {
+  return ops.reduce((acc, op) => applySavedOutingOp(op, acc), base);
+}
