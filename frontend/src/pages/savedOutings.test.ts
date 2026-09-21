@@ -1,12 +1,15 @@
 // @vitest-environment jsdom
 import { describe, expect, it, beforeEach } from "vitest";
 import {
+  applySavedOutingOp,
   MAX_SAVED_OUTINGS,
   mergeSavedOuting,
   readCurrentSavedOutings,
   removeSavedOuting,
+  replaySavedOutingOps,
   sanitizeSavedOutings,
   type SavedOuting,
+  type SavedOutingOp,
 } from "./savedOutings";
 import { installControllableStorage } from "../test/storageTestUtils";
 
@@ -304,5 +307,80 @@ describe("removeSavedOuting", () => {
     const current = [outing("a"), outing("b")];
     removeSavedOuting(current, "a");
     expect(current).toEqual([outing("a"), outing("b")]);
+  });
+});
+
+// ─── Pending-operation replay (B04 D9) ──────────────────────────────────────────
+
+describe("applySavedOutingOp — save", () => {
+  it("adds a new outing using the existing newest-first semantics", () => {
+    const op: SavedOutingOp = { type: "save", outing: outing("new") };
+    expect(applySavedOutingOp(op, [outing("a")])).toEqual([outing("new"), outing("a")]);
+  });
+
+  it("is idempotent: replaying the same save op when the id is already present does nothing", () => {
+    const op: SavedOutingOp = { type: "save", outing: outing("a") };
+    const base = [outing("a"), outing("b")];
+    expect(applySavedOutingOp(op, base)).toEqual(base);
+  });
+
+  it("enforces the existing 20-item cap when applied against an already-full list", () => {
+    const full = Array.from({ length: MAX_SAVED_OUTINGS }, (_, i) => outing(`existing-${i}`));
+    const op: SavedOutingOp = { type: "save", outing: outing("new") };
+    const result = applySavedOutingOp(op, full);
+    expect(result).toHaveLength(MAX_SAVED_OUTINGS);
+    expect(result[0]).toEqual(outing("new"));
+    expect(result.map((o) => o.id)).not.toContain(`existing-${MAX_SAVED_OUTINGS - 1}`);
+  });
+});
+
+describe("applySavedOutingOp — delete", () => {
+  it("removes the matching id", () => {
+    const op: SavedOutingOp = { type: "delete", id: "b" };
+    expect(applySavedOutingOp(op, [outing("a"), outing("b")])).toEqual([outing("a")]);
+  });
+
+  it("is idempotent: deleting an id that is already absent is a no-op", () => {
+    const op: SavedOutingOp = { type: "delete", id: "missing" };
+    const base = [outing("a")];
+    expect(applySavedOutingOp(op, base)).toEqual(base);
+  });
+});
+
+describe("replaySavedOutingOps", () => {
+  it("applies multiple pending saves in order, newest-first, with no duplicates", () => {
+    const ops: SavedOutingOp[] = [
+      { type: "save", outing: outing("a") },
+      { type: "save", outing: outing("b") },
+    ];
+    expect(replaySavedOutingOps([], ops)).toEqual([outing("b"), outing("a")]);
+  });
+
+  it("a save followed by a delete of the same id nets to no-op", () => {
+    const ops: SavedOutingOp[] = [
+      { type: "save", outing: outing("a") },
+      { type: "delete", id: "a" },
+    ];
+    expect(replaySavedOutingOps([], ops)).toEqual([]);
+  });
+
+  it("replaying the exact same ops twice does not create duplicate ids", () => {
+    const ops: SavedOutingOp[] = [{ type: "save", outing: outing("a") }];
+    const once = replaySavedOutingOps([], ops);
+    const twice = replaySavedOutingOps(once, ops);
+    expect(twice).toEqual([outing("a")]);
+  });
+
+  it("enforces the 20-item cap when replaying several pending saves together", () => {
+    const seeded = Array.from({ length: 19 }, (_, i) => outing(`seed-${i}`));
+    const ops: SavedOutingOp[] = [
+      { type: "save", outing: outing("new-1") },
+      { type: "save", outing: outing("new-2") },
+    ];
+    const result = replaySavedOutingOps(seeded, ops);
+    expect(result).toHaveLength(MAX_SAVED_OUTINGS);
+    expect(result[0]).toEqual(outing("new-2"));
+    expect(result[1]).toEqual(outing("new-1"));
+    expect(result.map((o) => o.id)).not.toContain("seed-18");
   });
 });

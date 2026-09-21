@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { act } from "react";
+import { act, StrictMode } from "react";
 import { MemoryRouter } from "react-router";
 import PlanPage from "./PlanPage";
 import { ErrorBoundary } from "../components/ErrorBoundary";
@@ -62,6 +62,28 @@ async function renderPlan(): Promise<HTMLElement> {
         </AuthProvider>
       </I18nProvider>
     </ThemeProvider>,
+  );
+  for (let i = 0; i < 10 && !container.querySelector(".bl-plan-saved"); i += 1) {
+    await flushAsync();
+  }
+  return container;
+}
+
+async function renderPlanStrict(): Promise<HTMLElement> {
+  const container = renderIntoDocument(
+    <StrictMode>
+      <ThemeProvider>
+        <I18nProvider>
+          <AuthProvider>
+            <MemoryRouter initialEntries={[PLAN_URL]}>
+              <ErrorBoundary>
+                <PlanPage />
+              </ErrorBoundary>
+            </MemoryRouter>
+          </AuthProvider>
+        </I18nProvider>
+      </ThemeProvider>
+    </StrictMode>,
   );
   for (let i = 0; i < 10 && !container.querySelector(".bl-plan-saved"); i += 1) {
     await flushAsync();
@@ -622,5 +644,133 @@ describe("PlanPage saved outings — normal single-tab behavior remains correct 
     const container = await renderPlan();
     expect(savedTitles(container)).toEqual(["Stored plan"]);
     expect(storedIds()).toEqual(["stored-1"]);
+  });
+});
+
+describe("PlanPage saved outings — pending-operation failure recovery (B04 D9)", () => {
+  // Regression coverage for B04 D9: handleSaveOuting/handleDeleteSavedOuting already
+  // re-read storage fresh before mutating (D5), but a fresh read that legitimately
+  // succeeds can still return a value that doesn't include this tab's own previous
+  // save/delete, if that previous write failed. Treating that successful-but-stale-
+  // relative-to-this-tab's-own-intent read as fully authoritative silently discarded
+  // the earlier unpersisted action — the same failure class D7/D8 fixed for the other
+  // four persistence owners. Every save/delete now records its resolved intent as a
+  // pending operation, replayed over the freshest read on every subsequent mutation.
+
+  const clickSave = (container: HTMLElement) =>
+    click(findButtonByText(container, "Save outing") ?? findButtonByText(container, "Outing saved."));
+
+  it("multiple failed saves both persist together once storage recovers", async () => {
+    const container = await renderPlan();
+    storage.failure = "write";
+    clickSave(container);
+    await flushAsync();
+    clickSave(container);
+    await flushAsync();
+    expect(storedIds()).toEqual([]); // both writes failed — storage untouched so far
+
+    storage.failure = "none";
+    clickSave(container);
+    await flushAsync();
+
+    // All three saves (two failed + the recovering one) persist together.
+    expect(storedIds()).toHaveLength(3);
+  });
+
+  it("a failed save followed by deleting an existing outing preserves the still-pending save", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    storage.failure = "write";
+    clickSave(container); // new save fails
+    await flushAsync();
+    expect(savedTitles(container)).toHaveLength(2);
+
+    click(container.querySelector("[aria-label='Delete — Plan A1']"));
+    await flushAsync();
+
+    // "Plan A1" is gone (deleted, in memory), but the pending new save must survive —
+    // not both discarded down to an empty list.
+    expect(savedTitles(container)).not.toContain("Plan A1");
+    expect(savedTitles(container)).toHaveLength(1);
+
+    storage.failure = "none";
+    // A later successful action flushes everything pending, correctly reconciled.
+    click(container.querySelector("[aria-label^='Delete']")!);
+    await flushAsync();
+    expect(storedIds()).toEqual([]);
+  });
+
+  it("a failed delete followed by a successful save does not resurrect the deleted outing", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    storage.failure = "write";
+    click(container.querySelector("[aria-label='Delete — Plan A1']"));
+    await flushAsync();
+    expect(savedTitles(container)).toEqual([]); // deleted in memory; write failed
+
+    storage.failure = "none";
+    clickSave(container);
+    await flushAsync();
+
+    expect(savedTitles(container)).not.toContain("Plan A1");
+    const ids = storedIds();
+    expect(ids).not.toContain("A1");
+    expect(ids).toHaveLength(1);
+  });
+
+  it("a failed save followed by a successful unrelated delete still eventually persists the pending save", async () => {
+    storage.seed(SAVED_KEY, JSON.stringify([outingWithId("A1", "Plan A1")]));
+    const container = await renderPlan();
+    storage.failure = "write";
+    clickSave(container); // new save fails
+    await flushAsync();
+
+    storage.failure = "none";
+    click(container.querySelector("[aria-label='Delete — Plan A1']"));
+    await flushAsync();
+
+    const ids = storedIds();
+    expect(ids).not.toContain("A1");
+    expect(ids).toHaveLength(1); // the earlier failed save is now persisted
+  });
+
+  it("a storage event while a save is still pending reconciles external data with pending local intent, without persisting", async () => {
+    const container = await renderPlan();
+    storage.failure = "write";
+    clickSave(container); // fails, pending in memory
+    await flushAsync();
+    expect(savedTitles(container)).toHaveLength(1);
+
+    const setItemSpy = vi.spyOn(Object.getPrototypeOf(storage), "setItem");
+    otherTabWrites([outingWithId("ext-1", "External plan")]);
+    expect(setItemSpy).not.toHaveBeenCalled();
+    setItemSpy.mockRestore();
+
+    // External data merges with the still-pending local save.
+    expect(savedTitles(container)).toContain("External plan");
+    expect(savedTitles(container)).toHaveLength(2);
+
+    storage.failure = "none";
+    click(container.querySelector("[aria-label='Delete — External plan']")!);
+    await flushAsync();
+    expect(storedIds()).toHaveLength(1);
+  });
+
+  it("StrictMode: a stale-then-recovered save results in exactly one write per mutation, no duplicate entries", async () => {
+    const container = await renderPlanStrict();
+    storage.failure = "write";
+    const setItemSpy = vi.spyOn(Object.getPrototypeOf(storage), "setItem");
+    click(findButtonByText(container, "Save outing"));
+    await flushAsync();
+
+    storage.failure = "none";
+    setItemSpy.mockClear();
+    click(findButtonByText(container, "Save outing") ?? findButtonByText(container, "Outing saved."));
+    await flushAsync();
+
+    const writes = setItemSpy.mock.calls.filter((c) => c[0] === SAVED_KEY).length;
+    expect(writes).toBe(1);
+    expect(storedIds()).toHaveLength(2);
+    setItemSpy.mockRestore();
   });
 });

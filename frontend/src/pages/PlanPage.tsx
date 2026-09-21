@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router";
 import { FilterChips } from "../components/discovery/FilterChips";
 import { HomeHeader } from "../components/home/HomeHeader";
@@ -39,11 +39,12 @@ import {
   resolveRequestedStops,
 } from "./planViewState";
 import {
-  mergeSavedOuting,
+  applySavedOutingOp,
   readCurrentSavedOutings,
-  removeSavedOuting,
+  replaySavedOutingOps,
   sanitizeSavedOutings,
   type SavedOuting,
+  type SavedOutingOp,
 } from "./savedOutings";
 import "./PlanPage.css";
 
@@ -657,14 +658,25 @@ export default function PlanPage() {
     }
   });
 
-  // Cross-tab sync (B04 D5): the native `storage` event fires in every OTHER tab when
-  // one tab writes this key, so another /plan tab's list updates without a reload. This
-  // only ever calls setSavedOutings — it never writes back — so receiving an update
-  // can't turn around and re-trigger the event in a ping-pong loop. Writes belong solely
-  // to handleSaveOuting/handleDeleteSavedOuting below, which is also why there is no
-  // longer a blanket "persist on every state change" effect here: that effect not only
-  // caused this feedback risk, it also let a tab's own stale state silently overwrite a
-  // newer value another tab had already written (the actual cause of D5).
+  // Operations applied in memory but not yet confirmed persisted (B04 D9). Cleared
+  // the moment a save/delete write succeeds; replayed over the freshest known
+  // storage read otherwise. No same-tab CustomEvent exists or is needed for saved
+  // outings — /plan only ever has one mounted instance per tab — so this is purely
+  // about surviving this tab's own failed writes and reconciling with other tabs.
+  const pendingSavedOutingOpsRef = useRef<SavedOutingOp[]>([]);
+
+  // Cross-tab sync (B04 D5, reconciliation added in D9): the native `storage` event
+  // fires in every OTHER tab when one tab writes this key, so another /plan tab's
+  // list updates without a reload. This only ever calls setSavedOutings — it never
+  // writes back — so receiving an update can't turn around and re-trigger the event
+  // in a ping-pong loop. Writes belong solely to handleSaveOuting/
+  // handleDeleteSavedOuting below, which is also why there is no longer a blanket
+  // "persist on every state change" effect here: that effect not only caused this
+  // feedback risk, it also let a tab's own stale state silently overwrite a newer
+  // value another tab had already written (the actual cause of D5). The incoming
+  // base is now reconciled against any still-pending local save/delete (D9) rather
+  // than blindly replacing visible state, so an unpersisted local action isn't
+  // discarded merely because an external write arrived.
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -675,16 +687,16 @@ export default function PlanPage() {
         return;
       }
 
-      if (!event.newValue) {
-        setSavedOutings([]);
-        return;
+      let incomingBase: SavedOuting[] = [];
+      if (event.newValue) {
+        try {
+          incomingBase = sanitizeSavedOutings(JSON.parse(event.newValue));
+        } catch {
+          incomingBase = [];
+        }
       }
 
-      try {
-        setSavedOutings(sanitizeSavedOutings(JSON.parse(event.newValue)));
-      } catch {
-        setSavedOutings([]);
-      }
+      setSavedOutings(replaySavedOutingOps(incomingBase, pendingSavedOutingOpsRef.current));
     };
 
     window.addEventListener("storage", handleStorage);
@@ -1151,6 +1163,18 @@ export default function PlanPage() {
     );
   };
 
+  // Re-reads storage fresh and replays any still-pending local save/delete over it
+  // (B04 D9) — the single source of truth handleSaveOuting/handleDeleteSavedOuting
+  // below use as their starting point. A failed read means the true persisted list
+  // is currently unknown, so this falls back to this tab's own current
+  // `savedOutings` state (PR #240's tradeoff: the action still proceeds against the
+  // best information available).
+  const readReconciledSavedOutings = (): SavedOuting[] => {
+    const current = readCurrentSavedOutings(SAVED_OUTINGS_KEY);
+    const base = current.ok ? current.outings : savedOutings;
+    return replaySavedOutingOps(base, pendingSavedOutingOpsRef.current);
+  };
+
   const handleSaveOuting = () => {
     if (effectivePlanStops.length === 0) {
       return;
@@ -1182,31 +1206,45 @@ export default function PlanPage() {
       createdAt: now,
     };
 
-    // Re-read storage right before mutating it (B04 D5): another /plan tab may have
-    // saved or deleted an outing since this tab last saw a storage event, so this
-    // tab's own `savedOutings` state can be stale. Merging against a fresh, sanitized
-    // read — not that stale state — means this save can't silently erase it. A failed
-    // read leaves the real stored value unknown; per PR #240, this deliberate action is
-    // still allowed to proceed against this tab's own view rather than block entirely.
-    const current = readCurrentSavedOutings(SAVED_OUTINGS_KEY);
-    const base = current.ok ? current.outings : savedOutings;
-    const next = mergeSavedOuting(base, saved);
+    // Re-read storage right before mutating it, reconciled with any still-pending
+    // local operations (B04 D5 + D9): another /plan tab may have saved or deleted
+    // an outing since this tab last saw a storage event, and this tab's own
+    // previous save/delete may not have persisted yet either (its write may have
+    // failed) — reconciling both means this save can't silently erase either kind
+    // of change. `op` is appended to the pending queue BEFORE the write attempt —
+    // not after — so a failed write leaves this save's exact intent (its `id`/
+    // `createdAt` already fixed above, never regenerated) available for the next
+    // reconciliation to replay.
+    const base = readReconciledSavedOutings();
+    const op: SavedOutingOp = { type: "save", outing: saved };
+    const next = applySavedOutingOp(op, base);
 
-    writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(next));
+    pendingSavedOutingOpsRef.current = [...pendingSavedOutingOpsRef.current, op];
+    const success = writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(next));
+    if (success) {
+      pendingSavedOutingOpsRef.current = [];
+    }
+
     setSavedOutings(next);
     setSaveFeedback("saved");
     window.setTimeout(() => setSaveFeedback("idle"), 2200);
   };
 
   const handleDeleteSavedOuting = (id: string) => {
-    // Same fresh-read-then-mutate rule as handleSaveOuting: delete against current
-    // storage, not this tab's possibly-stale state, so it can't resurrect an outing
-    // another tab already removed, or discard one another tab just added.
-    const current = readCurrentSavedOutings(SAVED_OUTINGS_KEY);
-    const base = current.ok ? current.outings : savedOutings;
-    const next = removeSavedOuting(base, id);
+    // Same fresh-read-then-reconcile-then-mutate rule as handleSaveOuting: delete
+    // against the reconciled current list, not this tab's possibly-stale state, so
+    // it can't resurrect an outing another tab already removed, or discard a
+    // still-pending save (this tab's own or another tab's).
+    const base = readReconciledSavedOutings();
+    const op: SavedOutingOp = { type: "delete", id };
+    const next = applySavedOutingOp(op, base);
 
-    writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(next));
+    pendingSavedOutingOpsRef.current = [...pendingSavedOutingOpsRef.current, op];
+    const success = writeStorageItem(SAVED_OUTINGS_KEY, JSON.stringify(next));
+    if (success) {
+      pendingSavedOutingOpsRef.current = [];
+    }
+
     setSavedOutings(next);
   };
 
