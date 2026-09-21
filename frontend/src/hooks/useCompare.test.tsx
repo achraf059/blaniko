@@ -281,3 +281,185 @@ describe("useCompare — existing behavior preserved", () => {
     expect(second.current().compareSlugs).toEqual(["a"]);
   });
 });
+
+describe("useCompare — cross-tab lost updates (B04 D8)", () => {
+  // Regression coverage for B04 D8: useCompare persisted by writing this tab's own
+  // (possibly stale) compareSlugsRef, with no fresh-storage-read step before
+  // writing. A concurrent write from another tab, not yet reflected in this tab's
+  // ref (the native `storage` event only fires in OTHER tabs, so a tab that hasn't
+  // received it is exactly what `storage.seed()` below, without dispatching an
+  // event, simulates), was silently erased — or a deliberately-removed slug could
+  // resurrect — on the next mutation performed here. Every mutation now re-reads
+  // storage fresh, reconciling it with any still-pending local operations, before
+  // computing its result.
+
+  it("stale add preserves a slug added by another tab", () => {
+    storage.seed(STORAGE_KEY, '["a"]');
+    const tabB = mountCompare();
+    expect(tabB.current().compareSlugs).toEqual(["a"]);
+
+    // Tab A adds "b"; B has not been notified via a storage event.
+    storage.seed(STORAGE_KEY, '["a","b"]');
+
+    let result = "";
+    act(() => { result = tabB.current().addToCompare("c"); });
+
+    expect(result).toBe("added");
+    const stored = JSON.parse(storage.peek(STORAGE_KEY)!);
+    expect(stored).toEqual(["a", "b", "c"]);
+  });
+
+  it("stale remove does not resurrect a slug already removed by another tab", () => {
+    storage.seed(STORAGE_KEY, '["a","b","c"]');
+    const tabB = mountCompare();
+    expect(tabB.current().compareSlugs).toEqual(["a", "b", "c"]);
+
+    // Tab A removes "a"; B is still stale with all three.
+    storage.seed(STORAGE_KEY, '["b","c"]');
+
+    act(() => { tabB.current().removeFromCompare("c"); });
+
+    const stored = JSON.parse(storage.peek(STORAGE_KEY)!);
+    expect(stored).not.toContain("a");
+    expect(stored).toEqual(["b"]);
+  });
+
+  it("stale toggle resolves against the fresh reconciled view, not a stale belief", () => {
+    storage.seed(STORAGE_KEY, '["a"]');
+    const tabB = mountCompare();
+    expect(tabB.current().compareSlugs).toEqual(["a"]);
+
+    // Tab A removes "a" and adds "b"; B still believes "a" is present.
+    storage.seed(STORAGE_KEY, '["b"]');
+
+    let result = "";
+    act(() => { result = tabB.current().toggleCompare("a"); });
+
+    // "a" is not in the fresh base, so the resolved intent is "add", not "remove" —
+    // a stale toggle must not invert against outdated information.
+    expect(result).toBe("added");
+    const stored = JSON.parse(storage.peek(STORAGE_KEY)!);
+    expect(stored).toEqual(["b", "a"]);
+  });
+
+  it("max-3 is enforced against fresh storage, not a stale local count", () => {
+    storage.seed(STORAGE_KEY, '["a"]');
+    const tabB = mountCompare();
+    expect(tabB.current().compareSlugs).toEqual(["a"]);
+
+    // Tab A fills compare to the cap.
+    storage.seed(STORAGE_KEY, '["a","b","c"]');
+
+    let result = "";
+    act(() => { result = tabB.current().addToCompare("d"); });
+
+    expect(result).toBe("limit");
+    const stored = JSON.parse(storage.peek(STORAGE_KEY)!);
+    expect(stored).toEqual(["a", "b", "c"]);
+  });
+
+  it("an externally-deleted slug does not resurrect when this tab adds a different one", () => {
+    storage.seed(STORAGE_KEY, '["a","b"]');
+    const tabB = mountCompare();
+    expect(tabB.current().compareSlugs).toEqual(["a", "b"]);
+
+    // Tab A deliberately removes "b".
+    storage.seed(STORAGE_KEY, '["a"]');
+
+    act(() => { tabB.current().addToCompare("c"); });
+
+    const stored = JSON.parse(storage.peek(STORAGE_KEY)!);
+    expect(stored).not.toContain("b");
+    expect(stored).toEqual(["a", "c"]);
+  });
+
+  it("a native storage event while dirty reconciles external data with pending local intent, without persisting", () => {
+    storage.seed(STORAGE_KEY, '["a"]');
+    const hook = mountCompare();
+    storage.failure = "write";
+    let result = "";
+    act(() => { result = hook.current().addToCompare("b"); });
+    expect(result).toBe("added");
+    expect(hook.current().compareSlugs).toEqual(["a", "b"]);
+    expect(storage.peek(STORAGE_KEY)).toBe('["a"]'); // write failed
+
+    // Another tab successfully persists "d"; the event fires because that write
+    // already landed in storage.
+    storage.seed(STORAGE_KEY, JSON.stringify(["a", "d"]));
+    const setItemSpy = vi.spyOn(Object.getPrototypeOf(storage), "setItem");
+    act(() => {
+      window.dispatchEvent(
+        new StorageEvent("storage", { key: STORAGE_KEY, newValue: JSON.stringify(["a", "d"]) }),
+      );
+    });
+    expect(setItemSpy).not.toHaveBeenCalled();
+    setItemSpy.mockRestore();
+
+    // Visible state reconciles external "d" with this tab's still-pending "b".
+    expect(hook.current().compareSlugs).toEqual(["a", "d", "b"]);
+
+    // The next explicit mutation resumes from that reconciled situation: it
+    // correctly sees the cap is already full and is rejected — a "limit" result
+    // never attempts a write, so storage still only shows the external "d" write;
+    // the still-pending "b" remains unpersisted in memory until some future
+    // mutation actually attempts (and succeeds at) a write.
+    storage.failure = "none";
+    act(() => { result = hook.current().addToCompare("c"); });
+    expect(result).toBe("limit"); // ["a","d","b"] already at the cap
+    expect(JSON.parse(storage.peek(STORAGE_KEY)!)).toEqual(["a", "d"]);
+
+    // A mutation that actually persists (a remove) flushes the pending "b" too.
+    act(() => { hook.current().removeFromCompare("a"); });
+    expect(JSON.parse(storage.peek(STORAGE_KEY)!)).toEqual(["d", "b"]);
+  });
+
+  it("repeated mutations remain correct in memory across a sustained write failure, then persist once on recovery", () => {
+    const hook = mountCompare();
+    storage.failure = "write";
+    let r1 = "", r2 = "";
+    act(() => {
+      r1 = hook.current().addToCompare("a");
+      r2 = hook.current().addToCompare("b");
+    });
+    expect([r1, r2]).toEqual(["added", "added"]);
+    expect(hook.current().compareSlugs).toEqual(["a", "b"]);
+    expect(storage.peek(STORAGE_KEY)).toBeNull();
+
+    storage.failure = "none";
+    let r3 = "";
+    act(() => { r3 = hook.current().addToCompare("c"); });
+
+    expect(r3).toBe("added");
+    expect(hook.current().compareSlugs).toEqual(["a", "b", "c"]);
+    expect(JSON.parse(storage.peek(STORAGE_KEY)!)).toEqual(["a", "b", "c"]);
+
+    // A further mutation must not replay "a"/"b" again (pending queue cleared).
+    let r4 = "";
+    act(() => { r4 = hook.current().toggleCompare("a"); });
+    expect(r4).toBe("removed");
+    expect(hook.current().compareSlugs).toEqual(["b", "c"]);
+  });
+
+  it("StrictMode: a stale-then-recovered add still results in exactly one write and one dispatch per mutation", () => {
+    storage.seed(STORAGE_KEY, '["a"]');
+    const hook = mountCompareStrict();
+    storage.failure = "write";
+    act(() => { hook.current().addToCompare("b"); });
+
+    storage.failure = "none";
+    const setItemSpy = vi.spyOn(Object.getPrototypeOf(storage), "setItem");
+    const dispatchSpy = vi.spyOn(window, "dispatchEvent");
+    act(() => { hook.current().addToCompare("c"); });
+
+    expect(hook.current().compareSlugs).toEqual(["a", "b", "c"]);
+    const writes = setItemSpy.mock.calls.filter((c) => c[0] === STORAGE_KEY).length;
+    const dispatches = dispatchSpy.mock.calls.filter(
+      (c) => (c[0] as CustomEvent).type === COMPARE_EVENT,
+    ).length;
+    expect(writes).toBe(1);
+    expect(dispatches).toBe(1);
+
+    setItemSpy.mockRestore();
+    dispatchSpy.mockRestore();
+  });
+});
