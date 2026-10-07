@@ -1,0 +1,476 @@
+# BLANIKO PRE-PHASE-2 PRODUCTION CATALOG SNAPSHOT (metadata only)
+# project_ref: vptjbfoaqmbdjdqwloae
+# captured: 2026-10-07 (read-only SELECTs through the Management API)
+# source: supabase/baseline/verify_baseline.sql
+# no user data, no emails, no auth.users rows, no secrets
+
+## 01_migrations
+20260503185718|create_waitlist_emails
+20260503195208|grant_waitlist_service_role_access
+20260616000000|create_venue_claims
+20260624000000|add_anon_insert_policies_for_public_forms
+20260625000000|create_profiles
+20260625000001|create_user_favorites
+20260629000000|add_coordinates_to_venues
+20260723000000|revoke_anon_insert_public_forms
+20260809000000|modernize_venues_schema
+20260809000001|create_replace_venues_v3_rpc
+20260809000002|fix_replace_venues_v3_safeupdate
+20260809000003|add_missing_venue_web_columns
+20260810000000|drop_replace_venues_v3_rpc
+20260818000000|add_detail_image_url_to_venues
+20260818000001|create_venue_images_storage_bucket
+
+## 02_extensions
+pg_stat_statements|1.11|extensions
+pgcrypto|1.3|extensions
+plpgsql|1.0|pg_catalog
+supabase_vault|0.3.1|vault
+uuid-ossp|1.1|extensions
+
+## 03_roles
+anon|super=false|bypassrls=false|login=false|inherit=true
+authenticated|super=false|bypassrls=false|login=false|inherit=true
+authenticator|super=false|bypassrls=false|login=true|inherit=false
+postgres|super=false|bypassrls=true|login=true|inherit=true
+service_role|super=false|bypassrls=true|login=false|inherit=true
+supabase_admin|super=true|bypassrls=true|login=true|inherit=true
+
+## 04_public_relations
+profiles|r|postgres|rls=true|forced=false|opts=|acl=anon=Dxtm/postgres,authenticated=arwDxtm/postgres,postgres=arwdDxtm/postgres,service_role=arwDxtm/postgres
+user_favorites|r|postgres|rls=true|forced=false|opts=|acl=anon=Dxtm/postgres,authenticated=ardDxtm/postgres,postgres=arwdDxtm/postgres,service_role=ardDxtm/postgres
+venue_claims|r|postgres|rls=true|forced=false|opts=|acl=anon=Dxtm/postgres,authenticated=Dxtm/postgres,postgres=arwdDxtm/postgres,service_role=arDxtm/postgres
+venues|r|postgres|rls=true|forced=false|opts=|acl=anon=Dxtm/postgres,authenticated=Dxtm/postgres,postgres=arwdDxtm/postgres,service_role=rwDxtm/postgres
+waitlist_emails|r|postgres|rls=true|forced=false|opts=|acl=anon=Dxtm/postgres,authenticated=Dxtm/postgres,postgres=arwdDxtm/postgres,service_role=arDxtm/postgres
+
+## 05_public_columns
+profiles|1|id|uuid|notnull=true|default=<none>|identity=|generated=|collation=<default>
+profiles|2|email|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+profiles|3|language|text|notnull=true|default='en'::text|identity=|generated=|collation=<default>
+profiles|4|theme|text|notnull=true|default='light'::text|identity=|generated=|collation=<default>
+profiles|5|created_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+profiles|6|updated_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+user_favorites|1|user_id|uuid|notnull=true|default=<none>|identity=|generated=|collation=<default>
+user_favorites|2|venue_slug|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+user_favorites|3|created_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+venue_claims|1|id|uuid|notnull=true|default=gen_random_uuid()|identity=|generated=|collation=<default>
+venue_claims|2|type|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venue_claims|3|venue_slug|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|4|venue_name|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|5|contact_name|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venue_claims|6|contact_email|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venue_claims|7|contact_whatsapp|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|8|role_at_venue|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|9|message|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venue_claims|10|official_website|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|11|instagram|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|12|language|text|notnull=true|default='en'::text|identity=|generated=|collation=<default>
+venue_claims|13|status|text|notnull=true|default='pending'::text|identity=|generated=|collation=<default>
+venue_claims|14|created_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+venue_claims|15|reviewed_at|timestamp with time zone|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venue_claims|16|admin_notes|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|1|id|uuid|notnull=true|default=gen_random_uuid()|identity=|generated=|collation=<default>
+venues|2|external_id|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venues|3|name|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venues|4|slug|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venues|5|category|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+venues|6|subcategory|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|7|region|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|8|neighborhood|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|9|address|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|10|google_maps_link|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|11|phone|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|12|short_description|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|13|image_url|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|14|is_active|boolean|notnull=true|default=true|identity=|generated=|collation=<default>
+venues|15|source|text|notnull=false|default='v0_seed'::text|identity=|generated=|collation=<default>
+venues|16|created_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+venues|17|updated_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+venues|18|lat|double precision|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|19|lng|double precision|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|20|price_level|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|21|overview|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|22|vibe|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|23|audience|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|24|additional_experiences|text[]|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|25|location_text|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|26|google_maps_url|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|27|contact_information|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|28|audience_tags|text[]|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|29|experience_description|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|30|atmosphere_tags|text[]|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|31|indoor_outdoor|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|32|facebook|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|33|opening_hours_raw|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|34|booking_method|text[]|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|35|booking_link|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|36|research_status|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|37|verification_level|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|38|last_verified_date|date|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|39|verified_by|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|40|price|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|41|price_details|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|42|best_for_tags|text[]|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|43|space_type|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|44|time_of_day|text[]|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|45|website|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|46|instagram|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+venues|47|detail_image_url|text|notnull=false|default=<none>|identity=|generated=|collation=<default>
+waitlist_emails|1|id|uuid|notnull=true|default=gen_random_uuid()|identity=|generated=|collation=<default>
+waitlist_emails|2|email|text|notnull=true|default=<none>|identity=|generated=|collation=<default>
+waitlist_emails|3|source|text|notnull=true|default='homepage_footer'::text|identity=|generated=|collation=<default>
+waitlist_emails|4|language|text|notnull=true|default='en'::text|identity=|generated=|collation=<default>
+waitlist_emails|5|page|text|notnull=true|default='/'::text|identity=|generated=|collation=<default>
+waitlist_emails|6|created_at|timestamp with time zone|notnull=true|default=now()|identity=|generated=|collation=<default>
+
+## 06_public_constraints
+profiles|profiles_id_fkey|f|FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
+profiles|profiles_language_check|c|CHECK ((language = ANY (ARRAY['en'::text, 'fr'::text])))
+profiles|profiles_pkey|p|PRIMARY KEY (id)
+profiles|profiles_theme_check|c|CHECK ((theme = ANY (ARRAY['light'::text, 'dark'::text])))
+user_favorites|user_favorites_pkey|p|PRIMARY KEY (user_id, venue_slug)
+user_favorites|user_favorites_user_id_fkey|f|FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+venue_claims|venue_claims_pkey|p|PRIMARY KEY (id)
+venue_claims|venue_claims_status_check|c|CHECK ((status = ANY (ARRAY['pending'::text, 'reviewed'::text, 'approved'::text, 'rejected'::text])))
+venue_claims|venue_claims_type_check|c|CHECK ((type = ANY (ARRAY['claim'::text, 'listing'::text])))
+venues|venues_external_id_key|u|UNIQUE (external_id)
+venues|venues_indoor_outdoor_check|c|CHECK ((indoor_outdoor = ANY (ARRAY['Indoor'::text, 'Outdoor'::text, 'Indoor / Outdoor'::text])))
+venues|venues_pkey|p|PRIMARY KEY (id)
+venues|venues_slug_key|u|UNIQUE (slug)
+waitlist_emails|waitlist_emails_email_key|u|UNIQUE (email)
+waitlist_emails|waitlist_emails_pkey|p|PRIMARY KEY (id)
+
+## 07_public_indexes
+profiles|profiles_pkey|CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)
+user_favorites|user_favorites_pkey|CREATE UNIQUE INDEX user_favorites_pkey ON public.user_favorites USING btree (user_id, venue_slug)
+user_favorites|user_favorites_user_id|CREATE INDEX user_favorites_user_id ON public.user_favorites USING btree (user_id)
+venue_claims|venue_claims_pkey|CREATE UNIQUE INDEX venue_claims_pkey ON public.venue_claims USING btree (id)
+venue_claims|venue_claims_status_created|CREATE INDEX venue_claims_status_created ON public.venue_claims USING btree (status, created_at DESC)
+venues|idx_venues_atmosphere_tags|CREATE INDEX idx_venues_atmosphere_tags ON public.venues USING gin (atmosphere_tags)
+venues|idx_venues_audience_tags|CREATE INDEX idx_venues_audience_tags ON public.venues USING gin (audience_tags)
+venues|idx_venues_category|CREATE INDEX idx_venues_category ON public.venues USING btree (category)
+venues|idx_venues_is_active|CREATE INDEX idx_venues_is_active ON public.venues USING btree (is_active) WHERE (is_active = true)
+venues|venues_external_id_key|CREATE UNIQUE INDEX venues_external_id_key ON public.venues USING btree (external_id)
+venues|venues_pkey|CREATE UNIQUE INDEX venues_pkey ON public.venues USING btree (id)
+venues|venues_slug_key|CREATE UNIQUE INDEX venues_slug_key ON public.venues USING btree (slug)
+waitlist_emails|waitlist_emails_created_at_idx|CREATE INDEX waitlist_emails_created_at_idx ON public.waitlist_emails USING btree (created_at DESC)
+waitlist_emails|waitlist_emails_email_key|CREATE UNIQUE INDEX waitlist_emails_email_key ON public.waitlist_emails USING btree (email)
+waitlist_emails|waitlist_emails_pkey|CREATE UNIQUE INDEX waitlist_emails_pkey ON public.waitlist_emails USING btree (id)
+
+## 08_public_policies
+profiles|authenticated users can insert own profile|PERMISSIVE|{authenticated}|INSERT|using=<none>|check=(auth.uid() = id)
+profiles|authenticated users can select own profile|PERMISSIVE|{authenticated}|SELECT|using=(auth.uid() = id)|check=<none>
+profiles|authenticated users can update own profile|PERMISSIVE|{authenticated}|UPDATE|using=(auth.uid() = id)|check=(auth.uid() = id)
+user_favorites|authenticated users can delete own favorites|PERMISSIVE|{authenticated}|DELETE|using=(auth.uid() = user_id)|check=<none>
+user_favorites|authenticated users can insert own favorites|PERMISSIVE|{authenticated}|INSERT|using=<none>|check=(auth.uid() = user_id)
+user_favorites|authenticated users can select own favorites|PERMISSIVE|{authenticated}|SELECT|using=(auth.uid() = user_id)|check=<none>
+
+## 09_public_table_privileges
+profiles|anon|MAINTAIN|grantable=false
+profiles|anon|REFERENCES|grantable=false
+profiles|anon|TRIGGER|grantable=false
+profiles|anon|TRUNCATE|grantable=false
+profiles|authenticated|INSERT|grantable=false
+profiles|authenticated|MAINTAIN|grantable=false
+profiles|authenticated|REFERENCES|grantable=false
+profiles|authenticated|SELECT|grantable=false
+profiles|authenticated|TRIGGER|grantable=false
+profiles|authenticated|TRUNCATE|grantable=false
+profiles|authenticated|UPDATE|grantable=false
+profiles|postgres|DELETE|grantable=false
+profiles|postgres|INSERT|grantable=false
+profiles|postgres|MAINTAIN|grantable=false
+profiles|postgres|REFERENCES|grantable=false
+profiles|postgres|SELECT|grantable=false
+profiles|postgres|TRIGGER|grantable=false
+profiles|postgres|TRUNCATE|grantable=false
+profiles|postgres|UPDATE|grantable=false
+profiles|service_role|INSERT|grantable=false
+profiles|service_role|MAINTAIN|grantable=false
+profiles|service_role|REFERENCES|grantable=false
+profiles|service_role|SELECT|grantable=false
+profiles|service_role|TRIGGER|grantable=false
+profiles|service_role|TRUNCATE|grantable=false
+profiles|service_role|UPDATE|grantable=false
+user_favorites|anon|MAINTAIN|grantable=false
+user_favorites|anon|REFERENCES|grantable=false
+user_favorites|anon|TRIGGER|grantable=false
+user_favorites|anon|TRUNCATE|grantable=false
+user_favorites|authenticated|DELETE|grantable=false
+user_favorites|authenticated|INSERT|grantable=false
+user_favorites|authenticated|MAINTAIN|grantable=false
+user_favorites|authenticated|REFERENCES|grantable=false
+user_favorites|authenticated|SELECT|grantable=false
+user_favorites|authenticated|TRIGGER|grantable=false
+user_favorites|authenticated|TRUNCATE|grantable=false
+user_favorites|postgres|DELETE|grantable=false
+user_favorites|postgres|INSERT|grantable=false
+user_favorites|postgres|MAINTAIN|grantable=false
+user_favorites|postgres|REFERENCES|grantable=false
+user_favorites|postgres|SELECT|grantable=false
+user_favorites|postgres|TRIGGER|grantable=false
+user_favorites|postgres|TRUNCATE|grantable=false
+user_favorites|postgres|UPDATE|grantable=false
+user_favorites|service_role|DELETE|grantable=false
+user_favorites|service_role|INSERT|grantable=false
+user_favorites|service_role|MAINTAIN|grantable=false
+user_favorites|service_role|REFERENCES|grantable=false
+user_favorites|service_role|SELECT|grantable=false
+user_favorites|service_role|TRIGGER|grantable=false
+user_favorites|service_role|TRUNCATE|grantable=false
+venue_claims|anon|MAINTAIN|grantable=false
+venue_claims|anon|REFERENCES|grantable=false
+venue_claims|anon|TRIGGER|grantable=false
+venue_claims|anon|TRUNCATE|grantable=false
+venue_claims|authenticated|MAINTAIN|grantable=false
+venue_claims|authenticated|REFERENCES|grantable=false
+venue_claims|authenticated|TRIGGER|grantable=false
+venue_claims|authenticated|TRUNCATE|grantable=false
+venue_claims|postgres|DELETE|grantable=false
+venue_claims|postgres|INSERT|grantable=false
+venue_claims|postgres|MAINTAIN|grantable=false
+venue_claims|postgres|REFERENCES|grantable=false
+venue_claims|postgres|SELECT|grantable=false
+venue_claims|postgres|TRIGGER|grantable=false
+venue_claims|postgres|TRUNCATE|grantable=false
+venue_claims|postgres|UPDATE|grantable=false
+venue_claims|service_role|INSERT|grantable=false
+venue_claims|service_role|MAINTAIN|grantable=false
+venue_claims|service_role|REFERENCES|grantable=false
+venue_claims|service_role|SELECT|grantable=false
+venue_claims|service_role|TRIGGER|grantable=false
+venue_claims|service_role|TRUNCATE|grantable=false
+venues|anon|MAINTAIN|grantable=false
+venues|anon|REFERENCES|grantable=false
+venues|anon|TRIGGER|grantable=false
+venues|anon|TRUNCATE|grantable=false
+venues|authenticated|MAINTAIN|grantable=false
+venues|authenticated|REFERENCES|grantable=false
+venues|authenticated|TRIGGER|grantable=false
+venues|authenticated|TRUNCATE|grantable=false
+venues|postgres|DELETE|grantable=false
+venues|postgres|INSERT|grantable=false
+venues|postgres|MAINTAIN|grantable=false
+venues|postgres|REFERENCES|grantable=false
+venues|postgres|SELECT|grantable=false
+venues|postgres|TRIGGER|grantable=false
+venues|postgres|TRUNCATE|grantable=false
+venues|postgres|UPDATE|grantable=false
+venues|service_role|MAINTAIN|grantable=false
+venues|service_role|REFERENCES|grantable=false
+venues|service_role|SELECT|grantable=false
+venues|service_role|TRIGGER|grantable=false
+venues|service_role|TRUNCATE|grantable=false
+venues|service_role|UPDATE|grantable=false
+waitlist_emails|anon|MAINTAIN|grantable=false
+waitlist_emails|anon|REFERENCES|grantable=false
+waitlist_emails|anon|TRIGGER|grantable=false
+waitlist_emails|anon|TRUNCATE|grantable=false
+waitlist_emails|authenticated|MAINTAIN|grantable=false
+waitlist_emails|authenticated|REFERENCES|grantable=false
+waitlist_emails|authenticated|TRIGGER|grantable=false
+waitlist_emails|authenticated|TRUNCATE|grantable=false
+waitlist_emails|postgres|DELETE|grantable=false
+waitlist_emails|postgres|INSERT|grantable=false
+waitlist_emails|postgres|MAINTAIN|grantable=false
+waitlist_emails|postgres|REFERENCES|grantable=false
+waitlist_emails|postgres|SELECT|grantable=false
+waitlist_emails|postgres|TRIGGER|grantable=false
+waitlist_emails|postgres|TRUNCATE|grantable=false
+waitlist_emails|postgres|UPDATE|grantable=false
+waitlist_emails|service_role|INSERT|grantable=false
+waitlist_emails|service_role|MAINTAIN|grantable=false
+waitlist_emails|service_role|REFERENCES|grantable=false
+waitlist_emails|service_role|SELECT|grantable=false
+waitlist_emails|service_role|TRIGGER|grantable=false
+waitlist_emails|service_role|TRUNCATE|grantable=false
+
+## 10_public_column_privileges
+<no rows>
+
+## 11_public_table_effective_privileges
+profiles|anon|DELETE|false
+profiles|anon|INSERT|false
+profiles|anon|MAINTAIN|true
+profiles|anon|REFERENCES|true
+profiles|anon|SELECT|false
+profiles|anon|TRIGGER|true
+profiles|anon|TRUNCATE|true
+profiles|anon|UPDATE|false
+profiles|authenticated|DELETE|false
+profiles|authenticated|INSERT|true
+profiles|authenticated|MAINTAIN|true
+profiles|authenticated|REFERENCES|true
+profiles|authenticated|SELECT|true
+profiles|authenticated|TRIGGER|true
+profiles|authenticated|TRUNCATE|true
+profiles|authenticated|UPDATE|true
+profiles|service_role|DELETE|false
+profiles|service_role|INSERT|true
+profiles|service_role|MAINTAIN|true
+profiles|service_role|REFERENCES|true
+profiles|service_role|SELECT|true
+profiles|service_role|TRIGGER|true
+profiles|service_role|TRUNCATE|true
+profiles|service_role|UPDATE|true
+user_favorites|anon|DELETE|false
+user_favorites|anon|INSERT|false
+user_favorites|anon|MAINTAIN|true
+user_favorites|anon|REFERENCES|true
+user_favorites|anon|SELECT|false
+user_favorites|anon|TRIGGER|true
+user_favorites|anon|TRUNCATE|true
+user_favorites|anon|UPDATE|false
+user_favorites|authenticated|DELETE|true
+user_favorites|authenticated|INSERT|true
+user_favorites|authenticated|MAINTAIN|true
+user_favorites|authenticated|REFERENCES|true
+user_favorites|authenticated|SELECT|true
+user_favorites|authenticated|TRIGGER|true
+user_favorites|authenticated|TRUNCATE|true
+user_favorites|authenticated|UPDATE|false
+user_favorites|service_role|DELETE|true
+user_favorites|service_role|INSERT|true
+user_favorites|service_role|MAINTAIN|true
+user_favorites|service_role|REFERENCES|true
+user_favorites|service_role|SELECT|true
+user_favorites|service_role|TRIGGER|true
+user_favorites|service_role|TRUNCATE|true
+user_favorites|service_role|UPDATE|false
+venue_claims|anon|DELETE|false
+venue_claims|anon|INSERT|false
+venue_claims|anon|MAINTAIN|true
+venue_claims|anon|REFERENCES|true
+venue_claims|anon|SELECT|false
+venue_claims|anon|TRIGGER|true
+venue_claims|anon|TRUNCATE|true
+venue_claims|anon|UPDATE|false
+venue_claims|authenticated|DELETE|false
+venue_claims|authenticated|INSERT|false
+venue_claims|authenticated|MAINTAIN|true
+venue_claims|authenticated|REFERENCES|true
+venue_claims|authenticated|SELECT|false
+venue_claims|authenticated|TRIGGER|true
+venue_claims|authenticated|TRUNCATE|true
+venue_claims|authenticated|UPDATE|false
+venue_claims|service_role|DELETE|false
+venue_claims|service_role|INSERT|true
+venue_claims|service_role|MAINTAIN|true
+venue_claims|service_role|REFERENCES|true
+venue_claims|service_role|SELECT|true
+venue_claims|service_role|TRIGGER|true
+venue_claims|service_role|TRUNCATE|true
+venue_claims|service_role|UPDATE|false
+venues|anon|DELETE|false
+venues|anon|INSERT|false
+venues|anon|MAINTAIN|true
+venues|anon|REFERENCES|true
+venues|anon|SELECT|false
+venues|anon|TRIGGER|true
+venues|anon|TRUNCATE|true
+venues|anon|UPDATE|false
+venues|authenticated|DELETE|false
+venues|authenticated|INSERT|false
+venues|authenticated|MAINTAIN|true
+venues|authenticated|REFERENCES|true
+venues|authenticated|SELECT|false
+venues|authenticated|TRIGGER|true
+venues|authenticated|TRUNCATE|true
+venues|authenticated|UPDATE|false
+venues|service_role|DELETE|false
+venues|service_role|INSERT|false
+venues|service_role|MAINTAIN|true
+venues|service_role|REFERENCES|true
+venues|service_role|SELECT|true
+venues|service_role|TRIGGER|true
+venues|service_role|TRUNCATE|true
+venues|service_role|UPDATE|true
+waitlist_emails|anon|DELETE|false
+waitlist_emails|anon|INSERT|false
+waitlist_emails|anon|MAINTAIN|true
+waitlist_emails|anon|REFERENCES|true
+waitlist_emails|anon|SELECT|false
+waitlist_emails|anon|TRIGGER|true
+waitlist_emails|anon|TRUNCATE|true
+waitlist_emails|anon|UPDATE|false
+waitlist_emails|authenticated|DELETE|false
+waitlist_emails|authenticated|INSERT|false
+waitlist_emails|authenticated|MAINTAIN|true
+waitlist_emails|authenticated|REFERENCES|true
+waitlist_emails|authenticated|SELECT|false
+waitlist_emails|authenticated|TRIGGER|true
+waitlist_emails|authenticated|TRUNCATE|true
+waitlist_emails|authenticated|UPDATE|false
+waitlist_emails|service_role|DELETE|false
+waitlist_emails|service_role|INSERT|true
+waitlist_emails|service_role|MAINTAIN|true
+waitlist_emails|service_role|REFERENCES|true
+waitlist_emails|service_role|SELECT|true
+waitlist_emails|service_role|TRIGGER|true
+waitlist_emails|service_role|TRUNCATE|true
+waitlist_emails|service_role|UPDATE|false
+
+## 12_public_functions
+handle_new_user()|f|postgres|secdef=true|volatility=v|strict=false|config={search_path=public}|returns=trigger|acl=<default>|def_md5=59e56d25c7b4143075b3120c36354a0a
+rls_auto_enable()|f|postgres|secdef=true|volatility=v|strict=false|config={search_path=pg_catalog}|returns=event_trigger|acl==X/postgres,anon=X/postgres,authenticated=X/postgres,postgres=X/postgres,service_role=X/postgres|def_md5=6998ea6b4c2480f5d2e34b5dcf3f8d36
+
+## 13_public_function_effective_execute
+handle_new_user()|anon|execute=true
+handle_new_user()|authenticated|execute=true
+handle_new_user()|service_role|execute=true
+rls_auto_enable()|anon|execute=true
+rls_auto_enable()|authenticated|execute=true
+rls_auto_enable()|service_role|execute=true
+
+## 14_triggers
+auth.users|on_auth_user_created|enabled=O|CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user()
+
+## 15_event_triggers
+ensure_rls|ddl_command_end|owner=postgres|fn=rls_auto_enable|tags={"CREATE TABLE","CREATE TABLE AS","SELECT INTO"}|enabled=O
+issue_graphql_placeholder|sql_drop|owner=supabase_admin|fn=set_graphql_placeholder|tags={"DROP EXTENSION"}|enabled=O
+issue_pg_cron_access|ddl_command_end|owner=supabase_admin|fn=grant_pg_cron_access|tags={"CREATE EXTENSION"}|enabled=O
+issue_pg_graphql_access|ddl_command_end|owner=supabase_admin|fn=grant_pg_graphql_access|tags={"CREATE EXTENSION"}|enabled=O
+issue_pg_net_access|ddl_command_end|owner=supabase_admin|fn=grant_pg_net_access|tags={"CREATE EXTENSION"}|enabled=O
+pgrst_ddl_watch|ddl_command_end|owner=supabase_admin|fn=pgrst_ddl_watch|tags=<all>|enabled=O
+pgrst_drop_watch|sql_drop|owner=supabase_admin|fn=pgrst_drop_watch|tags=<all>|enabled=O
+
+## 16_default_acls
+postgres|public|S|anon=w/postgres,authenticated=w/postgres,postgres=rwU/postgres,service_role=w/postgres
+postgres|public|f|postgres=X/postgres
+postgres|public|r|anon=Dxtm/postgres,authenticated=Dxtm/postgres,postgres=arwdDxtm/postgres,service_role=Dxtm/postgres
+postgres|storage|S|anon=rwU/postgres,authenticated=rwU/postgres,postgres=rwU/postgres,service_role=rwU/postgres
+postgres|storage|f|anon=X/postgres,authenticated=X/postgres,postgres=X/postgres,service_role=X/postgres
+postgres|storage|r|anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres
+supabase_admin|extensions|S|postgres=r*w*U*/supabase_admin
+supabase_admin|extensions|f|postgres=X*/supabase_admin
+supabase_admin|extensions|r|postgres=a*r*w*d*D*x*t*m*/supabase_admin
+supabase_admin|graphql_public|S|anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,postgres=rwU/supabase_admin,service_role=rwU/supabase_admin
+supabase_admin|graphql_public|f|anon=X/supabase_admin,authenticated=X/supabase_admin,postgres=X/supabase_admin,service_role=X/supabase_admin
+supabase_admin|graphql_public|r|anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin
+supabase_admin|graphql|S|anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,postgres=rwU/supabase_admin,service_role=rwU/supabase_admin
+supabase_admin|graphql|f|anon=X/supabase_admin,authenticated=X/supabase_admin,postgres=X/supabase_admin,service_role=X/supabase_admin
+supabase_admin|graphql|r|anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin
+supabase_admin|public|S|anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,postgres=rwU/supabase_admin,service_role=rwU/supabase_admin
+supabase_admin|public|f|anon=X/supabase_admin,authenticated=X/supabase_admin,postgres=X/supabase_admin,service_role=X/supabase_admin
+supabase_admin|public|r|anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,postgres=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin
+supabase_admin|realtime|S|dashboard_user=rwU/supabase_admin,postgres=rwU/supabase_admin
+supabase_admin|realtime|f|dashboard_user=X/supabase_admin,postgres=X/supabase_admin
+supabase_admin|realtime|r|dashboard_user=arwdDxtm/supabase_admin,postgres=a*r*wdDxtm/supabase_admin
+supabase_auth_admin|auth|S|dashboard_user=rwU/supabase_auth_admin,postgres=rwU/supabase_auth_admin
+supabase_auth_admin|auth|f|dashboard_user=X/supabase_auth_admin,postgres=X/supabase_auth_admin
+supabase_auth_admin|auth|r|dashboard_user=arwdDxtm/supabase_auth_admin,postgres=arwdDxtm/supabase_auth_admin
+
+## 17_schema_acls
+auth|supabase_admin|anon=U/supabase_admin,authenticated=U/supabase_admin,dashboard_user=UC/supabase_admin,postgres=U/supabase_admin,service_role=U/supabase_admin,supabase_admin=UC/supabase_admin,supabase_auth_admin=UC/supabase_admin
+public|pg_database_owner|=U/pg_database_owner,anon=U/pg_database_owner,authenticated=U/pg_database_owner,pg_database_owner=UC/pg_database_owner,postgres=U/pg_database_owner,service_role=U/pg_database_owner
+storage|supabase_admin|anon=U/supabase_admin,authenticated=U/supabase_admin,dashboard_user=UC/supabase_admin,postgres=U*/supabase_admin,service_role=U/supabase_admin,supabase_admin=UC/supabase_admin,supabase_storage_admin=U*C*/supabase_admin
+
+## 18_storage_bucket_venue_images
+venue-images|name=venue-images|public=true|file_size_limit=<none>|allowed_mime_types=<none>|avif_autodetection=false|type=STANDARD
+
+## 19_storage_rls_and_policies
+rel|buckets|rls=true|forced=false
+rel|objects|rls=true|forced=false
+
+## 20_public_comments
+<no rows>
