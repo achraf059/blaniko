@@ -12,6 +12,9 @@
 #      (a) every pre-Phase-2 object is STILL unchanged, and (b) the Phase 2 objects it changes are exactly the
 #      collection / collection-item objects it is meant to change (nothing of saved venues, outings, taste profiles,
 #      set_updated_at or the validators).
+#   7. Applies the Phase 3B outing-tombstone migration on top, and proves again that every pre-Phase-2 object is unchanged
+#      and that, against the Phase 3A (collection-only) state, ONLY user_outings objects changed: the collection Phase 3A
+#      catalog must stay exactly as it was.
 #
 # It never connects to a hosted project: the only database it touches is the container it starts (127.0.0.1).
 # Managed Supabase internals (other schemas' ACLs, roles, extension versions, the managed event triggers, the
@@ -48,6 +51,7 @@ STO_FILE=("$BASE"/storage_metadata_*.sql)
 for f in "${SNAP_FILE[0]}" "${PUB_FILE[0]}" "${AUTH_FILE[0]}" "${STO_FILE[0]}" "$BASE/verify_baseline.sql"; do [ -f "$f" ] || fail "missing baseline file $f"; done
 
 P3A_M=("$REPO_ROOT"/supabase/migrations/*_add_collection_tombstones.sql); [ -f "${P3A_M[0]}" ] || fail "missing the add_collection_tombstones migration"
+P3B_M=("$REPO_ROOT"/supabase/migrations/*_add_outing_tombstones.sql); [ -f "${P3B_M[0]}" ] || fail "missing the add_outing_tombstones migration"
 PHASE2=()
 for name in create_set_updated_at_function create_user_saved_venues create_user_collections_and_items create_user_outings create_user_taste_profiles; do
   m=("$REPO_ROOT"/supabase/migrations/*_"$name".sql); [ -f "${m[0]}" ] || fail "missing migration $name"; PHASE2+=("${m[0]}")
@@ -184,7 +188,7 @@ if mode == "live-vs-local":
 
 if mode == "phase2-vs-phase3a":
     p2, p3 = parse(sys.argv[2]), parse(sys.argv[3])
-    ours = re.compile(r"user_collections|user_collection_items")
+    ours = re.compile(sys.argv[4] if len(sys.argv) > 4 else r"user_collections|user_collection_items")
     skip = {"01_migrations"}
     bad = 0; removed_total = 0; added_total = 0
     for name in p2:
@@ -198,7 +202,7 @@ if mode == "phase2-vs-phase3a":
         for l in removed: print("        - " + l[:200])
         for l in added: print("        + " + l[:200])
         for l in foreign: print("        !! not a collection / item object: " + l[:200])
-    print("  total: %d removed/changed, %d added, all within user_collections / user_collection_items objects: %s" % (removed_total, added_total, "NO" if bad else "yes"))
+    print("  total: %d removed/changed, %d added, all within the expected objects (%s): %s" % (removed_total, added_total, ours.pattern, "NO" if bad else "yes"))
     sys.exit(1 if bad else 0)
 
 if mode == "before-vs-after":
@@ -259,7 +263,25 @@ python3 "$WORK/compare.py" before-vs-after "$WORK/local_before.txt" "$WORK/local
 log "Phase 3A against the Phase 2 state: only collection / item objects may change"
 python3 "$WORK/compare.py" phase2-vs-phase3a "$WORK/local_after.txt" "$WORK/local_after3a.txt" | tee "$WORK/p2_vs_p3a.out"
 
+# ── 7. Phase 3B on top ─────────────────────────────────────────────────────────
+
+log "Applying the Phase 3B outing-tombstone migration with the real CLI (on top of Phase 3A, Phase 2 and the baseline)"
+cp "${P3B_M[0]}" "$WORK/proj/supabase/migrations/"
+# shellcheck disable=SC2086
+if ! PGSSLMODE=disable perl -e 'alarm shift; exec @ARGV' 240 $SUPABASE_CMD db push --db-url "$DB_URL" --workdir "$WORK/proj" --yes >"$WORK/push3b.log" 2>&1; then
+  cat "$WORK/push3b.log"; fail "db push of the Phase 3B migration failed on top of the baseline"
+fi
+tail -n 3 "$WORK/push3b.log" | sed 's/^/    /'
+snapshot_local "$WORK/local_after3b.txt"
+
+log "Pre-Phase-2 objects: baseline vs after Phase 2 + 3A + 3B (must still all be UNCHANGED)"
+python3 "$WORK/compare.py" before-vs-after "$WORK/local_before.txt" "$WORK/local_after3b.txt" | tee "$WORK/before_after3b.out"
+
+log "Phase 3B against the collection-only Phase 3A state: only user_outings objects may change"
+python3 "$WORK/compare.py" phase2-vs-phase3a "$WORK/local_after3a.txt" "$WORK/local_after3b.txt" 'user_outings' | tee "$WORK/p3a_vs_p3b.out"
+
 log "Result"
 echo "  PHASE 2 ALTERED NO PRE-EXISTING OBJECT; it only added Phase 2 objects."
 echo "  PHASE 3A ALTERED NO PRE-PHASE-2 OBJECT and changed only collection / collection-item objects."
+echo "  PHASE 3B ALTERED NO PRE-PHASE-2 OBJECT and, against the Phase 3A state, changed only user_outings objects."
 [ "${BASELINE_DIFFS:-0}" = "0" ] || echo "  (the baseline reconstruction had the DIFF sections reported above; see the README limitations)"

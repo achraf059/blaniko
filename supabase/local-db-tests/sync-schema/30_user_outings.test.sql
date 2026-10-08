@@ -126,12 +126,15 @@ select is(public.t_state(format('insert into public.user_outings (id, user_id, s
   public.t_oid(51), 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '{"name":{"en":"x"},"stopIds":[],"answers":{}}')), '42501', 'A cannot insert an outing owned by B');
 select is(public.t_state(format($f$update public.user_outings set payload = %L::jsonb where id = %L$f$,
   '{"name":{"en":"hacked"},"stopIds":[],"answers":{}}', public.t_oid(50))), 'OK', 'A''s update of B''s outing matches no visible row');
-select is(public.t_state(format('delete from public.user_outings where id = %L', public.t_oid(50))), 'OK', 'A''s delete of B''s outing matches no visible row');
+select is(public.t_state(format('delete from public.user_outings where id = %L', public.t_oid(50))), '42501', 'A cannot physically DELETE an outing at all (Phase 3A: deletion is a tombstone), so B''s is out of reach');
 reset role;
 select is((select payload -> 'name' ->> 'en' from public.user_outings where id = public.t_oid(50)::uuid), 'B outing', 'B''s outing is intact');
 select public.t_as('authenticated', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
-select is(public.t_state(format('delete from public.user_outings where id = %L', public.t_oid(7))), 'OK', 'A can delete her own outing');
-select is((select count(*)::int from public.user_outings where id = public.t_oid(7)::uuid), 0, 'and it is gone');
+-- Phase 2 asserted: A DELETEs her outing and it is gone. Clients can no longer physically delete an outing; deletion is a
+-- tombstone (the row stays, scrubbed). Full tombstone coverage is in 31_outing_tombstones.test.sql.
+select is(public.t_state(format('delete from public.user_outings where id = %L', public.t_oid(7))), '42501', 'A cannot hard-delete her own outing');
+select is(public.t_state(format('update public.user_outings set deleted_at = now() where id = %L', public.t_oid(7))), 'OK', 'A deletes her outing (tombstone request)');
+select is((select count(*)::int from public.user_outings where id = public.t_oid(7)::uuid and deleted_at is not null), 1, 'and it remains as a tombstone that she can still read');
 
 -- ── anon ───────────────────────────────────────────────────────────────────────
 select public.t_as('anon', null);
@@ -148,7 +151,7 @@ select is(public.t_state(format('insert into public.user_outings (id, user_id, s
 select is(public.t_state(format($f$update public.user_outings set payload = %L::jsonb where id = %L$f$,
   '{"name":{"en":"svc2"},"stopIds":[],"answers":{}}', public.t_oid(70))), 'OK', 'service_role can UPDATE');
 select is(public.t_state(format($f$update public.user_outings set payload = %L::jsonb where id = %L$f$, '{"bad":true}', public.t_oid(70))), '23514', 'service_role is still subject to the CHECK constraints');
-select is(public.t_state(format('delete from public.user_outings where id = %L', public.t_oid(70))), 'OK', 'service_role can DELETE');
+select is(public.t_state(format('delete from public.user_outings where id = %L', public.t_oid(70))), '42501', 'service_role can no longer physically DELETE an outing (Phase 3A)');
 select is(public.t_state('truncate public.user_outings'), '42501', 'service_role cannot TRUNCATE');
 
 reset role;

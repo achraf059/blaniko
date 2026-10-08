@@ -37,11 +37,10 @@ select set_eq(
     ('user_outings|authenticated users can select own outings|SELECT'),
     ('user_outings|authenticated users can insert own outings|INSERT'),
     ('user_outings|authenticated users can update own outings|UPDATE'),
-    ('user_outings|authenticated users can delete own outings|DELETE'),
     ('user_taste_profiles|authenticated users can select own taste profile|SELECT'),
     ('user_taste_profiles|authenticated users can insert own taste profile|INSERT'),
     ('user_taste_profiles|authenticated users can update own taste profile|UPDATE')$$,
-  'exactly the 16 designed policies exist (no UPDATE policy on saved venues / items, no DELETE policy on taste profiles or, since Phase 3A, on collections)');
+  'exactly the 15 designed policies exist (no UPDATE policy on saved venues / items, no DELETE policy on taste profiles or, since Phase 3A, on collections and outings)');
 
 select is(
   (select count(*)::int from pg_policies where schemaname = 'public'
@@ -78,11 +77,11 @@ select t.tbl, r.role_name, p.priv,
          case p.priv
            when 'SELECT' then true
            when 'INSERT' then true
-           when 'DELETE' then t.tbl not in ('user_taste_profiles', 'user_collections')   -- Phase 3A: collections are tombstoned, never physically deleted by a client
+           when 'DELETE' then t.tbl not in ('user_taste_profiles', 'user_collections', 'user_outings')   -- Phase 3A: collections and outings are tombstoned, never physically deleted by a client
            else false end                              -- UPDATE is column-level only; none of the structural ones
        when r.role_name = 'service_role' then p.priv in ('SELECT','INSERT')
                                               or (p.priv = 'UPDATE' and t.tbl <> 'user_collection_items')   -- Phase 3A: items are immutable for every role
-                                              or (p.priv = 'DELETE' and t.tbl <> 'user_collections')       -- Phase 3A: collections are tombstoned, never deleted
+                                              or (p.priv = 'DELETE' and t.tbl not in ('user_collections', 'user_outings'))   -- Phase 3A: collections and outings are tombstoned, never deleted
   end
 from (values ('user_saved_venues'),('user_collections'),('user_collection_items'),('user_outings'),('user_taste_profiles')) as t(tbl)
 cross join (values ('anon'),('authenticated'),('service_role')) as r(role_name)
@@ -106,7 +105,7 @@ insert into t_expected_col_update values
   ('user_collections','id',false),('user_collections','user_id',false),('user_collections','name',true),
   ('user_collections','created_at',false),('user_collections','updated_at',false),('user_collections','deleted_at',true),
   ('user_outings','id',false),('user_outings','user_id',false),('user_outings','schema_version',true),
-  ('user_outings','payload',true),('user_outings','created_at',false),('user_outings','updated_at',false),
+  ('user_outings','payload',true),('user_outings','created_at',false),('user_outings','updated_at',false),('user_outings','deleted_at',true),
   ('user_taste_profiles','user_id',false),('user_taste_profiles','schema_version',true),
   ('user_taste_profiles','interests',true),('user_taste_profiles','usual_company',true),
   ('user_taste_profiles','setting',true),('user_taste_profiles','profile_updated_at',true),
