@@ -10,8 +10,11 @@ login changes, no cloud-sync implementation, and no client is connected to them.
 Migrations: `supabase/migrations/*_create_set_updated_at_function.sql`,
 `*_create_user_saved_venues.sql`, `*_create_user_collections_and_items.sql`,
 `*_create_user_outings.sql`, `*_create_user_taste_profiles.sql`.
+Collection tombstones (Phase 3A, **implemented locally; not yet applied to production**):
+`supabase/migrations/*_add_collection_tombstones.sql`.
 Rollback references (never run automatically): `supabase/rollbacks/`.
-Tests: `supabase/local-db-tests/sync-schema/`, run with `scripts/db/test-sync-schema-local.sh`.
+Tests: `supabase/local-db-tests/sync-schema/`, run with `scripts/db/test-sync-schema-local.sh`; real two-session
+concurrency proofs: `scripts/db/test-collection-tombstone-concurrency-local.sh`.
 
 ---
 
@@ -20,9 +23,19 @@ Tests: `supabase/local-db-tests/sync-schema/`, run with `scripts/db/test-sync-sc
 > **No mobile or web cloud-sync implementation may ship until deletion propagation for
 > collections and outings has a resolved and tested strategy.**
 
-Every table here uses **hard deletes** and has **no tombstones** (`deleted_at`). With hard
-deletes alone, a collection or outing deleted on one device can be **resurrected** by
-another device that still holds it offline. Mobile has a baseline only for favourites
+Phase 2 created every table with **hard deletes** and **no tombstones**. With hard deletes
+alone, a collection or outing deleted on one device can be **resurrected** by another device
+that still holds it offline.
+
+**Status.** The sync-protocol design (Phase 3A) resolved this with permanent, scrubbed server
+tombstones for collections and outings (saved venues and collection items use per-device
+baselines plus pending intent). **Collections are implemented locally** by the
+collection-tombstone migration (see "Collection tombstones" below) and **outings are not yet**
+(`user_outings` still hard-deletes), so the gate stays **closed**. It opens only when the
+outing tombstones exist, both migrations have been applied and verified in production, and
+the client reconciliation is implemented and tested.
+
+The original problem statement, for reference: Mobile has a baseline only for favourites
 (`favoritesBaseline`); nothing equivalent exists yet for collections, collection items or
 outings.
 
@@ -75,7 +88,9 @@ Authenticated: `SELECT`, `INSERT`, `DELETE` (no `UPDATE`).
   limit exists (mobile has no rename; the web enforces none), so the cap is deliberately
   generous and may be relaxed by a forward migration. It is not a product rule.
 - Names are **not unique**: two offline devices can both create "New collection 1".
-- Authenticated may `UPDATE (name)` only; `id`, `user_id`, `created_at` are immutable.
+- `deleted_at timestamptz` (nullable, no default): `NULL` is live, non-`NULL` is a **permanent tombstone** (see
+  "Collection tombstones"). Authenticated may `UPDATE (name, deleted_at)` only; `id`, `user_id`, `created_at`,
+  `updated_at` are immutable for clients.
 
 `user_collection_items`: `collection_id`, `user_id`, `venue_id` (BLK), `added_at`; primary
 key `(collection_id, venue_id)`.
@@ -88,8 +103,43 @@ key `(collection_id, venue_id)`.
 | A inserts an item into B's collection with `user_id = A` | there is no `(collection, A)` row: foreign key violation |
 | A supplies `user_id = B` | the RLS `WITH CHECK` fails |
 
-Deleting a collection cascades its items; deleting an account cascades everything.
-Authenticated: `SELECT`, `INSERT`, `DELETE` on items (no `UPDATE`).
+A collection is **no longer physically deleted by a client** (see "Collection tombstones"); deleting an
+**account** still cascades everything: live collections, tombstones and items.
+Authenticated and, since Phase 3A, `service_role` have `SELECT`, `INSERT`, `DELETE` on items and **no `UPDATE`**: items are immutable, and a membership change is an `INSERT` or a `DELETE` only (moving one is DELETE + INSERT), so it always passes the parent guard, lock and revision bump.
+
+### Collection tombstones (Phase 3A)
+
+A client deletes its own collection by setting `deleted_at` (`PATCH ... deleted_at = <any non-null value>`,
+guarded by `id`, `updated_at = <baseline>` and `deleted_at IS NULL`). In one transaction the server:
+
+1. replaces the requested value with its own transaction time,
+2. scrubs `name` to exactly `Deleted collection` (an at-rest CHECK enforces that a tombstone can hold nothing else),
+3. moves `updated_at` (`set_updated_at`, unchanged),
+4. physically deletes every item of the collection.
+
+The row **stays under its original UUID until the account is deleted** (no purge). Rules, all enforced by the
+database for every role:
+
+| Rule | Error |
+|---|---|
+| a tombstone can never become live (`deleted_at` cannot return to `NULL`) and cannot be edited, even by a no-op `UPDATE` | `TS002` |
+| a collection cannot be created already deleted (`INSERT` with a non-null `deleted_at`) | `TS002` |
+| an item cannot be added to a tombstoned collection | `TS001` |
+| clients and `service_role` have no `DELETE` on `user_collections` (the DELETE policy is dropped) | `42501` |
+
+`TS001` / `TS002` are custom SQLSTATEs (a client-visible contract). The tombstone stays `SELECT`able by its owner and
+the UUID can never be reused (the primary-key row remains; another user gets `23505`).
+
+**Parent revision.** Every successful item `INSERT` or `DELETE` on a **live** collection moves that collection's
+`updated_at` (once per statement per collection; a skipped `ON CONFLICT DO NOTHING` row does not). The two bump
+functions are the only `SECURITY DEFINER` functions in this schema (owner `postgres`, `search_path = ''`, no dynamic
+SQL, no client `EXECUTE`); each updates only `updated_at` of live parents named by the statement's own transition
+table. A `BEFORE ROW` trigger on items locks the exact parent row `FOR NO KEY UPDATE` first, so item inserts, item
+deletes and the tombstone all serialize on the parent (the foreign key alone takes only `FOR KEY SHARE`, which does not
+conflict with the tombstone). Proved with real two-session tests under `READ COMMITTED`.
+
+Rollback reference: `supabase/rollbacks/*_add_collection_tombstones.down.sql`. It **refuses to run while any tombstone
+exists** (dropping `deleted_at` would resurrect them), so it is safe only before any client uses the feature.
 
 **Sync protocol constraint.** Create with `INSERT ... ON CONFLICT (id) DO NOTHING`
 (PostgREST `ignore-duplicates`) and change a name with a `PATCH`. A merge-upsert
@@ -181,11 +231,13 @@ to `anon` and `authenticated` on every new public table. **These migrations do n
 defaults.** Every table: enable RLS, `REVOKE ALL` from `anon`, `authenticated` and
 `service_role`, then grant only the row operations listed above. `service_role` receives
 `SELECT, INSERT, UPDATE, DELETE` and no structural privilege. The global default ACL is not
-changed in this phase.
+changed in this phase. **Exception since Phase 3A:** neither `authenticated` nor `service_role` has `DELETE` on
+`user_collections` (physical deletion of an individual collection would free a tombstoned UUID); account deletion is
+unaffected because the foreign-key cascade runs with the table owner's rights. `service_role` also lost `UPDATE` on `user_collection_items` (see above).
 
 ## Not in this round
 
-Deletion propagation (see SYNC-GATE-1), a sync cursor, per-user row quotas, legacy
+Outing tombstones (see SYNC-GATE-1), a sync cursor, per-user row quotas, legacy
 `user_favorites` reconciliation, any account UI or Auth configuration, and the mobile
 Supabase client. The pre-Phase-2 production baseline is captured in `supabase/baseline/` (read-only, outside
 `supabase/migrations/`) and the regression comparison is `scripts/db/regress-phase2-against-baseline-local.sh`.

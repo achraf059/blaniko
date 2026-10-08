@@ -76,7 +76,7 @@ select is((select count(*)::int from public.user_collections where id = 'b000000
 select is((select count(*)::int from public.user_collection_items where venue_id = 'BLK-0100'), 0, 'A cannot read B''s items');
 select is(public.t_state($q$update public.user_collections set name = 'hacked' where id = 'b0000000-0000-4000-8000-000000000001'$q$), 'OK',
   'A''s rename of B''s collection runs but matches no visible row');
-select is(public.t_state($q$delete from public.user_collections where id = 'b0000000-0000-4000-8000-000000000001'$q$), 'OK', 'A''s delete of B''s collection runs but matches nothing');
+select is(public.t_state($q$delete from public.user_collections where id = 'b0000000-0000-4000-8000-000000000001'$q$), '42501', 'A cannot physically DELETE a collection at all (Phase 3A: deletion is a tombstone), so B''s is out of reach');
 select is(public.t_state($q$delete from public.user_collection_items where venue_id = 'BLK-0100'$q$), 'OK', 'A''s delete of B''s item runs but matches nothing');
 reset role;
 select is((select name from public.user_collections where id = 'b0000000-0000-4000-8000-000000000001'), 'B secret', 'B''s collection name is unchanged');
@@ -89,10 +89,14 @@ select is(public.t_state($q$update public.user_collections set user_id = 'bbbbbb
 select is(public.t_state($q$update public.user_collections set created_at = now() where id = 'a0000000-0000-4000-8000-000000000001'$q$), '42501', 'created_at cannot be updated');
 select is(public.t_state($q$update public.user_collections set updated_at = now() where id = 'a0000000-0000-4000-8000-000000000001'$q$), '42501', 'updated_at cannot be written by a client');
 
--- ── deleting a collection cascades its items ───────────────────────────────────
+-- ── deleting a collection is a tombstone that removes its items (Phase 3A; was a hard DELETE + cascade) ──
+-- Phase 2 asserted: A DELETEs the collection and the foreign-key cascade removes the items. Clients can no longer
+-- physically delete a collection; the same outcome (collection gone for sync purposes, no orphan item) now comes
+-- from the tombstone request. Full tombstone coverage is in 21_collection_tombstones.test.sql.
 select is((select count(*)::int from public.user_collection_items where collection_id = 'a0000000-0000-4000-8000-000000000001'), 2, 'the collection has two items');
-select is(public.t_state($q$delete from public.user_collections where id = 'a0000000-0000-4000-8000-000000000001'$q$), 'OK', 'A deletes her collection');
-select is((select count(*)::int from public.user_collection_items where collection_id = 'a0000000-0000-4000-8000-000000000001'), 0, 'its items were deleted by the cascade');
+select is(public.t_state($q$delete from public.user_collections where id = 'a0000000-0000-4000-8000-000000000001'$q$), '42501', 'A cannot hard-delete her collection');
+select is(public.t_state($q$update public.user_collections set deleted_at = now() where id = 'a0000000-0000-4000-8000-000000000001'$q$), 'OK', 'A deletes her collection (tombstone request)');
+select is((select count(*)::int from public.user_collection_items where collection_id = 'a0000000-0000-4000-8000-000000000001'), 0, 'its items were removed with the tombstone');
 reset role;
 select is((select count(*)::int from public.user_collection_items where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'), 0, 'no orphan item remains for A');
 
@@ -106,8 +110,10 @@ select is(public.t_state($q$delete from public.user_collections$q$), '42501', 'a
 
 -- ── service_role ───────────────────────────────────────────────────────────────
 select public.t_as('service_role', null);
-select is((select count(*)::int from public.user_collections), 4, 'service_role sees every user''s collections: A keeps 3, B has 1 (bypasses RLS)');
-select is(public.t_state($q$update public.user_collection_items set added_at = '2025-01-01'$q$), 'OK', 'service_role can UPDATE items');
+select is((select count(*)::int from public.user_collections), 5, 'service_role sees every user''s collections: A has 3 live + 1 tombstone, B has 1 (bypasses RLS)');
+-- Phase 2 asserted 'service_role can UPDATE items' (OK). Phase 3A made items immutable for every role: a membership
+-- change is an INSERT or a DELETE only, so it always passes the parent guard, lock and revision bump.
+select is(public.t_state($q$update public.user_collection_items set added_at = '2025-01-01'$q$), '42501', 'service_role can no longer UPDATE items (immutable since Phase 3A)');
 select is(public.t_state($q$truncate public.user_collections cascade$q$), '42501', 'service_role cannot TRUNCATE');
 select is(public.t_state($q$truncate public.user_collection_items$q$), '42501', 'service_role cannot TRUNCATE items');
 

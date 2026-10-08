@@ -17,6 +17,15 @@
 #   8. Verifies the rollback files: the wrong order fails loudly and changes nothing; the right
 #      order removes every Phase 2 object.
 #
+# Phase 3A (collection tombstones) is layered on top, in this order:
+#   3b. Static review of 20261008090000_add_collection_tombstones.sql, then it is applied with the real CLI
+#       after the Phase 2 checks; the catalog delta against the Phase 2 state is printed and must touch only
+#       the collection / item objects; pre-existing non-Phase-2 objects must still be identical.
+#   4.  (the pgTAP files now include 21_collection_tombstones.test.sql)
+#   8b. Tombstone rollback reference: refuses while a tombstone exists (and changes nothing), succeeds when none
+#       does and restores the Phase 2 catalog exactly, and the migration re-applies to the Phase 3A catalog exactly.
+# Two-session concurrency is proved by scripts/db/test-collection-tombstone-concurrency-local.sh.
+#
 # Why only the Phase 2 migrations: the historical chain cannot rebuild from zero
 # (public.venues has no CREATE migration). The CLI is pointed at a temporary workdir
 # that holds copies of just the Phase 2 files; the repo's migration history is never
@@ -49,7 +58,10 @@ PHASE2_NAMES=(
   create_user_taste_profiles
 )
 NEW_TABLES="'user_saved_venues','user_collections','user_collection_items','user_outings','user_taste_profiles'"
-NEW_FUNCTIONS="'set_updated_at','is_valid_outing_payload_v1','taste_array_is_valid'"
+P3A_NAME=add_collection_tombstones
+NEW_FUNCTIONS_P2="'set_updated_at','is_valid_outing_payload_v1','taste_array_is_valid'"
+NEW_FUNCTIONS_P3A="'user_collections_tombstone_guard','user_collections_purge_items','user_collection_items_lock_parent','user_collection_items_bump_parent_on_insert','user_collection_items_bump_parent_on_delete'"
+NEW_FUNCTIONS="$NEW_FUNCTIONS_P2,$NEW_FUNCTIONS_P3A"   # every object the snapshot treats as "ours"
 
 cleanup() {
   if [ "${SYNC_TEST_KEEP:-0}" != "1" ]; then
@@ -73,6 +85,10 @@ for name in "${PHASE2_NAMES[@]}"; do
   MIGRATION_FILES+=("${matches[0]}")
 done
 
+P3A_MATCHES=("$REPO_ROOT"/supabase/migrations/*_"$P3A_NAME".sql)
+[ "${#P3A_MATCHES[@]}" -eq 1 ] && [ -f "${P3A_MATCHES[0]}" ] || fail "expected exactly one migration for $P3A_NAME"
+P3A_FILE="${P3A_MATCHES[0]}"
+
 log "Static review of the Phase 2 migrations"
 static_fail=0
 strip_comments() { sed -E 's/--.*$//' "$1" | tr '\n' ' '; }
@@ -95,6 +111,37 @@ for f in "${MIGRATION_FILES[@]}"; do
 done
 [ "$static_fail" -eq 0 ] || fail "static review found forbidden patterns"
 echo "  ok: no forbidden pattern in ${#MIGRATION_FILES[@]} migrations"
+
+log "Static review of the Phase 3A migration ($(basename "$P3A_FILE"))"
+p3a_body="$(strip_comments "$P3A_FILE")"
+p3a_fail=0
+p3a_forbid() { if printf '%s\n' "$p3a_body" | grep -iE "$2" >/dev/null; then printf '  [p3a] forbidden: %s\n' "$1"; p3a_fail=1; fi; }
+p3a_count() { # description, regex, expected count
+  local n; n="$(printf '%s\n' "$p3a_body" | grep -oiE "$2" | wc -l | tr -d ' ')"
+  if [ "$n" != "$3" ]; then printf '  [p3a] expected %s x %s, found %s\n' "$3" "$1" "$n"; p3a_fail=1; fi
+}
+p3a_forbid "alter default privileges"            'alter[[:space:]]+default[[:space:]]+privileges'
+p3a_forbid "drop of anything but the one policy"  'drop[[:space:]]+(table|schema|extension|function|trigger|index|column|constraint|type)'
+p3a_forbid "truncate"                             'truncate'
+p3a_forbid "disabling a trigger"                  'disable[[:space:]]+trigger'
+p3a_forbid "broad USING/WITH CHECK (true)"        'using[[:space:]]*\([[:space:]]*true[[:space:]]*\)|with[[:space:]]+check[[:space:]]*\([[:space:]]*true[[:space:]]*\)'
+p3a_forbid "grant to anon / public"               'grant[^;]*[[:space:]]to[[:space:]]+[^;]*(^|[^a-z_])(anon|public)([^a-z_]|$)'
+p3a_forbid "any GRANT other than UPDATE (deleted_at)" 'grant[[:space:]]+(all|select|insert|delete|references|trigger|truncate|execute)'
+p3a_forbid "touches handle_new_user, storage or a trigger on auth" 'handle_new_user|storage\.|[[:space:]]on[[:space:]]+auth\.'
+p3a_forbid "touches an unrelated Phase 2 table"   'user_outings|user_saved_venues|user_taste_profiles'
+p3a_forbid "machine path or project ref"          '/Users/|vptjbfoaqmbdjdqwloae|supabase\.co'
+dyn_sql=$'execute[[:space:]]+(format|immediate|\'|"|\\$|[a-z_]+[[:space:]]*;)'   # "execute function ..." (CREATE TRIGGER) does not match
+p3a_forbid "dynamic SQL (EXECUTE of a string)"    "$dyn_sql"
+p3a_count "SECURITY DEFINER function clause"      'language[[:space:]]+plpgsql[[:space:]]+security[[:space:]]+definer' 2   # the clause, not the words inside a COMMENT string
+p3a_count "pinned search_path = ''"               "set[[:space:]]+search_path[[:space:]]*=[[:space:]]*''" 5
+p3a_count "REVOKE ALL ON FUNCTION"                'revoke[[:space:]]+all[[:space:]]+on[[:space:]]+function' 5
+p3a_count "DROP POLICY (the collections DELETE policy only)" 'drop[[:space:]]+policy[[:space:]]+"authenticated users can delete own collections"[[:space:]]+on[[:space:]]+public\.user_collections' 1
+p3a_count "DROP POLICY (total)"                   'drop[[:space:]]+policy' 1
+p3a_count "REVOKE DELETE"                         'revoke[[:space:]]+delete[[:space:]]+on[[:space:]]+table[[:space:]]+public\.user_collections[[:space:]]+from[[:space:]]+(authenticated|service_role)' 2
+p3a_count "REVOKE UPDATE on items from service_role" 'revoke[[:space:]]+update[[:space:]]+on[[:space:]]+table[[:space:]]+public\.user_collection_items[[:space:]]+from[[:space:]]+service_role' 1
+p3a_count "GRANT UPDATE (deleted_at)"             'grant[[:space:]]+update[[:space:]]*\([[:space:]]*deleted_at[[:space:]]*\)[[:space:]]+on[[:space:]]+table[[:space:]]+public\.user_collections[[:space:]]+to[[:space:]]+authenticated' 1
+[ "$p3a_fail" -eq 0 ] || fail "static review of the Phase 3A migration found problems"
+echo "  ok: exactly 2 SECURITY DEFINER functions, 5 pinned search_paths, 5 EXECUTE revokes, 1 policy dropped, no dynamic SQL, no broad grants"
 
 # ── container helpers ──────────────────────────────────────────────────────────
 
@@ -160,6 +207,40 @@ select 'class|' || n.nspname || '.' || c.relname || '|' || c.relkind::text || '|
 SQL
 }
 
+# Detailed inventory of the Phase 2 objects (columns, constraints, indexes, triggers, policies, grants, functions,
+# comments). Used to prove exactly what Phase 3A changes and that its rollback restores the previous state.
+inventory() { docker exec -i -e PGPASSWORD="$PASSWORD" -e PGOPTIONS='-c search_path=public,extensions' "$CONTAINER" \
+  psql -X -q -tA -v ON_ERROR_STOP=1 -U supabase_admin -d postgres <<SQL
+select line from (
+  select 'rel|' || c.relname || '|' || c.relkind::text || '|rls=' || c.relrowsecurity || '|force=' || c.relforcerowsecurity || '|owner=' || pg_get_userbyid(c.relowner) || '|acl=' || coalesce(c.relacl::text, '') as line
+    from pg_class c where c.relnamespace = 'public'::regnamespace and c.relname in ($NEW_TABLES)
+  union all
+  select 'col|' || c.relname || '|' || a.attname || '|' || format_type(a.atttypid, a.atttypmod) || '|nn=' || a.attnotnull || '|def=' || coalesce(pg_get_expr(d.adbin, d.adrelid), '') || '|acl=' || coalesce(a.attacl::text, '')
+    from pg_attribute a join pg_class c on c.oid = a.attrelid left join pg_attrdef d on d.adrelid = a.attrelid and d.adnum = a.attnum
+   where c.relnamespace = 'public'::regnamespace and c.relname in ($NEW_TABLES) and a.attnum > 0 and not a.attisdropped
+  union all
+  select 'con|' || c.relname || '|' || k.conname || '|' || pg_get_constraintdef(k.oid)
+    from pg_constraint k join pg_class c on c.oid = k.conrelid where c.relnamespace = 'public'::regnamespace and c.relname in ($NEW_TABLES)
+  union all
+  select 'idx|' || tablename || '|' || indexdef from pg_indexes where schemaname = 'public' and tablename in ($NEW_TABLES)
+  union all
+  select 'trg|' || c.relname || '|' || t.tgname || '|en=' || t.tgenabled::text || '|' || pg_get_triggerdef(t.oid)
+    from pg_trigger t join pg_class c on c.oid = t.tgrelid where not t.tgisinternal and c.relnamespace = 'public'::regnamespace and c.relname in ($NEW_TABLES)
+  union all
+  select 'pol|' || tablename || '|' || policyname || '|' || cmd || '|' || roles::text || '|' || coalesce(qual, '') || '|' || coalesce(with_check, '')
+    from pg_policies where schemaname = 'public' and tablename in ($NEW_TABLES)
+  union all
+  select 'fn|' || p.oid::regprocedure::text || '|owner=' || pg_get_userbyid(p.proowner) || '|secdef=' || p.prosecdef || '|cfg=' || coalesce(p.proconfig::text, '') || '|acl=' || coalesce(p.proacl::text, '') || '|vol=' || p.provolatile::text
+    from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ($NEW_FUNCTIONS)
+  union all
+  select 'cmt|' || c.relname || '|' || coalesce(a.attname, '') || '|' || d.description
+    from pg_description d join pg_class c on c.oid = d.objoid and d.classoid = 'pg_class'::regclass
+    left join pg_attribute a on a.attrelid = c.oid and a.attnum = d.objsubid and d.objsubid > 0
+   where c.relnamespace = 'public'::regnamespace and c.relname in ($NEW_TABLES)
+) x order by 1;
+SQL
+}
+
 # ── 2. failed-migration probe ──────────────────────────────────────────────────
 
 log "Failed-migration probe (real CLI, broken copy of migration 3)"
@@ -212,6 +293,50 @@ if diff -u "$WORK/snapshot.before" "$WORK/snapshot.after" >"$WORK/snapshot.diff"
 else
   cat "$WORK/snapshot.diff"; fail "Phase 2 changed a pre-existing object"
 fi
+
+# ── 3b. Phase 3A: collection tombstones, applied on top of Phase 2 ──────────────
+
+log "Applying the Phase 3A collection-tombstone migration with the real CLI (on top of Phase 2)"
+inventory > "$WORK/inventory.p2"
+make_workdir "${MIGRATION_FILES[@]}" "$P3A_FILE"
+cli_push >"$WORK/push3a.log" 2>&1 || { cat "$WORK/push3a.log"; fail "db push of the Phase 3A migration failed"; }
+tail -n 4 "$WORK/push3a.log" | sed 's/^/    /'
+versions="$(sql_admin -c "select string_agg(version, ',' order by version) from supabase_migrations.schema_migrations")"
+expected="$expected,$(basename "$P3A_FILE" | cut -d_ -f1)"
+[ "$versions" = "$expected" ] || fail "migration history mismatch after Phase 3A: got $versions, expected $expected"
+echo "  ok: recorded versions = $versions"
+if cli_push >"$WORK/push3a2.log" 2>&1 && grep -qiE 'up to date|no change' "$WORK/push3a2.log"; then
+  echo "  ok: second push is a no-op"
+else
+  cat "$WORK/push3a2.log"; fail "second push after Phase 3A was not a clean no-op"
+fi
+
+log "Pre-existing (non-Phase-2, non-Phase-3A) objects must still be identical"
+snapshot > "$WORK/snapshot.after3a"
+diff -u "$WORK/snapshot.after" "$WORK/snapshot.after3a" >"$WORK/snapshot3a.diff" \
+  || { cat "$WORK/snapshot3a.diff"; fail "Phase 3A changed an object outside the Phase 2 / Phase 3A set"; }
+echo "  ok: $(wc -l < "$WORK/snapshot.after" | tr -d ' ') catalog rows compared, identical"
+
+log "Catalog delta of Phase 3A against the Phase 2 state (must touch only collection / item objects)"
+inventory > "$WORK/inventory.p3a"
+diff "$WORK/inventory.p2" "$WORK/inventory.p3a" | grep -E '^[<>]' > "$WORK/inventory.delta" || true
+foreign="$(grep -vE 'user_collection' "$WORK/inventory.delta" || true)"
+if [ -n "$foreign" ]; then printf '%s\n' "$foreign" | cut -c1-200; fail "Phase 3A changed an object that is not a collection / item object"; fi
+echo "  removed/changed rows (Phase 2 state):"; grep '^<' "$WORK/inventory.delta" | cut -c1-210 | sed 's/^/    /'
+echo "  added rows (Phase 3A state): $(grep -c '^>' "$WORK/inventory.delta")"
+grep '^>' "$WORK/inventory.delta" | cut -c1-170 | sed 's/^/    /'
+for must in "col|user_collections|deleted_at|timestamp with time zone" "con|user_collections|user_collections_tombstone_scrubbed" \
+            "trg|user_collections|user_collections_tombstone_guard" "trg|user_collections|user_collections_purge_items" \
+            "trg|user_collection_items|user_collection_items_lock_parent" "trg|user_collection_items|user_collection_items_bump_parent_on_insert" \
+            "trg|user_collection_items|user_collection_items_bump_parent_on_delete"; do
+  grep -qF -- "> $must" "$WORK/inventory.delta" || fail "expected added row not in the delta: $must"
+done
+grep -qF -- "< pol|user_collections|authenticated users can delete own collections|DELETE" "$WORK/inventory.delta" || fail "the DELETE policy removal is not in the delta"
+grep -qE -- "^< rel\|user_collection_items\|.*service_role=arwd/postgres" "$WORK/inventory.delta" && grep -qE -- "^> rel\|user_collection_items\|.*service_role=ard/postgres" "$WORK/inventory.delta" \
+  || fail "the service_role UPDATE revocation on user_collection_items is not in the delta"
+grep -E -- "^[<>] rel\|user_collection_items\|" "$WORK/inventory.delta" | grep -E 'authenticated=' | grep -qvE 'authenticated=ard/postgres' && fail "the items delta changed authenticated's item privileges"
+echo "  ok: service_role UPDATE on user_collection_items revoked; authenticated's item privileges (ard) unchanged"
+echo "  ok: the delta contains the intended additions and the policy removal, and nothing else"
 
 # ── 4. database tests ──────────────────────────────────────────────────────────
 
@@ -272,25 +397,61 @@ sql_owner() { docker exec -i -e PGPASSWORD="$PASSWORD" "$CONTAINER" psql -X -q -
 count_new() { sql_admin -c "select (select count(*) from pg_class where relnamespace = 'public'::regnamespace and relname in ($NEW_TABLES))
   + (select count(*) from pg_proc where pronamespace = 'public'::regnamespace and proname in ($NEW_FUNCTIONS))"; }
 ROLLBACKS=("$REPO_ROOT"/supabase/rollbacks/*.down.sql)
-[ "${#ROLLBACKS[@]}" -eq 5 ] || fail "expected 5 rollback files"
+[ "${#ROLLBACKS[@]}" -eq 6 ] || fail "expected 6 rollback files"
 for rb in "${ROLLBACKS[@]}"; do grep -q 'LOCAL / EMERGENCY REFERENCE ONLY' "$rb" || fail "$(basename "$rb") lacks the reference-only banner"; done
-echo "  ok: all five carry the LOCAL / EMERGENCY REFERENCE ONLY banner and sit outside supabase/migrations/"
-[ "$(count_new)" = "8" ] || fail "expected 5 tables + 3 functions before the rollback, got $(count_new)"
+echo "  ok: all six carry the LOCAL / EMERGENCY REFERENCE ONLY banner and sit outside supabase/migrations/"
+[ "$(count_new)" = "13" ] || fail "expected 5 tables + 8 functions before the rollback, got $(count_new)"
 rollback_file() { local m=("$REPO_ROOT"/supabase/rollbacks/*_"$1".down.sql); [ -f "${m[0]}" ] || fail "no rollback file for $1"; printf '%s' "${m[0]}"; }
 # Wrong order: dropping the shared function first must fail with the dependency error and change nothing.
 wrong_out="$(sql_owner < "$(rollback_file create_set_updated_at_function)" 2>&1 || true)"
 printf '%s\n' "$wrong_out" | grep -qiE 'cannot drop function (public\.)?set_updated_at\(\) because other objects depend on it' \
   || { printf '%s\n' "$wrong_out"; fail "the wrong-order rollback did not fail with the expected dependency error"; }
-[ "$(count_new)" = "8" ] || fail "the wrong-order rollback changed something"
+[ "$(count_new)" = "13" ] || fail "the wrong-order rollback changed something"
 echo "  ok: the wrong order (function first) fails with the dependency error and changes nothing"
-# Right order: taste profiles, outings, collections+items, saved venues, function.
-for pattern in create_user_taste_profiles create_user_outings create_user_collections_and_items create_user_saved_venues create_set_updated_at_function; do
+
+# Phase 3A rollback: it must fail closed while a tombstone exists, restore Phase 2 exactly when none does, and re-apply exactly.
+P3A_DOWN="$(rollback_file "$P3A_NAME")"
+inventory > "$WORK/inventory.before_rb"
+sql_admin <<'SQL'
+insert into auth.users (id) values ('99999999-9999-4999-8999-999999999991'), ('99999999-9999-4999-8999-999999999992');
+insert into public.user_collections (id, user_id, name) values
+  ('99000000-0000-4000-8000-000000000001', '99999999-9999-4999-8999-999999999991', 'will be tombstoned'),
+  ('99000000-0000-4000-8000-000000000002', '99999999-9999-4999-8999-999999999992', 'stays live');
+insert into public.user_collection_items (collection_id, user_id, venue_id) values
+  ('99000000-0000-4000-8000-000000000001', '99999999-9999-4999-8999-999999999991', 'BLK-0001'),
+  ('99000000-0000-4000-8000-000000000002', '99999999-9999-4999-8999-999999999992', 'BLK-0002');
+update public.user_collections set deleted_at = now() where id = '99000000-0000-4000-8000-000000000001';
+SQL
+rb_out="$(sql_owner < "$P3A_DOWN" 2>&1)" && fail "the Phase 3A rollback ran although a tombstone exists"
+printf '%s\n' "$rb_out" | grep -q 'refusing to roll back collection tombstones: 1 tombstoned collection' \
+  || { printf '%s\n' "$rb_out"; fail "the Phase 3A rollback refused for the wrong reason"; }
+inventory > "$WORK/inventory.after_refusal"
+diff -u "$WORK/inventory.before_rb" "$WORK/inventory.after_refusal" >/dev/null || fail "the refused rollback changed the catalog"
+[ "$(sql_admin -c "select count(*) from public.user_collections where deleted_at is not null")" = "1" ] || fail "the tombstone did not survive the refused rollback"
+[ "$(count_new)" = "13" ] || fail "the refused rollback changed the object count"
+echo "  ok: the Phase 3A rollback REFUSES while a tombstone exists ('refusing to roll back collection tombstones: 1 ...'), changes nothing, and the tombstone survives"
+# remove the tombstone's owner (account deletion cascades the tombstone and its user's rows); keep the other user's LIVE collection + item
+sql_admin -c "delete from auth.users where id = '99999999-9999-4999-8999-999999999991'"
+[ "$(sql_admin -c "select count(*) from public.user_collections where deleted_at is not null")" = "0" ] || fail "account deletion left a tombstone"
+sql_owner < "$P3A_DOWN" >"$WORK/rb3a.out" 2>&1 || { cat "$WORK/rb3a.out"; fail "the Phase 3A rollback failed although no tombstone exists"; }
+inventory > "$WORK/inventory.after_down"
+diff -u "$WORK/inventory.p2" "$WORK/inventory.after_down" >"$WORK/inventory.down.diff" || { cat "$WORK/inventory.down.diff"; fail "the Phase 3A rollback did not restore the Phase 2 catalog exactly"; }
+[ "$(sql_admin -c "select count(*) from public.user_collections where name = 'stays live'")" = "1" ] || fail "the rollback lost a live collection"
+[ "$(sql_admin -c "select count(*) from public.user_collection_items where venue_id = 'BLK-0002'")" = "1" ] || fail "the rollback lost a live item"
+echo "  ok: with no tombstone the rollback succeeds, restores the Phase 2 catalog EXACTLY ($(wc -l < "$WORK/inventory.p2" | tr -d ' ') inventory rows), and keeps live data"
+sql_owner < "$P3A_FILE" >"$WORK/reapply3a.out" 2>&1 || { cat "$WORK/reapply3a.out"; fail "re-applying the Phase 3A migration after its rollback failed"; }
+inventory > "$WORK/inventory.reapplied"
+diff -u "$WORK/inventory.p3a" "$WORK/inventory.reapplied" >"$WORK/inventory.reapply.diff" || { cat "$WORK/inventory.reapply.diff"; fail "up, down, up did not return to the Phase 3A catalog exactly"; }
+echo "  ok: migration -> rollback -> migration returns to the Phase 3A catalog exactly"
+sql_admin -c "delete from auth.users where id = '99999999-9999-4999-8999-999999999992'"
+# Right order: Phase 3A, taste profiles, outings, collections+items, saved venues, function.
+for pattern in "$P3A_NAME" create_user_taste_profiles create_user_outings create_user_collections_and_items create_user_saved_venues create_set_updated_at_function; do
   sql_owner < "$(rollback_file "$pattern")" >/dev/null || fail "rollback $pattern failed"
 done
 [ "$(count_new)" = "0" ] || fail "objects remain after the rollbacks"
 snapshot > "$WORK/snapshot.rolledback"
 diff -u "$WORK/snapshot.before" "$WORK/snapshot.rolledback" >"$WORK/snapshot.rb.diff" || { cat "$WORK/snapshot.rb.diff"; fail "rollback left the catalog different"; }
-echo "  ok: the right order removes all 5 tables and 3 functions; the catalog matches the pre-Phase-2 snapshot"
+echo "  ok: the right order removes all 5 tables and 8 functions; the catalog matches the pre-Phase-2 snapshot"
 
 log "Summary"
 echo "  assertions passed: $total_ok, failed: $total_not_ok, files with problems: $problems"

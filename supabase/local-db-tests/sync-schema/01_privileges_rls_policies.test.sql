@@ -31,7 +31,6 @@ select set_eq(
     ('user_collections|authenticated users can select own collections|SELECT'),
     ('user_collections|authenticated users can insert own collections|INSERT'),
     ('user_collections|authenticated users can update own collections|UPDATE'),
-    ('user_collections|authenticated users can delete own collections|DELETE'),
     ('user_collection_items|authenticated users can select own collection items|SELECT'),
     ('user_collection_items|authenticated users can insert own collection items|INSERT'),
     ('user_collection_items|authenticated users can delete own collection items|DELETE'),
@@ -42,7 +41,7 @@ select set_eq(
     ('user_taste_profiles|authenticated users can select own taste profile|SELECT'),
     ('user_taste_profiles|authenticated users can insert own taste profile|INSERT'),
     ('user_taste_profiles|authenticated users can update own taste profile|UPDATE')$$,
-  'exactly the 17 designed policies exist (no policy for UPDATE on saved venues / items, none for DELETE on taste profiles)');
+  'exactly the 16 designed policies exist (no UPDATE policy on saved venues / items, no DELETE policy on taste profiles or, since Phase 3A, on collections)');
 
 select is(
   (select count(*)::int from pg_policies where schemaname = 'public'
@@ -79,9 +78,11 @@ select t.tbl, r.role_name, p.priv,
          case p.priv
            when 'SELECT' then true
            when 'INSERT' then true
-           when 'DELETE' then t.tbl <> 'user_taste_profiles'
+           when 'DELETE' then t.tbl not in ('user_taste_profiles', 'user_collections')   -- Phase 3A: collections are tombstoned, never physically deleted by a client
            else false end                              -- UPDATE is column-level only; none of the structural ones
-       when r.role_name = 'service_role' then p.priv in ('SELECT','INSERT','UPDATE','DELETE')
+       when r.role_name = 'service_role' then p.priv in ('SELECT','INSERT')
+                                              or (p.priv = 'UPDATE' and t.tbl <> 'user_collection_items')   -- Phase 3A: items are immutable for every role
+                                              or (p.priv = 'DELETE' and t.tbl <> 'user_collections')       -- Phase 3A: collections are tombstoned, never deleted
   end
 from (values ('user_saved_venues'),('user_collections'),('user_collection_items'),('user_outings'),('user_taste_profiles')) as t(tbl)
 cross join (values ('anon'),('authenticated'),('service_role')) as r(role_name)
@@ -103,7 +104,7 @@ select is(
 create temp table t_expected_col_update (tbl text, col text, expected boolean);
 insert into t_expected_col_update values
   ('user_collections','id',false),('user_collections','user_id',false),('user_collections','name',true),
-  ('user_collections','created_at',false),('user_collections','updated_at',false),
+  ('user_collections','created_at',false),('user_collections','updated_at',false),('user_collections','deleted_at',true),
   ('user_outings','id',false),('user_outings','user_id',false),('user_outings','schema_version',true),
   ('user_outings','payload',true),('user_outings','created_at',false),('user_outings','updated_at',false),
   ('user_taste_profiles','user_id',false),('user_taste_profiles','schema_version',true),
@@ -118,6 +119,9 @@ select ok(
   not has_any_column_privilege('authenticated', 'public.user_saved_venues', 'UPDATE')
   and not has_any_column_privilege('authenticated', 'public.user_collection_items', 'UPDATE'),
   'authenticated can UPDATE no column of saved venues or collection items');
+select ok(
+  not has_any_column_privilege('service_role', 'public.user_collection_items', 'UPDATE'),
+  'since Phase 3A service_role can UPDATE no column of collection items either (they are immutable: INSERT / DELETE only)');
 select ok(
   not has_any_column_privilege('anon', 'public.user_saved_venues', 'SELECT')
   and not has_any_column_privilege('anon', 'public.user_collections', 'SELECT')
