@@ -7,6 +7,11 @@ This document is the **contract** between the database and the clients.
 Status: **schema groundwork only.** The tables are created but unused. No account UI, no
 login changes, no cloud-sync implementation, and no client is connected to them.
 
+Rollout status: the five Phase 2 migrations listed below are **applied and verified in production**. The two
+Phase 3A tombstone migrations (collections and outings) exist only on a feature branch and are **not yet applied to
+production**. No client cloud sync exists yet, and SYNC-GATE-1 (below) stays closed until Phase 3A is merged, applied
+and verified in production.
+
 Migrations: `supabase/migrations/*_create_set_updated_at_function.sql`,
 `*_create_user_saved_venues.sql`, `*_create_user_collections_and_items.sql`,
 `*_create_user_outings.sql`, `*_create_user_taste_profiles.sql`.

@@ -105,7 +105,7 @@ select ok(has_table_privilege('service_role', 'public.user_collection_items', 'S
   'service_role on items is exactly SELECT, INSERT, DELETE (no UPDATE, not even column-level)');
 select ok(not has_table_privilege('anon', 'public.user_collection_items', 'SELECT') and not has_any_column_privilege('anon', 'public.user_collection_items', 'UPDATE')
   and not has_table_privilege('anon', 'public.user_collection_items', 'INSERT') and not has_table_privilege('anon', 'public.user_collection_items', 'DELETE'),
-  'anon has nothing on items'); 
+  'anon has nothing on items');
 select set_eq($$select policyname::text || '|' || cmd from pg_policies where schemaname = 'public' and tablename = 'user_collections'$$,
   $$values ('authenticated users can select own collections|SELECT'), ('authenticated users can insert own collections|INSERT'),
            ('authenticated users can update own collections|UPDATE')$$,
