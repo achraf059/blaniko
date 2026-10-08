@@ -24,7 +24,14 @@ hosted project: it connects only to the container it starts and passes `--db-url
 | `00_semantics.test.sql` | Proves the PostgreSQL / Supabase behaviours the design relies on (default ACLs, `REVOKE ALL` incl. PG17 `MAINTAIN`, trigger firing without EXECUTE, CHECK-function EXECUTE, upsert semantics). |
 | `01_privileges_rls_policies.test.sql` | Exact RLS / policy / table / column / function privilege matrix. |
 | `10_…` – `40_…` | Per-table behaviour: validation, isolation, immutability, anon, service_role. |
+| `21_collection_tombstones.test.sql` | Phase 3A collection tombstones: `deleted_at`, scrub, immutability (`TS002`), privileges, RLS, child purge, the live-parent guard (`TS001`), the parent revision bump, trigger / function posture, account-deletion cascade. |
 | `50_updated_at_and_account_deletion.test.sql` | `updated_at` maintenance and account-deletion cascades. |
+
+## Real concurrency (not in this directory)
+
+pgTAP runs inside one transaction, so it cannot show how two clients interact. The two-session lock proofs for
+collection tombstones (item INSERT / DELETE / rename vs tombstone, both orderings, with `READ COMMITTED` recorded and
+real lock waits verified through `pg_blocking_pids()`) are in `scripts/db/test-collection-tombstone-concurrency-local.sh`.
 
 ## Why these are not under `supabase/tests/`
 
